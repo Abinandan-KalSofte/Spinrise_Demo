@@ -40,3 +40,10 @@ frontend/spinrise-web/.env*
 frontend/spinrise-web/npm-debug.log*
 frontend/spinrise-web/yarn-debug.log*
 frontend/spinrise-web/yarn-error.log*
+
+#RootFolder
+AI_CONTEXT.md
+CODE_REVIEW_IMPLEMENTATION_GUIDE.md
+IMPLEMENTATION_REQUIREMENTS.md
+output.xml
+RepPO.rpt
