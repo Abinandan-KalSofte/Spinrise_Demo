@@ -28,7 +28,7 @@ export default function LoginPage() {
 
   return (
     <div className="page-shell">
-      <Card title="Sign in to Spinrise" className="login-card">
+      <Card title="Spinrise - ERP" className="login-card">
         <Typography.Paragraph>
           Secure access to the dashboard. Use `admin@spinrise.com` or `user@example.com` with the password `password`.
         </Typography.Paragraph>
