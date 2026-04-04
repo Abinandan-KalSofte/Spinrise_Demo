@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="04/03/2026 00:00:00" ReportInfo.Modified="04/03/2026 00:00:00">
+  <Dictionary/>
+  <ReportPage Name="Page1" PaperWidth="210" PaperHeight="297" LeftMargin="10" RightMargin="10" TopMargin="10" BottomMargin="10">
+
+    <!-- ================= HEADER ================= -->
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="155">
+
+      <TextObject Name="txtCompany" Left="0" Top="0" Width="718.2" Height="20" Text="DIV_PRINTNAME" HorzAlign="Center" VertAlign="Center" Font="Arial, 12pt, style=Bold"/>
+      <TextObject Name="txtUnit" Left="0" Top="20" Width="718.2" Height="18" Text="DIV_UNITNAME" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="txtAddress" Left="0" Top="38" Width="718.2" Height="48" Text="@Address&#13;&#10;@CityPin&#13;&#10;@phone&#13;&#10;@Email" HorzAlign="Center" VertAlign="Top" Font="Arial, 9pt"/>
+
+      <TextObject Name="txtTitle" Left="0" Top="88" Width="718.2" Height="20" Text="Purchase Requisition" HorzAlign="Center" VertAlign="Center" Font="Arial, 11pt, style=Bold"/>
+
+      <!-- Left block -->
+      <TextObject Name="lblRequester" Left="0" Top="112" Width="300" Height="14" Text="Requester Name : ename" VertAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="lblDept" Left="0" Top="126" Width="300" Height="14" Text="Department : DEPNAME" VertAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="lblRef" Left="0" Top="140" Width="300" Height="14" Text="Reference : refno" VertAlign="Center" Font="Arial, 9pt"/>
+
+      <!-- Right block -->
+      <TextObject Name="lblPRNo" Left="418.2" Top="112" Width="300" Height="14" Text="PR.No : prno" VertAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="lblPRDate" Left="418.2" Top="126" Width="300" Height="14" Text="PR.Date : prdate" VertAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="lblAppDate" Left="418.2" Top="140" Width="300" Height="14" Text="Approved Date : APP3DATE" VertAlign="Center" Font="Arial, 9pt"/>
+
+    </ReportTitleBand>
+
+    <!-- ================= TABLE HEADER ================= -->
+    <PageHeaderBand Name="PageHeader1" Top="155" Width="718.2" Height="42">
+      <TableObject Name="tblHeader" Left="0" Top="0" Width="718.2" Height="42" Border.Lines="All">
+
+        <!-- EXACT WIDTH MATCH -->
+        <TableColumn Width="40"/>
+        <TableColumn Width="70"/>
+        <TableColumn Width="130"/>
+        <TableColumn Width="50"/>
+        <TableColumn Width="70"/>
+        <TableColumn Width="70"/>
+        <TableColumn Width="70"/>
+        <TableColumn Width="70"/>
+        <TableColumn Width="70"/>
+        <TableColumn Width="48.2"/>
+
+        <TableRow Height="42">
+          <TableCell Text="S.No" HorzAlign="Center" VertAlign="Center" Font="Arial, 9pt, style=Bold" Border.Lines="All"/>
+          <TableCell Text="Item Code" HorzAlign="Center" VertAlign="Center" Font="Arial, 9pt, style=Bold" Border.Lines="All"/>
+          <TableCell Text="Item Name" HorzAlign="Center" VertAlign="Center" Font="Arial, 9pt, style=Bold" Border.Lines="All"/>
+          <TableCell Text="Unit" HorzAlign="Center" VertAlign="Center" Font="Arial, 9pt, style=Bold" Border.Lines="All"/>
+          <TableCell Text="Required Qty" HorzAlign="Center" VertAlign="Center" Font="Arial, 9pt, style=Bold" Border.Lines="All"/>
+          <TableCell Text="Required Date" HorzAlign="Center" VertAlign="Center" Font="Arial, 9pt, style=Bold" Border.Lines="All"/>
+          <TableCell Text="Stock" HorzAlign="Center" VertAlign="Center" Font="Arial, 9pt, style=Bold" Border.Lines="All"/>
+          <TableCell Text="Rate" HorzAlign="Center" VertAlign="Center" Font="Arial, 9pt, style=Bold" Border.Lines="All"/>
+          <TableCell Text="Value" HorzAlign="Center" VertAlign="Center" Font="Arial, 9pt, style=Bold" Border.Lines="All"/>
+          <TableCell Text="Remarks" HorzAlign="Center" VertAlign="Center" Font="Arial, 9pt, style=Bold" Border.Lines="All"/>
+        </TableRow>
+
+      </TableObject>
+    </PageHeaderBand>
+
+    <!-- ================= DATA ================= -->
+    <DataBand Name="Data1" Top="197" Width="718.2" Height="120">
+      <TableObject Name="tblData" Left="0" Top="0" Width="718.2" Height="120" Border.Lines="All">
+
+        <!-- EXACT SAME WIDTHS -->
+        <TableColumn Width="40"/>
+        <TableColumn Width="70"/>
+        <TableColumn Width="130"/>
+        <TableColumn Width="50"/>
+        <TableColumn Width="70"/>
+        <TableColumn Width="70"/>
+        <TableColumn Width="70"/>
+        <TableColumn Width="70"/>
+        <TableColumn Width="70"/>
+        <TableColumn Width="48.2"/>
+
+        <TableRow Height="20">
+          <TableCell Text="1" VertAlign="Center"/>
+          <TableCell Text="ITEM001" VertAlign="Center"/>
+          <TableCell Text="ITEMSPEC1" VertAlign="Center"/>
+          <TableCell Text="NOS" HorzAlign="Center" VertAlign="Center"/>
+          <TableCell Text="10" HorzAlign="Right" VertAlign="Center"/>
+          <TableCell Text="01-01-2026" HorzAlign="Center" VertAlign="Center"/>
+          <TableCell Text="100" HorzAlign="Right" VertAlign="Center"/>
+          <TableCell Text="50" HorzAlign="Right" VertAlign="Center"/>
+          <TableCell Text="500" HorzAlign="Right" VertAlign="Center"/>
+          <TableCell Text="" VertAlign="Center"/>
+        </TableRow>
+
+        <TableRow Height="20">
+          <TableCell Text="2" VertAlign="Center"/>
+          <TableCell Text="ITEM002" VertAlign="Center"/>
+          <TableCell Text="ITEMSPEC2" VertAlign="Center"/>
+          <TableCell Text="NOS" HorzAlign="Center" VertAlign="Center"/>
+          <TableCell Text="5" HorzAlign="Right" VertAlign="Center"/>
+          <TableCell Text="01-01-2026" HorzAlign="Center" VertAlign="Center"/>
+          <TableCell Text="50" HorzAlign="Right" VertAlign="Center"/>
+          <TableCell Text="40" HorzAlign="Right" VertAlign="Center"/>
+          <TableCell Text="200" HorzAlign="Right" VertAlign="Center"/>
+          <TableCell Text="" VertAlign="Center"/>
+        </TableRow>
+
+      </TableObject>
+    </DataBand>
+
+    <!-- ================= FOOTER ================= -->
+    <ReportSummaryBand Name="ReportSummary1" Top="317" Width="718.2" Height="85">
+
+      <TextObject Name="txtRequested" Left="0" Top="25" Width="239.4" Height="40" Text="Requested By&#13;&#10;@IndUserNAME" HorzAlign="Center" VertAlign="Top" Font="Arial, 9pt"/>
+      <TextObject Name="txtApproved" Left="239.4" Top="25" Width="239.4" Height="40" Text="Approved By&#13;&#10;FirstappUser&#13;&#10;APP1DATE" HorzAlign="Center" VertAlign="Top" Font="Arial, 9pt"/>
+      <TextObject Name="txtAuth" Left="478.8" Top="25" Width="239.4" Height="40" Text="Authorised Signatory&#13;&#10;FinalAppUser&#13;&#10;APP3DATE" HorzAlign="Center" VertAlign="Top" Font="Arial, 9pt"/>
+
+    </ReportSummaryBand>
+
+  </ReportPage>
+</Report>

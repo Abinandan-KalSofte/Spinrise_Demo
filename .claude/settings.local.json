@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find \"e:\\\\Abinandan\\\\SPINRISE\\\\Development\\\\frontend\\\\spinrise-web\\\\src\" -type f \\\\\\( -name \"*.tsx\" -o -name \"*.ts\" \\\\\\) -exec grep -l \"Dropdown\\\\|Download\\\\|export\" {} \\\\;)"
+    ]
+  }
+}

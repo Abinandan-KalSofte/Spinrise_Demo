@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="04/03/2026 00:00:00" ReportInfo.Modified="04/03/2026 00:00:00">
+  <Dictionary/>
+  <ReportPage Name="Page1" PaperWidth="210" PaperHeight="297" LeftMargin="10" RightMargin="10" TopMargin="10" BottomMargin="10">
+
+    <!-- ================= HEADER ================= -->
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="155">
+
+      <TextObject Name="txtCompany" Left="0" Top="0" Width="718.2" Height="20" Text="DIV_PRINTNAME" HorzAlign="Center" VertAlign="Center" Font="Arial, 12pt, style=Bold"/>
+      <TextObject Name="txtUnit" Left="0" Top="20" Width="718.2" Height="18" Text="DIV_UNITNAME" HorzAlign="Center" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="txtAddress" Left="0" Top="38" Width="718.2" Height="48" Text="@Address&#13;&#10;@CityPin&#13;&#10;@phone&#13;&#10;@Email" HorzAlign="Center" VertAlign="Top" Font="Arial, 9pt"/>
+
+      <TextObject Name="txtTitle" Left="0" Top="88" Width="718.2" Height="20" Text="Purchase Order" HorzAlign="Center" VertAlign="Center" Font="Arial, 11pt, style=Bold"/>
+
+      <!-- Left block -->
+      <TextObject Name="lblSupplier" Left="0" Top="112" Width="300" Height="14" Text="Supplier Name : SUPPLIER_NAME" VertAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="lblSupplierAddress" Left="0" Top="126" Width="300" Height="14" Text="Address : SUPPLIER_ADDRESS" VertAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="lblRef" Left="0" Top="140" Width="300" Height="14" Text="Reference : REF_NO" VertAlign="Center" Font="Arial, 9pt"/>
+
+      <!-- Right block -->
+      <TextObject Name="lblPONo" Left="418.2" Top="112" Width="300" Height="14" Text="PO.No : PO_NO" VertAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="lblPODate" Left="418.2" Top="126" Width="300" Height="14" Text="PO.Date : PO_DATE" VertAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="lblDeliveryDate" Left="418.2" Top="140" Width="300" Height="14" Text="Delivery Date : DELIVERY_DATE" VertAlign="Center" Font="Arial, 9pt"/>
+
+    </ReportTitleBand>
+
+    <!-- ================= TABLE HEADER ================= -->
+    <PageHeaderBand Name="PageHeader1" Top="155" Width="718.2" Height="42">
+      <TableObject Name="tblHeader" Left="0" Top="0" Width="718.2" Height="42" Border.Lines="All">
+
+        <TableColumn Width="40"/>
+        <TableColumn Width="70"/>
+        <TableColumn Width="130"/>
+        <TableColumn Width="50"/>
+        <TableColumn Width="70"/>
+        <TableColumn Width="70"/>
+        <TableColumn Width="70"/>
+        <TableColumn Width="70"/>
+        <TableColumn Width="48.2"/>
+
+        <TableRow Height="42">
+          <TableCell Text="S.No" HorzAlign="Center" VertAlign="Center" Font="Arial, 9pt, style=Bold" Border.Lines="All"/>
+          <TableCell Text="Item Code" HorzAlign="Center" VertAlign="Center" Font="Arial, 9pt, style=Bold" Border.Lines="All"/>
+          <TableCell Text="Item Name" HorzAlign="Center" VertAlign="Center" Font="Arial, 9pt, style=Bold" Border.Lines="All"/>
+          <TableCell Text="Unit" HorzAlign="Center" VertAlign="Center" Font="Arial, 9pt, style=Bold" Border.Lines="All"/>
+          <TableCell Text="Quantity" HorzAlign="Center" VertAlign="Center" Font="Arial, 9pt, style=Bold" Border.Lines="All"/>
+          <TableCell Text="Rate" HorzAlign="Center" VertAlign="Center" Font="Arial, 9pt, style=Bold" Border.Lines="All"/>
+          <TableCell Text="Discount" HorzAlign="Center" VertAlign="Center" Font="Arial, 9pt, style=Bold" Border.Lines="All"/>
+          <TableCell Text="Amount" HorzAlign="Center" VertAlign="Center" Font="Arial, 9pt, style=Bold" Border.Lines="All"/>
+          <TableCell Text="Remarks" HorzAlign="Center" VertAlign="Center" Font="Arial, 9pt, style=Bold" Border.Lines="All"/>
+        </TableRow>
+
+      </TableObject>
+    </PageHeaderBand>
+
+    <!-- ================= DATA ================= -->
+    <DataBand Name="Data1" Top="197" Width="718.2" Height="20">
+      <TableObject Name="tblData" Left="0" Top="0" Width="718.2" Height="20" Border.Lines="All">
+
+        <TableColumn Width="40"/>
+        <TableColumn Width="70"/>
+        <TableColumn Width="130"/>
+        <TableColumn Width="50"/>
+        <TableColumn Width="70"/>
+        <TableColumn Width="70"/>
+        <TableColumn Width="70"/>
+        <TableColumn Width="70"/>
+        <TableColumn Width="48.2"/>
+
+        <TableRow Height="20">
+          <TableCell Text="[LineNo]" HorzAlign="Center" VertAlign="Center" Border.Lines="All"/>
+          <TableCell Text="[ItemCode]" VertAlign="Center" Border.Lines="All"/>
+          <TableCell Text="[ItemName]" VertAlign="Center" Border.Lines="All"/>
+          <TableCell Text="[Unit]" HorzAlign="Center" VertAlign="Center" Border.Lines="All"/>
+          <TableCell Text="[Quantity]" HorzAlign="Right" VertAlign="Center" Border.Lines="All"/>
+          <TableCell Text="[Rate]" HorzAlign="Right" VertAlign="Center" Border.Lines="All"/>
+          <TableCell Text="[Discount]" HorzAlign="Right" VertAlign="Center" Border.Lines="All"/>
+          <TableCell Text="[Amount]" HorzAlign="Right" VertAlign="Center" Border.Lines="All"/>
+          <TableCell Text="[Remarks]" VertAlign="Center" Border.Lines="All"/>
+        </TableRow>
+
+      </TableObject>
+    </DataBand>
+
+    <!-- ================= FOOTER ================= -->
+    <ReportSummaryBand Name="ReportSummary1" Top="217" Width="718.2" Height="60">
+
+      <!-- Total Amount -->
+      <TextObject Name="lblTotal" Left="500" Top="10" Width="100" Height="14" Text="Total Amount:" HorzAlign="Right" VertAlign="Center" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="txtTotal" Left="600" Top="10" Width="100" Height="14" Text="[SUM(Amount)]" HorzAlign="Right" VertAlign="Center" Font="Arial, 9pt, style=Bold"/>
+
+      <!-- Terms and Conditions -->
+      <TextObject Name="lblTerms" Left="0" Top="30" Width="718.2" Height="14" Text="Terms &amp; Conditions:" VertAlign="Center" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="txtTerms" Left="0" Top="44" Width="718.2" Height="16" Text="1. Payment terms: [PaymentTerms]&#13;&#10;2. Delivery terms: [DeliveryTerms]&#13;&#10;3. Warranty: [WarrantyTerms]" VertAlign="Top" Font="Arial, 8pt"/>
+
+    </ReportSummaryBand>
+
+  </ReportPage>
+</Report>

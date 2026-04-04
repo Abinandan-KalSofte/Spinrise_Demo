@@ -1,0 +1,12 @@
+global using Microsoft.AspNetCore.Mvc;
+global using Spinrise.Application.DTOs.Auth;
+global using Spinrise.Application.DTOs.PurchaseRequisitions;
+global using Spinrise.Application.DTOs.Users;
+global using Spinrise.Application.Interfaces;
+global using Spinrise.Application.Services;
+global using Spinrise.API.Controllers;
+global using Spinrise.API.Middleware;
+global using Spinrise.API.Models;
+global using Spinrise.Infrastructure.Authentication;
+global using Spinrise.Infrastructure.Data;
+global using Spinrise.Infrastructure.Reports;

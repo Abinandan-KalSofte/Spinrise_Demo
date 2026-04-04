@@ -1,0 +1,26 @@
+namespace Spinrise.Application.DTOs.PurchaseRequisitions;
+
+public class PRHeaderResponseDto
+{
+    public int Id { get; set; }
+    public string DivCode { get; set; } = string.Empty;
+    public string PrNo { get; set; } = string.Empty;
+    public DateTime PrDate { get; set; }
+    public string DepCode { get; set; } = string.Empty;
+    public string? DepName { get; set; }
+    public string? Section { get; set; }
+    public string? SubCostCode { get; set; }
+    public string? IType { get; set; }
+    public string? ReqName { get; set; }
+    public string? RefNo { get; set; }
+    public string? SaleOrderNo { get; set; }
+    public DateTime? SaleOrderDate { get; set; }
+    public string PrStatus { get; set; } = string.Empty;
+    public string CreatedBy { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; }
+    public string? ModifiedBy { get; set; }
+    public DateTime? ModifiedAt { get; set; }
+    public bool HasPendingIndentWarning { get; set; }
+    public string? PendingIndentWarningMessage { get; set; }
+    public List<PRLineResponseDto> Lines { get; set; } = new();
+}

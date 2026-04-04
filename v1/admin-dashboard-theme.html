@@ -1,0 +1,2005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexusAdmin — Enterprise Dashboard Theme</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0A0F1E;
+  --navy-800: #111827;
+  --navy-700: #1C2537;
+  --navy-600: #243049;
+  --navy-500: #2D3C5E;
+  --navy-400: #3D5080;
+  --accent: #4F8EF7;
+  --accent-glow: rgba(79,142,247,0.15);
+  --accent-2: #7C5CFC;
+  --accent-3: #00D4AA;
+  --amber: #F5A623;
+  --rose: #F06292;
+  --text-primary: #F0F4FF;
+  --text-secondary: #8B9BBE;
+  --text-tertiary: #505C7A;
+  --border: rgba(255,255,255,0.07);
+  --border-accent: rgba(79,142,247,0.25);
+  --surface: rgba(255,255,255,0.04);
+  --surface-hover: rgba(255,255,255,0.07);
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --font-head: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --sidebar-w: 220px;
+  --topbar-h: 60px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 14px; }
+
+body {
+  background: var(--navy);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── LAYOUT ─── */
+#app { display: flex; min-height: 100vh; }
+
+/* ─── SIDEBAR ─── */
+.sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: var(--navy-800);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 100;
+  transition: transform 0.25s ease;
+}
+
+.sidebar-logo {
+  height: var(--topbar-h);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.logo-mark {
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: 14px;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.logo-name {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--text-primary);
+  letter-spacing: -0.3px;
+}
+
+.logo-tag {
+  font-size: 9px;
+  color: var(--accent);
+  background: var(--accent-glow);
+  border: 1px solid var(--border-accent);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-family: var(--font-mono);
+  margin-left: auto;
+}
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 0;
+  scrollbar-width: none;
+}
+
+.nav-section-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  padding: 12px 18px 6px;
+  text-transform: uppercase;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px;
+  cursor: pointer;
+  border-radius: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 400;
+  transition: all 0.15s ease;
+  position: relative;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.nav-item:hover { background: var(--surface); color: var(--text-primary); }
+
+.nav-item.active {
+  background: var(--accent-glow);
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 20%; bottom: 20%;
+  width: 3px;
+  background: var(--accent);
+  border-radius: 0 3px 3px 0;
+}
+
+.nav-icon {
+  width: 18px; height: 18px;
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+
+.nav-badge {
+  margin-left: auto;
+  background: var(--accent);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 5px;
+  font-family: var(--font-mono);
+}
+
+.nav-badge.warn { background: var(--warning); }
+.nav-badge.success { background: var(--success); }
+
+.sidebar-footer {
+  padding: 12px 18px;
+  border-top: 1px solid var(--border);
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.user-card:hover { background: var(--surface); }
+
+.avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.avatar-lg {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.user-info { flex: 1; min-width: 0; }
+.user-name { font-size: 13px; font-weight: 500; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.user-role { font-size: 11px; color: var(--text-tertiary); }
+
+/* ─── MAIN CONTENT ─── */
+.main-content {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ─── TOPBAR ─── */
+.topbar {
+  height: var(--topbar-h);
+  background: var(--navy-800);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  flex-shrink: 0;
+}
+
+.topbar-breadcrumb {
+  font-size: 13px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.topbar-breadcrumb span { color: var(--text-tertiary); }
+.topbar-breadcrumb strong { color: var(--text-primary); font-weight: 500; }
+
+.topbar-search {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0 12px;
+  height: 34px;
+  min-width: 220px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-family: var(--font-body);
+  transition: border-color 0.15s;
+}
+.topbar-search:focus-within { border-color: var(--border-accent); }
+.topbar-search input {
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: var(--font-body);
+  flex: 1;
+}
+.topbar-search input::placeholder { color: var(--text-tertiary); }
+
+.topbar-actions { display: flex; align-items: center; gap: 8px; }
+
+.icon-btn {
+  width: 34px; height: 34px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  position: relative;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.icon-btn:hover { background: var(--surface-hover); color: var(--text-primary); border-color: var(--border-accent); }
+
+.notif-dot {
+  position: absolute;
+  top: 6px; right: 6px;
+  width: 7px; height: 7px;
+  background: var(--accent);
+  border-radius: 50%;
+  border: 2px solid var(--navy-800);
+}
+
+/* ─── PAGE CONTENT ─── */
+.page-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.page-title {
+  font-family: var(--font-head);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.page-subtitle { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+
+/* ─── SHARED COMPONENTS ─── */
+.card {
+  background: var(--navy-700);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+
+.card-sm { padding: 16px; }
+
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 16px;
+  height: 34px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn-primary:hover { background: #6B9FF8; }
+.btn-ghost { background: var(--surface); color: var(--text-secondary); border-color: var(--border); }
+.btn-ghost:hover { background: var(--surface-hover); color: var(--text-primary); }
+.btn-danger { background: rgba(239,68,68,0.15); color: var(--danger); border-color: rgba(239,68,68,0.25); }
+.btn-success { background: rgba(16,185,129,0.15); color: var(--success); border-color: rgba(16,185,129,0.25); }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  font-family: var(--font-mono);
+}
+.badge-success { background: rgba(16,185,129,0.15); color: var(--success); }
+.badge-warning { background: rgba(245,158,11,0.15); color: var(--warning); }
+.badge-danger { background: rgba(239,68,68,0.15); color: var(--danger); }
+.badge-info { background: var(--accent-glow); color: var(--accent); }
+.badge-purple { background: rgba(124,92,252,0.15); color: var(--accent-2); }
+
+.divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+.input-field {
+  background: var(--navy-700);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0 12px;
+  height: 36px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+.input-field:focus { border-color: var(--border-accent); }
+.input-field::placeholder { color: var(--text-tertiary); }
+
+.label { font-size: 12px; font-weight: 500; color: var(--text-secondary); margin-bottom: 6px; display: block; }
+
+.form-group { margin-bottom: 16px; }
+
+/* ─── STAT CARD ─── */
+.stat-card {
+  background: var(--navy-700);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+.stat-card.accent::before { background: var(--accent); }
+.stat-card.purple::before { background: var(--accent-2); }
+.stat-card.teal::before { background: var(--accent-3); }
+.stat-card.amber::before { background: var(--amber); }
+
+.stat-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.stat-value { font-family: var(--font-mono); font-size: 26px; font-weight: 500; color: var(--text-primary); }
+.stat-change { font-size: 11px; margin-top: 8px; display: flex; align-items: center; gap: 4px; }
+.stat-change.up { color: var(--success); }
+.stat-change.down { color: var(--danger); }
+
+.stat-icon {
+  position: absolute;
+  right: 18px; top: 50%;
+  transform: translateY(-50%);
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+
+/* ─── CHART PLACEHOLDER ─── */
+.chart-placeholder {
+  height: 180px;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 12px 0 0;
+}
+
+.bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.bar {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  transition: opacity 0.2s;
+  cursor: pointer;
+}
+.bar:hover { opacity: 0.8; }
+.bar-label { font-size: 10px; color: var(--text-tertiary); font-family: var(--font-mono); }
+
+.sparkline {
+  height: 50px;
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  margin-top: 10px;
+}
+.spark-bar {
+  flex: 1;
+  border-radius: 3px 3px 0 0;
+  opacity: 0.6;
+}
+
+/* ─── TABLE ─── */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th {
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+tbody tr:hover { background: var(--surface); }
+tbody tr:last-child { border-bottom: none; }
+tbody td { padding: 11px 14px; color: var(--text-secondary); }
+tbody td:first-child { color: var(--text-primary); font-weight: 500; }
+
+/* ─── MINI PROGRESS ─── */
+.progress-bar { height: 4px; background: var(--surface); border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 2px; }
+
+/* ─── TABS ─── */
+.tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+.tab {
+  padding: 8px 16px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.15s;
+}
+.tab:hover { color: var(--text-primary); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+
+/* ─── TOGGLE ─── */
+.toggle {
+  width: 38px; height: 22px;
+  background: var(--navy-500);
+  border-radius: 11px;
+  position: relative;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.toggle::after {
+  content: '';
+  position: absolute;
+  width: 16px; height: 16px;
+  background: #fff;
+  border-radius: 50%;
+  top: 3px; left: 3px;
+  transition: transform 0.2s;
+}
+.toggle.on { background: var(--accent); }
+.toggle.on::after { transform: translateX(16px); }
+
+/* ─── =============================== ─── */
+/* ─── PAGE: DASHBOARD ─── */
+/* ─── =============================== ─── */
+
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.activity-item:last-child { border-bottom: none; }
+
+.activity-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.activity-text { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+.activity-time { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; font-family: var(--font-mono); }
+
+/* ─── =============================== ─── */
+/* ─── PAGE: AUTH ─── */
+/* ─── =============================== ─── */
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--navy);
+  padding: 24px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--navy-800);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 36px;
+}
+
+.auth-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.auth-title {
+  font-family: var(--font-head);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.auth-sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 24px; }
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+.auth-divider::before, .auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 38px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+  width: 100%;
+  font-family: var(--font-body);
+}
+.social-btn:hover { background: var(--surface-hover); color: var(--text-primary); }
+
+.auth-link { color: var(--accent); cursor: pointer; text-decoration: none; }
+.auth-link:hover { text-decoration: underline; }
+
+/* ─── =============================== ─── */
+/* ─── PAGE: PROFILE ─── */
+/* ─── =============================== ─── */
+
+.profile-cover {
+  height: 120px;
+  background: linear-gradient(135deg, var(--navy-500), var(--navy-600));
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  position: relative;
+  overflow: hidden;
+}
+.profile-cover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(45deg, rgba(79,142,247,0.05) 0, rgba(79,142,247,0.05) 1px, transparent 1px, transparent 10px);
+}
+
+.profile-header {
+  background: var(--navy-700);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.profile-body { padding: 0 20px 20px; }
+
+.profile-avatar-wrap {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: -32px;
+  margin-bottom: 16px;
+}
+
+.profile-avatar-lg {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  border: 3px solid var(--navy-700);
+}
+
+.profile-name {
+  font-family: var(--font-head);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.profile-meta { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 6px; }
+.profile-meta span { display: flex; align-items: center; gap: 4px; }
+
+.skill-bar {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 10px;
+}
+.skill-name { font-size: 12px; color: var(--text-secondary); width: 100px; flex-shrink: 0; }
+.skill-track { flex: 1; height: 6px; background: var(--surface); border-radius: 3px; overflow: hidden; }
+.skill-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+.skill-pct { font-size: 11px; color: var(--text-tertiary); font-family: var(--font-mono); width: 30px; text-align: right; }
+
+/* ─── =============================== ─── */
+/* ─── PAGE: NOTIFICATIONS ─── */
+/* ─── =============================== ─── */
+
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.notif-item:hover { background: var(--surface); }
+.notif-item.unread { background: rgba(79,142,247,0.04); }
+
+.notif-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.notif-content { flex: 1; min-width: 0; }
+.notif-title { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+.notif-body { font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
+.notif-time { font-size: 11px; color: var(--text-tertiary); margin-top: 6px; font-family: var(--font-mono); }
+
+.notif-unread-dot {
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+/* ─── =============================== ─── */
+/* ─── PAGE: SETTINGS ─── */
+/* ─── =============================== ─── */
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-info { flex: 1; padding-right: 16px; }
+.settings-title { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+.settings-desc { font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
+
+.color-swatch-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.color-swatch {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.15s;
+}
+.color-swatch.selected { border-color: #fff; transform: scale(1.1); }
+
+/* ─── =============================== ─── */
+/* ─── PAGE: HELP ─── */
+/* ─── =============================== ─── */
+
+.faq-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.faq-question {
+  padding: 14px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  transition: background 0.15s;
+}
+.faq-question:hover { background: var(--surface); }
+
+.faq-answer {
+  display: none;
+  padding: 0 16px 14px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+.faq-item.open .faq-answer { display: block; }
+
+.contact-card {
+  background: var(--navy-700);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.contact-card:hover { border-color: var(--border-accent); background: var(--surface-hover); }
+.contact-card-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  margin: 0 auto 12px;
+}
+
+/* ─── =============================== ─── */
+/* ─── PAGE: ERROR ─── */
+/* ─── =============================== ─── */
+
+.error-page-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  text-align: center;
+  flex-direction: column;
+  gap: 0;
+}
+
+.error-code {
+  font-family: var(--font-head);
+  font-size: 120px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -4px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.error-title { font-family: var(--font-head); font-size: 24px; font-weight: 700; margin-top: 8px; }
+.error-desc { font-size: 14px; color: var(--text-secondary); margin-top: 8px; margin-bottom: 24px; max-width: 380px; line-height: 1.7; }
+
+/* ─── =============================== ─── */
+/* ─── PAGE: CRUD ─── */
+/* ─── =============================== ─── */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.search-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--navy-700);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0 12px;
+  height: 34px;
+}
+.search-input-wrap input {
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 13px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  min-width: 180px;
+}
+.search-input-wrap input::placeholder { color: var(--text-tertiary); }
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 16px;
+  justify-content: flex-end;
+}
+.page-btn {
+  width: 30px; height: 30px;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transition: all 0.15s;
+  font-family: var(--font-mono);
+}
+.page-btn:hover, .page-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* ─── =============================== ─── */
+/* ─── PAGE: THEME CUSTOMIZER ─── */
+/* ─── =============================== ─── */
+
+.theme-preview {
+  background: var(--navy);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  font-size: 12px;
+}
+
+.font-preview {
+  padding: 14px 16px;
+  background: var(--navy-700);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.font-preview:hover, .font-preview.selected { border-color: var(--border-accent); background: var(--accent-glow); }
+
+.radius-btn {
+  padding: 6px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--font-body);
+}
+.radius-btn:hover, .radius-btn.selected { background: var(--accent-glow); border-color: var(--border-accent); color: var(--accent); }
+
+/* ─── MISC ─── */
+.text-mono { font-family: var(--font-mono); }
+.text-accent { color: var(--accent); }
+.text-dim { color: var(--text-tertiary); }
+.text-sm { font-size: 12px; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.mt-20 { margin-top: 20px; }
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.justify-between { justify-content: space-between; }
+.gap-8 { gap: 8px; }
+.gap-12 { gap: 12px; }
+.gap-16 { gap: 16px; }
+.flex-1 { flex: 1; }
+.fw-500 { font-weight: 500; }
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--navy-400); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ═══════════════════════════════ -->
+  <!-- SIDEBAR                         -->
+  <!-- ═══════════════════════════════ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">N</div>
+      <span class="logo-name">NexusAdmin</span>
+      <span class="logo-tag">v2.0</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <button class="nav-item active" onclick="showPage('dashboard',this)">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard
+      </button>
+
+      <div class="nav-section-label">Pages</div>
+      <button class="nav-item" onclick="showPage('auth',this)">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+        Auth Pages
+      </button>
+      <button class="nav-item" onclick="showPage('profile',this)">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        User Profile
+      </button>
+      <button class="nav-item" onclick="showPage('crud',this)">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"/></svg>
+        CRUD Sample
+      </button>
+      <button class="nav-item" onclick="showPage('blank',this)">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+        Blank Page
+      </button>
+
+      <div class="nav-section-label">System</div>
+      <button class="nav-item" onclick="showPage('notifications',this)">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        Notifications
+        <span class="nav-badge">5</span>
+      </button>
+      <button class="nav-item" onclick="showPage('settings',this)">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </button>
+      <button class="nav-item" onclick="showPage('theme',this)">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        Theme
+        <span class="nav-badge success">NEW</span>
+      </button>
+      <button class="nav-item" onclick="showPage('help',this)">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.5" fill="currentColor"/></svg>
+        Help & Support
+      </button>
+      <button class="nav-item" onclick="showPage('error404',this)">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="0.5" fill="currentColor"/></svg>
+        Error Pages
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="avatar">AK</div>
+        <div class="user-info">
+          <div class="user-name">Arjun Kumar</div>
+          <div class="user-role">Administrator</div>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-tertiary); flex-shrink:0;"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════════════ -->
+  <!-- MAIN                            -->
+  <!-- ═══════════════════════════════ -->
+  <div class="main-content">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-breadcrumb">
+        <span>NexusAdmin</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        <strong id="breadcrumb-current">Dashboard</strong>
+      </div>
+
+      <div class="topbar-search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input placeholder="Search anything...">
+      </div>
+
+      <div class="topbar-actions">
+        <div class="icon-btn" title="Notifications" onclick="showPage('notifications', document.querySelector('[onclick*=notifications]'))">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="notif-dot"></span>
+        </div>
+        <div class="icon-btn" title="Help" onclick="showPage('help', document.querySelector('[onclick*=help]'))">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.5" fill="currentColor"/></svg>
+        </div>
+        <div style="width:1px;height:20px;background:var(--border);"></div>
+        <div class="user-card" style="padding:4px 8px;cursor:pointer;" onclick="showPage('profile', document.querySelector('[onclick*=profile]'))">
+          <div class="avatar">AK</div>
+          <div class="user-info" style="display:block;">
+            <div class="user-name" style="font-size:12px;">Arjun Kumar</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ─────────────────────────────── -->
+    <!-- PAGE: DASHBOARD                  -->
+    <!-- ─────────────────────────────── -->
+    <div class="page-content">
+
+    <div id="page-dashboard" class="page active">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Good morning, Arjun ☀️</div>
+          <div class="page-subtitle">Here's what's happening with your platform today.</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Mar 2026
+          </button>
+          <button class="btn btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            New Report
+          </button>
+        </div>
+      </div>
+
+      <!-- STAT CARDS -->
+      <div class="grid-4" style="margin-bottom:16px;">
+        <div class="stat-card accent">
+          <div class="stat-label">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Total Revenue
+          </div>
+          <div class="stat-value">₹84.2L</div>
+          <div class="stat-change up">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+            +12.4% vs last month
+          </div>
+          <div class="stat-icon" style="background:rgba(79,142,247,0.12);">💰</div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-label">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Active Users
+          </div>
+          <div class="stat-value">12,874</div>
+          <div class="stat-change up">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+            +8.2% vs last month
+          </div>
+          <div class="stat-icon" style="background:rgba(124,92,252,0.12);">👥</div>
+        </div>
+        <div class="stat-card teal">
+          <div class="stat-label">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Transactions
+          </div>
+          <div class="stat-value">3,291</div>
+          <div class="stat-change down">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 9 12 15 6 9"/></svg>
+            -2.1% vs last month
+          </div>
+          <div class="stat-icon" style="background:rgba(0,212,170,0.12);">⚡</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-label">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Completion Rate
+          </div>
+          <div class="stat-value">94.7%</div>
+          <div class="stat-change up">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+            +1.8% vs last month
+          </div>
+          <div class="stat-icon" style="background:rgba(245,166,35,0.12);">🎯</div>
+        </div>
+      </div>
+
+      <!-- CHARTS ROW -->
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px;">
+        <div class="card">
+          <div class="flex justify-between items-center" style="margin-bottom:16px;">
+            <div>
+              <div class="fw-500" style="font-size:14px;">Revenue Overview</div>
+              <div class="text-sm" style="color:var(--text-secondary);margin-top:2px;">Monthly performance — 2026</div>
+            </div>
+            <div style="display:flex;gap:6px;">
+              <span class="badge badge-info">Revenue</span>
+              <span class="badge badge-purple">Expenses</span>
+            </div>
+          </div>
+          <div class="chart-placeholder">
+            <div class="bar-wrap"><div class="bar" style="height:55%;background:linear-gradient(180deg,var(--accent),rgba(79,142,247,0.4))"></div><span class="bar-label">Jan</span></div>
+            <div class="bar-wrap"><div class="bar" style="height:70%;background:linear-gradient(180deg,var(--accent),rgba(79,142,247,0.4))"></div><span class="bar-label">Feb</span></div>
+            <div class="bar-wrap"><div class="bar" style="height:60%;background:linear-gradient(180deg,var(--accent),rgba(79,142,247,0.4))"></div><span class="bar-label">Mar</span></div>
+            <div class="bar-wrap"><div class="bar" style="height:85%;background:linear-gradient(180deg,var(--accent),rgba(79,142,247,0.4))"></div><span class="bar-label">Apr</span></div>
+            <div class="bar-wrap"><div class="bar" style="height:75%;background:linear-gradient(180deg,var(--accent),rgba(79,142,247,0.4))"></div><span class="bar-label">May</span></div>
+            <div class="bar-wrap"><div class="bar" style="height:90%;background:linear-gradient(180deg,var(--accent),rgba(79,142,247,0.4))"></div><span class="bar-label">Jun</span></div>
+            <div class="bar-wrap"><div class="bar" style="height:40%;background:rgba(124,92,252,0.5)"></div><span class="bar-label">Jan</span></div>
+            <div class="bar-wrap"><div class="bar" style="height:50%;background:rgba(124,92,252,0.5)"></div><span class="bar-label">Feb</span></div>
+            <div class="bar-wrap"><div class="bar" style="height:45%;background:rgba(124,92,252,0.5)"></div><span class="bar-label">Mar</span></div>
+            <div class="bar-wrap"><div class="bar" style="height:60%;background:rgba(124,92,252,0.5)"></div><span class="bar-label">Apr</span></div>
+            <div class="bar-wrap"><div class="bar" style="height:55%;background:rgba(124,92,252,0.5)"></div><span class="bar-label">May</span></div>
+            <div class="bar-wrap"><div class="bar" style="height:48%;background:rgba(124,92,252,0.5)"></div><span class="bar-label">Jun</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="fw-500" style="font-size:14px;margin-bottom:4px;">Traffic Sources</div>
+          <div class="text-sm" style="color:var(--text-secondary);margin-bottom:16px;">Acquisition breakdown</div>
+          <div style="margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span style="color:var(--text-secondary)">Organic Search</span><span class="text-mono" style="color:var(--accent)">42%</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:42%;background:var(--accent);"></div></div>
+          </div>
+          <div style="margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span style="color:var(--text-secondary)">Direct</span><span class="text-mono" style="color:var(--accent-2)">28%</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:28%;background:var(--accent-2);"></div></div>
+          </div>
+          <div style="margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span style="color:var(--text-secondary)">Social Media</span><span class="text-mono" style="color:var(--accent-3)">18%</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:18%;background:var(--accent-3);"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span style="color:var(--text-secondary)">Referral</span><span class="text-mono" style="color:var(--amber)">12%</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:12%;background:var(--amber);"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABLE + ACTIVITY -->
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;">
+        <div class="card">
+          <div class="flex justify-between items-center" style="margin-bottom:16px;">
+            <div class="fw-500" style="font-size:14px;">Recent Transactions</div>
+            <button class="btn btn-ghost" style="height:28px;font-size:12px;">View all</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>User</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+              <tbody>
+                <tr><td>Priya Sharma</td><td class="text-mono">₹12,400</td><td><span class="badge badge-success">Paid</span></td><td class="text-dim">Mar 30</td></tr>
+                <tr><td>Rahul Gupta</td><td class="text-mono">₹8,750</td><td><span class="badge badge-warning">Pending</span></td><td class="text-dim">Mar 29</td></tr>
+                <tr><td>Anjali Nair</td><td class="text-mono">₹22,100</td><td><span class="badge badge-success">Paid</span></td><td class="text-dim">Mar 28</td></tr>
+                <tr><td>Kiran Bose</td><td class="text-mono">₹5,600</td><td><span class="badge badge-danger">Failed</span></td><td class="text-dim">Mar 27</td></tr>
+                <tr><td>Meena Pillai</td><td class="text-mono">₹18,900</td><td><span class="badge badge-success">Paid</span></td><td class="text-dim">Mar 26</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="fw-500" style="font-size:14px;margin-bottom:4px;">Recent Activity</div>
+          <div class="text-sm" style="color:var(--text-secondary);margin-bottom:14px;">Live updates</div>
+          <div class="activity-item"><div class="activity-dot" style="background:var(--accent)"></div><div><div class="activity-text">New user <strong style="color:var(--text-primary)">Priya Sharma</strong> registered</div><div class="activity-time">2 min ago</div></div></div>
+          <div class="activity-item"><div class="activity-dot" style="background:var(--success)"></div><div><div class="activity-text">Payment <strong style="color:var(--text-primary)">₹22,100</strong> received from Anjali</div><div class="activity-time">14 min ago</div></div></div>
+          <div class="activity-item"><div class="activity-dot" style="background:var(--warning)"></div><div><div class="activity-text">Server load reached <strong style="color:var(--text-primary)">82%</strong> — monitored</div><div class="activity-time">31 min ago</div></div></div>
+          <div class="activity-item"><div class="activity-dot" style="background:var(--danger)"></div><div><div class="activity-text">Failed login attempt from <strong style="color:var(--text-primary)">103.x.x.12</strong></div><div class="activity-time">1 hr ago</div></div></div>
+          <div class="activity-item"><div class="activity-dot" style="background:var(--accent-2)"></div><div><div class="activity-text">Report <strong style="color:var(--text-primary)">Q1-2026</strong> exported to PDF</div><div class="activity-time">2 hr ago</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────── -->
+    <!-- PAGE: AUTH                       -->
+    <!-- ─────────────────────────────── -->
+    <div id="page-auth" class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Auth Pages</div>
+          <div class="page-subtitle">Login · Register · Forgot Password</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost" onclick="showAuthTab('login',this)">Login</button>
+          <button class="btn btn-ghost" onclick="showAuthTab('register',this)">Register</button>
+          <button class="btn btn-ghost" onclick="showAuthTab('forgot',this)">Forgot Password</button>
+        </div>
+      </div>
+
+      <div id="auth-login">
+        <div class="auth-page" style="min-height:unset;background:none;padding:0;">
+          <div class="auth-card" style="max-width:400px;margin:0 auto;">
+            <div class="auth-logo">
+              <div class="logo-mark">N</div>
+              <span class="logo-name">NexusAdmin</span>
+            </div>
+            <div class="auth-title">Welcome back</div>
+            <div class="auth-sub">Sign in to your account to continue</div>
+            <div class="form-group">
+              <label class="label">Email address</label>
+              <input class="input-field" type="email" placeholder="arjun@company.com">
+            </div>
+            <div class="form-group">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <label class="label" style="margin-bottom:0;">Password</label>
+                <a class="auth-link" style="font-size:12px;">Forgot password?</a>
+              </div>
+              <input class="input-field" type="password" placeholder="••••••••••">
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:18px;">
+              <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+              <span style="font-size:12px;color:var(--text-secondary);">Remember this device</span>
+            </div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;height:40px;font-size:14px;">Sign In</button>
+            <div class="auth-divider">or continue with</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <button class="social-btn">🔵 Google</button>
+              <button class="social-btn">🔷 Microsoft</button>
+            </div>
+            <p style="text-align:center;font-size:13px;color:var(--text-secondary);margin-top:20px;">Don't have an account? <a class="auth-link">Create one</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div id="auth-register" style="display:none;">
+        <div class="auth-page" style="min-height:unset;background:none;padding:0;">
+          <div class="auth-card" style="max-width:400px;margin:0 auto;">
+            <div class="auth-logo"><div class="logo-mark">N</div><span class="logo-name">NexusAdmin</span></div>
+            <div class="auth-title">Create account</div>
+            <div class="auth-sub">Get started with your admin workspace</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div class="form-group"><label class="label">First name</label><input class="input-field" placeholder="Arjun"></div>
+              <div class="form-group"><label class="label">Last name</label><input class="input-field" placeholder="Kumar"></div>
+            </div>
+            <div class="form-group"><label class="label">Work email</label><input class="input-field" type="email" placeholder="arjun@company.com"></div>
+            <div class="form-group"><label class="label">Password</label><input class="input-field" type="password" placeholder="Min. 10 characters"></div>
+            <div class="form-group"><label class="label">Role</label>
+              <select class="input-field"><option>Administrator</option><option>Manager</option><option>Viewer</option></select>
+            </div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;height:40px;font-size:14px;">Create Account</button>
+            <p style="text-align:center;font-size:12px;color:var(--text-tertiary);margin-top:14px;">By registering you agree to our <a class="auth-link">Terms</a> and <a class="auth-link">Privacy Policy</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div id="auth-forgot" style="display:none;">
+        <div class="auth-page" style="min-height:unset;background:none;padding:0;">
+          <div class="auth-card" style="max-width:400px;margin:0 auto;">
+            <div class="auth-logo"><div class="logo-mark">N</div><span class="logo-name">NexusAdmin</span></div>
+            <div style="width:52px;height:52px;border-radius:14px;background:var(--accent-glow);border:1px solid var(--border-accent);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px;">🔑</div>
+            <div class="auth-title">Reset password</div>
+            <div class="auth-sub">Enter your email and we'll send you a reset link</div>
+            <div class="form-group"><label class="label">Email address</label><input class="input-field" type="email" placeholder="arjun@company.com"></div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;height:40px;font-size:14px;">Send Reset Link</button>
+            <p style="text-align:center;font-size:13px;color:var(--text-secondary);margin-top:20px;"><a class="auth-link">← Back to login</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────── -->
+    <!-- PAGE: PROFILE                   -->
+    <!-- ─────────────────────────────── -->
+    <div id="page-profile" class="page">
+      <div class="page-header">
+        <div><div class="page-title">User Profile</div><div class="page-subtitle">Manage your account and preferences</div></div>
+        <button class="btn btn-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit Profile
+        </button>
+      </div>
+      <div class="profile-header">
+        <div class="profile-cover"></div>
+        <div class="profile-body">
+          <div class="profile-avatar-wrap">
+            <div class="profile-avatar-lg">AK</div>
+            <div style="display:flex;gap:8px;">
+              <span class="badge badge-success">● Active</span>
+              <span class="badge badge-purple">Administrator</span>
+            </div>
+          </div>
+          <div class="profile-name">Arjun Kumar</div>
+          <div class="profile-meta">
+            <span>🏢 TechCorp Pvt. Ltd.</span>
+            <span>📍 Coimbatore, Tamil Nadu</span>
+            <span>📧 arjun@techcorp.in</span>
+            <span>📅 Joined Jan 2023</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-3" style="margin-bottom:16px;">
+        <div class="stat-card accent"><div class="stat-label">Projects Managed</div><div class="stat-value">24</div></div>
+        <div class="stat-card purple"><div class="stat-label">Tasks Completed</div><div class="stat-value">387</div></div>
+        <div class="stat-card teal"><div class="stat-label">Team Members</div><div class="stat-value">12</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="fw-500" style="font-size:14px;margin-bottom:16px;">Skills & Expertise</div>
+          <div class="skill-bar"><span class="skill-name">React / TS</span><div class="skill-track"><div class="skill-fill" style="width:90%"></div></div><span class="skill-pct">90%</span></div>
+          <div class="skill-bar"><span class="skill-name">ASP.NET Core</span><div class="skill-track"><div class="skill-fill" style="width:85%"></div></div><span class="skill-pct">85%</span></div>
+          <div class="skill-bar"><span class="skill-name">MS SQL Server</span><div class="skill-track"><div class="skill-fill" style="width:80%"></div></div><span class="skill-pct">80%</span></div>
+          <div class="skill-bar"><span class="skill-name">System Design</span><div class="skill-track"><div class="skill-fill" style="width:75%"></div></div><span class="skill-pct">75%</span></div>
+          <div class="skill-bar"><span class="skill-name">Azure DevOps</span><div class="skill-track"><div class="skill-fill" style="width:70%"></div></div><span class="skill-pct">70%</span></div>
+        </div>
+        <div class="card">
+          <div class="fw-500" style="font-size:14px;margin-bottom:16px;">Account Information</div>
+          <div class="form-group"><label class="label">Full Name</label><input class="input-field" value="Arjun Kumar"></div>
+          <div class="form-group"><label class="label">Email</label><input class="input-field" value="arjun@techcorp.in" type="email"></div>
+          <div class="form-group"><label class="label">Phone</label><input class="input-field" value="+91 98765 43210"></div>
+          <div class="form-group"><label class="label">Department</label>
+            <select class="input-field"><option>Engineering</option><option>Product</option><option>Operations</option></select>
+          </div>
+          <button class="btn btn-primary" style="margin-top:4px;">Save Changes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────── -->
+    <!-- PAGE: CRUD                       -->
+    <!-- ─────────────────────────────── -->
+    <div id="page-crud" class="page">
+      <div class="page-header">
+        <div><div class="page-title">User Management</div><div class="page-subtitle">Sample CRUD — Create, Read, Update, Delete</div></div>
+        <button class="btn btn-primary" onclick="openModal()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add User
+        </button>
+      </div>
+      <div class="card">
+        <div class="toolbar">
+          <div class="search-input-wrap">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-tertiary)"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input placeholder="Search users...">
+          </div>
+          <select class="input-field" style="width:140px;height:34px;">
+            <option>All Roles</option>
+            <option>Admin</option>
+            <option>Manager</option>
+            <option>Viewer</option>
+          </select>
+          <select class="input-field" style="width:140px;height:34px;">
+            <option>All Status</option>
+            <option>Active</option>
+            <option>Inactive</option>
+          </select>
+          <div style="margin-left:auto;display:flex;gap:6px;">
+            <button class="btn btn-ghost" style="height:34px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              Export
+            </button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th><input type="checkbox" style="accent-color:var(--accent);width:13px;height:13px;"></th>
+              <th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Last Active</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="crud-table-body">
+              <tr><td><input type="checkbox" style="accent-color:var(--accent);width:13px;height:13px;"></td><td>Priya Sharma</td><td class="text-dim">priya@techcorp.in</td><td><span class="badge badge-purple">Admin</span></td><td><span class="badge badge-success">Active</span></td><td class="text-dim text-mono" style="font-size:12px;">2 hr ago</td><td><div style="display:flex;gap:6px;"><button class="btn btn-ghost" style="height:26px;font-size:11px;padding:0 8px;">Edit</button><button class="btn btn-danger" style="height:26px;font-size:11px;padding:0 8px;">Delete</button></div></td></tr>
+              <tr><td><input type="checkbox" style="accent-color:var(--accent);width:13px;height:13px;"></td><td>Rahul Gupta</td><td class="text-dim">rahul@techcorp.in</td><td><span class="badge badge-info">Manager</span></td><td><span class="badge badge-success">Active</span></td><td class="text-dim text-mono" style="font-size:12px;">1 day ago</td><td><div style="display:flex;gap:6px;"><button class="btn btn-ghost" style="height:26px;font-size:11px;padding:0 8px;">Edit</button><button class="btn btn-danger" style="height:26px;font-size:11px;padding:0 8px;">Delete</button></div></td></tr>
+              <tr><td><input type="checkbox" style="accent-color:var(--accent);width:13px;height:13px;"></td><td>Anjali Nair</td><td class="text-dim">anjali@techcorp.in</td><td><span class="badge badge-info">Manager</span></td><td><span class="badge badge-warning">Pending</span></td><td class="text-dim text-mono" style="font-size:12px;">3 days ago</td><td><div style="display:flex;gap:6px;"><button class="btn btn-ghost" style="height:26px;font-size:11px;padding:0 8px;">Edit</button><button class="btn btn-danger" style="height:26px;font-size:11px;padding:0 8px;">Delete</button></div></td></tr>
+              <tr><td><input type="checkbox" style="accent-color:var(--accent);width:13px;height:13px;"></td><td>Kiran Bose</td><td class="text-dim">kiran@techcorp.in</td><td><span class="badge badge-success">Viewer</span></td><td><span class="badge badge-danger">Inactive</span></td><td class="text-dim text-mono" style="font-size:12px;">2 weeks ago</td><td><div style="display:flex;gap:6px;"><button class="btn btn-ghost" style="height:26px;font-size:11px;padding:0 8px;">Edit</button><button class="btn btn-danger" style="height:26px;font-size:11px;padding:0 8px;">Delete</button></div></td></tr>
+              <tr><td><input type="checkbox" style="accent-color:var(--accent);width:13px;height:13px;"></td><td>Meena Pillai</td><td class="text-dim">meena@techcorp.in</td><td><span class="badge badge-success">Viewer</span></td><td><span class="badge badge-success">Active</span></td><td class="text-dim text-mono" style="font-size:12px;">5 hr ago</td><td><div style="display:flex;gap:6px;"><button class="btn btn-ghost" style="height:26px;font-size:11px;padding:0 8px;">Edit</button><button class="btn btn-danger" style="height:26px;font-size:11px;padding:0 8px;">Delete</button></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="flex justify-between items-center mt-16">
+          <span style="font-size:12px;color:var(--text-tertiary);">Showing 1–5 of 248 users</span>
+          <div class="pagination">
+            <div class="page-btn">‹</div>
+            <div class="page-btn active">1</div>
+            <div class="page-btn">2</div>
+            <div class="page-btn">3</div>
+            <div class="page-btn">…</div>
+            <div class="page-btn">24</div>
+            <div class="page-btn">›</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal -->
+      <div id="crud-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:999;display:none;align-items:center;justify-content:center;">
+        <div class="card" style="width:440px;max-width:90vw;">
+          <div class="flex justify-between items-center" style="margin-bottom:20px;">
+            <div class="fw-500" style="font-size:16px;">Add New User</div>
+            <button onclick="closeModal()" style="background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:18px;line-height:1;">✕</button>
+          </div>
+          <div class="form-group"><label class="label">Full Name</label><input class="input-field" placeholder="Enter full name"></div>
+          <div class="form-group"><label class="label">Email</label><input class="input-field" type="email" placeholder="user@company.com"></div>
+          <div class="form-group"><label class="label">Role</label>
+            <select class="input-field"><option>Administrator</option><option>Manager</option><option>Viewer</option></select>
+          </div>
+          <div class="form-group"><label class="label">Department</label><input class="input-field" placeholder="Engineering"></div>
+          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;">
+            <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="closeModal()">Create User</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────── -->
+    <!-- PAGE: BLANK                     -->
+    <!-- ─────────────────────────────── -->
+    <div id="page-blank" class="page">
+      <div class="page-header">
+        <div><div class="page-title">Blank Page</div><div class="page-subtitle">Developer scaffold — ready for your content</div></div>
+      </div>
+      <div class="card" style="min-height:400px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;border-style:dashed;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="color:var(--text-tertiary)"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="12" y1="9" x2="12" y2="15"/></svg>
+        <div style="font-size:15px;font-weight:500;color:var(--text-secondary);">Your content goes here</div>
+        <div style="font-size:13px;color:var(--text-tertiary);text-align:center;max-width:340px;line-height:1.7;">This is a blank page template. Import your React components and start building. The layout, sidebar, and topbar are already wired up.</div>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <span class="badge badge-info">Layout ✓</span>
+          <span class="badge badge-success">Routing ✓</span>
+          <span class="badge badge-purple">Auth guard ✓</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────── -->
+    <!-- PAGE: NOTIFICATIONS             -->
+    <!-- ─────────────────────────────── -->
+    <div id="page-notifications" class="page">
+      <div class="page-header">
+        <div><div class="page-title">Notifications</div><div class="page-subtitle">5 unread notifications</div></div>
+        <button class="btn btn-ghost">Mark all as read</button>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active">All (12)</div>
+        <div class="tab">Unread (5)</div>
+        <div class="tab">Mentions (2)</div>
+        <div class="tab">System (3)</div>
+      </div>
+
+      <div class="card" style="padding:0;">
+        <div class="notif-item unread">
+          <div class="notif-icon" style="background:rgba(79,142,247,0.1);">💬</div>
+          <div class="notif-content">
+            <div class="notif-title">New comment on your report</div>
+            <div class="notif-body">Priya Sharma commented: "Q1 numbers look solid, great work on the breakdown!"</div>
+            <div class="notif-time">2 minutes ago</div>
+          </div>
+          <div class="notif-unread-dot"></div>
+        </div>
+        <div class="notif-item unread">
+          <div class="notif-icon" style="background:rgba(16,185,129,0.1);">✅</div>
+          <div class="notif-content">
+            <div class="notif-title">Task completed by Rahul Gupta</div>
+            <div class="notif-body">Database migration script for v2.1 has been marked as complete.</div>
+            <div class="notif-time">14 minutes ago</div>
+          </div>
+          <div class="notif-unread-dot"></div>
+        </div>
+        <div class="notif-item unread">
+          <div class="notif-icon" style="background:rgba(245,158,11,0.1);">⚠️</div>
+          <div class="notif-content">
+            <div class="notif-title">System alert: High CPU usage</div>
+            <div class="notif-body">Production server CPU reached 85% at 14:32 IST. Auto-scaled to 3 instances.</div>
+            <div class="notif-time">31 minutes ago</div>
+          </div>
+          <div class="notif-unread-dot"></div>
+        </div>
+        <div class="notif-item unread">
+          <div class="notif-icon" style="background:rgba(239,68,68,0.1);">🚨</div>
+          <div class="notif-content">
+            <div class="notif-title">Security: Multiple failed login attempts</div>
+            <div class="notif-body">IP 103.x.x.12 made 7 failed login attempts. Account temporarily locked.</div>
+            <div class="notif-time">1 hour ago</div>
+          </div>
+          <div class="notif-unread-dot"></div>
+        </div>
+        <div class="notif-item unread">
+          <div class="notif-icon" style="background:rgba(124,92,252,0.1);">📊</div>
+          <div class="notif-content">
+            <div class="notif-title">Monthly report ready</div>
+            <div class="notif-body">Your March 2026 analytics report has been generated and is ready for download.</div>
+            <div class="notif-time">2 hours ago</div>
+          </div>
+          <div class="notif-unread-dot"></div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-icon" style="background:var(--surface);">👤</div>
+          <div class="notif-content">
+            <div class="notif-title">New user registered</div>
+            <div class="notif-body">Meena Pillai joined as a Viewer. Account pending email verification.</div>
+            <div class="notif-time">Yesterday, 4:12 PM</div>
+          </div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-icon" style="background:var(--surface);">🚀</div>
+          <div class="notif-content">
+            <div class="notif-title">Deployment successful</div>
+            <div class="notif-body">Version 2.4.1 deployed to production. All health checks passed.</div>
+            <div class="notif-time">Yesterday, 2:00 PM</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────── -->
+    <!-- PAGE: SETTINGS                  -->
+    <!-- ─────────────────────────────── -->
+    <div id="page-settings" class="page">
+      <div class="page-header">
+        <div><div class="page-title">Settings</div><div class="page-subtitle">System configuration and user preferences</div></div>
+      </div>
+
+      <div class="tabs" id="settings-tabs">
+        <div class="tab active" onclick="switchSettingsTab('general',this)">General</div>
+        <div class="tab" onclick="switchSettingsTab('security',this)">Security</div>
+        <div class="tab" onclick="switchSettingsTab('notifications',this)">Notifications</div>
+        <div class="tab" onclick="switchSettingsTab('api',this)">API & Integrations</div>
+      </div>
+
+      <div id="settings-general">
+        <div class="grid-2">
+          <div class="card">
+            <div class="fw-500" style="font-size:14px;margin-bottom:16px;">Application Settings</div>
+            <div class="settings-row">
+              <div class="settings-info"><div class="settings-title">Dark Mode</div><div class="settings-desc">Use dark theme across the dashboard</div></div>
+              <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+            </div>
+            <div class="settings-row">
+              <div class="settings-info"><div class="settings-title">Compact Sidebar</div><div class="settings-desc">Show icons only in sidebar navigation</div></div>
+              <button class="toggle" onclick="this.classList.toggle('on')"></button>
+            </div>
+            <div class="settings-row">
+              <div class="settings-info"><div class="settings-title">Auto-save Forms</div><div class="settings-desc">Automatically save draft form data</div></div>
+              <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+            </div>
+            <div class="settings-row">
+              <div class="settings-info"><div class="settings-title">Analytics Tracking</div><div class="settings-desc">Allow anonymised usage analytics</div></div>
+              <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="fw-500" style="font-size:14px;margin-bottom:16px;">Locale & Format</div>
+            <div class="form-group"><label class="label">Language</label>
+              <select class="input-field"><option>English (US)</option><option>English (UK)</option><option>Hindi</option><option>Tamil</option></select>
+            </div>
+            <div class="form-group"><label class="label">Timezone</label>
+              <select class="input-field"><option>Asia/Kolkata (IST +5:30)</option><option>UTC</option><option>America/New_York</option></select>
+            </div>
+            <div class="form-group"><label class="label">Date Format</label>
+              <select class="input-field"><option>DD/MM/YYYY</option><option>MM/DD/YYYY</option><option>YYYY-MM-DD</option></select>
+            </div>
+            <div class="form-group"><label class="label">Currency</label>
+              <select class="input-field"><option>INR (₹)</option><option>USD ($)</option><option>EUR (€)</option></select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="settings-security" style="display:none;">
+        <div class="card">
+          <div class="fw-500" style="font-size:14px;margin-bottom:16px;">Security Settings</div>
+          <div class="settings-row">
+            <div class="settings-info"><div class="settings-title">Two-Factor Authentication</div><div class="settings-desc">Require 2FA for all admin accounts</div></div>
+            <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="settings-row">
+            <div class="settings-info"><div class="settings-title">Session Timeout</div><div class="settings-desc">Auto-logout after 30 minutes of inactivity</div></div>
+            <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="settings-row">
+            <div class="settings-info"><div class="settings-title">IP Allowlist</div><div class="settings-desc">Restrict access to specific IP ranges</div></div>
+            <button class="toggle" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="mt-16">
+            <label class="label">Change Password</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+              <input class="input-field" type="password" placeholder="Current password">
+              <input class="input-field" type="password" placeholder="New password">
+              <input class="input-field" type="password" placeholder="Confirm new">
+            </div>
+            <button class="btn btn-primary" style="margin-top:12px;">Update Password</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="settings-notifications" style="display:none;">
+        <div class="card">
+          <div class="fw-500" style="font-size:14px;margin-bottom:16px;">Notification Preferences</div>
+          <div class="settings-row"><div class="settings-info"><div class="settings-title">Email Notifications</div><div class="settings-desc">Receive alerts via email</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+          <div class="settings-row"><div class="settings-info"><div class="settings-title">Push Notifications</div><div class="settings-desc">Browser push notifications</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+          <div class="settings-row"><div class="settings-info"><div class="settings-title">Security Alerts</div><div class="settings-desc">Login attempts and suspicious activity</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+          <div class="settings-row"><div class="settings-info"><div class="settings-title">Weekly Digest</div><div class="settings-desc">Summary report every Monday</div></div><button class="toggle" onclick="this.classList.toggle('on')"></button></div>
+          <div class="settings-row"><div class="settings-info"><div class="settings-title">Marketing Updates</div><div class="settings-desc">Product news and feature announcements</div></div><button class="toggle" onclick="this.classList.toggle('on')"></button></div>
+        </div>
+      </div>
+
+      <div id="settings-api" style="display:none;">
+        <div class="card">
+          <div class="flex justify-between items-center" style="margin-bottom:16px;">
+            <div class="fw-500" style="font-size:14px;">API Keys</div>
+            <button class="btn btn-primary" style="height:30px;font-size:12px;">Generate New Key</button>
+          </div>
+          <table style="width:100%;font-size:13px;border-collapse:collapse;">
+            <thead><tr><th style="text-align:left;padding:8px 12px;font-size:11px;color:var(--text-tertiary);border-bottom:1px solid var(--border);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;">Name</th><th style="text-align:left;padding:8px 12px;font-size:11px;color:var(--text-tertiary);border-bottom:1px solid var(--border);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;">Key</th><th style="text-align:left;padding:8px 12px;font-size:11px;color:var(--text-tertiary);border-bottom:1px solid var(--border);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;">Created</th><th style="text-align:left;padding:8px 12px;font-size:11px;color:var(--text-tertiary);border-bottom:1px solid var(--border);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;">Actions</th></tr></thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--border)"><td style="padding:10px 12px;font-weight:500;">Production API</td><td style="padding:10px 12px;font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);">nxa_prod_••••••••••••3f2d</td><td style="padding:10px 12px;color:var(--text-secondary);">Jan 15, 2026</td><td style="padding:10px 12px;"><button class="btn btn-danger" style="height:26px;font-size:11px;padding:0 8px;">Revoke</button></td></tr>
+              <tr><td style="padding:10px 12px;font-weight:500;">Staging API</td><td style="padding:10px 12px;font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);">nxa_stg_••••••••••••8a1c</td><td style="padding:10px 12px;color:var(--text-secondary);">Feb 2, 2026</td><td style="padding:10px 12px;"><button class="btn btn-danger" style="height:26px;font-size:11px;padding:0 8px;">Revoke</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────── -->
+    <!-- PAGE: HELP                      -->
+    <!-- ─────────────────────────────── -->
+    <div id="page-help" class="page">
+      <div class="page-header">
+        <div><div class="page-title">Help & Support</div><div class="page-subtitle">Get help, browse docs, or reach the team</div></div>
+      </div>
+
+      <div style="background:linear-gradient(135deg,var(--navy-600),var(--navy-500));border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;margin-bottom:20px;display:flex;align-items:center;gap:20px;">
+        <div style="font-size:36px;">🔍</div>
+        <div style="flex:1;">
+          <div style="font-family:var(--font-head);font-size:18px;font-weight:700;margin-bottom:6px;">How can we help?</div>
+          <div style="font-size:13px;color:var(--text-secondary);margin-bottom:14px;">Search our documentation, FAQs, and tutorials</div>
+          <div class="topbar-search" style="max-width:420px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input placeholder="e.g. How to reset a password..."></div>
+        </div>
+      </div>
+
+      <div class="grid-3" style="margin-bottom:20px;">
+        <div class="contact-card">
+          <div class="contact-card-icon" style="background:rgba(79,142,247,0.12);">📖</div>
+          <div style="font-weight:500;font-size:13px;margin-bottom:4px;">Documentation</div>
+          <div style="font-size:12px;color:var(--text-secondary);">Full API reference and guides</div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-card-icon" style="background:rgba(16,185,129,0.12);">💬</div>
+          <div style="font-weight:500;font-size:13px;margin-bottom:4px;">Live Chat</div>
+          <div style="font-size:12px;color:var(--text-secondary);">Chat with support — avg 4 min</div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-card-icon" style="background:rgba(245,158,11,0.12);">📧</div>
+          <div style="font-weight:500;font-size:13px;margin-bottom:4px;">Email Support</div>
+          <div style="font-size:12px;color:var(--text-secondary);">support@nexusadmin.io</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="fw-500" style="font-size:14px;margin-bottom:14px;">Frequently Asked Questions</div>
+        <div class="faq-item open">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            How do I reset a user's password?
+            <span style="font-size:16px;color:var(--text-tertiary);">−</span>
+          </div>
+          <div class="faq-answer">Go to User Management → find the user → click Edit → scroll to Security section → click "Send Password Reset Email". The user will receive a secure link valid for 24 hours.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            How do I configure JWT token expiry?
+            <span style="font-size:16px;color:var(--text-tertiary);">+</span>
+          </div>
+          <div class="faq-answer">In appsettings.json, set JwtSettings.AccessTokenExpiry (in minutes) and JwtSettings.RefreshTokenExpiry (in days). Defaults are 15 minutes and 7 days. Redeploy required after changes.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            How do I generate a custom report?
+            <span style="font-size:16px;color:var(--text-tertiary);">+</span>
+          </div>
+          <div class="faq-answer">Navigate to Reports → New Report. Select a template (FastReport or RDLC), choose your data source and filters, then click Generate. Reports can be exported as PDF, Excel, or HTML.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            How do I integrate with Azure DevOps pipelines?
+            <span style="font-size:16px;color:var(--text-tertiary);">+</span>
+          </div>
+          <div class="faq-answer">See the CI/CD guide in the documentation. You'll need to add the NexusAdmin deployment task to your azure-pipelines.yml and configure the API key in Azure Key Vault.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────── -->
+    <!-- PAGE: ERROR 404                 -->
+    <!-- ─────────────────────────────── -->
+    <div id="page-error404" class="page">
+      <div class="page-header">
+        <div><div class="page-title">Error Pages</div><div class="page-subtitle">404 · 500 error screen templates</div></div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost" onclick="showErrorTab(404,this)">404 Page</button>
+          <button class="btn btn-ghost" onclick="showErrorTab(500,this)">500 Page</button>
+        </div>
+      </div>
+
+      <div id="error-404-view">
+        <div class="card" style="min-height:480px;">
+          <div class="error-page-inner">
+            <div style="font-size:64px;line-height:1;margin-bottom:8px;">🔭</div>
+            <div class="error-code">404</div>
+            <div class="error-title">Page not found</div>
+            <div class="error-desc">The page you're looking for doesn't exist or has been moved. Double-check the URL or head back to safety.</div>
+            <div style="display:flex;gap:10px;">
+              <button class="btn btn-primary">← Go to Dashboard</button>
+              <button class="btn btn-ghost">Report this issue</button>
+            </div>
+            <div style="margin-top:28px;font-size:12px;color:var(--text-tertiary);font-family:var(--font-mono);">Error code: PAGE_NOT_FOUND · Route: /some/missing/path</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="error-500-view" style="display:none;">
+        <div class="card" style="min-height:480px;">
+          <div class="error-page-inner">
+            <div style="font-size:64px;line-height:1;margin-bottom:8px;">💥</div>
+            <div class="error-code">500</div>
+            <div class="error-title">Internal server error</div>
+            <div class="error-desc">Something went wrong on our end. Our team has been notified automatically. Please try again in a moment.</div>
+            <div style="display:flex;gap:10px;">
+              <button class="btn btn-primary">Try Again</button>
+              <button class="btn btn-ghost">Contact Support</button>
+            </div>
+            <div style="margin-top:28px;font-size:12px;color:var(--text-tertiary);font-family:var(--font-mono);">Error code: INTERNAL_ERROR · Trace ID: c3f9-a12b-8d04</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────── -->
+    <!-- PAGE: THEME                     -->
+    <!-- ─────────────────────────────── -->
+    <div id="page-theme" class="page">
+      <div class="page-header">
+        <div><div class="page-title">Theme Customization</div><div class="page-subtitle">Tune colors, typography, and layout to your brand</div></div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost">Reset Defaults</button>
+          <button class="btn btn-primary">Apply Theme</button>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div class="card">
+            <div class="fw-500" style="font-size:14px;margin-bottom:16px;">Accent Color</div>
+            <div class="color-swatch-grid">
+              <div class="color-swatch selected" style="background:#4F8EF7;" title="Blue (Default)"></div>
+              <div class="color-swatch" style="background:#7C5CFC;" title="Purple"></div>
+              <div class="color-swatch" style="background:#00D4AA;" title="Teal"></div>
+              <div class="color-swatch" style="background:#F5A623;" title="Amber"></div>
+              <div class="color-swatch" style="background:#F06292;" title="Rose"></div>
+              <div class="color-swatch" style="background:#10B981;" title="Emerald"></div>
+              <div class="color-swatch" style="background:#EF4444;" title="Red"></div>
+              <div class="color-swatch" style="background:#F97316;" title="Orange"></div>
+            </div>
+            <div style="margin-top:14px;">
+              <label class="label">Custom HEX</label>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <input type="color" value="#4F8EF7" style="width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:none;cursor:pointer;padding:2px;">
+                <input class="input-field" value="#4F8EF7" style="font-family:var(--font-mono);font-size:13px;flex:1;">
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="fw-500" style="font-size:14px;margin-bottom:14px;">Typography</div>
+            <div class="font-preview selected" onclick="selectFont(this,'Syne')">
+              <div><div style="font-family:'Syne';font-size:16px;font-weight:700;color:var(--text-primary);">Syne</div><div style="font-size:11px;color:var(--text-secondary);">Geometric · Headings</div></div>
+              <span class="badge badge-info">Active</span>
+            </div>
+            <div class="font-preview" onclick="selectFont(this,'DM Serif Display')">
+              <div><div style="font-family:'DM Serif Display',serif;font-size:16px;font-weight:700;color:var(--text-primary);">DM Serif</div><div style="font-size:11px;color:var(--text-secondary);">Elegant · Headings</div></div>
+            </div>
+            <div class="font-preview" onclick="selectFont(this,'Space Grotesk')">
+              <div><div style="font-size:16px;font-weight:700;color:var(--text-primary);">Space Grotesk</div><div style="font-size:11px;color:var(--text-secondary);">Neutral · Headings</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="fw-500" style="font-size:14px;margin-bottom:14px;">Border Radius</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="radius-btn" onclick="selectRadius(this,'0px')" style="border-radius:0;">Sharp</button>
+              <button class="radius-btn selected" onclick="selectRadius(this,'8px')" style="border-radius:8px;">Medium</button>
+              <button class="radius-btn" onclick="selectRadius(this,'14px')" style="border-radius:14px;">Rounded</button>
+              <button class="radius-btn" onclick="selectRadius(this,'20px')" style="border-radius:20px;">Pill</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div class="card">
+            <div class="fw-500" style="font-size:14px;margin-bottom:14px;">Layout Mode</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div style="border:2px solid var(--accent);border-radius:var(--radius);padding:12px;cursor:pointer;text-align:center;">
+                <div style="display:flex;gap:4px;height:50px;margin-bottom:8px;">
+                  <div style="width:30%;background:var(--navy-600);border-radius:4px;"></div>
+                  <div style="flex:1;background:var(--surface);border-radius:4px;"></div>
+                </div>
+                <div style="font-size:12px;font-weight:500;">Sidebar Left</div>
+                <span class="badge badge-info" style="margin-top:4px;font-size:10px;">Active</span>
+              </div>
+              <div style="border:1px solid var(--border);border-radius:var(--radius);padding:12px;cursor:pointer;text-align:center;opacity:0.6;">
+                <div style="display:flex;flex-direction:column;gap:4px;height:50px;margin-bottom:8px;">
+                  <div style="height:30%;background:var(--navy-600);border-radius:4px;"></div>
+                  <div style="flex:1;background:var(--surface);border-radius:4px;"></div>
+                </div>
+                <div style="font-size:12px;font-weight:500;">Top Navigation</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="fw-500" style="font-size:14px;margin-bottom:14px;">Live Preview</div>
+            <div class="theme-preview">
+              <div style="display:flex;gap:8px;margin-bottom:10px;">
+                <div style="width:60px;height:60px;background:var(--navy-700);border-radius:8px;border:1px solid var(--border);"></div>
+                <div style="flex:1;">
+                  <div style="height:10px;background:var(--accent);border-radius:4px;margin-bottom:6px;width:60%;"></div>
+                  <div style="height:8px;background:var(--surface);border-radius:4px;margin-bottom:6px;width:80%;"></div>
+                  <div style="height:8px;background:var(--surface);border-radius:4px;width:40%;"></div>
+                </div>
+              </div>
+              <div style="display:flex;gap:6px;margin-bottom:10px;">
+                <div style="height:28px;flex:1;background:var(--accent);border-radius:var(--radius);opacity:0.9;"></div>
+                <div style="height:28px;width:80px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);"></div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+                <div style="height:40px;background:var(--navy-700);border-radius:var(--radius);border:1px solid var(--border);border-top:2px solid var(--accent);"></div>
+                <div style="height:40px;background:var(--navy-700);border-radius:var(--radius);border:1px solid var(--border);border-top:2px solid var(--accent-2);"></div>
+                <div style="height:40px;background:var(--navy-700);border-radius:var(--radius);border:1px solid var(--border);border-top:2px solid var(--accent-3);"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="fw-500" style="font-size:14px;margin-bottom:14px;">Base Theme</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <div style="border:2px solid var(--accent);border-radius:var(--radius);padding:12px;cursor:pointer;">
+                <div style="width:100%;height:40px;background:#0A0F1E;border-radius:6px;margin-bottom:8px;"></div>
+                <div style="font-size:12px;font-weight:500;">Dark (Default)</div>
+                <span class="badge badge-info" style="margin-top:4px;font-size:10px;">Active</span>
+              </div>
+              <div style="border:1px solid var(--border);border-radius:var(--radius);padding:12px;cursor:pointer;opacity:0.5;">
+                <div style="width:100%;height:40px;background:#F8F9FC;border-radius:6px;margin-bottom:8px;border:1px solid #e5e7eb;"></div>
+                <div style="font-size:12px;font-weight:500;">Light Mode</div>
+                <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px;">Coming soon</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </div><!-- end page-content -->
+  </div><!-- end main-content -->
+</div><!-- end app -->
+
+<script>
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const page = document.getElementById('page-' + id);
+  if (page) page.classList.add('active');
+  if (btn) btn.classList.add('active');
+  const labels = {
+    dashboard:'Dashboard',auth:'Auth Pages',profile:'User Profile',
+    crud:'CRUD Sample',blank:'Blank Page',notifications:'Notifications',
+    settings:'Settings',theme:'Theme',help:'Help & Support',error404:'Error Pages'
+  };
+  document.getElementById('breadcrumb-current').textContent = labels[id] || id;
+}
+
+function showAuthTab(tab, btn) {
+  ['login','register','forgot'].forEach(t => {
+    const el = document.getElementById('auth-' + t);
+    if (el) el.style.display = t === tab ? 'block' : 'none';
+  });
+}
+
+function showErrorTab(code, btn) {
+  document.getElementById('error-404-view').style.display = code === 404 ? 'block' : 'none';
+  document.getElementById('error-500-view').style.display = code === 500 ? 'block' : 'none';
+}
+
+function switchSettingsTab(tab, el) {
+  ['general','security','notifications','api'].forEach(t => {
+    const sec = document.getElementById('settings-' + t);
+    if (sec) sec.style.display = t === tab ? 'block' : 'none';
+  });
+  document.querySelectorAll('#settings-tabs .tab').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+}
+
+function toggleFaq(el) {
+  const item = el.parentElement;
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  document.querySelectorAll('.faq-question span').forEach(s => s.textContent = '+');
+  if (!isOpen) {
+    item.classList.add('open');
+    el.querySelector('span').textContent = '−';
+  }
+}
+
+function openModal() {
+  const m = document.getElementById('crud-modal');
+  m.style.display = 'flex';
+}
+function closeModal() {
+  const m = document.getElementById('crud-modal');
+  m.style.display = 'none';
+}
+document.getElementById('crud-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+function selectFont(el, font) {
+  document.querySelectorAll('.font-preview').forEach(f => f.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function selectRadius(el, val) {
+  document.querySelectorAll('.radius-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  document.documentElement.style.setProperty('--radius', val);
+  document.documentElement.style.setProperty('--radius-lg', val);
+}
+
+document.querySelectorAll('.color-swatch').forEach(sw => {
+  sw.addEventListener('click', function() {
+    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+    this.classList.add('selected');
+    const color = this.style.background;
+    document.documentElement.style.setProperty('--accent', color);
+    document.documentElement.style.setProperty('--accent-glow', color.replace('rgb', 'rgba').replace(')', ',0.15)'));
+  });
+});
+</script>
+</body>
+</html>

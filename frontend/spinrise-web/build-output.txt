@@ -1,0 +1,47 @@
+
+> spinrise-web@0.0.0 build
+> tsc -b && vite build
+
+src/features/auth/pages/LoginPage.tsx(69,4): error TS1128: Declaration or statement expected.
+src/features/auth/pages/LoginPage.tsx(69,9): error TS1128: Declaration or statement expected.
+src/features/auth/pages/LoginPage.tsx(69,21): error TS1109: Expression expected.
+src/features/auth/pages/LoginPage.tsx(69,36): error TS1109: Expression expected.
+src/features/auth/pages/LoginPage.tsx(69,53): error TS1109: Expression expected.
+src/features/auth/pages/LoginPage.tsx(69,77): error TS1109: Expression expected.
+src/features/auth/pages/LoginPage.tsx(69,119): error TS2657: JSX expressions must have one parent element.
+src/features/auth/pages/LoginPage.tsx(69,290): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+src/features/auth/pages/LoginPage.tsx(69,455): error TS1003: Identifier expected.
+src/features/auth/pages/LoginPage.tsx(69,457): error TS17002: Expected corresponding JSX closing tag for 'Button'.
+src/features/auth/pages/LoginPage.tsx(69,547): error TS1005: ';' expected.
+src/features/auth/pages/LoginPage.tsx(69,660): error TS1005: ';' expected.
+src/features/auth/pages/LoginPage.tsx(69,725): error TS1005: ';' expected.
+src/features/auth/pages/LoginPage.tsx(69,764): error TS1005: ';' expected.
+src/features/auth/pages/LoginPage.tsx(69,818): error TS1005: ';' expected.
+src/features/auth/pages/LoginPage.tsx(69,845): error TS1005: ';' expected.
+src/features/auth/pages/LoginPage.tsx(69,887): error TS1005: ';' expected.
+src/features/auth/pages/LoginPage.tsx(69,927): error TS1005: ';' expected.
+src/features/auth/pages/LoginPage.tsx(69,934): error TS1434: Unexpected keyword or identifier.
+src/features/auth/pages/LoginPage.tsx(69,937): error TS1434: Unexpected keyword or identifier.
+src/features/auth/pages/LoginPage.tsx(69,956): error TS1005: ';' expected.
+src/features/auth/pages/LoginPage.tsx(69,960): error TS1434: Unexpected keyword or identifier.
+src/features/auth/pages/LoginPage.tsx(69,966): error TS1434: Unexpected keyword or identifier.
+src/features/auth/pages/LoginPage.tsx(69,970): error TS1434: Unexpected keyword or identifier.
+src/features/auth/pages/LoginPage.tsx(69,983): error TS1005: '(' expected.
+src/features/auth/pages/LoginPage.tsx(69,987): error TS1005: ';' expected.
+src/features/auth/pages/LoginPage.tsx(69,995): error TS1005: ';' expected.
+src/features/auth/pages/LoginPage.tsx(69,1008): error TS1003: Identifier expected.
+src/features/auth/pages/LoginPage.tsx(69,1037): error TS17008: JSX element 'Card' has no corresponding closing tag.
+src/features/auth/pages/LoginPage.tsx(69,1098): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/features/auth/pages/LoginPage.tsx(69,1137): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/features/auth/pages/LoginPage.tsx(69,1142): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/features/auth/pages/LoginPage.tsx(69,1170): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/features/auth/pages/LoginPage.tsx(69,1254): error TS1005: '}' expected.
+src/features/auth/pages/LoginPage.tsx(69,1278): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/features/auth/pages/LoginPage.tsx(69,1339): error TS1005: '}' expected.
+src/features/auth/pages/LoginPage.tsx(69,1486): error TS1005: '}' expected.
+src/features/auth/pages/LoginPage.tsx(69,1532): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+src/features/auth/pages/LoginPage.tsx(69,1535): error TS1005: '</' expected.
+src/features/auth/pages/LoginPage.tsx(69,1535): error TS1109: Expression expected.
+vite.config.ts(8,3): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Object literal may only specify known properties, and 'test' does not exist in type 'UserConfigExport'.

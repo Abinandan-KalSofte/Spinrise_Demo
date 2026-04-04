@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="2026-04-03" ReportInfo.Modified="04/03/2026 18:07:50" ReportInfo.CreatorVersion="2026.1.0.0">
+  <Dictionary>
+    <TableDataSource Name="KSP_PurchaseReq" ReferenceName="KSP_PurchaseReq" DataType="System.Int32" Enabled="true">
+      <Column Name="prno" DataType="System.Decimal"/>
+      <Column Name="prdate" DataType="System.DateTime"/>
+      <Column Name="refno" DataType="System.String"/>
+      <Column Name="APP1DATE" DataType="System.DateTime"/>
+      <Column Name="APP3DATE" DataType="System.DateTime"/>
+      <Column Name="qtyind" DataType="System.Decimal"/>
+      <Column Name="reqddate" DataType="System.DateTime"/>
+      <Column Name="remarks" DataType="System.String"/>
+      <Column Name="curstock" DataType="System.Decimal"/>
+      <Column Name="LPO_RATE" DataType="System.Decimal"/>
+      <Column Name="LPO_DATE" DataType="System.DateTime"/>
+      <Column Name="FirstappUser" DataType="System.String"/>
+      <Column Name="FinalAppUser" DataType="System.String"/>
+      <Column Name="DEPNAME" DataType="System.String"/>
+      <Column Name="ename" DataType="System.String"/>
+      <Column Name="ITEMCODE" DataType="System.String"/>
+      <Column Name="ITEMNAME" DataType="System.String"/>
+      <Column Name="ITEMSPEC1" DataType="System.String"/>
+      <Column Name="ITEMSPEC2" DataType="System.String"/>
+      <Column Name="ITEMSPEC3" DataType="System.String"/>
+      <Column Name="UOM" DataType="System.String"/>
+      <Column Name="CATLNO" DataType="System.String"/>
+      <Column Name="DRAWNO" DataType="System.String"/>
+      <Column Name="MAC_NO" DataType="System.String"/>
+      <Column Name="ADD1" DataType="System.String"/>
+      <Column Name="ADD2" DataType="System.String"/>
+      <Column Name="ADD3" DataType="System.String"/>
+      <Column Name="CITY" DataType="System.String"/>
+      <Column Name="PINCODE" DataType="System.String"/>
+      <Column Name="PHONE1" DataType="System.String"/>
+      <Column Name="EMAIL" DataType="System.String"/>
+      <Column Name="STATENAME" DataType="System.String"/>
+      <Column Name="DIV_PRINTNAME" DataType="System.String"/>
+      <Column Name="DIV_UNITNAME" DataType="System.String"/>
+      <Column Name="DIV_LOGO" DataType="System.Byte[]"/>
+      <Column Name="APPCOST" DataType="System.Decimal"/>
+    </TableDataSource>
+  </Dictionary>
+  <ReportPage Name="Page1" Landscape="true" PaperWidth="327" PaperHeight="210" LeftMargin="6.3" TopMargin="6.3" RightMargin="6.3" BottomMargin="6.3" Watermark.Font="Arial, 60pt">
+    <PageHeaderBand Name="PageHeader1" Width="1188.43" Height="233.53">
+      <ShapeObject Name="Box2" Left="8" Top="3" Width="1062.55" Height="106.22" Border.Width="1.5" Fill.Color="White"/>
+      <ShapeObject Name="Box6" Left="8" Top="120" Width="1062.55" Height="112" Border.Width="1.5" Fill.Color="White"/>
+      <LineObject Name="Line2" Left="8" Top="150.13" Width="1062.55" Border.Width="1.5"/>
+      <LineObject Name="Line5" Left="543" Top="151" Height="81" Border.Width="1.5"/>
+      <PictureObject Name="Logo" Left="16" Top="8" Width="176" Height="80" DataColumn="KSP_PurchaseReq.DIV_LOGO"/>
+      <TextObject Name="DIV_PRINTNAME" Left="248" Top="8" Width="728" Height="24" CanGrow="true" Text="[KSP_PurchaseReq.DIV_PRINTNAME]" HorzAlign="Center" Font="Tahoma, 14pt, style=Bold" TextFill.Color="Navy"/>
+      <TextObject Name="DIV_UNITNAME" Left="248" Top="32" Width="728" Height="13" CanGrow="true" Text="[KSP_PurchaseReq.DIV_UNITNAME]" HorzAlign="Center" Font="Tahoma, 8pt, style=Bold" TextFill.Color="Navy"/>
+      <TextObject Name="AddressLine" Left="248" Top="48" Width="728" Height="15.47" Text="[KSP_PurchaseReq.ADD1]" HorzAlign="Center" Font="Tahoma, 8pt"/>
+      <TextObject Name="CitynPin" Left="248" Top="64" Width="728" Height="15" Text="[KSP_PurchaseReq.CITY]" HorzAlign="Center" Font="Tahoma, 8pt"/>
+      <TextObject Name="PhoneLine" Left="248" Top="80" Width="728" Height="15.47" Text="[KSP_PurchaseReq.PHONE1]" HorzAlign="Center" Font="Tahoma, 8pt"/>
+      <TextObject Name="EmailLine" Left="248" Top="96" Width="728" Height="17.33" Text="[KSP_PurchaseReq.EMAIL]" HorzAlign="Center" Font="Tahoma, 8pt"/>
+      <TextObject Name="PurchaseReqTitle" Left="456" Top="128" Width="197.73" Height="19" Text="Purchase Requisition" HorzAlign="Center" Font="Tahoma, 11pt, style=Bold" TextFill.Color="Maroon"/>
+      <TextObject Name="lbl_RequesterName" Left="40" Top="160" Width="129.33" Height="16" Text="Requester Name" Font="Tahoma, 10pt, style=Bold"/>
+      <TextObject Name="sep_RequesterName" Left="168" Top="160" Width="8" Height="16" Text=":" HorzAlign="Center" Font="Cambria, 8pt, style=Bold"/>
+      <TextObject Name="fld_ename" Left="184" Top="160" Width="328" Height="15.07" Text="[KSP_PurchaseReq.ename]" Font="Tahoma, 10pt, style=Bold"/>
+      <TextObject Name="lbl_Department" Left="40" Top="184" Width="129.33" Height="16.33" Text="Department" Font="Tahoma, 10pt, style=Bold"/>
+      <TextObject Name="sep_Department" Left="168" Top="184" Width="8" Height="16" Text=":" HorzAlign="Center" Font="Cambria, 8pt, style=Bold"/>
+      <TextObject Name="fld_DEPNAME" Left="184" Top="184" Width="328" Height="15.07" Text="[KSP_PurchaseReq.DEPNAME]" Font="Tahoma, 10pt, style=Bold"/>
+      <TextObject Name="lbl_Reference" Left="40" Top="208" Width="129.33" Height="16.33" Text="Reference" Font="Tahoma, 10pt, style=Bold"/>
+      <TextObject Name="sep_Reference" Left="168" Top="208" Width="8" Height="16" Text=":" HorzAlign="Center" Font="Cambria, 8pt, style=Bold"/>
+      <TextObject Name="fld_refno" Left="184" Top="208" Width="328" Height="15.07" Text="[KSP_PurchaseReq.refno]" Font="Tahoma, 10pt, style=Bold"/>
+      <TextObject Name="lbl_PRNo" Left="584" Top="160" Width="111" Height="16" Text="PR.No." Font="Tahoma, 10pt, style=Bold"/>
+      <TextObject Name="sep_PRNo" Left="712" Top="160" Width="8" Height="16" Text=":" Font="Cambria, 8pt, style=Bold"/>
+      <TextObject Name="fld_prno" Left="736" Top="160" Width="155.4" Height="16" Text="[KSP_PurchaseReq.prno]" Font="Tahoma, 10pt, style=Bold"/>
+      <TextObject Name="lbl_PRDate" Left="584" Top="184" Width="111" Height="16" Text="PR.Date" Font="Tahoma, 10pt, style=Bold"/>
+      <TextObject Name="sep_PRDate" Left="712" Top="184" Width="8" Height="16" Text=":" Font="Cambria, 8pt, style=Bold"/>
+      <TextObject Name="fld_prdate" Left="736" Top="184" Width="155.4" Height="16" Text="[KSP_PurchaseReq.prdate]" Format="Date" Format.Format="dd/MM/yyyy" Font="Tahoma, 10pt, style=Bold"/>
+      <TextObject Name="lbl_ApprovedDate" Left="584" Top="208" Width="111" Height="16" Text="Approved Date" Font="Tahoma, 10pt, style=Bold"/>
+      <TextObject Name="sep_ApprovedDate" Left="712" Top="208" Width="8" Height="16" Text=":" Font="Cambria, 8pt, style=Bold"/>
+      <TextObject Name="fld_APP3DATE_hdr" Left="736" Top="208" Width="194.27" Height="16" Text="[KSP_PurchaseReq.APP3DATE]" Format="Date" Format.Format="dd/MM/yyyy" Font="Tahoma, 10pt, style=Bold"/>
+      <ChildBand Name="ColumnHeaders" Top="237.53" Width="1188.43" Height="42.67">
+        <LineObject Name="ColHdr_TopLine" Left="8.33" Top="0.67" Width="1061.09" Border.Width="1.5"/>
+        <TextObject Name="hdr_SNo" Left="8.33" Top="2.67" Width="33.47" Height="38.67" Border.Lines="Left, Right" Text="S.No." HorzAlign="Center" VertAlign="Center" Font="Tahoma, 8pt, style=Bold"/>
+        <TextObject Name="hdr_ItemCode" Left="42" Top="2.67" Width="67.33" Height="38.67" Border.Lines="Right" Text="Item Code" HorzAlign="Center" VertAlign="Center" Font="Tahoma, 8pt, style=Bold"/>
+        <TextObject Name="hdr_ItemName" Left="109.33" Top="2.67" Width="245.67" Height="38.67" Border.Lines="Right" Text="Item Name" HorzAlign="Center" VertAlign="Center" Font="Tahoma, 8pt, style=Bold"/>
+        <TextObject Name="hdr_Unit" Left="355" Top="2.67" Width="42" Height="38.67" Border.Lines="Right" Text="Unit" HorzAlign="Center" VertAlign="Center" Font="Tahoma, 8pt, style=Bold"/>
+        <TextObject Name="hdr_ReqQty" Left="397" Top="2.67" Width="80" Height="38.67" Border.Lines="Right" Text="Required Quantity" HorzAlign="Center" VertAlign="Center" Font="Tahoma, 8pt, style=Bold"/>
+        <TextObject Name="hdr_ReqDate" Left="477" Top="2.67" Width="64" Height="38.67" Border.Lines="Right" Text="Required Date" HorzAlign="Center" VertAlign="Center" Font="Tahoma, 8pt, style=Bold"/>
+        <TextObject Name="hdr_CurrStock" Left="541" Top="2.67" Width="87" Height="38.67" Border.Lines="Right" Text="Current stock Quantity" HorzAlign="Center" VertAlign="Center" Font="Tahoma, 8pt, style=Bold"/>
+        <TextObject Name="hdr_PrevPurch" Left="628" Top="2.67" Width="244.67" Height="19" Border.Lines="Right, Top, Bottom" Text="Previous Purchase Details" HorzAlign="Center" Font="Tahoma, 8pt, style=Bold"/>
+        <LineObject Name="PrevPurch_SubLine" Left="628" Top="21.47" Width="244.67"/>
+        <TextObject Name="hdr_Rate" Left="628" Top="22.67" Width="72" Height="18.67" Border.Lines="Right, Bottom" Text="Rate/Unit" HorzAlign="Center" VertAlign="Center" Font="Tahoma, 8pt, style=Bold"/>
+        <TextObject Name="hdr_Value" Left="700" Top="22.67" Width="91" Height="18.67" Border.Lines="Right, Bottom" Text="Value" HorzAlign="Center" VertAlign="Center" Font="Tahoma, 8pt, style=Bold"/>
+        <TextObject Name="hdr_Date" Left="791" Top="22.67" Width="82.33" Height="18.67" Border.Lines="Right, Bottom" Text="Date" HorzAlign="Center" VertAlign="Center" Font="Tahoma, 8pt, style=Bold"/>
+        <TextObject Name="hdr_AppCost" Left="873.33" Top="2.67" Width="85.67" Height="38.67" Border.Lines="Right" Text="App. Cost Value" HorzAlign="Center" VertAlign="Center" Font="Tahoma, 8pt, style=Bold"/>
+        <TextObject Name="hdr_Remarks" Left="959" Top="2.67" Width="110.42" Height="38.67" Border.Lines="Left, Right" Text="Remarks" HorzAlign="Center" VertAlign="Center" Font="Tahoma, 8pt, style=Bold"/>
+        <LineObject Name="ColHdr_BotLine" Left="8.33" Top="41.2" Width="1061.09" Border.Width="1.5"/>
+      </ChildBand>
+    </PageHeaderBand>
+    <DataBand Name="DataDetail" Top="284.2" Width="1188.43" Height="13" DataSource="KSP_PurchaseReq">
+      <TextObject Name="det_SNo" Left="8.33" Width="33.47" Height="13" Border.Lines="Left, Top, Bottom" Border.Width="0.67" HorzAlign="Center" Font="Tahoma, 8pt"/>
+      <TextObject Name="det_ItemCode" Left="42" Width="67.33" Height="13" Border.Lines="Left, Bottom" Border.Width="0.67" CanGrow="true" Text="[KSP_PurchaseReq.ITEMCODE]" HorzAlign="Center" Font="Tahoma, 8pt"/>
+      <TextObject Name="det_ItemName" Left="109.33" Width="245.67" Height="13" Border.Lines="Left, Bottom" Border.Width="0.67" CanGrow="true" Text="[KSP_PurchaseReq.ITEMNAME]" Font="Tahoma, 8pt"/>
+      <TextObject Name="det_UOM" Left="355" Width="42" Height="13" Border.Lines="Left, Bottom" Border.Width="0.67" CanGrow="true" Text="[KSP_PurchaseReq.UOM]" Font="Tahoma, 8pt"/>
+      <TextObject Name="det_ReqQty" Left="397" Width="80" Height="13" Border.Lines="Left, Bottom" Border.Width="0.67" Text="[KSP_PurchaseReq.qtyind]" Font="Tahoma, 8pt"/>
+      <TextObject Name="det_ReqDate" Left="477" Width="64" Height="13" Border.Lines="Left, Bottom" Border.Width="0.67" Text="[KSP_PurchaseReq.reqddate]" Format="Date" Format.Format="dd/MM/yyyy" HorzAlign="Center" Font="Tahoma, 8pt"/>
+      <TextObject Name="det_CurrStock" Left="541" Width="87" Height="13" Border.Lines="Left, Bottom" Border.Width="0.67" Text="[KSP_PurchaseReq.curstock]" Font="Tahoma, 8pt"/>
+      <TextObject Name="det_LPORate" Left="628" Width="72" Height="13" Border.Lines="Left, Bottom" Border.Width="0.67" Text="[KSP_PurchaseReq.LPO_RATE]" Font="Tahoma, 8pt"/>
+      <TextObject Name="det_Value" Left="700" Width="91" Height="13" Border.Lines="Left, Bottom" Border.Width="0.67" Text=" [KSP_PurchaseReq.qtyind] *[KSP_PurchaseReq.LPO_RATE]" HorzAlign="Right" Font="Tahoma, 8pt"/>
+      <TextObject Name="det_LPODate" Left="791" Width="82.33" Height="13" Border.Lines="Left, Bottom" Border.Width="0.67" Text="[KSP_PurchaseReq.LPO_DATE]" Format="Date" Format.Format="dd/MM/yyyy" HorzAlign="Center" Font="Tahoma, 8pt"/>
+      <TextObject Name="det_AppCost" Left="873.33" Width="85.67" Height="13" Border.Lines="Left, Bottom" Border.Width="0.67" Text="[KSP_PurchaseReq.APPCOST]" HorzAlign="Right" Font="Tahoma, 8pt"/>
+      <TextObject Name="det_Remarks" Left="959" Width="110.42" Height="13" Border.Lines="Left, Right, Bottom" Border.Width="0.67" CanGrow="true" Text="[KSP_PurchaseReq.remarks]" Font="Tahoma, 8pt"/>
+      <ChildBand Name="DetailMachNo" Top="301.2" Width="1188.43" Height="14.67">
+        <TextObject Name="mn_SNo" Left="8.33" Width="33.47" Height="14.67" Border.Lines="Left, Top" Border.Width="0.67" Font="Arial, 10pt"/>
+        <TextObject Name="mn_Code" Left="42" Width="67.33" Height="14.67" Border.Lines="Left, Bottom" Border.Width="0.67" Font="Arial, 10pt"/>
+        <TextObject Name="lbl_MachNo" Left="109.33" Width="245.67" Height="14.67" Border.Lines="Left, Bottom" Border.Width="0.67" Text="MACHINE NO.:  MK:  MODEL :  [KSP_PurchaseReq.MAC_NO]" Font="Tahoma, 8pt"/>
+        <TextObject Name="mn_Right" Left="355" Width="724.53" Height="14.67" Border.Lines="Left, Right, Bottom" Border.Width="0.67" Font="Arial, 10pt"/>
+      </ChildBand>
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Top="319.87" Width="1188.43" Height="98">
+      <ShapeObject Name="Box4" Left="8" Top="9.45" Width="1072" Height="77.1" Border.Width="1.5" Fill.Color="White"/>
+      <TextObject Name="lbl_RequestedBy" Left="56" Top="40" Width="204" Height="17" Text="Requested By" HorzAlign="Center" Font="Tahoma, 10pt, style=Bold"/>
+      <TextObject Name="fld_RequestedByName" Left="56" Top="56.53" Width="204" Height="16" Text="[KSP_PurchaseReq.ename]" HorzAlign="Center" Font="Tahoma, 10pt"/>
+      <TextObject Name="lbl_ApprovedBy" Left="440" Top="40" Width="208" Height="17" Text="Approved By" HorzAlign="Center" Font="Tahoma, 10pt, style=Bold"/>
+      <TextObject Name="fld_FirstappUser" Left="440" Top="56" Width="208" Height="16" CanGrow="true" Text="[KSP_PurchaseReq.FirstappUser]" HorzAlign="Center" Font="Tahoma, 10pt"/>
+      <TextObject Name="fld_APP1DATE" Left="440" Top="72" Width="208" Height="16" Text="[KSP_PurchaseReq.APP1DATE]" Format="Date" Format.Format="dd/MM/yyyy" HorzAlign="Center" Font="Tahoma, 10pt"/>
+      <TextObject Name="lbl_AuthSign" Left="776.87" Top="40" Width="271.13" Height="17" Text="Authorised Signatory" HorzAlign="Center" Font="Tahoma, 10pt, style=Bold"/>
+      <TextObject Name="fld_FinalAppUser" Left="777" Top="56.2" Width="271.13" Height="16" CanGrow="true" Text="[KSP_PurchaseReq.FinalAppUser]" HorzAlign="Center" Font="Tahoma, 10pt"/>
+      <TextObject Name="fld_APP3DATE_ftr" Left="777" Top="72" Width="271.13" Height="16" Text="[KSP_PurchaseReq.APP3DATE]" Format="Date" Format.Format="dd/MM/yyyy" HorzAlign="Center" Font="Tahoma, 10pt"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>
