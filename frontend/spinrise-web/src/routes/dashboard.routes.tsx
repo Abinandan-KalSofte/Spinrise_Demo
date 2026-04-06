@@ -8,6 +8,9 @@ const DashboardPage = lazy(() => import('@/features/dashboard/pages/DashboardPag
 const PurchaseRequisitionReportPage = lazy(
   () => import('@/features/purchase-reports/pages/PurchaseRequisitionReportPage'),
 )
+const PurchaseRequisitionPage = lazy(
+  () => import('@/features/purchase-requisition/pages/PurchaseRequisitionPage'),
+)
 
 export const dashboardRoutes: RouteObject[] = [
   {
@@ -25,6 +28,10 @@ export const dashboardRoutes: RouteObject[] = [
       {
         path: 'purchase/reports/purchase-requisition',
         element: <PurchaseRequisitionReportPage />,
+      },
+      {
+        path: 'purchase/requisition/new',
+        element: <PurchaseRequisitionPage />,
       },
     ],
   },
