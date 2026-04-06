@@ -23,6 +23,8 @@
 **/backend/Spinrise.Shared/obj/
 **/backend/Spinrise.Tests/bin/
 **/backend/Spinrise.Tests/obj/
+**/backend/Spinrise.API/appsettings.Development.json
+**/backend/Spinrise.API/appsettings.json
 
 # Visual Studio
 .vs/
