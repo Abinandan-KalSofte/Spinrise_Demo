@@ -4,9 +4,7 @@ namespace Spinrise.Application.DTOs.PurchaseRequisitions;
 
 public class CreatePRHeaderDto
 {
-    [Required]
-    [StringLength(10)]
-    public string DivCode { get; set; } = string.Empty;
+    // DivCode is injected server-side from the authenticated user's JWT claim.
 
     [Required]
     public DateTime PrDate { get; set; }
@@ -29,6 +27,12 @@ public class CreatePRHeaderDto
 
     [StringLength(50)]
     public string? RefNo { get; set; }
+
+    [StringLength(20)]
+    public string? PoGroupCode { get; set; }
+
+    [StringLength(10)]
+    public string? ScopeCode { get; set; }
 
     [StringLength(50)]
     public string? SaleOrderNo { get; set; }

@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Spinrise.Shared;
 
 namespace Spinrise.Infrastructure.Authentication;
 
@@ -60,6 +61,7 @@ public class JwtTokenService : IJwtTokenService
             var subject = principal.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
             var email = principal.FindFirst(JwtRegisteredClaimNames.Email)?.Value;
             var role = principal.FindFirst(ClaimTypes.Role)?.Value;
+            var divCode = principal.FindFirst(SpinriseClaims.DivCode)?.Value;
             var tokenId = principal.FindFirst(JwtRegisteredClaimNames.Jti)?.Value;
 
             if (string.IsNullOrWhiteSpace(tokenId) ||
@@ -75,9 +77,10 @@ public class JwtTokenService : IJwtTokenService
                 ExpiresAtUtc = jwtToken.ValidTo,
                 User = new AuthUserDto
                 {
-                    Id = int.TryParse(subject, out var userId) ? userId : 0,
-                    Email = email,
-                    Role = string.IsNullOrWhiteSpace(role) ? "user" : role
+                    Id      = int.TryParse(subject, out var userId) ? userId : 0,
+                    Email   = email,
+                    Role    = string.IsNullOrWhiteSpace(role) ? "user" : role,
+                    DivCode = divCode ?? string.Empty
                 }
             };
         }
@@ -94,6 +97,7 @@ public class JwtTokenService : IJwtTokenService
             new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new(JwtRegisteredClaimNames.Email, user.Email),
             new(ClaimTypes.Role, user.Role),
+            new(SpinriseClaims.DivCode, user.DivCode),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
             new("token_type", tokenType)
         };

@@ -71,3 +71,27 @@ export default defineConfig([
   },
 ])
 ```
+
+## Spinrise Frontend Folder Structure
+
+This frontend app is organized by feature modules and shared utilities.
+
+- `src/features/`: feature-specific pages, components, hooks, and API calls
+- `src/shared/`: reusable components, helpers, hooks, and API client setup
+- `src/store/`: Zustand stores and state management logic
+- `src/api/`: generated API types, API services, and Axios client configuration
+- `src/components/`: shared UI components used across multiple features
+- `src/pages/`: top-level page layouts and routes if present
+
+### What to comment in frontend code
+
+- Write one-line comments for complex business logic inside hooks or API calls.
+- Document component props and purpose at the top of each major feature component.
+- Explain why an API call exists, especially if it supports a specific VB6 migration screen.
+- Add a short README or note inside a new feature folder when the folder contains multiple files.
+
+### Good frontend test guidance
+
+- Add one test per page to verify main UI behavior.
+- Add one test per custom hook to verify state handling.
+- Keep tests simple: render the component, simulate user input, verify rendered results.

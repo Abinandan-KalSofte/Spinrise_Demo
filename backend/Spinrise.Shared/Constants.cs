@@ -15,6 +15,32 @@ public static class ApiRoutes
         public const string GetPaginated = $"{BaseRoute}/paginated";
     }
 
+    public static class Departments
+    {
+        public const string BaseRoute = $"{ApiVersionPrefix}/departments";
+        public const string GetActive = $"{BaseRoute}/active";
+    }
+
+    public static class Items
+    {
+        public const string BaseRoute = $"{ApiVersionPrefix}/items";
+        public const string GetActive = $"{BaseRoute}/active";
+    }
+
+    public static class Lookups
+    {
+        public const string BaseRoute = $"{ApiVersionPrefix}/lookups";
+    }
+
+    public static class Inventory
+    {
+        public static class Stock
+        {
+            public const string BaseRoute  = $"{ApiVersionPrefix}/inventory/stock";
+            public const string GetCurrent = "current";
+        }
+    }
+
     public static class PurchaseRequisitions
     {
         public const string BaseRoute = $"{ApiVersionPrefix}/purchase-requisitions";
@@ -62,14 +88,44 @@ public static class StoredProcedures
         public const string GetCount = "usp_User_GetCount";
     }
 
+    public static class Department
+    {
+        public const string GetActiveDepartments = "usp_Lookup_GetActiveDepartments";
+        public const string GetByDivision = "usp_GetDepartmentsByDivision";
+    }
+
+    public static class Item
+    {
+        public const string GetByDivision = "usp_GetItemsByDivision";
+    }
+
     public static class PurchaseRequisition
     {
-        public const string GetAll = "usp_PR_GetAll";
-        public const string GetById = "usp_PR_GetById";
-        public const string Insert = "usp_PR_Insert";
-        public const string Update = "usp_PR_Update";
-        public const string Delete = "usp_PR_Delete";
-        public const string DeleteLine = "usp_PR_DeleteLine";
+        public const string GetAll          = "usp_PR_GetAll";
+        public const string GetById         = "usp_PR_GetById";
+        public const string Insert          = "usp_PR_Insert";
+        public const string InsertLine      = "usp_PR_InsertLine";
+        public const string Update          = "usp_PR_Update";
+        public const string SoftDeleteLines = "usp_PR_SoftDeleteLines";
+        public const string Delete          = "usp_PR_Delete";
+        public const string DeleteLine      = "usp_PR_DeleteLine";
+        public const string PreChecks       = "usp_PR_PreChecks";
+        public const string GenerateNumber  = "usp_PR_GenerateNumber";
+    }
+
+    public static class Lookup
+    {
+        public const string GetDepartments = "ksp_GetDepartments";
+        public const string GetEmployees   = "ksp_GetEmployees";
+        public const string GetPOTypes     = "ksp_GetPOType";
+        public const string GetItems       = "ksp_GetItems";
+        public const string GetMachines    = "ksp_GetMachines";
+        public const string GetSubCosts    = "ksp_GetSubCosts";
+    }
+
+    public static class Stock
+    {
+        public const string GetCurrentStock = "usp_Stock_GetCurrentStock";
     }
 
     /// <summary>

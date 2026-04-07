@@ -37,9 +37,10 @@ public class AuthUserStore : IAuthUserStore
 
         return new AuthUserDto
         {
-            Id = user.Id,
-            Email = user.Email,
-            Role = user.Role
+            Id      = user.Id,
+            Email   = user.Email,
+            Role    = user.Role,
+            DivCode = user.DivCode
         };
     }
 }

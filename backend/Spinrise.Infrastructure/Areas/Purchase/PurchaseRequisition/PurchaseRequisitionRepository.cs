@@ -1,5 +1,6 @@
 using Dapper;
 using System.Data;
+using Spinrise.Shared;
 
 namespace Spinrise.Infrastructure.Data;
 
@@ -16,7 +17,7 @@ public class PurchaseRequisitionRepository : IPurchaseRequisitionRepository
     {
         return await _uow.Connection!
             .QueryFirstAsync<PreCheckResult>(
-                "usp_PR_PreChecks",
+                StoredProcedures.PurchaseRequisition.PreChecks,
                 new { DivCode = divCode },
                 transaction: _uow.Transaction,
                 commandType: CommandType.StoredProcedure);
@@ -26,7 +27,7 @@ public class PurchaseRequisitionRepository : IPurchaseRequisitionRepository
     {
         return await _uow.Connection!
             .ExecuteScalarAsync<int>(
-                "usp_PR_GenerateNumber",
+                StoredProcedures.PurchaseRequisition.GenerateNumber,
                 new { DivCode = divCode, FinYear = finYear },
                 transaction: _uow.Transaction,
                 commandType: CommandType.StoredProcedure);
@@ -47,7 +48,7 @@ public class PurchaseRequisitionRepository : IPurchaseRequisitionRepository
     {
         return await _uow.Connection!
             .QueryAsync<PRSummaryResponseDto>(
-                "usp_PR_GetAll",
+                StoredProcedures.PurchaseRequisition.GetAll,
                 new
                 {
                     DivCode = divCode,
@@ -65,7 +66,7 @@ public class PurchaseRequisitionRepository : IPurchaseRequisitionRepository
     {
         using var multi = await _uow.Connection!
             .QueryMultipleAsync(
-                "usp_PR_GetById",
+                StoredProcedures.PurchaseRequisition.GetById,
                 new { DivCode = divCode, PrNo = prNo },
                 transaction: _uow.Transaction,
                 commandType: CommandType.StoredProcedure);
@@ -84,7 +85,7 @@ public class PurchaseRequisitionRepository : IPurchaseRequisitionRepository
     {
         return await _uow.Connection!
             .ExecuteScalarAsync<int>(
-                "usp_PR_Insert",
+                StoredProcedures.PurchaseRequisition.Insert,
                 new
                 {
                     header.DivCode,
@@ -97,6 +98,8 @@ public class PurchaseRequisitionRepository : IPurchaseRequisitionRepository
                     header.IType,
                     header.ReqName,
                     header.RefNo,
+                    header.PoGroupCode,
+                    header.ScopeCode,
                     header.SaleOrderNo,
                     header.SaleOrderDate,
                     header.PrStatus,
@@ -110,7 +113,7 @@ public class PurchaseRequisitionRepository : IPurchaseRequisitionRepository
     {
         return await _uow.Connection!
             .ExecuteScalarAsync<int>(
-                "usp_PR_InsertLine",
+                StoredProcedures.PurchaseRequisition.InsertLine,
                 new
                 {
                     line.DivCode,
@@ -143,7 +146,7 @@ public class PurchaseRequisitionRepository : IPurchaseRequisitionRepository
     {
         return await _uow.Connection!
             .ExecuteScalarAsync<int>(
-                "usp_PR_Update",
+                StoredProcedures.PurchaseRequisition.Update,
                 new
                 {
                     header.DivCode,
@@ -155,6 +158,8 @@ public class PurchaseRequisitionRepository : IPurchaseRequisitionRepository
                     header.IType,
                     header.ReqName,
                     header.RefNo,
+                    header.PoGroupCode,
+                    header.ScopeCode,
                     header.SaleOrderNo,
                     header.SaleOrderDate,
                     header.ModifiedBy
@@ -167,7 +172,7 @@ public class PurchaseRequisitionRepository : IPurchaseRequisitionRepository
     {
         await _uow.Connection!
             .ExecuteAsync(
-                "usp_PR_SoftDeleteLines",
+                StoredProcedures.PurchaseRequisition.SoftDeleteLines,
                 new { DivCode = divCode, PrNo = prNo },
                 transaction: _uow.Transaction,
                 commandType: CommandType.StoredProcedure);
@@ -177,7 +182,7 @@ public class PurchaseRequisitionRepository : IPurchaseRequisitionRepository
     {
         return await _uow.Connection!
             .ExecuteScalarAsync<int>(
-                "usp_PR_Delete",
+                StoredProcedures.PurchaseRequisition.Delete,
                 new { DivCode = divCode, PrNo = prNo },
                 transaction: _uow.Transaction,
                 commandType: CommandType.StoredProcedure);
@@ -187,7 +192,7 @@ public class PurchaseRequisitionRepository : IPurchaseRequisitionRepository
     {
         return await _uow.Connection!
             .ExecuteScalarAsync<int>(
-                "usp_PR_DeleteLine",
+                StoredProcedures.PurchaseRequisition.DeleteLine,
                 new { DivCode = divCode, PrNo = prNo, PrSNo = prSNo },
                 transaction: _uow.Transaction,
                 commandType: CommandType.StoredProcedure);

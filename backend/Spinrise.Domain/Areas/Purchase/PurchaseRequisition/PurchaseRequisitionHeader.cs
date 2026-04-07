@@ -13,6 +13,8 @@ public class PurchaseRequisitionHeader
     public string? IType { get; set; }
     public string? ReqName { get; set; }
     public string? RefNo { get; set; }
+    public string? PoGroupCode { get; set; }
+    public string? ScopeCode { get; set; }
     public string? SaleOrderNo { get; set; }
     public DateTime? SaleOrderDate { get; set; }
     public string PrStatus { get; set; } = "DRAFT";

@@ -1,7 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(find \"e:\\\\Abinandan\\\\SPINRISE\\\\Development\\\\frontend\\\\spinrise-web\\\\src\" -type f \\\\\\( -name \"*.tsx\" -o -name \"*.ts\" \\\\\\) -exec grep -l \"Dropdown\\\\|Download\\\\|export\" {} \\\\;)"
+      "Bash(find \"e:\\\\Abinandan\\\\SPINRISE\\\\Development\\\\frontend\\\\spinrise-web\\\\src\" -type f \\\\\\( -name \"*.tsx\" -o -name \"*.ts\" \\\\\\) -exec grep -l \"Dropdown\\\\|Download\\\\|export\" {} \\\\;)",
+      "Bash(npm run:*)",
+      "Bash(find \"e:/Abinandan/SPINRISE/Development/backend/Spinrise.API/Areas\" -type f -name \"*Controller.cs\" -exec grep -l \"public\\\\|async\" {} \\\\;)",
+      "Bash(find \"e:/Abinandan/SPINRISE/Development/backend\" -type f \\\\\\( -name \"*.csproj\" \\\\\\) -exec grep -l \"Dapper\\\\|SqlClient\" {} \\\\;)",
+      "Bash(xargs grep:*)",
+      "Bash(npx tsc:*)",
+      "Bash(dotnet build:*)"
     ]
   }
 }

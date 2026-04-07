@@ -90,7 +90,7 @@ public class PurchaseRequisitionControllerTests
     {
         var serviceMock = new Mock<IPurchaseRequisitionService>();
         serviceMock
-            .Setup(x => x.CreateAsync(It.IsAny<CreatePRHeaderDto>(), "SYSTEM"))
+            .Setup(x => x.CreateAsync(It.IsAny<CreatePRHeaderDto>(), It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync((true, "Purchase Requisition created successfully.", "PR/2026-27/00001"));
 
         using var factory = CreateFactory(services =>
@@ -102,7 +102,6 @@ public class PurchaseRequisitionControllerTests
 
         var request = new CreatePRHeaderDto
         {
-            DivCode = "DIV1",
             PrDate = DateTime.Today,
             DepCode = "DEP1",
             Lines =

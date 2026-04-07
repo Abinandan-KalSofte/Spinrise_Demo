@@ -139,14 +139,24 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+// Enable Dapper to map underscore-separated column names (e.g. MAC_NO) to
+// PascalCase properties (e.g. MacNo) across all queries.
+Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+
 builder.Services.AddScoped<IDbConnectionFactory, DbConnectionFactory>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IPurchaseRequisitionRepository, PurchaseRequisitionRepository>();
 builder.Services.AddScoped<IPurchaseRequisitionService, PurchaseRequisitionService>();
 builder.Services.AddScoped<IReportExportService, ReportExportService>();
 builder.Services.AddScoped<IPurchaseReportService, FastReportService>();
+builder.Services.AddScoped<ILookupRepository, LookupRepository>();
+builder.Services.AddScoped<ILookupService, LookupService>();
+builder.Services.AddScoped<IStockRepository, StockRepository>();
+builder.Services.AddScoped<IStockService, StockService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddSingleton<IRefreshTokenStore, InMemoryRefreshTokenStore>();
 builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();

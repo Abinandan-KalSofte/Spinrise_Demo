@@ -1,3 +1,6 @@
+using System.IdentityModel.Tokens.Jwt;
+using Spinrise.Shared;
+
 namespace Spinrise.API.Controllers;
 
 [Area("Purchase")]
@@ -11,44 +14,37 @@ public class PurchaseRequisitionController : BaseApiController
         _service = service;
     }
 
-    [HttpGet("pre-checks")]
-    public async Task<IActionResult> RunPreChecks([FromQuery] string divCode)
-    {
-        if (string.IsNullOrWhiteSpace(divCode))
-        {
-            return Failure("Division code is required.", StatusCodes.Status400BadRequest);
-        }
+    // Extracts the authenticated user's division code from the JWT claim.
+    // Throws 401 if the claim is missing — prevents any cross-division access.
+    private string RequireDivCode() =>
+        User.FindFirst(SpinriseClaims.DivCode)?.Value?.Trim()
+        ?? throw new UnauthorizedAccessException("Division code not found in token. Access denied.");
 
+    [HttpGet("pre-checks")]
+    public async Task<IActionResult> RunPreChecks()
+    {
+        var divCode = RequireDivCode();
         var result = await _service.RunPreChecksAsync(divCode);
         return Success(result, "Pre-checks completed.");
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll(
-        [FromQuery] string divCode,
         [FromQuery] string? prNo,
         [FromQuery] DateTime? fromDate,
         [FromQuery] DateTime? toDate,
         [FromQuery] string? depCode,
         [FromQuery] string? status)
     {
-        if (string.IsNullOrWhiteSpace(divCode))
-        {
-            return Failure("Division code is required.", StatusCodes.Status400BadRequest);
-        }
-
+        var divCode = RequireDivCode();
         var result = await _service.GetAllAsync(divCode, prNo, fromDate, toDate, depCode, status);
         return Success(result, "Purchase Requisitions retrieved successfully.");
     }
 
     [HttpGet("{prNo}")]
-    public async Task<IActionResult> GetById([FromQuery] string divCode, string prNo)
+    public async Task<IActionResult> GetById(string prNo)
     {
-        if (string.IsNullOrWhiteSpace(divCode))
-        {
-            return Failure("Division code is required.", StatusCodes.Status400BadRequest);
-        }
-
+        var divCode = RequireDivCode();
         var result = await _service.GetByIdAsync(divCode, prNo);
         if (result is null)
         {
@@ -61,8 +57,9 @@ public class PurchaseRequisitionController : BaseApiController
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreatePRHeaderDto dto)
     {
-        var createdBy = "SYSTEM";
-        var (success, message, prNo) = await _service.CreateAsync(dto, createdBy);
+        var divCode  = RequireDivCode();
+        var createdBy = User.FindFirst(JwtRegisteredClaimNames.Email)?.Value ?? "SYSTEM";
+        var (success, message, prNo) = await _service.CreateAsync(dto, divCode, createdBy);
         if (!success)
         {
             return Failure(message, StatusCodes.Status400BadRequest);
@@ -79,8 +76,9 @@ public class PurchaseRequisitionController : BaseApiController
             return Failure("PR Number in URL and body do not match.", StatusCodes.Status400BadRequest);
         }
 
-        var modifiedBy = "SYSTEM";
-        var (success, message) = await _service.UpdateAsync(dto, modifiedBy);
+        var divCode    = RequireDivCode();
+        var modifiedBy = User.FindFirst(JwtRegisteredClaimNames.Email)?.Value ?? "SYSTEM";
+        var (success, message) = await _service.UpdateAsync(dto, divCode, modifiedBy);
         if (!success)
         {
             return Failure(message, StatusCodes.Status400BadRequest);
@@ -90,8 +88,9 @@ public class PurchaseRequisitionController : BaseApiController
     }
 
     [HttpDelete("{prNo}")]
-    public async Task<IActionResult> Delete([FromQuery] string divCode, string prNo)
+    public async Task<IActionResult> Delete(string prNo)
     {
+        var divCode = RequireDivCode();
         var (success, message) = await _service.DeleteAsync(divCode, prNo);
         if (!success)
         {
@@ -102,8 +101,9 @@ public class PurchaseRequisitionController : BaseApiController
     }
 
     [HttpDelete("{prNo}/lines/{lineNo:int}")]
-    public async Task<IActionResult> DeleteLine([FromQuery] string divCode, string prNo, int lineNo)
+    public async Task<IActionResult> DeleteLine(string prNo, int lineNo)
     {
+        var divCode = RequireDivCode();
         var (success, message) = await _service.DeleteLineAsync(divCode, prNo, lineNo);
         if (!success)
         {

@@ -1,671 +1,559 @@
--- AUTO GENERATED MERGED SCRIPT 
--- DO NOT EDIT MANUALLY 
- 
--- ===================================== 
--- File: 01_CreateUsersTable.sql 
--- ===================================== 
-﻿IF OBJECT_ID('dbo.Users', 'U') IS NOT NULL
-    DROP TABLE dbo.Users;
-GO
+-- AUTO GENERATED MERGED SCRIPT
+-- DO NOT EDIT MANUALLY
 
-CREATE TABLE dbo.Users
-(
-    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-    Name NVARCHAR(100) NOT NULL,
-    Email NVARCHAR(255) NOT NULL,
-    CreatedAt DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME()
-);
-GO
-
-CREATE UNIQUE INDEX UX_Users_Email
-ON dbo.Users(Email);
-GO
- 
-GO 
- 
--- ===================================== 
--- File: 01_po_prh.sql 
--- ===================================== 
-CREATE TABLE dbo.po_prh
-(
-    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-    DivCode VARCHAR(10) NOT NULL,
-    PrNo VARCHAR(20) NOT NULL,
-    PrDate DATE NOT NULL,
-    DepCode VARCHAR(10) NOT NULL,
-    DepName VARCHAR(100) NULL,
-    Section VARCHAR(100) NULL,
-    SubCostCode VARCHAR(20) NULL,
-    IType VARCHAR(20) NULL,
-    ReqName VARCHAR(100) NULL,
-    RefNo VARCHAR(50) NULL,
-    SaleOrderNo VARCHAR(50) NULL,
-    SaleOrderDate DATE NULL,
-    PrStatus VARCHAR(20) NOT NULL CONSTRAINT DF_po_prh_PrStatus DEFAULT ('DRAFT'),
-    CreatedBy VARCHAR(50) NOT NULL,
-    CreatedAt DATETIME NOT NULL CONSTRAINT DF_po_prh_CreatedAt DEFAULT (GETDATE()),
-    ModifiedBy VARCHAR(50) NULL,
-    ModifiedAt DATETIME NULL,
-    IsDeleted BIT NOT NULL CONSTRAINT DF_po_prh_IsDeleted DEFAULT (0),
-    CONSTRAINT UQ_po_prh_PrNo UNIQUE (DivCode, PrNo)
-);
- 
-GO 
- 
--- ===================================== 
--- File: 02_po_prl.sql 
--- ===================================== 
-CREATE TABLE dbo.po_prl
-(
-    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-    DivCode VARCHAR(10) NOT NULL,
-    PrNo VARCHAR(20) NOT NULL,
-    PrSNo INT NOT NULL,
-    ItemCode VARCHAR(30) NOT NULL,
-    ItemName VARCHAR(200) NULL,
-    Uom VARCHAR(20) NULL,
-    Rate DECIMAL(18,4) NULL,
-    CurrentStock DECIMAL(18,4) NULL,
-    QtyRequired DECIMAL(18,4) NOT NULL,
-    RequiredDate DATE NULL,
-    Place VARCHAR(100) NULL,
-    ApproxCost DECIMAL(18,2) NULL,
-    Remarks VARCHAR(500) NULL,
-    MachineNo VARCHAR(30) NULL,
-    CostCentreCode VARCHAR(20) NULL,
-    BudgetGroupCode VARCHAR(20) NULL,
-    LastPoRate DECIMAL(18,4) NULL,
-    LastPoDate DATE NULL,
-    LastPoSupplierCode VARCHAR(20) NULL,
-    LastPoSupplierName VARCHAR(100) NULL,
-    IsSample BIT NOT NULL CONSTRAINT DF_po_prl_IsSample DEFAULT (0),
-    DirectApp VARCHAR(1) NULL CONSTRAINT DF_po_prl_DirectApp DEFAULT ('N'),
-    IsDeleted BIT NOT NULL CONSTRAINT DF_po_prl_IsDeleted DEFAULT (0),
-    CONSTRAINT UQ_po_prl_Line UNIQUE (DivCode, PrNo, PrSNo),
-    CONSTRAINT FK_po_prl_Header FOREIGN KEY (DivCode, PrNo)
-        REFERENCES dbo.po_prh (DivCode, PrNo)
-);
- 
-GO 
- 
--- ===================================== 
--- File: 03_feature_flags.sql 
--- ===================================== 
-CREATE TABLE dbo.feature_flags
-(
-    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-    DivCode VARCHAR(10) NOT NULL,
-    FeatureKey VARCHAR(100) NOT NULL,
-    IsEnabled BIT NOT NULL CONSTRAINT DF_feature_flags_IsEnabled DEFAULT (0),
-    CONSTRAINT UQ_feature_flags UNIQUE (DivCode, FeatureKey)
-);
- 
-GO 
- 
--- ===================================== 
--- File: 01_usp_PR_GetAll.sql 
--- ===================================== 
-CREATE OR ALTER PROCEDURE dbo.usp_PR_GetAll
-    @DivCode VARCHAR(10),
-    @PrNo VARCHAR(20) = NULL,
-    @FromDate DATE = NULL,
-    @ToDate DATE = NULL,
-    @DepCode VARCHAR(10) = NULL,
-    @Status VARCHAR(20) = NULL
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    SELECT
-        h.Id,
-        h.DivCode,
-        h.PrNo,
-        h.PrDate,
-        h.DepCode,
-        h.DepName,
-        h.Section,
-        h.SubCostCode,
-        h.IType,
-        h.ReqName,
-        h.RefNo,
-        h.PrStatus,
-        h.CreatedBy,
-        h.CreatedAt,
-        COUNT(l.Id) AS LineCount
-    FROM dbo.po_prh h
-    LEFT JOIN dbo.po_prl l
-        ON l.DivCode = h.DivCode
-        AND l.PrNo = h.PrNo
-        AND l.IsDeleted = 0
-    WHERE h.DivCode = @DivCode
-      AND h.IsDeleted = 0
-      AND (@PrNo IS NULL OR h.PrNo = @PrNo)
-      AND (@FromDate IS NULL OR h.PrDate >= @FromDate)
-      AND (@ToDate IS NULL OR h.PrDate <= @ToDate)
-      AND (@DepCode IS NULL OR h.DepCode = @DepCode)
-      AND (@Status IS NULL OR h.PrStatus = @Status)
-    GROUP BY
-        h.Id,
-        h.DivCode,
-        h.PrNo,
-        h.PrDate,
-        h.DepCode,
-        h.DepName,
-        h.Section,
-        h.SubCostCode,
-        h.IType,
-        h.ReqName,
-        h.RefNo,
-        h.PrStatus,
-        h.CreatedBy,
-        h.CreatedAt
-    ORDER BY h.PrDate DESC, h.PrNo DESC;
-END;
- 
-GO 
- 
--- ===================================== 
--- File: 01_usp_User_GetAll.sql 
--- ===================================== 
-IF OBJECT_ID('dbo.usp_User_GetAll', 'P') IS NOT NULL
-    DROP PROCEDURE dbo.usp_User_GetAll;
-GO
-
-CREATE PROCEDURE dbo.usp_User_GetAll
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    SELECT Id, Name, Email
-    FROM dbo.Users
-    ORDER BY Name;
-END
-GO
- 
-GO 
- 
--- ===================================== 
--- File: 02_usp_PR_GetById.sql 
--- ===================================== 
-CREATE OR ALTER PROCEDURE dbo.usp_PR_GetById
-    @DivCode VARCHAR(10),
-    @PrNo VARCHAR(20)
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    SELECT
-        h.Id,
-        h.DivCode,
-        h.PrNo,
-        h.PrDate,
-        h.DepCode,
-        h.DepName,
-        h.Section,
-        h.SubCostCode,
-        h.IType,
-        h.ReqName,
-        h.RefNo,
-        h.SaleOrderNo,
-        h.SaleOrderDate,
-        h.PrStatus,
-        h.CreatedBy,
-        h.CreatedAt,
-        h.ModifiedBy,
-        h.ModifiedAt
-    FROM dbo.po_prh h
-    WHERE h.DivCode = @DivCode
-      AND h.PrNo = @PrNo
-      AND h.IsDeleted = 0;
-
-    SELECT
-        l.Id,
-        l.DivCode,
-        l.PrNo,
-        l.PrSNo,
-        l.ItemCode,
-        l.ItemName,
-        l.Uom,
-        l.Rate,
-        l.CurrentStock,
-        l.QtyRequired,
-        l.RequiredDate,
-        l.Place,
-        l.ApproxCost,
-        l.Remarks,
-        l.MachineNo,
-        l.CostCentreCode,
-        l.BudgetGroupCode,
-        l.LastPoRate,
-        l.LastPoDate,
-        l.LastPoSupplierCode,
-        l.LastPoSupplierName,
-        l.IsSample,
-        l.DirectApp
-    FROM dbo.po_prl l
-    WHERE l.DivCode = @DivCode
-      AND l.PrNo = @PrNo
-      AND l.IsDeleted = 0
-    ORDER BY l.PrSNo;
-END;
- 
-GO 
- 
--- ===================================== 
--- File: 02_usp_User_GetById.sql 
--- ===================================== 
-IF OBJECT_ID('dbo.usp_User_GetById', 'P') IS NOT NULL
-    DROP PROCEDURE dbo.usp_User_GetById;
-GO
-
-CREATE PROCEDURE dbo.usp_User_GetById
-    @Id INT
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    SELECT Id, Name, Email
-    FROM dbo.Users
-    WHERE Id = @Id;
-END
-GO
- 
-GO 
- 
--- ===================================== 
--- File: 03_usp_PR_Insert.sql 
--- ===================================== 
-CREATE OR ALTER PROCEDURE dbo.usp_PR_Insert
-    @DivCode VARCHAR(10),
-    @PrNo VARCHAR(20),
-    @PrDate DATE,
-    @DepCode VARCHAR(10),
-    @DepName VARCHAR(100) = NULL,
-    @Section VARCHAR(100) = NULL,
-    @SubCostCode VARCHAR(20) = NULL,
-    @IType VARCHAR(20) = NULL,
-    @ReqName VARCHAR(100) = NULL,
-    @RefNo VARCHAR(50) = NULL,
-    @SaleOrderNo VARCHAR(50) = NULL,
-    @SaleOrderDate DATE = NULL,
-    @PrStatus VARCHAR(20),
-    @CreatedBy VARCHAR(50)
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    INSERT INTO dbo.po_prh
-    (
-        DivCode,
-        PrNo,
-        PrDate,
-        DepCode,
-        DepName,
-        Section,
-        SubCostCode,
-        IType,
-        ReqName,
-        RefNo,
-        SaleOrderNo,
-        SaleOrderDate,
-        PrStatus,
-        CreatedBy
-    )
-    VALUES
-    (
-        @DivCode,
-        @PrNo,
-        @PrDate,
-        @DepCode,
-        @DepName,
-        @Section,
-        @SubCostCode,
-        @IType,
-        @ReqName,
-        @RefNo,
-        @SaleOrderNo,
-        @SaleOrderDate,
-        @PrStatus,
-        @CreatedBy
-    );
-
-    SELECT CAST(SCOPE_IDENTITY() AS INT);
-END;
-GO
-
-CREATE OR ALTER PROCEDURE dbo.usp_PR_InsertLine
-    @DivCode VARCHAR(10),
-    @PrNo VARCHAR(20),
-    @PrSNo INT,
-    @ItemCode VARCHAR(30),
-    @ItemName VARCHAR(200) = NULL,
-    @Uom VARCHAR(20) = NULL,
-    @Rate DECIMAL(18,4) = NULL,
-    @CurrentStock DECIMAL(18,4) = NULL,
-    @QtyRequired DECIMAL(18,4),
-    @RequiredDate DATE = NULL,
-    @Place VARCHAR(100) = NULL,
-    @ApproxCost DECIMAL(18,2) = NULL,
-    @Remarks VARCHAR(500) = NULL,
-    @MachineNo VARCHAR(30) = NULL,
-    @CostCentreCode VARCHAR(20) = NULL,
-    @BudgetGroupCode VARCHAR(20) = NULL,
-    @LastPoRate DECIMAL(18,4) = NULL,
-    @LastPoDate DATE = NULL,
-    @LastPoSupplierCode VARCHAR(20) = NULL,
-    @LastPoSupplierName VARCHAR(100) = NULL,
-    @IsSample BIT
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    INSERT INTO dbo.po_prl
-    (
-        DivCode,
-        PrNo,
-        PrSNo,
-        ItemCode,
-        ItemName,
-        Uom,
-        Rate,
-        CurrentStock,
-        QtyRequired,
-        RequiredDate,
-        Place,
-        ApproxCost,
-        Remarks,
-        MachineNo,
-        CostCentreCode,
-        BudgetGroupCode,
-        LastPoRate,
-        LastPoDate,
-        LastPoSupplierCode,
-        LastPoSupplierName,
-        IsSample
-    )
-    VALUES
-    (
-        @DivCode,
-        @PrNo,
-        @PrSNo,
-        @ItemCode,
-        @ItemName,
-        @Uom,
-        @Rate,
-        @CurrentStock,
-        @QtyRequired,
-        @RequiredDate,
-        @Place,
-        @ApproxCost,
-        @Remarks,
-        @MachineNo,
-        @CostCentreCode,
-        @BudgetGroupCode,
-        @LastPoRate,
-        @LastPoDate,
-        @LastPoSupplierCode,
-        @LastPoSupplierName,
-        @IsSample
-    );
-
-    SELECT CAST(SCOPE_IDENTITY() AS INT);
-END;
- 
-GO 
- 
--- ===================================== 
--- File: 03_usp_User_Insert.sql 
--- ===================================== 
-IF OBJECT_ID('dbo.usp_User_Insert', 'P') IS NOT NULL
-    DROP PROCEDURE dbo.usp_User_Insert;
-GO
-
-CREATE PROCEDURE dbo.usp_User_Insert
-    @Name NVARCHAR(100),
-    @Email NVARCHAR(255)
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    INSERT INTO dbo.Users (Name, Email)
-    VALUES (@Name, @Email);
-
-    SELECT CAST(SCOPE_IDENTITY() AS INT);
-END
-GO
- 
-GO 
- 
--- ===================================== 
--- File: 04_usp_PR_Update.sql 
--- ===================================== 
-CREATE OR ALTER PROCEDURE dbo.usp_PR_Update
-    @DivCode VARCHAR(10),
-    @PrNo VARCHAR(20),
-    @DepCode VARCHAR(10),
-    @DepName VARCHAR(100) = NULL,
-    @Section VARCHAR(100) = NULL,
-    @SubCostCode VARCHAR(20) = NULL,
-    @IType VARCHAR(20) = NULL,
-    @ReqName VARCHAR(100) = NULL,
-    @RefNo VARCHAR(50) = NULL,
-    @SaleOrderNo VARCHAR(50) = NULL,
-    @SaleOrderDate DATE = NULL,
-    @ModifiedBy VARCHAR(50)
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    UPDATE dbo.po_prh
-    SET DepCode = @DepCode,
-        DepName = @DepName,
-        Section = @Section,
-        SubCostCode = @SubCostCode,
-        IType = @IType,
-        ReqName = @ReqName,
-        RefNo = @RefNo,
-        SaleOrderNo = @SaleOrderNo,
-        SaleOrderDate = @SaleOrderDate,
-        ModifiedBy = @ModifiedBy,
-        ModifiedAt = GETDATE()
-    WHERE DivCode = @DivCode
-      AND PrNo = @PrNo
-      AND IsDeleted = 0;
-
-    SELECT @@ROWCOUNT;
-END;
-GO
-
-CREATE OR ALTER PROCEDURE dbo.usp_PR_SoftDeleteLines
-    @DivCode VARCHAR(10),
-    @PrNo VARCHAR(20)
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    UPDATE dbo.po_prl
-    SET IsDeleted = 1
-    WHERE DivCode = @DivCode
-      AND PrNo = @PrNo
-      AND IsDeleted = 0;
-END;
- 
-GO 
- 
--- ===================================== 
--- File: 04_usp_User_Update.sql 
--- ===================================== 
-IF OBJECT_ID('dbo.usp_User_Update', 'P') IS NOT NULL
-    DROP PROCEDURE dbo.usp_User_Update;
-GO
-
-CREATE PROCEDURE dbo.usp_User_Update
-    @Id INT,
-    @Name NVARCHAR(100),
-    @Email NVARCHAR(255)
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    UPDATE dbo.Users
-    SET Name = @Name,
-        Email = @Email
-    WHERE Id = @Id;
-
-    SELECT @@ROWCOUNT;
-END
-GO
- 
-GO 
- 
--- ===================================== 
--- File: 05_usp_PR_Delete.sql 
--- ===================================== 
-CREATE OR ALTER PROCEDURE dbo.usp_PR_Delete
-    @DivCode VARCHAR(10),
-    @PrNo VARCHAR(20)
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    UPDATE dbo.po_prl
-    SET IsDeleted = 1
-    WHERE DivCode = @DivCode
-      AND PrNo = @PrNo;
-
-    UPDATE dbo.po_prh
-    SET IsDeleted = 1
-    WHERE DivCode = @DivCode
-      AND PrNo = @PrNo
-      AND IsDeleted = 0;
-
-    SELECT @@ROWCOUNT;
-END;
- 
-GO 
- 
--- ===================================== 
--- File: 05_usp_User_Delete.sql 
--- ===================================== 
-IF OBJECT_ID('dbo.usp_User_Delete', 'P') IS NOT NULL
-    DROP PROCEDURE dbo.usp_User_Delete;
-GO
-
-CREATE PROCEDURE dbo.usp_User_Delete
-    @Id INT
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    DELETE FROM dbo.Users
-    WHERE Id = @Id;
-
-    SELECT @@ROWCOUNT;
-END
-GO
- 
-GO 
- 
--- ===================================== 
--- File: 06_usp_PR_DeleteLine.sql 
--- ===================================== 
-CREATE OR ALTER PROCEDURE dbo.usp_PR_DeleteLine
-    @DivCode VARCHAR(10),
-    @PrNo VARCHAR(20),
-    @PrSNo INT
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    UPDATE dbo.po_prl
-    SET IsDeleted = 1
-    WHERE DivCode = @DivCode
-      AND PrNo = @PrNo
-      AND PrSNo = @PrSNo
-      AND IsDeleted = 0;
-
-    SELECT @@ROWCOUNT;
-END;
- 
-GO 
- 
 -- ===================================== 
 -- File: 07_usp_PR_PreChecks.sql 
 -- ===================================== 
-CREATE OR ALTER PROCEDURE dbo.usp_PR_PreChecks
+
+ CREATE OR ALTER PROCEDURE dbo.usp_PR_PreChecks
     @DivCode VARCHAR(10)
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    DECLARE @ItemExists BIT = 0,
-            @DeptExists BIT = 0,
-            @DocExists BIT = 0;
-
-    IF EXISTS (SELECT 1 FROM dbo.in_item WHERE DivCode = @DivCode AND IsActive = 1)
-        SET @ItemExists = 1;
+    DECLARE 
+            @DeptExists BIT = 0
 
     IF EXISTS (SELECT 1 FROM dbo.in_dep WHERE DivCode = @DivCode)
         SET @DeptExists = 1;
 
-    IF EXISTS (SELECT 1 FROM dbo.po_doc_para WHERE DivCode = @DivCode AND TC = 'PURCHASE REQUISITION')
-        SET @DocExists = 1;
-
     SELECT
-        @ItemExists AS ItemMasterExists,
-        @DeptExists AS DepartmentExists,
-        @DocExists AS DocNumberConfigured;
-END;
- 
+        
+        @DeptExists AS DepartmentExists
+END; 
 GO 
  
 -- ===================================== 
--- File: 08_usp_PR_GenerateNumber.sql 
+-- File: ksp_GetDepartments.sql 
 -- ===================================== 
-CREATE OR ALTER PROCEDURE dbo.usp_PR_GenerateNumber
-    @DivCode VARCHAR(10),
-    @FinYear VARCHAR(9)
+CREATE OR ALTER PROCEDURE ksp_GetDepartments
+    @DivCode    VARCHAR(10),
+    @SearchTerm VARCHAR(100) = NULL
 AS
+SET NOCOUNT ON;
+
+DECLARE @Term VARCHAR(101) = LTRIM(RTRIM(ISNULL(@SearchTerm, '')));
+
+IF LEN(@Term) = 0
 BEGIN
-    SET NOCOUNT ON;
+    SELECT DEPCODE, DEPNAME
+    FROM   in_dep
+    WHERE  active  = 'Y'
+      AND  DIVCODE = @DivCode
+    ORDER BY DEPNAME;
+END
+ELSE
+BEGIN
+    SET @Term = @Term + '%';
 
-    DECLARE @NextNo INT;
-
-    SELECT @NextNo = ISNULL(MAX(CAST(RIGHT(PrNo, 5) AS INT)), 0) + 1
-    FROM dbo.po_prh
-    WHERE DivCode = @DivCode
-      AND PrNo LIKE '%' + @FinYear + '%'
-      AND IsDeleted = 0;
-
-    SELECT @NextNo AS NextNumber;
-END;
+    SELECT TOP 20
+        DEPCODE, DEPNAME
+    FROM   in_dep
+    WHERE  active  = 'Y'
+      AND  DIVCODE = @DivCode
+      AND  (DEPCODE LIKE @Term OR DEPNAME LIKE @Term)
+    ORDER BY
+        CASE WHEN DEPCODE LIKE @Term THEN 0 ELSE 1 END,
+        DEPNAME;
+END
+GO
  
 GO 
  
 -- ===================================== 
--- File: 01_feature_flags_seed.sql 
+-- File: ksp_GetEmployees.sql 
 -- ===================================== 
-INSERT INTO dbo.feature_flags (DivCode, FeatureKey, IsEnabled)
-VALUES
-    ('DEFAULT', 'budget_validation_enabled', 0),
-    ('DEFAULT', 'sale_order_linkage_enabled', 0),
-    ('DEFAULT', 'multi_division_stock_popup', 0),
-    ('DEFAULT', 'pending_po_check_enabled', 0),
-    ('DEFAULT', 'pending_indent_check_enabled', 0),
-    ('DEFAULT', 'approval_required_before_print', 0),
-    ('DEFAULT', 'rate_column_visible', 1),
-    ('DEFAULT', 'backdate_allowed', 1);
+CREATE OR ALTER PROCEDURE ksp_GetEmployees
+    @DivCode    VARCHAR(10),
+    @SearchTerm VARCHAR(100) = NULL
+AS
+SET NOCOUNT ON;
+
+DECLARE @Term VARCHAR(101) = LTRIM(RTRIM(ISNULL(@SearchTerm, '')));
+
+IF LEN(@Term) = 0
+BEGIN
+    SELECT empno, ename
+    FROM   pr_emp
+    WHERE  active  = 'Y'
+      AND  DIVCODE = @DivCode
+    ORDER BY ename;
+END
+ELSE
+BEGIN
+    SET @Term = @Term + '%';
+
+    SELECT TOP 20
+        empno, ename
+    FROM   pr_emp
+    WHERE  active  = 'Y'
+      AND  DIVCODE = @DivCode
+      AND  (empno LIKE @Term OR ename LIKE @Term)
+    ORDER BY
+        CASE WHEN empno LIKE @Term THEN 0 ELSE 1 END,
+        ename;
+END
+GO
  
 GO 
  
 -- ===================================== 
--- File: 03_SeedUsers.sql 
+-- File: ksp_GetItems.sql 
 -- ===================================== 
-﻿INSERT INTO dbo.Users (Name, Email)
-VALUES
-    ('Alice Johnson', 'alice.johnson@example.com'),
-    ('Bob Summers', 'bob.summers@example.com'),
-    ('Carol Martinez', 'carol.martinez@example.com');
+CREATE OR ALTER PROCEDURE ksp_GetItems
+    @DivCode    VARCHAR(10),
+    @SearchTerm VARCHAR(100)
+AS
+SET NOCOUNT ON;
+
+-- Require at least 2 characters to prevent full-table scans
+DECLARE @Term VARCHAR(101) = LTRIM(RTRIM(@SearchTerm));
+
+IF LEN(@Term) < 2
+BEGIN
+    SELECT TOP 0 ITEMCODE, ITEMNAME, UOM
+    FROM in_item
+    WHERE 1 = 0;
+    RETURN;
+END
+
+SET @Term = @Term + '%';
+
+SELECT TOP 20
+    ITEMCODE,
+    ITEMNAME,
+    UOM
+FROM   in_item
+WHERE  IsItemActive = 1
+  AND  DIVCODE      = @DivCode
+  AND  (ITEMCODE LIKE @Term OR ITEMNAME LIKE @Term)
+ORDER BY
+    CASE WHEN ITEMCODE LIKE @Term THEN 0 ELSE 1 END,
+    ITEMNAME;
+GO
+ 
+GO 
+ 
+-- ===================================== 
+-- File: ksp_GetMachines.sql 
+-- ===================================== 
+CREATE OR ALTER PROCEDURE ksp_GetMachines
+    @DivCode    VARCHAR(10),
+    @SearchTerm VARCHAR(100) = NULL
+AS
+SET NOCOUNT ON;
+
+DECLARE @Term VARCHAR(101) = LTRIM(RTRIM(ISNULL(@SearchTerm, '')));
+
+IF LEN(@Term) = 0
+BEGIN
+    SELECT MAC_NO, DESCRIPTION
+    FROM   mm_macmas
+    WHERE  DIVCODE = @DivCode
+    ORDER BY DESCRIPTION;
+END
+ELSE
+BEGIN
+    SET @Term = @Term + '%';
+
+    SELECT TOP 20
+        MAC_NO, DESCRIPTION
+    FROM   mm_macmas
+    WHERE  DIVCODE = @DivCode
+      AND  (MAC_NO LIKE @Term OR DESCRIPTION LIKE @Term)
+    ORDER BY
+        CASE WHEN MAC_NO LIKE @Term THEN 0 ELSE 1 END,
+        DESCRIPTION;
+END
+GO
+ 
+GO 
+ 
+-- ===================================== 
+-- File: ksp_GetPOType.sql 
+-- ===================================== 
+CREATE OR ALTER PROCEDURE ksp_GetPOType
+    @SearchTerm VARCHAR(100) = NULL
+AS
+SET NOCOUNT ON;
+
+DECLARE @Term VARCHAR(101) = LTRIM(RTRIM(ISNULL(@SearchTerm, '')));
+
+IF LEN(@Term) = 0
+BEGIN
+    SELECT TYPE_CODE, TYPNAME
+    FROM   po_type
+    WHERE  active = 'Y'
+    ORDER BY TYPNAME;
+END
+ELSE
+BEGIN
+    SET @Term = @Term + '%';
+
+    SELECT TOP 20
+        TYPE_CODE, TYPNAME
+    FROM   po_type
+    WHERE  active = 'Y'
+      AND  (TYPE_CODE LIKE @Term OR TYPNAME LIKE @Term)
+    ORDER BY
+        CASE WHEN TYPE_CODE LIKE @Term THEN 0 ELSE 1 END,
+        TYPNAME;
+END
+GO
+ 
+GO 
+ 
+-- ===================================== 
+-- File: ksp_GetSubCosts.sql 
+-- ===================================== 
+CREATE OR ALTER PROCEDURE ksp_GetSubCosts
+    @DivCode    VARCHAR(10),
+    @SearchTerm VARCHAR(100) = NULL
+AS
+SET NOCOUNT ON;
+
+DECLARE @Term VARCHAR(101) = LTRIM(RTRIM(ISNULL(@SearchTerm, '')));
+
+IF LEN(@Term) = 0
+BEGIN
+    SELECT SCCCODE, SCCNAME
+    FROM   in_scc
+    WHERE  active  = 'Y'
+      AND  DIVCODE = @DivCode
+    ORDER BY SCCNAME;
+END
+ELSE
+BEGIN
+    SET @Term = @Term + '%';
+
+    SELECT TOP 20
+        SCCCODE, SCCNAME
+    FROM   in_scc
+    WHERE  active  = 'Y'
+      AND  DIVCODE = @DivCode
+      AND  (SCCCODE LIKE @Term OR SCCNAME LIKE @Term)
+    ORDER BY
+        CASE WHEN SCCCODE LIKE @Term THEN 0 ELSE 1 END,
+        SCCNAME;
+END
+GO
+ 
+GO 
+ 
+-- ===================================== 
+-- File: ksp_Stock_GetCurrentStock.sql 
+-- ===================================== 
+-- =============================================
+-- usp_Stock_GetCurrentStock
+--
+-- Consolidates legacy stkchk1 / stkchk2 logic.
+--
+-- stkchk1 equivalent : @EndDate = pdate,  @IncludeType12 = 1, @IncludeType11 = 1
+-- stkchk2 equivalent : @EndDate = yldate, @IncludeType12 = 0, @IncludeType11 = 0
+--
+-- @GodCode NULL  → aggregate across all godowns (original Purstock = '')
+-- @GodCode value → filter to that godown   (original Purstock <> '')
+--
+-- Optimisation applied: the original 6-branch UNION ALL is collapsed to 4 branches
+-- by merging the duplicate receipt pair (parts 2+4) and duplicate issue pair
+-- (parts 3+5) into single branches that populate both ALLREC/REC and ALLISS/ISS
+-- simultaneously, cutting IN_TRNTAIL reads in half.
+-- =============================================
+CREATE OR ALTER PROCEDURE usp_Stock_GetCurrentStock
+    @DivCode        VARCHAR(10),
+    @ItemCode       VARCHAR(20),
+    @YFDate         DATE,           -- fiscal year start  (yfdate)
+    @EndDate        DATE,           -- cut-off date       (pdate or yldate)
+    @OYM            VARCHAR(6),     -- opening year-month (YYYY00, e.g. '202600')
+    @GodCode        VARCHAR(10) = NULL,
+    @IncludeType12  BIT         = 1,  -- 1 for stkchk1, 0 for stkchk2
+    @IncludeType11  BIT         = 1   -- 1 for stkchk1, 0 for stkchk2
+AS
+SET NOCOUNT ON;
+
+-- -----------------------------------------------
+-- Filtered godown path  (Purstock <> '')
+-- -----------------------------------------------
+IF @GodCode IS NOT NULL
+BEGIN
+    SELECT
+        X.ITEMCODE,
+        i.ITEMNAME,
+        i.UOM,
+        SUM(X.ALLREC  - X.ALLISS  - X.REC + X.ISS)                AS OPQTY,
+        SUM(X.REC)                                                  AS RCDQTY,
+        SUM(X.ISS)                                                  AS ISDQTY,
+        SUM(X.ALLREC  - X.ALLISS)                                   AS BALQTY,
+        SUM(X.ALLRECval - X.ALLISSval)                              AS VALUE,
+        SUM(X.TOTQC)                                                AS QCSTK,
+        SUM(X.ALLRECval - X.ALLISSval - X.RECval + X.ISSval)       AS OPVAL,
+        SUM(X.RECval)                                               AS RCVAL,
+        SUM(X.ISSval)                                               AS ISDVAL,
+        SUM(X.TOTQCval)                                             AS QCVAL,
+        X.GODCODE
+    FROM
+    (
+        -- Branch 1: Opening balance from IN_IDET (TC=0, YEARMONTH = opening period)
+        SELECT
+            ITEMCODE,
+            SUM(ISNULL(QUANTITY, 0))    AS ALLREC,
+            0                           AS ALLISS,
+            0                           AS TOTQC,
+            0                           AS REC,
+            0                           AS ISS,
+            SUM(ISNULL(VALUE, 0))       AS ALLRECval,
+            0                           AS ALLISSval,
+            0                           AS TOTQCval,
+            0                           AS RECval,
+            0                           AS ISSval,
+            GODCODE
+        FROM IN_IDET
+        WHERE DIVCODE   = @DivCode
+          AND YEARMONTH = @OYM
+          AND TC        = 0
+        GROUP BY ITEMCODE, GODCODE
+
+        UNION ALL
+
+        -- Branch 2: Period receipts — merged duplicate (original branches 2 & 4)
+        --   ALLREC = REC = same quantity; ALLRECval = RECval = same value
+        SELECT
+            A.ITEMCODE,
+            SUM(ISNULL(A.QUANTITY, 0))  AS ALLREC,
+            0                           AS ALLISS,
+            0                           AS TOTQC,
+            SUM(ISNULL(A.QUANTITY, 0))  AS REC,
+            0                           AS ISS,
+            SUM(ISNULL(A.VALUE, 0))     AS ALLRECval,
+            0                           AS ALLISSval,
+            0                           AS TOTQCval,
+            SUM(ISNULL(A.VALUE, 0))     AS RECval,
+            0                           AS ISSval,
+            A.GODCODE
+        FROM IN_TRNTAIL A
+        JOIN IN_TC T ON A.TC = T.TC
+        WHERE A.DIVCODE = @DivCode
+          AND A.DOCDT  >= @YFDate
+          AND A.DOCDT  <= @EndDate
+          AND (
+                T.TCTYPE IN (1, 3, 5, 7, 9)
+                OR (@IncludeType12 = 1 AND T.TCTYPE = 12)
+              )
+        GROUP BY A.ITEMCODE, A.GODCODE
+
+        UNION ALL
+
+        -- Branch 3: Period issues — merged duplicate (original branches 3 & 5)
+        --   ALLISS = ISS = same quantity; ALLISSval = ISSval = same value
+        SELECT
+            A.ITEMCODE,
+            0                                       AS ALLREC,
+            SUM(ABS(ISNULL(A.QUANTITY, 0)))         AS ALLISS,
+            0                                       AS TOTQC,
+            0                                       AS REC,
+            SUM(ABS(ISNULL(A.QUANTITY, 0)))         AS ISS,
+            0                                       AS ALLRECval,
+            SUM(ABS(ISNULL(A.VALUE, 0)))            AS ALLISSval,
+            0                                       AS TOTQCval,
+            0                                       AS RECval,
+            SUM(ABS(ISNULL(A.VALUE, 0)))            AS ISSval,
+            A.GODCODE
+        FROM IN_TRNTAIL A
+        JOIN IN_TC T ON A.TC = T.TC
+        WHERE A.DIVCODE = @DivCode
+          AND A.DOCDT  >= @YFDate
+          AND A.DOCDT  <= @EndDate
+          AND (
+                T.TCTYPE IN (2, 4, 6, 8)
+                OR (@IncludeType11 = 1 AND T.TCTYPE = 11)
+              )
+        GROUP BY A.ITEMCODE, A.GODCODE
+
+        UNION ALL
+
+        -- Branch 4: QC stock (TCTYPE = 1 only)
+        SELECT
+            A.ITEMCODE,
+            0                                                                                           AS ALLREC,
+            0                                                                                           AS ALLISS,
+            SUM(ABS(ISNULL(A.QCRECDQTY, 0))) - SUM(ABS(ISNULL(A.REJQTY, 0))) - SUM(ABS(ISNULL(A.QUANTITY, 0)))  AS TOTQC,
+            0                                                                                           AS REC,
+            0                                                                                           AS ISS,
+            0                                                                                           AS ALLRECval,
+            0                                                                                           AS ALLISSval,
+            SUM(ABS(ISNULL(A.VALUE, 0)))                                                                AS TOTQCval,
+            0                                                                                           AS RECval,
+            0                                                                                           AS ISSval,
+            A.GODCODE
+        FROM IN_TRNTAIL A
+        JOIN IN_TC T ON A.TC = T.TC
+        WHERE A.DIVCODE = @DivCode
+          AND T.TCTYPE  = 1
+          AND A.DOCDT  >= @YFDate
+          AND A.DOCDT  <= @EndDate
+        GROUP BY A.ITEMCODE, A.GODCODE
+    ) AS X
+    JOIN in_item i ON X.ITEMCODE = i.ITEMCODE
+    WHERE X.ITEMCODE = @ItemCode
+      AND X.GODCODE  = @GodCode
+    GROUP BY
+        X.ITEMCODE,
+        i.ITEMNAME,
+        i.UOM,
+        X.GODCODE
+    HAVING
+        SUM(X.ALLREC - X.ALLISS - X.REC + X.ISS) <> 0
+        OR SUM(X.REC)  <> 0
+        OR SUM(X.ISS)  <> 0
+        OR SUM(X.ALLREC - X.ALLISS) <> 0
+        OR SUM(X.TOTQC) < 0
+    ORDER BY X.ITEMCODE;
+END
+ELSE
+-- -----------------------------------------------
+-- All-godowns path  (Purstock = '')
+-- -----------------------------------------------
+BEGIN
+    SELECT
+        X.ITEMCODE,
+        i.ITEMNAME,
+        i.UOM,
+        SUM(X.ALLREC  - X.ALLISS  - X.REC + X.ISS)                AS OPQTY,
+        SUM(X.REC)                                                  AS RCDQTY,
+        SUM(X.ISS)                                                  AS ISDQTY,
+        SUM(X.ALLREC  - X.ALLISS)                                   AS BALQTY,
+        SUM(X.ALLRECval - X.ALLISSval)                              AS VALUE,
+        SUM(X.TOTQC)                                                AS QCSTK,
+        SUM(X.ALLRECval - X.ALLISSval - X.RECval + X.ISSval)       AS OPVAL,
+        SUM(X.RECval)                                               AS RCVAL,
+        SUM(X.ISSval)                                               AS ISDVAL,
+        SUM(X.TOTQCval)                                             AS QCVAL
+    FROM
+    (
+        -- Branch 1: Opening balance from IN_IDET
+        SELECT
+            ITEMCODE,
+            SUM(ISNULL(QUANTITY, 0))    AS ALLREC,
+            0                           AS ALLISS,
+            0                           AS TOTQC,
+            0                           AS REC,
+            0                           AS ISS,
+            SUM(ISNULL(VALUE, 0))       AS ALLRECval,
+            0                           AS ALLISSval,
+            0                           AS TOTQCval,
+            0                           AS RECval,
+            0                           AS ISSval
+        FROM IN_IDET
+        WHERE DIVCODE   = @DivCode
+          AND YEARMONTH = @OYM
+          AND TC        = 0
+        GROUP BY ITEMCODE
+
+        UNION ALL
+
+        -- Branch 2: Period receipts (merged)
+        SELECT
+            A.ITEMCODE,
+            SUM(ISNULL(A.QUANTITY, 0))  AS ALLREC,
+            0                           AS ALLISS,
+            0                           AS TOTQC,
+            SUM(ISNULL(A.QUANTITY, 0))  AS REC,
+            0                           AS ISS,
+            SUM(ISNULL(A.VALUE, 0))     AS ALLRECval,
+            0                           AS ALLISSval,
+            0                           AS TOTQCval,
+            SUM(ISNULL(A.VALUE, 0))     AS RECval,
+            0                           AS ISSval
+        FROM IN_TRNTAIL A
+        JOIN IN_TC T ON A.TC = T.TC
+        WHERE A.DIVCODE = @DivCode
+          AND A.DOCDT  >= @YFDate
+          AND A.DOCDT  <= @EndDate
+          AND (
+                T.TCTYPE IN (1, 3, 5, 7, 9)
+                OR (@IncludeType12 = 1 AND T.TCTYPE = 12)
+              )
+        GROUP BY A.ITEMCODE
+
+        UNION ALL
+
+        -- Branch 3: Period issues (merged)
+        SELECT
+            A.ITEMCODE,
+            0                                       AS ALLREC,
+            SUM(ABS(ISNULL(A.QUANTITY, 0)))         AS ALLISS,
+            0                                       AS TOTQC,
+            0                                       AS REC,
+            SUM(ABS(ISNULL(A.QUANTITY, 0)))         AS ISS,
+            0                                       AS ALLRECval,
+            SUM(ABS(ISNULL(A.VALUE, 0)))            AS ALLISSval,
+            0                                       AS TOTQCval,
+            0                                       AS RECval,
+            SUM(ABS(ISNULL(A.VALUE, 0)))            AS ISSval
+        FROM IN_TRNTAIL A
+        JOIN IN_TC T ON A.TC = T.TC
+        WHERE A.DIVCODE = @DivCode
+          AND A.DOCDT  >= @YFDate
+          AND A.DOCDT  <= @EndDate
+          AND (
+                T.TCTYPE IN (2, 4, 6, 8)
+                OR (@IncludeType11 = 1 AND T.TCTYPE = 11)
+              )
+        GROUP BY A.ITEMCODE
+
+        UNION ALL
+
+        -- Branch 4: QC stock (TCTYPE = 1 only)
+        SELECT
+            A.ITEMCODE,
+            0                                                                                           AS ALLREC,
+            0                                                                                           AS ALLISS,
+            SUM(ABS(ISNULL(A.QCRECDQTY, 0))) - SUM(ABS(ISNULL(A.REJQTY, 0))) - SUM(ABS(ISNULL(A.QUANTITY, 0)))  AS TOTQC,
+            0                                                                                           AS REC,
+            0                                                                                           AS ISS,
+            0                                                                                           AS ALLRECval,
+            0                                                                                           AS ALLISSval,
+            SUM(ABS(ISNULL(A.VALUE, 0)))                                                                AS TOTQCval,
+            0                                                                                           AS RECval,
+            0                                                                                           AS ISSval
+        FROM IN_TRNTAIL A
+        JOIN IN_TC T ON A.TC = T.TC
+        WHERE A.DIVCODE = @DivCode
+          AND T.TCTYPE  = 1
+          AND A.DOCDT  >= @YFDate
+          AND A.DOCDT  <= @EndDate
+        GROUP BY A.ITEMCODE
+    ) AS X
+    JOIN in_item i ON X.ITEMCODE = i.ITEMCODE
+    WHERE X.ITEMCODE = @ItemCode
+    GROUP BY
+        X.ITEMCODE,
+        i.ITEMNAME,
+        i.UOM
+    HAVING
+        SUM(X.ALLREC - X.ALLISS - X.REC + X.ISS) <> 0
+        OR SUM(X.REC)  <> 0
+        OR SUM(X.ISS)  <> 0
+        OR SUM(X.ALLREC - X.ALLISS) <> 0
+        OR SUM(X.TOTQC) < 0
+    ORDER BY X.ITEMCODE;
+END
+GO
+
+-- =============================================
+-- Recommended indexes (run once on target DB)
+-- =============================================
+--
+-- CREATE NONCLUSTERED INDEX IX_IN_IDET_DivYMTC
+--     ON IN_IDET (DIVCODE, YEARMONTH, TC)
+--     INCLUDE (ITEMCODE, QUANTITY, VALUE, GODCODE);
+--
+-- CREATE NONCLUSTERED INDEX IX_IN_TRNTAIL_DivDocdt
+--     ON IN_TRNTAIL (DIVCODE, DOCDT)
+--     INCLUDE (TC, ITEMCODE, QUANTITY, VALUE, QCRECDQTY, REJQTY, GODCODE);
+--
+-- CREATE NONCLUSTERED INDEX IX_IN_TC_TCType
+--     ON IN_TC (TC, TCTYPE);
  
 GO 
  

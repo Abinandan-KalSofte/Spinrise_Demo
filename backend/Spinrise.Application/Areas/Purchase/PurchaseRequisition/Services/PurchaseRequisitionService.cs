@@ -75,9 +75,9 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
         }
     }
 
-    public async Task<(bool Success, string Message, string? PrNo)> CreateAsync(CreatePRHeaderDto dto, string createdBy)
+    public async Task<(bool Success, string Message, string? PrNo)> CreateAsync(CreatePRHeaderDto dto, string divCode, string createdBy)
     {
-        var divCode = dto.DivCode.Trim();
+        divCode = divCode.Trim();
         var preCheckResult = await RunPreChecksAsync(divCode);
         var preCheckFailure = GetPreCheckFailure(preCheckResult);
         if (preCheckFailure is not null)
@@ -130,7 +130,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
         try
         {
             var prNo = FormatPrNumber(await _repo.GetNextPrNumberAsync(divCode, GetFinancialYear(dto.PrDate)), dto.PrDate);
-            var header = dto.ToEntity(prNo, createdBy);
+            var header = dto.ToEntity(prNo, divCode, createdBy);
 
             await _repo.InsertHeaderAsync(header);
 
@@ -149,13 +149,15 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
         }
     }
 
-    public async Task<(bool Success, string Message)> UpdateAsync(UpdatePRHeaderDto dto, string modifiedBy)
+    public async Task<(bool Success, string Message)> UpdateAsync(UpdatePRHeaderDto dto, string divCode, string modifiedBy)
     {
+        divCode = divCode.Trim();
+
         await _uow.BeginAsync();
 
         try
         {
-            var existing = await _repo.GetByIdAsync(dto.DivCode.Trim(), dto.PrNo.Trim());
+            var existing = await _repo.GetByIdAsync(divCode, dto.PrNo.Trim());
             if (existing is null)
             {
                 await _uow.CommitAsync();
@@ -169,20 +171,20 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
                 return (false, PRMessages.PrAlreadyConverted);
             }
 
-            if (!await _repo.DepartmentExistsAsync(dto.DivCode.Trim(), dto.DepCode.Trim()))
+            if (!await _repo.DepartmentExistsAsync(divCode, dto.DepCode.Trim()))
             {
                 await _uow.CommitAsync();
                 return (false, PRMessages.DepartmentNotFound);
             }
 
-            if (await _repo.GetFeatureFlagAsync(dto.DivCode.Trim(), PRFeatureFlags.BudgetValidationEnabled)
+            if (await _repo.GetFeatureFlagAsync(divCode, PRFeatureFlags.BudgetValidationEnabled)
                 && string.IsNullOrWhiteSpace(dto.SubCostCode))
             {
                 await _uow.CommitAsync();
                 return (false, PRMessages.SubCostRequired);
             }
 
-            var lineValidation = await ValidateUpdateLinesAsync(dto.DivCode.Trim(), dto.DepCode.Trim(), existing.PrDate.Date, dto.Lines);
+            var lineValidation = await ValidateUpdateLinesAsync(divCode, dto.DepCode.Trim(), existing.PrDate.Date, dto.Lines);
             if (lineValidation is not null)
             {
                 await _uow.CommitAsync();
@@ -201,14 +203,14 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
 
         try
         {
-            var current = await _repo.GetByIdAsync(dto.DivCode.Trim(), dto.PrNo.Trim());
+            var current = await _repo.GetByIdAsync(divCode, dto.PrNo.Trim());
             if (current is null)
             {
                 await _uow.RollbackAsync();
                 return (false, PRMessages.PrNotFound);
             }
 
-            var header = dto.ToEntity(modifiedBy, current.PrDate, current.DepName, current.PrStatus, current.CreatedBy, current.CreatedAt);
+            var header = dto.ToEntity(divCode, modifiedBy, current.PrDate, current.DepName, current.PrStatus, current.CreatedBy, current.CreatedAt);
             var updatedRows = await _repo.UpdateHeaderAsync(header);
             if (updatedRows <= 0)
             {
@@ -216,11 +218,11 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
                 return (false, PRMessages.PrNotFound);
             }
 
-            await _repo.SoftDeleteLinesAsync(dto.DivCode.Trim(), dto.PrNo.Trim());
+            await _repo.SoftDeleteLinesAsync(divCode, dto.PrNo.Trim());
 
             for (var index = 0; index < dto.Lines.Count; index++)
             {
-                await _repo.InsertLineAsync(dto.Lines[index].ToEntity(dto.DivCode.Trim(), dto.PrNo.Trim(), index + 1));
+                await _repo.InsertLineAsync(dto.Lines[index].ToEntity(divCode, dto.PrNo.Trim(), index + 1));
             }
 
             await _uow.CommitAsync();

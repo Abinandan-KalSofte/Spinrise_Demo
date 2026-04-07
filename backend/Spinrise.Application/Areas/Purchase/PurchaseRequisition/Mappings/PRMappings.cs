@@ -55,11 +55,11 @@ public static class PRMappings
         };
     }
 
-    public static PurchaseRequisitionHeader ToEntity(this CreatePRHeaderDto dto, string prNo, string createdBy)
+    public static PurchaseRequisitionHeader ToEntity(this CreatePRHeaderDto dto, string prNo, string divCode, string createdBy)
     {
         return new PurchaseRequisitionHeader
         {
-            DivCode = dto.DivCode.Trim(),
+            DivCode = divCode.Trim(),
             PrNo = prNo,
             PrDate = dto.PrDate,
             DepCode = dto.DepCode.Trim(),
@@ -75,11 +75,11 @@ public static class PRMappings
         };
     }
 
-    public static PurchaseRequisitionHeader ToEntity(this UpdatePRHeaderDto dto, string modifiedBy, DateTime prDate, string? depName, string prStatus, string createdBy, DateTime createdAt)
+    public static PurchaseRequisitionHeader ToEntity(this UpdatePRHeaderDto dto, string divCode, string modifiedBy, DateTime prDate, string? depName, string prStatus, string createdBy, DateTime createdAt)
     {
         return new PurchaseRequisitionHeader
         {
-            DivCode = dto.DivCode.Trim(),
+            DivCode = divCode.Trim(),
             PrNo = dto.PrNo.Trim(),
             PrDate = prDate,
             DepCode = dto.DepCode.Trim(),

@@ -1,0 +1,365 @@
+import { useEffect, useState } from 'react'
+import { Alert, App, Card, Form, Skeleton, Space, Spin, Typography } from 'antd'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
+
+import { useAuthStore }            from '@/features/auth/store/useAuthStore'
+import { purchaseRequisitionApi }  from '../api/purchaseRequisitionApi'
+import { useLookupStore }          from '../store/useLookupStore'
+import { purchaseReportService }   from '@/features/purchase-reports/services/purchaseReportService'
+
+import { PRHeaderV2 }    from '../components/v2/PRHeaderV2'
+import { PRItemFormV2 }  from '../components/v2/PRItemFormV2'
+import { PRItemTableV2 } from '../components/v2/PRItemTableV2'
+import { PRActionBarV2 } from '../components/v2/PRActionBarV2'
+import type { PrintFormat } from '../components/v2/PRActionBarV2'
+
+import type { PRHeaderFormValues, PRLineFormItem, CreatePRRequest } from '../types'
+
+export default function PurchaseRequisitionV2Page() {
+  const { message } = App.useApp()
+  const [headerForm] = Form.useForm<PRHeaderFormValues>()
+
+  const divCode = useAuthStore((s) => s.user?.divCode ?? '')
+
+  // ── State ─────────────────────────────────────────────────────────────────
+  const [isHeaderSaved, setIsHeaderSaved] = useState(false)
+  const [items,         setItems]         = useState<PRLineFormItem[]>([])
+  const [editingKey,    setEditingKey]    = useState<string | null>(null)
+
+  const [savedPrNo, setSavedPrNo] = useState<string | null>(null)
+  const [prStatus,  setPrStatus]  = useState<string | null>(null)
+  const [saving,    setSaving]    = useState(false)
+  const [deleting,  setDeleting]  = useState(false)
+
+  const [preCheckMsg,     setPreCheckMsg]     = useState<string | null>(null)
+  const [preCheckLoading, setPreCheckLoading] = useState(false)
+
+  // ── Lookups ───────────────────────────────────────────────────────────────
+  const {
+    departments,
+    employees,
+    poTypes,
+    machines,
+    subCosts,
+    loaded:  lookupsLoaded,
+    loading: lookupsLoading,
+    error:   lookupsError,
+    loadAll,
+  } = useLookupStore()
+
+  useEffect(() => { void loadAll() }, [loadAll])
+
+  useEffect(() => {
+    if (divCode) void runPreChecks()
+  }, [divCode]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Pre-checks ────────────────────────────────────────────────────────────
+  const runPreChecks = async () => {
+    setPreCheckLoading(true)
+    try {
+      const result = await purchaseRequisitionApi.preChecks()
+      setPreCheckMsg(
+        result.hasPendingIndent
+          ? (result.message ?? 'There are pending indents for this division.')
+          : null,
+      )
+    } catch { /* non-critical */ }
+    finally { setPreCheckLoading(false) }
+  }
+
+  // ── Header save / unlock ──────────────────────────────────────────────────
+  const handleSaveHeader = async () => {
+    try {
+      await headerForm.validateFields()
+      setIsHeaderSaved(true)
+    } catch {
+      // Ant Design shows inline field errors automatically
+    }
+  }
+
+  const handleEditHeader = () => {
+    setIsHeaderSaved(false)
+  }
+
+  // ── Item CRUD ─────────────────────────────────────────────────────────────
+  const handleItemAdd = (item: PRLineFormItem) => {
+    setItems((prev) => [...prev, item])
+  }
+
+  const handleItemUpdate = (updated: PRLineFormItem) => {
+    setItems((prev) => prev.map((l) => (l.key === updated.key ? updated : l)))
+    setEditingKey(null)
+  }
+
+  const handleStartEdit = (item: PRLineFormItem) => {
+    setEditingKey(item.key)
+  }
+
+  const handleCancelEdit = () => {
+    setEditingKey(null)
+  }
+
+  const handleItemDelete = (key: string) => {
+    if (editingKey === key) setEditingKey(null)
+    setItems((prev) => prev.filter((l) => l.key !== key))
+  }
+
+  // ── Build API payload ─────────────────────────────────────────────────────
+  const buildPayload = (values: PRHeaderFormValues): CreatePRRequest => ({
+    prDate:        values.prDate.format('YYYY-MM-DD'),
+    depCode:       values.depCode,
+    section:       values.section?.trim()       || undefined,
+    subCostCode:   values.subCostCode?.trim()   || undefined,
+    iType:         values.iType?.trim()         || undefined,
+    reqName:       values.reqName?.trim()       || undefined,
+    refNo:         values.refNo?.trim()         || undefined,
+    poGroupCode:   values.poGroupCode?.trim()   || undefined,
+    scopeCode:     values.scopeCode?.trim()     || undefined,
+    saleOrderNo:   values.saleOrderNo?.trim()   || undefined,
+    saleOrderDate: values.saleOrderDate
+      ? values.saleOrderDate.format('YYYY-MM-DD')
+      : null,
+    lines: items.map((l) => ({
+      itemCode:        l.itemCode,
+      qtyRequired:     l.qtyRequired,
+      requiredDate:    l.requiredDate   ?? null,
+      approxCost:      l.approxCost     ?? null,
+      machineNo:       l.machineNo      || undefined,
+      remarks:         l.remarks        || undefined,
+      place:           l.place          || undefined,
+      costCentreCode:  l.costCentreCode || undefined,
+      budgetGroupCode: l.budgetGroupCode|| undefined,
+      isSample:        l.isSample,
+    })),
+  })
+
+  // ── Save Draft ────────────────────────────────────────────────────────────
+  const handleSaveDraft = async () => {
+    if (!isHeaderSaved) {
+      message.error('Save the header first.')
+      return
+    }
+    if (items.length === 0) {
+      message.error('At least one item is required.')
+      return
+    }
+    setSaving(true)
+    try {
+      const values = headerForm.getFieldsValue()
+      const result = await purchaseRequisitionApi.create(buildPayload(values))
+      setSavedPrNo(result.prNo)
+      setPrStatus('D')
+      message.success(`Draft ${result.prNo} saved.`)
+    } catch (err: unknown) {
+      message.error(err instanceof Error ? err.message : 'Failed to save draft.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  // ── Submit ────────────────────────────────────────────────────────────────
+  const handleSubmit = async () => {
+    if (!isHeaderSaved) {
+      message.error('Save the header first.')
+      return
+    }
+    if (items.length === 0) {
+      message.error('At least one item is required.')
+      return
+    }
+    setSaving(true)
+    try {
+      const values = headerForm.getFieldsValue()
+      const result = await purchaseRequisitionApi.create(buildPayload(values))
+      setSavedPrNo(result.prNo)
+      setPrStatus('O')
+      message.success(`Purchase Requisition ${result.prNo} submitted successfully.`)
+    } catch (err: unknown) {
+      message.error(err instanceof Error ? err.message : 'Failed to submit.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  // ── Delete PR ─────────────────────────────────────────────────────────────
+  const handleDelete = async () => {
+    if (!savedPrNo) return
+    setDeleting(true)
+    try {
+      await purchaseRequisitionApi.deletePR(savedPrNo)
+      message.success(`PR ${savedPrNo} deleted.`)
+      headerForm.resetFields()
+      setItems([])
+      setEditingKey(null)
+      setIsHeaderSaved(false)
+      setSavedPrNo(null)
+      setPrStatus(null)
+      setPreCheckMsg(null)
+    } catch (err: unknown) {
+      message.error(err instanceof Error ? err.message : 'Failed to delete.')
+    } finally {
+      setDeleting(false)
+    }
+  }
+
+  // ── Print ─────────────────────────────────────────────────────────────────
+  const handlePrint = async (format: PrintFormat) => {
+    if (!savedPrNo) return
+    try {
+      message.loading({ content: `Generating ${format.toUpperCase()}…`, key: 'print' })
+      const pr = await purchaseRequisitionApi.getById(savedPrNo)
+      const { blob, fileName } =
+        await purchaseReportService.downloadPurchaseRequisitionReport(pr.id, format)
+      const url = URL.createObjectURL(blob)
+      const a   = document.createElement('a')
+      a.href     = url
+      a.download = fileName
+      a.click()
+      URL.revokeObjectURL(url)
+      message.success({ content: `Downloaded ${fileName}`, key: 'print' })
+    } catch {
+      message.error({ content: 'Failed to generate report.', key: 'print' })
+    }
+  }
+
+  // ── Derived ───────────────────────────────────────────────────────────────
+  const editingItem       = items.find((l) => l.key === editingKey) ?? null
+  const existingItemCodes = items
+    .filter((l) => l.key !== editingKey)   // exclude the row being edited
+    .map((l) => l.itemCode)
+  const pageBusy          = saving || deleting
+  const canSave           = isHeaderSaved && items.length > 0 && !pageBusy
+
+  // ── Loading skeleton ──────────────────────────────────────────────────────
+  if (lookupsLoading) {
+    return (
+      <div style={{ padding: 32 }}>
+        <Spin tip="Loading reference data…">
+          <Skeleton active paragraph={{ rows: 6 }} />
+        </Spin>
+      </div>
+    )
+  }
+
+  // ── Render ────────────────────────────────────────────────────────────────
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100%' }}>
+      <div style={{ flex: 1, padding: '20px 24px', paddingBottom: 8 }}>
+
+        {/* Alerts */}
+        {lookupsError && (
+          <Alert
+            type="error"
+            showIcon
+            message={lookupsError}
+            style={{ marginBottom: 16 }}
+            action={
+              <Typography.Link onClick={() => void loadAll()}>Retry</Typography.Link>
+            }
+          />
+        )}
+
+        {preCheckMsg && (
+          <Alert
+            type="warning"
+            showIcon
+            icon={<ExclamationCircleOutlined />}
+            message="Pending Indent Warning"
+            description={preCheckMsg}
+            closable
+            onClose={() => setPreCheckMsg(null)}
+            style={{ marginBottom: 16 }}
+          />
+        )}
+
+        {savedPrNo && (
+          <Alert
+            type="success"
+            showIcon
+            message={`Purchase Requisition ${savedPrNo} saved successfully.`}
+            style={{ marginBottom: 16 }}
+          />
+        )}
+
+        {preCheckLoading && (
+          <Typography.Text type="secondary" style={{ display: 'block', marginBottom: 12 }}>
+            <Spin size="small" style={{ marginRight: 6 }} />
+            Running pre-checks…
+          </Typography.Text>
+        )}
+
+        {/* Header */}
+        <Skeleton active loading={!lookupsLoaded && !lookupsError}>
+          <PRHeaderV2
+            form={headerForm}
+            departments={departments}
+            employees={employees}
+            poTypes={poTypes}
+            subCosts={subCosts}
+            isHeaderSaved={isHeaderSaved}
+            onSaveHeader={() => void handleSaveHeader()}
+            onEditHeader={handleEditHeader}
+            disabled={pageBusy}
+          />
+        </Skeleton>
+
+        {/* Item section — gated behind header save */}
+        {isHeaderSaved ? (
+          <Space direction="vertical" style={{ width: '100%' }} size={16}>
+            {/* Inline add/edit form */}
+            <PRItemFormV2
+              machines={machines}
+              editingItem={editingItem}
+              existingItemCodes={existingItemCodes}
+              onAdd={handleItemAdd}
+              onUpdate={handleItemUpdate}
+              onCancelEdit={handleCancelEdit}
+              disabled={pageBusy}
+            />
+
+            {/* Items table */}
+            {items.length > 0 && (
+              <Card size="small" title={
+                <Space>
+                  Line Items
+                  <Typography.Text type="secondary" style={{ fontWeight: 'normal', fontSize: 12 }}>
+                    ({items.length})
+                  </Typography.Text>
+                </Space>
+              }>
+                <PRItemTableV2
+                  lines={items}
+                  editingKey={editingKey}
+                  onEdit={handleStartEdit}
+                  onDelete={handleItemDelete}
+                  disabled={pageBusy}
+                />
+              </Card>
+            )}
+          </Space>
+        ) : (
+          <Card
+            size="small"
+            style={{ textAlign: 'center', color: '#8c8c8c', padding: 32 }}
+          >
+            <Typography.Text type="secondary">
+              Complete and save the header to start adding items.
+            </Typography.Text>
+          </Card>
+        )}
+      </div>
+
+      {/* Sticky footer */}
+      <PRActionBarV2
+        prNo={savedPrNo}
+        prStatus={prStatus}
+        saving={pageBusy}
+        canSave={canSave}
+        onSaveDraft={() => void handleSaveDraft()}
+        onSubmit={() => void handleSubmit()}
+        onDelete={savedPrNo ? () => void handleDelete() : undefined}
+        onPrint={savedPrNo ? (fmt) => void handlePrint(fmt) : undefined}
+      />
+    </div>
+  )
+}

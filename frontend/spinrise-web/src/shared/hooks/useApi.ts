@@ -1,6 +1,5 @@
-import { useState, useCallback } from 'react'
-import { AxiosError } from 'axios'
-import { ApiErrorDetail } from '@/shared/api/client'
+import { useState, useCallback, useRef } from 'react'
+import type { ApiErrorDetail } from '@/shared/api/client'
 
 interface UseApiOptions {
   onSuccess?: () => void
@@ -15,23 +14,29 @@ export function useApi<T>(
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<ApiErrorDetail | null>(null)
 
+  // Keep latest asyncFunction and options in refs so execute never changes identity
+  const asyncFunctionRef = useRef(asyncFunction)
+  asyncFunctionRef.current = asyncFunction
+  const optionsRef = useRef(options)
+  optionsRef.current = options
+
   const execute = useCallback(async () => {
     setLoading(true)
     setError(null)
     try {
-      const result = await asyncFunction()
+      const result = await asyncFunctionRef.current()
       setData(result)
-      options?.onSuccess?.()
+      optionsRef.current?.onSuccess?.()
       return result
     } catch (err: unknown) {
       const apiError = err as ApiErrorDetail
       setError(apiError)
-      options?.onError?.(apiError)
+      optionsRef.current?.onError?.(apiError)
       throw apiError
     } finally {
       setLoading(false)
     }
-  }, [asyncFunction, options])
+  }, []) // stable — never recreated
 
   const reset = useCallback(() => {
     setData(null)

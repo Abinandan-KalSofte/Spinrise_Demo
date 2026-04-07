@@ -1,160 +1,324 @@
-import { useState } from 'react'
-import { App, Form } from 'antd'
-import { CheckCircleOutlined } from '@ant-design/icons'
-import dayjs from 'dayjs'
-import type { PRItem } from '../types'
-import { generatePRNo } from '../data/dummy'
-import {
-  PRHeroBanner,
-  PRHeaderForm,
-  PRItemEntryForm,
-  PRItemsGrid,
-  PRFooterActions,
-  PREditItemModal,
-} from '../components'
+import { useEffect, useState } from 'react'
+import { Alert, App, Card, Form, Skeleton, Space, Spin, Typography } from 'antd'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
 
-function uid(): string {
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
-}
+import { useAuthStore } from '@/features/auth/store/useAuthStore'
+import { purchaseRequisitionApi } from '../api/purchaseRequisitionApi'
+import { useLookupStore } from '../store/useLookupStore'
+import { PRActionBar } from '../components/PRActionBar'
+import { PRHeader } from '../components/PRHeader'
+import { PRItemGrid } from '../components/PRItemGrid'
+import { PRItemModal } from '../components/PRItemModal'
+import { purchaseReportService } from '@/features/purchase-reports/services/purchaseReportService'
+
+import type { PRHeaderFormValues, PRLineFormItem, CreatePRRequest } from '../types'
 
 export default function PurchaseRequisitionPage() {
-  const [headerForm] = Form.useForm()
-  const [itemForm] = Form.useForm()
-  const [editForm] = Form.useForm()
-  const { message: messageApi } = App.useApp()
+  const { message } = App.useApp()
+  const [form] = Form.useForm<PRHeaderFormValues>()
 
-  const [prNo] = useState(generatePRNo)
-  const [itemsGrid, setItemsGrid] = useState<PRItem[]>([])
-  const [editingItem, setEditingItem] = useState<PRItem | null>(null)
-  const [editModalOpen, setEditModalOpen] = useState(false)
-  const [saving, setSaving] = useState(false)
+  // Division code comes from the authenticated user's JWT — never from UI input.
+  const divCode = useAuthStore((s) => s.user?.divCode ?? '')
 
-  const handleAddItem = async () => {
+  // ── PR state ──────────────────────────────────────────────────────────────
+  const [savedPrNo, setSavedPrNo] = useState<string | null>(null)
+  const [lines, setLines]               = useState<PRLineFormItem[]>([])
+  const [saving, setSaving]             = useState(false)
+  const [deleting, setDeleting]         = useState(false)
+
+  // ── Pre-check warning ─────────────────────────────────────────────────────
+  const [preCheckMsg, setPreCheckMsg]   = useState<string | null>(null)
+  const [preCheckLoading, setPreCheckLoading] = useState(false)
+
+  // ── Item modal ────────────────────────────────────────────────────────────
+  const [itemModalOpen, setItemModalOpen] = useState(false)
+  const [editingLine, setEditingLine]     = useState<PRLineFormItem | null>(null)
+
+  // ── Lookups ───────────────────────────────────────────────────────────────
+  const {
+    departments,
+    employees,
+    poTypes,
+    machines,
+    subCosts,
+    loaded:   lookupsLoaded,
+    loading:  lookupsLoading,
+    error:    lookupsError,
+    loadAll,
+  } = useLookupStore()
+
+  useEffect(() => {
+    void loadAll()
+  }, [loadAll])
+
+  // Run pre-checks once divCode is available
+  useEffect(() => {
+    if (divCode) void runPreChecks()
+  }, [divCode]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Pre-checks ────────────────────────────────────────────────────────────
+  // divCode is injected by the server from JWT; no parameter needed here.
+  const runPreChecks = async () => {
+    setPreCheckLoading(true)
     try {
-      const values = await itemForm.validateFields()
-      const newItem: PRItem = {
-        id: uid(),
-        itemCode: values.itemCode,
-        itemName: values.itemName,
-        uom: values.uom,
-        rate: values.rate ?? 0,
-        currentStock: values.currentStock ?? 0,
-        quantityRequired: values.quantityRequired,
-        costCentre: values.costCentre ?? '',
-        budgetGroup: values.budgetGroup ?? '',
-        machineNo: values.machineNo ?? '',
-        machineModel: values.machineModel ?? '',
-        machineDescription: values.machineDescription ?? '',
-        requiredDate: values.requiredDate ? dayjs(values.requiredDate).format('YYYY-MM-DD') : '',
-        place: values.place ?? '',
-        approxCost: values.approxCost ?? 0,
-        remarks: values.remarks ?? '',
-        sampleFlag: values.sampleFlag ?? false,
+      const result = await purchaseRequisitionApi.preChecks()
+      if (result.hasPendingIndent) {
+        setPreCheckMsg(
+          result.message ?? 'There are pending indents for this division.',
+        )
+      } else {
+        setPreCheckMsg(null)
       }
-      setItemsGrid((prev) => [...prev, newItem])
-      itemForm.resetFields()
-      void messageApi.success('Item added to requisition.')
     } catch {
-      void messageApi.error('Please fill all required fields before adding.')
+      // Non-critical — silently ignore pre-check failures
+    } finally {
+      setPreCheckLoading(false)
     }
   }
 
-  const handleDeleteItem = (id: string) => {
-    setItemsGrid((prev) => prev.filter((item) => item.id !== id))
-    void messageApi.success('Item removed.')
-  }
-
-  const handleEditItem = (record: PRItem) => {
-    setEditingItem(record)
-    editForm.setFieldsValue({
-      ...record,
-      requiredDate: record.requiredDate ? dayjs(record.requiredDate) : null,
-    })
-    setEditModalOpen(true)
-  }
-
-  const handleEditSave = async () => {
+  // ── Save ──────────────────────────────────────────────────────────────────
+  const handleSave = async () => {
+    let values: PRHeaderFormValues
     try {
-      const values = await editForm.validateFields()
-      setItemsGrid((prev) =>
-        prev.map((item) =>
-          item.id === editingItem?.id
-            ? {
-                ...item,
-                ...values,
-                requiredDate: values.requiredDate
-                  ? dayjs(values.requiredDate).format('YYYY-MM-DD')
-                  : '',
-              }
-            : item,
-        ),
-      )
-      setEditModalOpen(false)
-      setEditingItem(null)
-      void messageApi.success('Item updated successfully.')
+      values = await form.validateFields()
     } catch {
-      // antd shows inline validation errors
+      message.error('Please complete all required fields before saving.')
+      return
     }
-  }
 
-  const handleSavePR = async () => {
+    if (lines.length === 0) {
+      message.error('At least one line item is required.')
+      return
+    }
+
+    setSaving(true)
     try {
-      await headerForm.validateFields()
-      if (itemsGrid.length === 0) {
-        void messageApi.warning('Add at least one item before saving.')
-        return
+      const payload: CreatePRRequest = {
+        prDate: values.prDate.format('YYYY-MM-DD'),
+        depCode:       values.depCode,
+        section:       values.section?.trim()       || undefined,
+        subCostCode:   values.subCostCode?.trim()   || undefined,
+        iType:         values.iType?.trim()         || undefined,
+        reqName:       values.reqName?.trim()       || undefined,
+        refNo:         values.refNo?.trim()          || undefined,
+        poGroupCode:   values.poGroupCode?.trim()   || undefined,
+        scopeCode:     values.scopeCode?.trim()     || undefined,
+        saleOrderNo:   values.saleOrderNo?.trim()   || undefined,
+        saleOrderDate: values.saleOrderDate
+          ? values.saleOrderDate.format('YYYY-MM-DD')
+          : null,
+        lines: lines.map((l) => ({
+          itemCode:       l.itemCode,
+          qtyRequired:    l.qtyRequired,
+          requiredDate:   l.requiredDate ?? null,
+          place:          l.place          || undefined,
+          approxCost:     l.approxCost     ?? null,
+          remarks:        l.remarks        || undefined,
+          machineNo:      l.machineNo      || undefined,
+          costCentreCode: l.costCentreCode || undefined,
+          budgetGroupCode:l.budgetGroupCode|| undefined,
+          isSample:       l.isSample,
+        })),
       }
-      setSaving(true)
-      await new Promise((r) => setTimeout(r, 1200))
+
+      const result = await purchaseRequisitionApi.create(payload)
+      setSavedPrNo(result.prNo)
+      message.success(`Purchase Requisition ${result.prNo} created successfully.`)
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to save. Please try again.'
+      message.error(msg)
+    } finally {
       setSaving(false)
-      void messageApi.success({
-        content: `Purchase Requisition ${prNo} saved successfully.`,
-        icon: <CheckCircleOutlined style={{ color: '#22c55e' }} />,
-      })
-    } catch {
-      setSaving(false)
-      void messageApi.error('Please complete all required header fields.')
     }
   }
 
-  const handleReset = () => {
-    headerForm.resetFields()
-    itemForm.resetFields()
-    setItemsGrid([])
-    void messageApi.info('Form cleared.')
+  // ── Delete PR ─────────────────────────────────────────────────────────────
+  const handleDelete = async () => {
+    if (!savedPrNo) return
+    setDeleting(true)
+    try {
+      await purchaseRequisitionApi.deletePR(savedPrNo)
+      message.success(`PR ${savedPrNo} deleted.`)
+      // Reset form
+      form.resetFields()
+      setLines([])
+      setSavedPrNo(null)
+      setPreCheckMsg(null)
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to delete.'
+      message.error(msg)
+    } finally {
+      setDeleting(false)
+    }
+  }
+
+  // ── Print ─────────────────────────────────────────────────────────────────
+  const handlePrint = async (format: 'pdf' | 'excel' | 'csv') => {
+    if (!savedPrNo) return
+    // Find the numeric id — for now we re-fetch the PR to get the id
+    // In a real scenario the id would be stored alongside savedPrNo
+    try {
+      message.loading({ content: `Generating ${format.toUpperCase()}…`, key: 'print' })
+      const pr = await purchaseRequisitionApi.getById(savedPrNo)
+      const { blob, fileName } =
+        await purchaseReportService.downloadPurchaseRequisitionReport(pr.id, format)
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = fileName
+      a.click()
+      URL.revokeObjectURL(url)
+      message.success({ content: `Downloaded ${fileName}`, key: 'print' })
+    } catch {
+      message.error({ content: 'Failed to generate report.', key: 'print' })
+    }
+  }
+
+  // ── Item modal handlers ───────────────────────────────────────────────────
+  const openAddModal = () => {
+    setEditingLine(null)
+    setItemModalOpen(true)
+  }
+
+  const openEditModal = (line: PRLineFormItem) => {
+    setEditingLine(line)
+    setItemModalOpen(true)
+  }
+
+  const handleItemSave = (item: PRLineFormItem) => {
+    setLines((prev) =>
+      prev.some((l) => l.key === item.key)
+        ? prev.map((l) => (l.key === item.key ? item : l))
+        : [...prev, item],
+    )
+    setItemModalOpen(false)
+    setEditingLine(null)
+  }
+
+  const handleItemDelete = (key: string) => {
+    setLines((prev) => prev.filter((l) => l.key !== key))
+  }
+
+  // ── Derived state ─────────────────────────────────────────────────────────
+  const isEditMode  = savedPrNo !== null
+  const canSave     = !saving && !deleting && lines.length > 0
+  const existingCodes = lines.map((l) => l.itemCode)
+
+  // ── Render ────────────────────────────────────────────────────────────────
+  if (lookupsLoading) {
+    return (
+      <div style={{ padding: 32 }}>
+        <Spin tip="Loading reference data…">
+          <Skeleton active paragraph={{ rows: 6 }} />
+        </Spin>
+      </div>
+    )
   }
 
   return (
-    <div className="pr-page">
-      <PRHeroBanner prNo={prNo} />
-
-      <PRHeaderForm form={headerForm} />
-
-      <PRItemEntryForm form={itemForm} onAddItem={() => void handleAddItem()} />
-
-      <PRItemsGrid
-        items={itemsGrid}
-        onEdit={handleEditItem}
-        onDelete={handleDeleteItem}
+    <div style={{ paddingBottom: 40 }}>
+      {/* ── Sticky action bar ──────────────────────────────────────────── */}
+      <PRActionBar
+        prNo={savedPrNo}
+        isEditMode={isEditMode}
+        saving={saving || deleting}
+        canSave={canSave}
+        onSave={() => void handleSave()}
+        onAddItem={openAddModal}
+        onDelete={isEditMode ? () => void handleDelete() : undefined}
+        onPrint={isEditMode ? (fmt) => void handlePrint(fmt) : undefined}
       />
 
-      <PRFooterActions
-        itemCount={itemsGrid.length}
-        saving={saving}
-        onSave={() => void handleSavePR()}
-        onReset={handleReset}
-      />
+      <div style={{ padding: '20px 24px' }}>
+        {/* ── Lookup error ───────────────────────────────────────────────── */}
+        {lookupsError && (
+          <Alert
+            type="error"
+            showIcon
+            message={lookupsError}
+            style={{ marginBottom: 16 }}
+            action={
+              <Typography.Link onClick={() => void loadAll()}>Retry</Typography.Link>
+            }
+          />
+        )}
 
-      <PREditItemModal
-        open={editModalOpen}
-        editingItem={editingItem}
-        form={editForm}
-        onSave={() => void handleEditSave()}
+        {/* ── Pre-check warning ──────────────────────────────────────────── */}
+        {preCheckMsg && (
+          <Alert
+            type="warning"
+            showIcon
+            icon={<ExclamationCircleOutlined />}
+            message="Pending Indent Warning"
+            description={preCheckMsg}
+            closable
+            onClose={() => setPreCheckMsg(null)}
+            style={{ marginBottom: 16 }}
+          />
+        )}
+
+        {/* ── Saved PR confirmation ──────────────────────────────────────── */}
+        {savedPrNo && (
+          <Alert
+            type="success"
+            showIcon
+            message={
+              <Space>
+                <span>Purchase Requisition</span>
+                <Typography.Text strong>{savedPrNo}</Typography.Text>
+                <span>has been saved.</span>
+              </Space>
+            }
+            style={{ marginBottom: 16 }}
+          />
+        )}
+
+        {/* ── Header form ────────────────────────────────────────────────── */}
+        <Skeleton active loading={!lookupsLoaded && !lookupsError}>
+          <PRHeader
+            form={form}
+            divCode={divCode}
+            departments={departments}
+            employees={employees}
+            poTypes={poTypes}
+            subCosts={subCosts}
+            disabled={deleting}
+          />
+        </Skeleton>
+
+        {/* ── Items section ──────────────────────────────────────────────── */}
+        <Card size="small">
+          <PRItemGrid
+            lines={lines}
+            onAddItem={openAddModal}
+            onEditItem={openEditModal}
+            onDeleteItem={handleItemDelete}
+            disabled={deleting}
+          />
+        </Card>
+
+        {/* Pre-check spinner — unobtrusive */}
+        {preCheckLoading && (
+          <Typography.Text type="secondary" style={{ marginTop: 8, display: 'block' }}>
+            <Spin size="small" style={{ marginRight: 6 }} />
+            Running pre-checks…
+          </Typography.Text>
+        )}
+      </div>
+
+      {/* ── Item add/edit modal ─────────────────────────────────────────── */}
+      <PRItemModal
+        open={itemModalOpen}
+        editingItem={editingLine}
+        machines={machines}
+        existingItemCodes={existingCodes}
+        onSave={handleItemSave}
         onCancel={() => {
-          setEditModalOpen(false)
-          setEditingItem(null)
+          setItemModalOpen(false)
+          setEditingLine(null)
         }}
       />
     </div>
   )
 }
+

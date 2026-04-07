@@ -3,9 +3,10 @@ import type { AuthResponse, AuthTokens, AuthUser, LoginDto } from '../types'
 
 function mapAuthUser(user: AuthResponse['user']): AuthUser {
   return {
-    id: user.id,
-    email: user.email,
-    role: user.role ?? 'user',
+    id:      user.id,
+    email:   user.email,
+    role:    user.role ?? 'user',
+    divCode: user.divCode ?? '',
   }
 }
 

@@ -6,9 +6,10 @@ export interface LoginDto {
 export type UserRole = 'admin' | 'user'
 
 export interface AuthUser {
-  id: number
-  email: string
-  role: UserRole
+  id:      number
+  email:   string
+  role:    UserRole
+  divCode: string
 }
 
 export interface AuthTokens {

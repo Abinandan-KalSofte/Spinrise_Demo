@@ -21,7 +21,7 @@ public class PurchaseRequisitionServiceTests
                 DocNumberConfigured = true
             });
 
-        var result = await service.CreateAsync(dto, "SYSTEM");
+        var result = await service.CreateAsync(dto, "DIV1", "SYSTEM");
 
         result.Success.Should().BeFalse();
         result.Message.Should().Be("Please define Item in Item Master.");
@@ -41,9 +41,9 @@ public class PurchaseRequisitionServiceTests
             RequiredDate = DateTime.Today.AddDays(2)
         });
 
-        SetupHappyPathPreChecks(dto.DivCode, dto.DepCode, "ITEM1");
+        SetupHappyPathPreChecks("DIV1", dto.DepCode, "ITEM1");
 
-        var result = await service.CreateAsync(dto, "SYSTEM");
+        var result = await service.CreateAsync(dto, "DIV1", "SYSTEM");
 
         result.Success.Should().BeFalse();
         result.Message.Should().Be("Duplicate item codes are not allowed in the same PR.");
@@ -55,31 +55,32 @@ public class PurchaseRequisitionServiceTests
     {
         var service = CreateService();
         var dto = CreateValidCreateDto();
+        const string divCode = "DIV1";
         var expectedPrNo = $"PR/{GetFinancialYear(dto.PrDate)}/00001";
 
-        SetupHappyPathPreChecks(dto.DivCode, dto.DepCode, "ITEM1");
-        _repo.Setup(x => x.GetNextPrNumberAsync(dto.DivCode, It.IsAny<string>()))
+        SetupHappyPathPreChecks(divCode, dto.DepCode, "ITEM1");
+        _repo.Setup(x => x.GetNextPrNumberAsync(divCode, It.IsAny<string>()))
             .ReturnsAsync(1);
         _repo.Setup(x => x.InsertHeaderAsync(It.IsAny<PurchaseRequisitionHeader>()))
             .ReturnsAsync(10);
         _repo.Setup(x => x.InsertLineAsync(It.IsAny<PurchaseRequisitionLine>()))
             .ReturnsAsync(20);
 
-        var result = await service.CreateAsync(dto, "SYSTEM");
+        var result = await service.CreateAsync(dto, divCode, "SYSTEM");
 
         result.Success.Should().BeTrue();
         result.Message.Should().Be("Purchase Requisition created successfully.");
         result.PrNo.Should().Be(expectedPrNo);
         _repo.Verify(
             x => x.InsertHeaderAsync(It.Is<PurchaseRequisitionHeader>(h =>
-                h.DivCode == dto.DivCode &&
+                h.DivCode == divCode &&
                 h.DepCode == dto.DepCode &&
                 h.PrNo == expectedPrNo &&
                 h.CreatedBy == "SYSTEM")),
             Times.Once);
         _repo.Verify(
             x => x.InsertLineAsync(It.Is<PurchaseRequisitionLine>(l =>
-                l.DivCode == dto.DivCode &&
+                l.DivCode == divCode &&
                 l.PrNo == expectedPrNo &&
                 l.PrSNo == 1 &&
                 l.ItemCode == "ITEM1")),
@@ -92,19 +93,20 @@ public class PurchaseRequisitionServiceTests
     {
         var service = CreateService();
         var dto = CreateValidUpdateDto();
+        const string divCode = "DIV1";
 
         _uow.Setup(x => x.BeginAsync(It.IsAny<bool>())).Returns(Task.CompletedTask);
         _uow.Setup(x => x.CommitAsync()).Returns(Task.CompletedTask);
-        _repo.Setup(x => x.GetByIdAsync(dto.DivCode, dto.PrNo))
+        _repo.Setup(x => x.GetByIdAsync(divCode, dto.PrNo))
             .ReturnsAsync(new PurchaseRequisitionHeader
             {
-                DivCode = dto.DivCode,
+                DivCode = divCode,
                 PrNo = dto.PrNo,
                 PrDate = DateTime.Today,
                 PrStatus = "CONVERTED"
             });
 
-        var result = await service.UpdateAsync(dto, "SYSTEM");
+        var result = await service.UpdateAsync(dto, divCode, "SYSTEM");
 
         result.Success.Should().BeFalse();
         result.Message.Should().Be("This PR has already been converted to a PO and cannot be modified.");
@@ -142,7 +144,6 @@ public class PurchaseRequisitionServiceTests
     {
         return new CreatePRHeaderDto
         {
-            DivCode = "DIV1",
             PrDate = DateTime.Today,
             DepCode = "DEP1",
             ReqName = "Requester",
@@ -163,7 +164,6 @@ public class PurchaseRequisitionServiceTests
     {
         return new UpdatePRHeaderDto
         {
-            DivCode = "DIV1",
             PrNo = "PR/2026-27/00001",
             DepCode = "DEP1",
             Lines =
