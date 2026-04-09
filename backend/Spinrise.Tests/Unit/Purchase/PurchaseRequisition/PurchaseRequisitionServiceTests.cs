@@ -1,3 +1,5 @@
+using Spinrise.Application.DTOs.PurchaseRequisitions;
+
 namespace Spinrise.Tests.Unit.Purchase.PurchaseRequisition;
 
 public class PurchaseRequisitionServiceTests
@@ -21,7 +23,7 @@ public class PurchaseRequisitionServiceTests
                 DocNumberConfigured = true
             });
 
-        var result = await service.CreateAsync(dto, "DIV1", "SYSTEM");
+        var result = await service.CreateAsync(dto, "DIV1", CreateTestAuditContext());
 
         result.Success.Should().BeFalse();
         result.Message.Should().Be("Please define Item in Item Master.");
@@ -38,12 +40,13 @@ public class PurchaseRequisitionServiceTests
         {
             ItemCode = "ITEM1",
             QtyRequired = 3,
-            RequiredDate = DateTime.Today.AddDays(2)
+            RequiredDate = DateTime.Today.AddDays(2),
+            SubCostCode = "SCC1"
         });
 
         SetupHappyPathPreChecks("DIV1", dto.DepCode, "ITEM1");
 
-        var result = await service.CreateAsync(dto, "DIV1", "SYSTEM");
+        var result = await service.CreateAsync(dto, "DIV1", CreateTestAuditContext());
 
         result.Success.Should().BeFalse();
         result.Message.Should().Be("Duplicate item codes are not allowed in the same PR.");
@@ -56,7 +59,7 @@ public class PurchaseRequisitionServiceTests
         var service = CreateService();
         var dto = CreateValidCreateDto();
         const string divCode = "DIV1";
-        var expectedPrNo = $"PR/{GetFinancialYear(dto.PrDate)}/00001";
+        const long expectedPrNo = 1;
 
         SetupHappyPathPreChecks(divCode, dto.DepCode, "ITEM1");
         _repo.Setup(x => x.GetNextPrNumberAsync(divCode, It.IsAny<string>()))
@@ -66,7 +69,7 @@ public class PurchaseRequisitionServiceTests
         _repo.Setup(x => x.InsertLineAsync(It.IsAny<PurchaseRequisitionLine>()))
             .ReturnsAsync(20);
 
-        var result = await service.CreateAsync(dto, divCode, "SYSTEM");
+        var result = await service.CreateAsync(dto, divCode, CreateTestAuditContext());
 
         result.Success.Should().BeTrue();
         result.Message.Should().Be("Purchase Requisition created successfully.");
@@ -106,7 +109,7 @@ public class PurchaseRequisitionServiceTests
                 PrStatus = "CONVERTED"
             });
 
-        var result = await service.UpdateAsync(dto, divCode, "SYSTEM");
+        var result = await service.UpdateAsync(dto, divCode, CreateTestAuditContext());
 
         result.Success.Should().BeFalse();
         result.Message.Should().Be("This PR has already been converted to a PO and cannot be modified.");
@@ -130,8 +133,6 @@ public class PurchaseRequisitionServiceTests
                 DepartmentExists = true,
                 DocNumberConfigured = true
             });
-        _repo.Setup(x => x.GetFeatureFlagAsync(divCode, "backdate_allowed")).ReturnsAsync(true);
-        _repo.Setup(x => x.GetFeatureFlagAsync(divCode, "budget_validation_enabled")).ReturnsAsync(false);
         _repo.Setup(x => x.DepartmentExistsAsync(divCode, depCode)).ReturnsAsync(true);
 
         foreach (var itemCode in itemCodes.Distinct(StringComparer.OrdinalIgnoreCase))
@@ -154,7 +155,8 @@ public class PurchaseRequisitionServiceTests
                     ItemCode = "ITEM1",
                     QtyRequired = 5,
                     RequiredDate = DateTime.Today.AddDays(1),
-                    Remarks = "Required urgently"
+                    Remarks = "Required urgently",
+                    SubCostCode = 3
                 }
             ]
         };
@@ -164,7 +166,7 @@ public class PurchaseRequisitionServiceTests
     {
         return new UpdatePRHeaderDto
         {
-            PrNo = "PR/2026-27/00001",
+            PrNo = 1,
             DepCode = "DEP1",
             Lines =
             [
@@ -178,9 +180,6 @@ public class PurchaseRequisitionServiceTests
         };
     }
 
-    private static string GetFinancialYear(DateTime date)
-    {
-        var startYear = date.Month >= 4 ? date.Year : date.Year - 1;
-        return $"{startYear}-{(startYear + 1) % 100:00}";
-    }
+    private static AuditContext CreateTestAuditContext() =>
+        new("SYSTEM", "SYSTEM", "127.0.0.1", "TESTHOST");
 }

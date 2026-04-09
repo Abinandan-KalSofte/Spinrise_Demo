@@ -5,6 +5,7 @@ import type {
   PRHeaderResponse,
   PRSummaryResponse,
   PreCheckResult,
+  PRItemInfoDto,
 } from '../types'
 
 const BASE = 'purchase-requisitions'
@@ -24,6 +25,9 @@ export const purchaseRequisitionApi = {
   preChecks: () =>
     apiHelpers.get<PreCheckResult>(`${BASE}/pre-checks`),
 
+  getItemInfo: (depCode: string, itemCode: string, yfDate: string, ylDate: string, pendingIndentCheckEnabled: boolean, pendingPRCheckEnabled: boolean) =>
+    apiHelpers.get<PRItemInfoDto>(`${BASE}/item-info?depCode=${encodeURIComponent(depCode)}&itemCode=${encodeURIComponent(itemCode)}&yfDate=${encodeURIComponent(yfDate)}&ylDate=${encodeURIComponent(ylDate)}&pendingIndentCheckEnabled=${pendingIndentCheckEnabled}&pendingPRCheckEnabled=${pendingPRCheckEnabled}`),
+
   getAll: (filters: PRListFilters = {}) => {
     const params = new URLSearchParams()
     Object.entries(filters).forEach(([k, v]) => {
@@ -33,18 +37,21 @@ export const purchaseRequisitionApi = {
     return apiHelpers.get<PRSummaryResponse[]>(qs ? `${BASE}?${qs}` : BASE)
   },
 
-  getById: (prNo: string) =>
-    apiHelpers.get<PRHeaderResponse>(`${BASE}/${encodeURIComponent(prNo)}`),
+  getById: (prNo: number) =>
+    apiHelpers.get<PRHeaderResponse>(`${BASE}/${prNo}`),
 
   create: (dto: CreatePRRequest) =>
-    apiHelpers.post<{ prNo: string }>(BASE, dto),
+    apiHelpers.post<{ prNo: number }>(BASE, dto),
 
-  update: (prNo: string, dto: UpdatePRRequest) =>
-    apiHelpers.put<void>(`${BASE}/${encodeURIComponent(prNo)}`, dto),
+  update: (prNo: number, dto: UpdatePRRequest) =>
+    apiHelpers.put<void>(`${BASE}/${prNo}`, dto),
 
-  deletePR: (prNo: string) =>
-    apiHelpers.delete(`${BASE}/${encodeURIComponent(prNo)}`),
+  getDeleteReasons: () =>
+    apiHelpers.get<Array<{ reasonCode: string; reasonDesc: string }>>(`${BASE}/delete-reasons`),
 
-  deleteLine: (prNo: string, lineNo: number) =>
-    apiHelpers.delete(`${BASE}/${encodeURIComponent(prNo)}/lines/${lineNo}`),
+  deletePR: (prNo: number, deleteReasonCode: string) =>
+    apiHelpers.delete(`${BASE}/${prNo}?deleteReasonCode=${encodeURIComponent(deleteReasonCode)}`),
+
+  deleteLine: (prNo: number, lineNo: number, deleteReasonCode: string) =>
+    apiHelpers.delete(`${BASE}/${prNo}/lines/${lineNo}?deleteReasonCode=${encodeURIComponent(deleteReasonCode)}`),
 }

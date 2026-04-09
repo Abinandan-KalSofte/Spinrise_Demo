@@ -13,10 +13,12 @@ public static class PRMappings
             DepCode = entity.DepCode,
             DepName = entity.DepName,
             Section = entity.Section,
-            SubCostCode = entity.SubCostCode,
+            SubCost = entity.SubCost,
             IType = entity.IType,
             ReqName = entity.ReqName,
             RefNo = entity.RefNo,
+            PoGroupCode = entity.PoGroupCode,
+            ScopeCode = entity.ScopeCode,
             SaleOrderNo = entity.SaleOrderNo,
             SaleOrderDate = entity.SaleOrderDate,
             PrStatus = entity.PrStatus,
@@ -47,15 +49,18 @@ public static class PRMappings
             MachineNo = line.MachineNo,
             CostCentreCode = line.CostCentreCode,
             BudgetGroupCode = line.BudgetGroupCode,
+            SubCostCode = line.SubCostCode,
             LastPoRate = line.LastPoRate,
             LastPoDate = line.LastPoDate,
             LastPoSupplierCode = line.LastPoSupplierCode,
             LastPoSupplierName = line.LastPoSupplierName,
-            IsSample = line.IsSample
+            IsSample = line.IsSample,
+            Model = line.Model,
+            MaxCost = line.MaxCost
         };
     }
 
-    public static PurchaseRequisitionHeader ToEntity(this CreatePRHeaderDto dto, string prNo, string divCode, string createdBy)
+    public static PurchaseRequisitionHeader ToEntity(this CreatePRHeaderDto dto, long prNo, string divCode, string createdBy)
     {
         return new PurchaseRequisitionHeader
         {
@@ -64,10 +69,12 @@ public static class PRMappings
             PrDate = dto.PrDate,
             DepCode = dto.DepCode.Trim(),
             Section = dto.Section?.Trim(),
-            SubCostCode = dto.SubCostCode?.Trim(),
+            SubCost = dto.SubCost,
             IType = dto.IType?.Trim(),
             ReqName = dto.ReqName?.Trim(),
             RefNo = dto.RefNo?.Trim(),
+            PoGroupCode = dto.PoGroupCode?.Trim(),
+            ScopeCode = dto.ScopeCode?.Trim(),
             SaleOrderNo = dto.SaleOrderNo?.Trim(),
             SaleOrderDate = dto.SaleOrderDate,
             PrStatus = "DRAFT",
@@ -80,15 +87,17 @@ public static class PRMappings
         return new PurchaseRequisitionHeader
         {
             DivCode = divCode.Trim(),
-            PrNo = dto.PrNo.Trim(),
+            PrNo = dto.PrNo,
             PrDate = prDate,
             DepCode = dto.DepCode.Trim(),
             DepName = depName,
             Section = dto.Section?.Trim(),
-            SubCostCode = dto.SubCostCode?.Trim(),
+            SubCost = dto.SubCost,
             IType = dto.IType?.Trim(),
             ReqName = dto.ReqName?.Trim(),
             RefNo = dto.RefNo?.Trim(),
+            PoGroupCode = dto.PoGroupCode?.Trim(),
+            ScopeCode = dto.ScopeCode?.Trim(),
             SaleOrderNo = dto.SaleOrderNo?.Trim(),
             SaleOrderDate = dto.SaleOrderDate,
             PrStatus = prStatus,
@@ -98,7 +107,7 @@ public static class PRMappings
         };
     }
 
-    public static PurchaseRequisitionLine ToEntity(this CreatePRLineDto dto, string divCode, string prNo, int prSNo)
+    public static PurchaseRequisitionLine ToEntity(this CreatePRLineDto dto, string divCode, long prNo, int prSNo)
     {
         return new PurchaseRequisitionLine
         {
@@ -106,6 +115,10 @@ public static class PRMappings
             PrNo = prNo,
             PrSNo = prSNo,
             ItemCode = dto.ItemCode.Trim(),
+            ItemName = dto.ItemName?.Trim(),
+            Uom = dto.Uom?.Trim(),
+            Rate = dto.Rate,
+            CurrentStock = dto.CurrentStock,
             QtyRequired = dto.QtyRequired,
             RequiredDate = dto.RequiredDate,
             Place = dto.Place?.Trim(),
@@ -114,11 +127,18 @@ public static class PRMappings
             MachineNo = dto.MachineNo?.Trim(),
             CostCentreCode = dto.CostCentreCode?.Trim(),
             BudgetGroupCode = dto.BudgetGroupCode?.Trim(),
-            IsSample = dto.IsSample
+            SubCostCode = dto.SubCostCode,
+            LastPoRate = dto.LastPoRate,
+            LastPoDate = dto.LastPoDate,
+            LastPoSupplierCode = dto.LastPoSupplierCode?.Trim(),
+            LastPoSupplierName = dto.LastPoSupplierName?.Trim(),
+            IsSample = dto.IsSample,
+            Model = dto.Model?.Trim(),
+            MaxCost = dto.MaxCost
         };
     }
 
-    public static PurchaseRequisitionLine ToEntity(this UpdatePRLineDto dto, string divCode, string prNo, int prSNo)
+    public static PurchaseRequisitionLine ToEntity(this UpdatePRLineDto dto, string divCode, long prNo, int prSNo)
     {
         return ((CreatePRLineDto)dto).ToEntity(divCode, prNo, prSNo);
     }

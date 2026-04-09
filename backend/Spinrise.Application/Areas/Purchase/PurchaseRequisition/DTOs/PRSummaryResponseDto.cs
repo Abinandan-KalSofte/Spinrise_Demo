@@ -4,7 +4,7 @@ public class PRSummaryResponseDto
 {
     public int Id { get; set; }
     public string DivCode { get; set; } = string.Empty;
-    public string PrNo { get; set; } = string.Empty;
+    public long PrNo { get; set; }
     public DateTime PrDate { get; set; }
     public string DepCode { get; set; } = string.Empty;
     public string? DepName { get; set; }

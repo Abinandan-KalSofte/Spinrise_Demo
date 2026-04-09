@@ -17,7 +17,7 @@ const navigationItems: MenuProps['items'] = [
     type: 'group',
     children: [
       {
-        key: '/purchase/requisition/new',
+        key: 'purchase/requisition/new-v2',
         label: 'Purchase Requisition',
       },
       {
@@ -50,13 +50,13 @@ export default function MainLayout() {
           {!collapsed && (
             <div className="main-layout__brand-copy">
               <Typography.Text strong>Spinrise</Typography.Text>
-              <Typography.Text type="secondary">Revenue command center</Typography.Text>
+              <Typography.Text type="secondary">ERP Software</Typography.Text>
             </div>
           )}
         </div>
 
         {/* Workspace */}
-        {!collapsed && (
+        {/* {!collapsed && (
           <div className="main-layout__workspace">
             <Typography.Text className="main-layout__workspace-label">Workspace</Typography.Text>
             <div className="main-layout__workspace-card">
@@ -69,7 +69,7 @@ export default function MainLayout() {
               <Tag color="green">Live</Tag>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Navigation */}
         <Menu

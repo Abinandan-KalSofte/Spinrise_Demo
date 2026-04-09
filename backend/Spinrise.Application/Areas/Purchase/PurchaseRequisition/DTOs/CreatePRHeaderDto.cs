@@ -10,31 +10,31 @@ public class CreatePRHeaderDto
     public DateTime PrDate { get; set; }
 
     [Required]
-    [StringLength(10)]
+    [StringLength(3)]
     public string DepCode { get; set; } = string.Empty;
 
-    [StringLength(100)]
+    [StringLength(20)]
     public string? Section { get; set; }
 
-    [StringLength(20)]
-    public string? SubCostCode { get; set; }
+    [Range(1, 99999)]
+    public long? SubCost { get; set; }
 
-    [StringLength(20)]
+    [StringLength(2)]
     public string? IType { get; set; }
 
-    [StringLength(100)]
+    [StringLength(10)]
     public string? ReqName { get; set; }
 
-    [StringLength(50)]
+    [StringLength(20)]
     public string? RefNo { get; set; }
 
-    [StringLength(20)]
+    [StringLength(5)]
     public string? PoGroupCode { get; set; }
 
-    [StringLength(10)]
+    [StringLength(2)]
     public string? ScopeCode { get; set; }
 
-    [StringLength(50)]
+    [StringLength(25)]
     public string? SaleOrderNo { get; set; }
 
     public DateTime? SaleOrderDate { get; set; }

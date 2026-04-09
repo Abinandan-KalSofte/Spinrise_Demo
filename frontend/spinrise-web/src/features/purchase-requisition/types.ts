@@ -29,7 +29,7 @@ export interface MachineLookup {
 }
 
 export interface SubCostLookup {
-  sccCode: string
+  sccCode: number
   sccName: string
 }
 
@@ -49,9 +49,11 @@ export interface PRLineFormItem {
   machineNo: string
   costCentreCode: string
   budgetGroupCode: string
+  subCostCode: number | null
   isSample: boolean
   lastPoRate: number | null
   lastPoDate: string | null
+  lastPoSupplierCode: string | null
   lastPoSupplierName: string | null
   // V2 additions
   model:   string
@@ -66,7 +68,7 @@ export interface PRHeaderFormValues {
   prDate: Dayjs
   depCode: string
   section: string
-  subCostCode: string
+  subCost: number | null
   iType: string
   reqName: string
   refNo: string
@@ -74,15 +76,28 @@ export interface PRHeaderFormValues {
   scopeCode: string
   saleOrderNo: string
   saleOrderDate: Dayjs | null
-  // V2 only
-  requisitionType?: string
 }
 
 // ── API request types ─────────────────────────────────────────────────────────
 // divCode is NOT sent from the frontend. The server extracts it from the JWT.
-
+export interface PRItemInfoDto {
+  rate: number
+  currentStock: number
+  lastPoRate?: number
+  lastPoDate?: string
+  lastPoSupplierCode?: string
+  lastPoSupplierName?: string
+  hasPendingIndent: boolean
+  pendingIndentQty: number
+  hasPendingPR: boolean
+  pendingPrNo?: string
+  pendingPrDate?: string
+}
 export interface CreatePRLineRequest {
   itemCode: string
+  itemName?: string
+  uom?: string
+  currentStock?: number | null
   qtyRequired: number
   requiredDate?: string | null
   place?: string
@@ -91,7 +106,12 @@ export interface CreatePRLineRequest {
   machineNo?: string
   costCentreCode?: string
   budgetGroupCode?: string
+  subCostCode?: number | null
   isSample: boolean
+  lastPoRate?: number | null
+  lastPoDate?: string | null
+  lastPoSupplierCode?: string | null
+  lastPoSupplierName?: string | null
   // V2 additions
   model?:   string
   maxCost?: number | null
@@ -102,7 +122,7 @@ export interface CreatePRRequest {
   prDate: string
   depCode: string
   section?: string
-  subCostCode?: string
+  subCost?: number | null
   iType?: string
   reqName?: string
   refNo?: string
@@ -116,7 +136,7 @@ export interface CreatePRRequest {
 export type UpdatePRLineRequest = CreatePRLineRequest
 
 export interface UpdatePRRequest extends CreatePRRequest {
-  prNo: string
+  prNo: number
 }
 
 // ── API response types ────────────────────────────────────────────────────────
@@ -137,6 +157,7 @@ export interface PRLineResponse {
   machineNo?: string
   costCentreCode?: string
   budgetGroupCode?: string
+  subCostCode?: number
   lastPoRate?: number
   lastPoDate?: string
   lastPoSupplierCode?: string
@@ -147,12 +168,12 @@ export interface PRLineResponse {
 export interface PRHeaderResponse {
   id: number
   divCode: string
-  prNo: string
+  prNo: number
   prDate: string
   depCode: string
   depName?: string
   section?: string
-  subCostCode?: string
+  subCost?: number
   iType?: string
   reqName?: string
   refNo?: string
@@ -173,7 +194,7 @@ export interface PRHeaderResponse {
 export interface PRSummaryResponse {
   id: number
   divCode: string
-  prNo: string
+  prNo: number
   prDate: string
   depCode: string
   depName?: string

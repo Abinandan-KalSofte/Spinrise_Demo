@@ -15,6 +15,7 @@ Spinrise is a layered ASP.NET Core backend using:
 - `Spinrise.Shared` for cross-cutting shared code if needed in the future
 - `Spinrise.DBScripts` for SQL tables, stored procedures, seed data, and merged database setup scripts
 
+use ksp instead usp for creating SP
 Current sample module:
 
 - `User`

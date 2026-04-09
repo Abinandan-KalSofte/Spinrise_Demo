@@ -4,7 +4,7 @@ public class PurchaseRequisitionLine
 {
     public int Id { get; set; }
     public string DivCode { get; set; } = string.Empty;
-    public string PrNo { get; set; } = string.Empty;
+    public long PrNo { get; set; }
     public int PrSNo { get; set; }
     public string ItemCode { get; set; } = string.Empty;
     public string? ItemName { get; set; }
@@ -19,10 +19,13 @@ public class PurchaseRequisitionLine
     public string? MachineNo { get; set; }
     public string? CostCentreCode { get; set; }
     public string? BudgetGroupCode { get; set; }
+    public long? SubCostCode { get; set; }
     public decimal? LastPoRate { get; set; }
     public DateTime? LastPoDate { get; set; }
     public string? LastPoSupplierCode { get; set; }
     public string? LastPoSupplierName { get; set; }
     public bool IsSample { get; set; }
     public string? DirectApp { get; set; }
+    public string? Model { get; set; }
+    public decimal? MaxCost { get; set; }
 }

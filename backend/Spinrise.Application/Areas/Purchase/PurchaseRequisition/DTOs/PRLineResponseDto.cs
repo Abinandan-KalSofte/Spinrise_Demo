@@ -22,4 +22,7 @@ public class PRLineResponseDto
     public string? LastPoSupplierCode { get; set; }
     public string? LastPoSupplierName { get; set; }
     public bool IsSample { get; set; }
+    public long? SubCostCode { get; set; }
+    public string? Model { get; set; }
+    public decimal? MaxCost { get; set; }
 }

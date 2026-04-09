@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react'
-import { Alert, App, Card, Form, Skeleton, Space, Spin, Typography } from 'antd'
+import { Alert, App, Card, Form, Modal, Select, Skeleton, Space, Spin, Typography } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 
 import { useAuthStore }            from '@/features/auth/store/useAuthStore'
 import { purchaseRequisitionApi }  from '../api/purchaseRequisitionApi'
 import { useLookupStore }          from '../store/useLookupStore'
 import { purchaseReportService }   from '@/features/purchase-reports/services/purchaseReportService'
-
 import { PRHeaderV2 }    from '../components/v2/PRHeaderV2'
 import { PRItemFormV2 }  from '../components/v2/PRItemFormV2'
 import { PRItemTableV2 } from '../components/v2/PRItemTableV2'
@@ -26,13 +25,17 @@ export default function PurchaseRequisitionV2Page() {
   const [items,         setItems]         = useState<PRLineFormItem[]>([])
   const [editingKey,    setEditingKey]    = useState<string | null>(null)
 
-  const [savedPrNo, setSavedPrNo] = useState<string | null>(null)
+  const [savedPrNo, setSavedPrNo] = useState<number | null>(null)
   const [prStatus,  setPrStatus]  = useState<string | null>(null)
   const [saving,    setSaving]    = useState(false)
   const [deleting,  setDeleting]  = useState(false)
 
   const [preCheckMsg,     setPreCheckMsg]     = useState<string | null>(null)
   const [preCheckLoading, setPreCheckLoading] = useState(false)
+
+  const [deleteReasons,   setDeleteReasons]   = useState<Array<{ reasonCode: string; reasonDesc: string }>>([])
+  const [selectedDeleteReason, setSelectedDeleteReason] = useState<string | null>(null)
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
 
   // ── Lookups ───────────────────────────────────────────────────────────────
   const {
@@ -52,6 +55,18 @@ export default function PurchaseRequisitionV2Page() {
   useEffect(() => {
     if (divCode) void runPreChecks()
   }, [divCode]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const loadDeleteReasons = async () => {
+      try {
+        const reasons = await purchaseRequisitionApi.getDeleteReasons()
+        setDeleteReasons(reasons)
+      } catch {
+        /* non-critical */
+      }
+    }
+    void loadDeleteReasons()
+  }, [])
 
   // ── Pre-checks ────────────────────────────────────────────────────────────
   const runPreChecks = async () => {
@@ -109,7 +124,7 @@ export default function PurchaseRequisitionV2Page() {
     prDate:        values.prDate.format('YYYY-MM-DD'),
     depCode:       values.depCode,
     section:       values.section?.trim()       || undefined,
-    subCostCode:   values.subCostCode?.trim()   || undefined,
+    subCost:       values.subCost               ?? undefined,
     iType:         values.iType?.trim()         || undefined,
     reqName:       values.reqName?.trim()       || undefined,
     refNo:         values.refNo?.trim()         || undefined,
@@ -120,16 +135,27 @@ export default function PurchaseRequisitionV2Page() {
       ? values.saleOrderDate.format('YYYY-MM-DD')
       : null,
     lines: items.map((l) => ({
-      itemCode:        l.itemCode,
-      qtyRequired:     l.qtyRequired,
-      requiredDate:    l.requiredDate   ?? null,
-      approxCost:      l.approxCost     ?? null,
-      machineNo:       l.machineNo      || undefined,
-      remarks:         l.remarks        || undefined,
-      place:           l.place          || undefined,
-      costCentreCode:  l.costCentreCode || undefined,
-      budgetGroupCode: l.budgetGroupCode|| undefined,
-      isSample:        l.isSample,
+      itemCode:           l.itemCode,
+      itemName:           l.itemName            || undefined,
+      uom:                l.uom                 || undefined,
+      rate:               l.rate                ?? undefined,
+      currentStock:       l.currentStock        ?? undefined,
+      qtyRequired:        l.qtyRequired,
+      requiredDate:       l.requiredDate        ?? null,
+      approxCost:         l.approxCost          ?? undefined,
+      machineNo:          l.machineNo           || undefined,
+      remarks:            l.remarks             || undefined,
+      place:              l.place               || undefined,
+      costCentreCode:     l.costCentreCode      || undefined,
+      budgetGroupCode:    l.budgetGroupCode      || undefined,
+      subCostCode:        l.subCostCode         ?? undefined,
+      isSample:           l.isSample,
+      lastPoRate:         l.lastPoRate          ?? undefined,
+      lastPoDate:         l.lastPoDate          ?? undefined,
+      lastPoSupplierCode: l.lastPoSupplierCode  ?? undefined,
+      lastPoSupplierName: l.lastPoSupplierName  ?? undefined,
+      model:              l.model               || undefined,
+      maxCost:            l.maxCost             ?? undefined,
     })),
   })
 
@@ -181,12 +207,22 @@ export default function PurchaseRequisitionV2Page() {
     }
   }
 
-  // ── Delete PR ─────────────────────────────────────────────────────────────
-  const handleDelete = async () => {
+  // ── Delete PR (with reason selection) ─────────────────────────────────────
+  const handleDeleteClick = () => {
     if (!savedPrNo) return
+    setSelectedDeleteReason(null)
+    setDeleteModalOpen(true)
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (!selectedDeleteReason || !savedPrNo) {
+      message.error('Please select a delete reason.')
+      return
+    }
+    setDeleteModalOpen(false)
     setDeleting(true)
     try {
-      await purchaseRequisitionApi.deletePR(savedPrNo)
+      await purchaseRequisitionApi.deletePR(savedPrNo, selectedDeleteReason)
       message.success(`PR ${savedPrNo} deleted.`)
       headerForm.resetFields()
       setItems([])
@@ -309,6 +345,8 @@ export default function PurchaseRequisitionV2Page() {
             {/* Inline add/edit form */}
             <PRItemFormV2
               machines={machines}
+              subCosts={subCosts}
+              headerForm={headerForm}
               editingItem={editingItem}
               existingItemCodes={existingItemCodes}
               onAdd={handleItemAdd}
@@ -357,9 +395,34 @@ export default function PurchaseRequisitionV2Page() {
         canSave={canSave}
         onSaveDraft={() => void handleSaveDraft()}
         onSubmit={() => void handleSubmit()}
-        onDelete={savedPrNo ? () => void handleDelete() : undefined}
+        onDelete={savedPrNo ? handleDeleteClick : undefined}
         onPrint={savedPrNo ? (fmt) => void handlePrint(fmt) : undefined}
       />
+
+      {/* Delete confirmation modal */}
+      <Modal
+        title="Delete Purchase Requisition"
+        open={deleteModalOpen}
+        onCancel={() => setDeleteModalOpen(false)}
+        onOk={() => void handleDeleteConfirm()}
+        okText="Delete"
+        okButtonProps={{ danger: true }}
+        loading={deleting}
+      >
+        <div style={{ marginBottom: 16 }}>
+          <p>Please select a delete reason:</p>
+          <Select
+            placeholder="Select delete reason…"
+            value={selectedDeleteReason}
+            onChange={setSelectedDeleteReason}
+            options={deleteReasons.map((r) => ({
+              value: r.reasonCode,
+              label: `${r.reasonCode} – ${r.reasonDesc}`,
+            }))}
+            style={{ width: '100%' }}
+          />
+        </div>
+      </Modal>
     </div>
   )
 }

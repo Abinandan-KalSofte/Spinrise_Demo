@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import {
   Button,
   Card,
+  Checkbox,
   Col,
   Form,
   Input,
@@ -12,6 +13,7 @@ import {
   Tag,
   Typography,
 } from 'antd'
+import type { FormInstance } from 'antd'
 import {
   CloseOutlined,
   EditOutlined,
@@ -20,9 +22,10 @@ import {
 } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import { lookupApi } from '../../api/lookupApi'
+import { purchaseRequisitionApi } from '../../api/purchaseRequisitionApi'
 import { prefixFilterOption, priorityFilterSort } from '@/shared/utils/selectUtils'
 import { PRRateHistoryModal } from './PRRateHistoryModal'
-import type { ItemLookup, MachineLookup, PRLineFormItem } from '../../types'
+import type { ItemLookup, MachineLookup, PRLineFormItem, SubCostLookup, PRHeaderFormValues } from '../../types'
 
 // ── Form values type ─────────────────────────────────────────────────────────
 
@@ -30,18 +33,21 @@ interface ItemFormValues {
   itemCode:     string
   qtyRequired:  number
   requiredDays: number | null   // "Required in Days" — converts to requiredDate on submit
-  approxCost:   number | null
   model:        string
   maxCost:      number | null
   rate:         number | null
   machineNo:    string
   remarks:      string
+  isSample:     boolean
+  subCostCode:  number | null
 }
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 
 interface PRItemFormV2Props {
   machines:          MachineLookup[]
+  subCosts:          SubCostLookup[]
+  headerForm:        FormInstance<PRHeaderFormValues>
   editingItem:       PRLineFormItem | null
   existingItemCodes: string[]
   onAdd:             (item: PRLineFormItem) => void
@@ -57,6 +63,8 @@ const MIN_CHARS   = 2
 
 export function PRItemFormV2({
   machines,
+  subCosts,
+  headerForm,
   editingItem,
   existingItemCodes,
   onAdd,
@@ -75,14 +83,22 @@ export function PRItemFormV2({
   // required-days derived date
   const [requiredDays, setRequiredDays] = useState<number | null>(null)
 
+  // current stock and last PO data
+  const [currentStock,        setCurrentStock]        = useState<number | null>(null)
+  const [lastPoRate,          setLastPoRate]          = useState<number | null>(null)
+  const [lastPoDate,          setLastPoDate]          = useState<string | null>(null)
+  const [lastPoSupplierCode,  setLastPoSupplierCode]  = useState<string | null>(null)
+  const [lastPoSupplierName,  setLastPoSupplierName]  = useState<string | null>(null)
+
   // rate history modal
   const [rateHistoryOpen, setRateHistoryOpen] = useState(false)
 
   const debounceRef    = useRef<ReturnType<typeof setTimeout> | null>(null)
   const searchCountRef = useRef(0)
 
-  const isEditMode  = editingItem !== null
-  const machineOpts = machines.map((m) => ({ value: m.macNo, label: `${m.macNo} – ${m.description}` }))
+  const isEditMode   = editingItem !== null
+  const machineOpts  = machines.map((m) => ({ value: m.macNo,    label: `${m.macNo} – ${m.description}` }))
+  const subCostOpts  = subCosts.map((s)  => ({ value: s.sccCode, label: `${s.sccCode} – ${s.sccName}` }))
 
   // ── Populate form when editing ────────────────────────────────────────────
   useEffect(() => {
@@ -101,16 +117,22 @@ export function PRItemFormV2({
         ? Math.max(0, dayjs(editingItem.requiredDate).diff(dayjs().startOf('day'), 'day'))
         : null
       setRequiredDays(days)
+      setCurrentStock(editingItem.currentStock)
+      setLastPoRate(editingItem.lastPoRate)
+      setLastPoDate(editingItem.lastPoDate)
+      setLastPoSupplierCode(editingItem.lastPoSupplierCode)
+      setLastPoSupplierName(editingItem.lastPoSupplierName)
       form.setFieldsValue({
         itemCode:     editingItem.itemCode,
         qtyRequired:  editingItem.qtyRequired,
         requiredDays: days,
-        approxCost:   editingItem.approxCost,
         model:        editingItem.model,
         maxCost:      editingItem.maxCost,
         rate:         editingItem.rate,
         machineNo:    editingItem.machineNo,
         remarks:      editingItem.remarks,
+        isSample:     editingItem.isSample,
+        subCostCode:  editingItem.subCostCode,
       })
     } else {
       resetForm()
@@ -123,6 +145,11 @@ export function PRItemFormV2({
     setItemOptions([])
     setSelectedInfo(null)
     setRequiredDays(null)
+    setCurrentStock(null)
+    setLastPoRate(null)
+    setLastPoDate(null)
+    setLastPoSupplierCode(null)
+    setLastPoSupplierName(null)
   }
 
   // ── Item search (debounced, stale-safe) ──────────────────────────────────
@@ -157,9 +184,33 @@ export function PRItemFormV2({
     }, DEBOUNCE_MS)
   }
 
-  const handleItemSelect = (itemCode: string) => {
+  const handleItemSelect = async (itemCode: string) => {
     const found = rawResults.find((i) => i.itemCode === itemCode) ?? null
     setSelectedInfo(found)
+
+    // Fetch current stock and other info
+    if (found) {
+      try {
+        const depCode = headerForm.getFieldValue('depCode') as string
+        const prDate = headerForm.getFieldValue('prDate') as dayjs.Dayjs
+        const yfDate = prDate ? prDate.format('YYYY-MM-DD') : dayjs().format('YYYY-MM-DD')
+        const ylDate = prDate ? prDate.add(1, 'year').format('YYYY-MM-DD') : dayjs().add(1, 'year').format('YYYY-MM-DD')
+        const itemInfo = await purchaseRequisitionApi.getItemInfo(depCode, itemCode, yfDate, ylDate, false, false)
+        setCurrentStock(itemInfo.currentStock)
+        setLastPoRate(itemInfo.lastPoRate ?? null)
+        setLastPoDate(itemInfo.lastPoDate ?? null)
+        setLastPoSupplierCode(itemInfo.lastPoSupplierCode ?? null)
+        setLastPoSupplierName(itemInfo.lastPoSupplierName ?? null)
+      } catch {
+        setCurrentStock(null)
+        setLastPoRate(null)
+        setLastPoDate(null)
+        setLastPoSupplierCode(null)
+        setLastPoSupplierName(null)
+      }
+    } else {
+      setCurrentStock(null)
+    }
   }
 
   // ── Derived date display ──────────────────────────────────────────────────
@@ -176,28 +227,32 @@ export function PRItemFormV2({
       return
     }
 
+    // Note: subCostCode is now stored per line item, not on header
+
     const line: PRLineFormItem = {
-      key:             editingItem?.key          ?? crypto.randomUUID(),
-      itemCode:        values.itemCode,
-      itemName:        selectedInfo?.itemName    ?? editingItem?.itemName ?? '',
-      uom:             selectedInfo?.uom         ?? editingItem?.uom      ?? '',
-      currentStock:    editingItem?.currentStock ?? null,
-      qtyRequired:     values.qtyRequired,
-      requiredDate:    calculatedDate?.format('YYYY-MM-DD') ?? null,
-      approxCost:      values.approxCost         ?? null,
-      model:           values.model              ?? '',
-      maxCost:         values.maxCost            ?? null,
-      rate:            values.rate               ?? null,
-      machineNo:       values.machineNo          ?? '',
-      remarks:         values.remarks            ?? '',
+      key:                editingItem?.key          ?? crypto.randomUUID(),
+      itemCode:           values.itemCode,
+      itemName:           selectedInfo?.itemName    ?? editingItem?.itemName ?? '',
+      uom:                selectedInfo?.uom         ?? editingItem?.uom      ?? '',
+      currentStock:       currentStock,
+      qtyRequired:        values.qtyRequired,
+      requiredDate:       calculatedDate?.format('YYYY-MM-DD') ?? null,
+      approxCost:         null,
+      model:              values.model              ?? '',
+      maxCost:            values.maxCost            ?? null,
+      rate:               values.rate               ?? null,
+      machineNo:          values.machineNo          ?? '',
+      remarks:            values.remarks            ?? '',
+      subCostCode:        values.subCostCode        ?? null,
+      isSample:           values.isSample           ?? false,
+      lastPoRate:         lastPoRate,
+      lastPoDate:         lastPoDate,
+      lastPoSupplierCode: lastPoSupplierCode,
+      lastPoSupplierName: lastPoSupplierName,
       // carry-over fields not in V2 form
-      place:               editingItem?.place           ?? '',
-      costCentreCode:      editingItem?.costCentreCode  ?? '',
-      budgetGroupCode:     editingItem?.budgetGroupCode ?? '',
-      isSample:            editingItem?.isSample        ?? false,
-      lastPoRate:          editingItem?.lastPoRate       ?? null,
-      lastPoDate:          editingItem?.lastPoDate       ?? null,
-      lastPoSupplierName:  editingItem?.lastPoSupplierName ?? null,
+      place:              editingItem?.place           ?? '',
+      costCentreCode:     editingItem?.costCentreCode  ?? '',
+      budgetGroupCode:    editingItem?.budgetGroupCode ?? '',
     }
 
     if (isEditMode) {
@@ -213,11 +268,11 @@ export function PRItemFormV2({
 
   // ── Rate history data ─────────────────────────────────────────────────────
   const rateHistoryData = {
-    itemCode:           selectedInfo?.itemCode         ?? editingItem?.itemCode         ?? '',
-    itemName:           selectedInfo?.itemName         ?? editingItem?.itemName         ?? '',
-    lastPoRate:         editingItem?.lastPoRate         ?? null,
-    lastPoDate:         editingItem?.lastPoDate         ?? null,
-    lastPoSupplierName: editingItem?.lastPoSupplierName ?? null,
+    itemCode:           selectedInfo?.itemCode ?? editingItem?.itemCode ?? '',
+    itemName:           selectedInfo?.itemName ?? editingItem?.itemName ?? '',
+    lastPoRate,
+    lastPoDate,
+    lastPoSupplierName,
   }
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -245,8 +300,15 @@ export function PRItemFormV2({
           </Space>
         }
       >
+        {/* ── Sub Cost Centre — header field, rendered in item section ── */}
+        <Form form={headerForm} layout="vertical" size="middle" component={false} disabled={disabled}>
+          <Row gutter={[16, 0]} style={{ marginBottom: 0 }}>
+            
+          </Row>
+        </Form>
+
         <Form form={form} layout="vertical" size="middle" disabled={disabled}>
-          {/* ── Row 1: Item + UOM + Qty + Required in Days ────────────── */}
+          {/* ── Row 1: Item + UOM + Current Stock + Qty + Required in Days ── */}
           <Row gutter={[16, 0]} align="bottom">
             {/* Item search */}
             <Col xs={24} sm={24} md={10} lg={8}>
@@ -285,6 +347,18 @@ export function PRItemFormV2({
                 <Input
                   readOnly
                   value={selectedInfo?.uom ?? editingItem?.uom ?? ''}
+                  placeholder="—"
+                  style={{ background: '#fafafa', cursor: 'default', textAlign: 'center' }}
+                />
+              </Form.Item>
+            </Col>
+
+            {/* Current Stock — read-only, auto-filled */}
+            <Col xs={24} sm={6} md={3} lg={3}>
+              <Form.Item label="Current Stock">
+                <Input
+                  readOnly
+                  value={currentStock ?? ''}
                   placeholder="—"
                   style={{ background: '#fafafa', cursor: 'default', textAlign: 'center' }}
                 />
@@ -344,21 +418,21 @@ export function PRItemFormV2({
 
           {/* ── Row 2: Model + Approx Cost + Max Cost + Rate + Machine ─── */}
           <Row gutter={[16, 0]}>
-            <Col xs={24} sm={12} md={6} lg={5}>
-              <Form.Item name="model" label="Model / Specification">
-                <Input placeholder="Model or spec" maxLength={100} />
+            <Col xs={24} sm={12} md={8} lg={6}>
+              <Form.Item name="subCostCode" label="Sub Cost Centre">
+                <Select
+                  showSearch
+                  placeholder="Search sub-cost…"
+                  options={subCostOpts}
+                  filterOption={prefixFilterOption}
+                  filterSort={priorityFilterSort}
+                  allowClear
+                />
               </Form.Item>
             </Col>
-
-            <Col xs={24} sm={12} md={4} lg={4}>
-              <Form.Item name="approxCost" label="Approx. Cost">
-                <InputNumber
-                  style={{ width: '100%' }}
-                  min={0}
-                  precision={2}
-                  placeholder="0.00"
-                  prefix="₹"
-                />
+            <Col xs={24} sm={12} md={6} lg={5}>
+              <Form.Item name="model" label="Model ">
+                <Input placeholder="Model or spec" maxLength={100} />
               </Form.Item>
             </Col>
 
@@ -417,11 +491,16 @@ export function PRItemFormV2({
             </Col>
           </Row>
 
-          {/* ── Row 3: Remarks ────────────────────────────────────────── */}
+          {/* ── Row 3: Remarks + Is Sample Required ──────────────────── */}
           <Row gutter={[16, 0]}>
-            <Col xs={24}>
+            <Col xs={24} sm={18} md={20}>
               <Form.Item name="remarks" label="Remarks">
                 <Input placeholder="Any additional notes…" maxLength={500} />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={6} md={4}>
+              <Form.Item name="isSample" label="Is Sample Required" valuePropName="checked">
+                <Checkbox />
               </Form.Item>
             </Col>
           </Row>

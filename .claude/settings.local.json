@@ -7,7 +7,8 @@
       "Bash(find \"e:/Abinandan/SPINRISE/Development/backend\" -type f \\\\\\( -name \"*.csproj\" \\\\\\) -exec grep -l \"Dapper\\\\|SqlClient\" {} \\\\;)",
       "Bash(xargs grep:*)",
       "Bash(npx tsc:*)",
-      "Bash(dotnet build:*)"
+      "Bash(dotnet build:*)",
+      "Bash(dotnet clean:*)"
     ]
   }
 }

@@ -101,16 +101,30 @@ public static class StoredProcedures
 
     public static class PurchaseRequisition
     {
-        public const string GetAll          = "usp_PR_GetAll";
-        public const string GetById         = "usp_PR_GetById";
-        public const string Insert          = "usp_PR_Insert";
-        public const string InsertLine      = "usp_PR_InsertLine";
-        public const string Update          = "usp_PR_Update";
-        public const string SoftDeleteLines = "usp_PR_SoftDeleteLines";
-        public const string Delete          = "usp_PR_Delete";
-        public const string DeleteLine      = "usp_PR_DeleteLine";
-        public const string PreChecks       = "usp_PR_PreChecks";
-        public const string GenerateNumber  = "usp_PR_GenerateNumber";
+        public const string GetAll                    = "ksp_PR_GetAll";
+        public const string GetById                   = "ksp_PR_GetById";
+        public const string Insert                    = "ksp_PR_Insert";
+        public const string InsertLine                = "ksp_PR_InsertLine";
+        public const string Update                    = "ksp_PR_Update";
+        public const string SoftDeleteLines           = "ksp_PR_SoftDeleteLines";
+        public const string Delete                    = "ksp_PR_Delete";
+        public const string DeleteLine                = "ksp_PR_DeleteLine";
+        public const string PreChecks                 = "ksp_PR_PreChecks";
+        public const string GenerateNumber            = "ksp_PR_GenerateNumber";
+        public const string GetMaxPrDate              = "ksp_PR_GetMaxPrDate";
+        public const string PendingIndentCheck        = "ksp_PR_PendingIndentCheck";
+        public const string PendingPRCheck            = "ksp_PR_PendingPRCheck";
+        public const string GetItemInfo               = "ksp_PR_GetItemInfo";
+        public const string InsertAuditLog            = "ksp_PR_InsertAuditLog";
+        public const string GetDeleteReasons          = "ksp_PR_GetDeleteReasons";
+        // ── Existence checks (consolidated) ────────────────────────────────
+        public const string DepartmentExists          = "ksp_PR_DepartmentExists";
+        public const string ItemExists                = "ksp_PR_ItemExists";
+        public const string CostCentreExists          = "ksp_PR_CostCentreExists";
+        public const string BudgetGroupExists         = "ksp_PR_BudgetGroupExists";
+        public const string MachineExists             = "ksp_PR_MachineExists";
+        public const string DeleteReasonExists        = "ksp_PR_DeleteReasonExists";
+        public const string IsLinkedToEnquiry         = "ksp_PR_IsLinkedToEnquiry";
     }
 
     public static class Lookup
@@ -125,7 +139,7 @@ public static class StoredProcedures
 
     public static class Stock
     {
-        public const string GetCurrentStock = "usp_Stock_GetCurrentStock";
+        public const string GetCurrentStock = "ksp_Stock_GetCurrentStock";
     }
 
     /// <summary>

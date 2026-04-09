@@ -1,5 +1,5 @@
 -- =============================================
--- usp_Stock_GetCurrentStock
+-- ksp_Stock_GetCurrentStock
 --
 -- Consolidates legacy stkchk1 / stkchk2 logic.
 --
@@ -14,7 +14,7 @@
 -- (parts 3+5) into single branches that populate both ALLREC/REC and ALLISS/ISS
 -- simultaneously, cutting IN_TRNTAIL reads in half.
 -- =============================================
-CREATE OR ALTER PROCEDURE usp_Stock_GetCurrentStock
+CREATE OR ALTER PROCEDURE dbo.ksp_Stock_GetCurrentStock
     @DivCode        VARCHAR(10),
     @ItemCode       VARCHAR(20),
     @YFDate         DATE,           -- fiscal year start  (yfdate)

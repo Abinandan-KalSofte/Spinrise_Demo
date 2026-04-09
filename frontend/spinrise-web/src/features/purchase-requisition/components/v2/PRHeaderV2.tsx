@@ -31,15 +31,6 @@ import type {
   PRHeaderFormValues,
 } from '../../types'
 
-// ── Static lookup — Requisition Type ─────────────────────────────────────────
-const REQUISITION_TYPES = [
-  { value: 'REG', label: 'Regular' },
-  { value: 'URG', label: 'Urgent' },
-  { value: 'CAP', label: 'Capital (Capex)' },
-  { value: 'SPR', label: 'Spares & Consumables' },
-  { value: 'SVC', label: 'Services' },
-]
-
 // ── Props ─────────────────────────────────────────────────────────────────────
 
 interface PRHeaderV2Props {
@@ -110,7 +101,7 @@ export function PRHeaderV2({
   disabled = false,
 }: PRHeaderV2Props) {
   const deptOptions    = departments.map((d) => ({ value: d.depCode, label: `${d.depCode} – ${d.depName}` }))
-  const employeeOpts   = employees.map((e)   => ({ value: e.eName,   label: `${e.empNo} – ${e.eName}` }))
+  const employeeOpts   = employees.map((e)   => ({ value: e.empNo,   label: `${e.empNo} – ${e.eName}` }))
   const poTypeOptions  = poTypes.map((p)     => ({ value: p.typeCode, label: `${p.typeCode} – ${p.typName}` }))
   const subCostOptions = subCosts.map((s)    => ({ value: s.sccCode,  label: `${s.sccCode} – ${s.sccName}` }))
 
@@ -145,25 +136,19 @@ export function PRHeaderV2({
         ) : null
       })()}
 
-      {form.getFieldValue('reqName') && (
-        <>
-          <Typography.Text type="secondary">·</Typography.Text>
-          <Typography.Text style={{ fontSize: 13 }}>
-            <Typography.Text type="secondary" style={{ fontSize: 12 }}>By: </Typography.Text>
-            {form.getFieldValue('reqName') as string}
-          </Typography.Text>
-        </>
-      )}
-
-      {form.getFieldValue('requisitionType') && (() => {
-        const rt = REQUISITION_TYPES.find((t) => t.value === (form.getFieldValue('requisitionType') as string))
-        return rt ? (
+      {form.getFieldValue('reqName') && (() => {
+        const emp = employees.find((e) => e.empNo === form.getFieldValue('reqName') as string)
+        return emp ? (
           <>
             <Typography.Text type="secondary">·</Typography.Text>
-            <Tag color="blue" style={{ fontSize: 11 }}>{rt.label}</Tag>
+            <Typography.Text style={{ fontSize: 13 }}>
+              <Typography.Text type="secondary" style={{ fontSize: 12 }}>By: </Typography.Text>
+              {emp.eName}
+            </Typography.Text>
           </>
         ) : null
       })()}
+
     </Space>
   ) : (
     <Typography.Text strong>Requisition Header</Typography.Text>
@@ -239,13 +224,13 @@ export function PRHeaderV2({
 
         <Col xs={24} sm={12} md={8} lg={6}>
           <Form.Item name="section" label="Section">
-            <Input placeholder="Section / unit" maxLength={100} />
+            <Input placeholder="Section / unit" maxLength={20} />
           </Form.Item>
         </Col>
 
         <Col xs={24} sm={12} md={8} lg={6}>
           <Form.Item name="refNo" label="Reference No">
-            <Input placeholder="Reference number" maxLength={50} />
+            <Input placeholder="Reference number" maxLength={20} />
           </Form.Item>
         </Col>
       </Row>
@@ -271,20 +256,6 @@ export function PRHeaderV2({
         </Col>
 
         <Col xs={24} sm={12} md={8} lg={6}>
-          <Form.Item
-            name="requisitionType"
-            label="Requisition Type"
-            rules={[{ required: true, message: 'Required' }]}
-          >
-            <Select
-              placeholder="Select type…"
-              options={REQUISITION_TYPES}
-              allowClear
-            />
-          </Form.Item>
-        </Col>
-
-        <Col xs={24} sm={12} md={8} lg={6}>
           <Form.Item name="iType" label="Indent Type">
             <Select
               showSearch
@@ -297,18 +268,6 @@ export function PRHeaderV2({
           </Form.Item>
         </Col>
 
-        <Col xs={24} sm={12} md={8} lg={6}>
-          <Form.Item name="subCostCode" label="Sub Cost Centre">
-            <Select
-              showSearch
-              placeholder="Search sub-cost…"
-              options={subCostOptions}
-              filterOption={prefixFilterOption}
-              filterSort={priorityFilterSort}
-              allowClear
-            />
-          </Form.Item>
-        </Col>
       </Row>
     </Form>
   )

@@ -32,21 +32,27 @@ export function PRItemTableV2({
       title: '#',
       key:   'index',
       width: 44,
+      fixed: 'left',
       render: (_: unknown, __: PRLineFormItem, i: number) => (
         <Typography.Text type="secondary" style={{ fontSize: 12 }}>{i + 1}</Typography.Text>
       ),
     },
     {
-      title:    'Item',
-      key:      'item',
-      ellipsis: true,
-      render: (_: unknown, r: PRLineFormItem) => (
-        <Space direction="vertical" size={0}>
-          <Typography.Text code style={{ fontSize: 12 }}>{r.itemCode}</Typography.Text>
-          <Tooltip title={r.itemName}>
-            <Typography.Text style={{ fontSize: 13 }}>{r.itemName}</Typography.Text>
-          </Tooltip>
-        </Space>
+      title:     'Code',
+      dataIndex: 'itemCode',
+      key:       'itemCode',
+      width:     100,
+      fixed:     'left',
+      render: (val: string) => <Typography.Text code style={{ fontSize: 12 }}>{val}</Typography.Text>,
+    },
+    {
+      title:     'Item Description',
+      dataIndex: 'itemName',
+      key:       'itemName',
+      width:     200,
+      ellipsis:  true,
+      render: (val: string) => (
+        <Tooltip title={val}><span>{val}</span></Tooltip>
       ),
     },
     {
@@ -57,22 +63,87 @@ export function PRItemTableV2({
       align:     'center',
     },
     {
-      title:     'Qty',
+      title:     'Rate',
+      dataIndex: 'rate',
+      key:       'rate',
+      width:     100,
+      align:     'right',
+      render: (val: number | null) =>
+        val != null
+          ? `₹${val.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
+          : '—',
+    },
+    {
+      title:     'Current Stock',
+      dataIndex: 'currentStock',
+      key:       'currentStock',
+      width:     110,
+      align:     'right',
+      render: (val: number | null) => val != null ? val : '—',
+    },
+    {
+      title:     'Quantity Required',
       dataIndex: 'qtyRequired',
       key:       'qtyRequired',
-      width:     90,
+      width:     130,
       align:     'right',
       render: (val: number) => <strong>{val}</strong>,
     },
     {
-      title:     'Req. Date',
+      title:  'Category',
+      key:    'category',
+      width:  100,
+      render: () => '—',
+    },
+    {
+      title:     'Cost Centre',
+      dataIndex: 'costCentreCode',
+      key:       'costCentreCode',
+      width:     110,
+      ellipsis:  true,
+      render: (val: string) => val || '—',
+    },
+    {
+      title:     'Budget Group',
+      dataIndex: 'budgetGroupCode',
+      key:       'budgetGroupCode',
+      width:     110,
+      ellipsis:  true,
+      render: (val: string) => val || '—',
+    },
+    {
+      title:     'Sub Cost Centre',
+      dataIndex: 'subCostCode',
+      key:       'subCostCode',
+      width:     110,
+      ellipsis:  true,
+      render: (val: string) => val || '—',
+    },
+    {
+      title:     'Machine Code',
+      dataIndex: 'machineNo',
+      key:       'machineNo',
+      width:     110,
+      ellipsis:  true,
+      render: (val: string) => val || '—',
+    },
+    {
+      title:     'Required Date',
       dataIndex: 'requiredDate',
       key:       'requiredDate',
-      width:     110,
+      width:     120,
       render: (val: string | null) => val ? dayjs(val).format('DD-MM-YYYY') : '—',
     },
     {
-      title:     'Est. Cost',
+      title:     'Place',
+      dataIndex: 'place',
+      key:       'place',
+      width:     100,
+      ellipsis:  true,
+      render: (val: string) => val || '—',
+    },
+    {
+      title:     'Approx Cost',
       dataIndex: 'approxCost',
       key:       'approxCost',
       width:     110,
@@ -83,22 +154,58 @@ export function PRItemTableV2({
           : '—',
     },
     {
-      title:     'Machine',
-      dataIndex: 'machineNo',
-      key:       'machineNo',
-      width:     110,
-      ellipsis:  true,
-      render: (val: string) => val || '—',
-    },
-    {
       title:     'Remarks',
       dataIndex: 'remarks',
       key:       'remarks',
+      width:     150,
       ellipsis:  true,
       render: (val: string) =>
         val
           ? <Tooltip title={val}><span>{val}</span></Tooltip>
           : '—',
+    },
+    {
+      title:     'Last Rate',
+      dataIndex: 'lastPoRate',
+      key:       'lastPoRate',
+      width:     100,
+      align:     'right',
+      render: (val: number | null) =>
+        val != null
+          ? `₹${val.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
+          : '—',
+    },
+    {
+      title:     'Last PO Date',
+      dataIndex: 'lastPoDate',
+      key:       'lastPoDate',
+      width:     120,
+      render: (val: string | null) => val ? dayjs(val).format('DD-MM-YYYY') : '—',
+    },
+    {
+      title:  'Supplier Code',
+      key:    'supplierCode',
+      width:  110,
+      render: () => '—',
+    },
+    {
+      title:     'Supplier Name',
+      dataIndex: 'lastPoSupplierName',
+      key:       'lastPoSupplierName',
+      width:     150,
+      ellipsis:  true,
+      render: (val: string | null) =>
+        val
+          ? <Tooltip title={val}><span>{val}</span></Tooltip>
+          : '—',
+    },
+    {
+      title:     'Sample',
+      dataIndex: 'isSample',
+      key:       'isSample',
+      width:     70,
+      align:     'center',
+      render: (val: boolean) => val ? <Tag color="blue">Yes</Tag> : '—',
     },
     {
       title:  '',
@@ -144,7 +251,7 @@ export function PRItemTableV2({
       columns={columns}
       rowKey="key"
       size="small"
-      scroll={{ x: 900 }}
+      scroll={{ x: 2000 }}
       pagination={false}
       bordered
       rowClassName={(r) => (editingKey === r.key ? 'ant-table-row--selected' : '')}
