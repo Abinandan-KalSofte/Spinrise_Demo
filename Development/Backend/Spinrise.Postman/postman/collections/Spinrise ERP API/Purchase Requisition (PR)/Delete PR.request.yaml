@@ -1,0 +1,11 @@
+$kind: http-request
+url: "{{base_url}}/api/v1/purchase-requisitions/100001?deleteReasonCode=DUP"
+method: DELETE
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{auth_token}}
+queryParams:
+  - key: deleteReasonCode
+    value: DUP
+    description: Required - Reason code for deletion
+order: 9000

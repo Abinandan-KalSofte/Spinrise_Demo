@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{base_url}}/api/v1/lookups/machines"
+method: GET
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{auth_token}}
+order: 5000

@@ -1,0 +1,6 @@
+$kind: collection
+description: "Complete API collection for Spinrise ERP system. Base URL:
+  {{base_url}}. Use Bearer {{auth_token}} for authorization."
+variables:
+  base_url: http://localhost:5243
+  auth_token: <token_placeholder>

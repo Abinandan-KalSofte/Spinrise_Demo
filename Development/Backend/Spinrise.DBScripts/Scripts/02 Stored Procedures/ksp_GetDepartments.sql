@@ -1,0 +1,13 @@
+CREATE OR ALTER PROCEDURE ksp_GetDepartments
+    @DivCode    VARCHAR(10)
+AS
+SET NOCOUNT ON;
+
+BEGIN
+    SELECT DEPCODE, DEPNAME
+    FROM   in_dep
+    WHERE  active  = 'Y'
+      AND  DIVCODE = @DivCode
+    ORDER BY DEPNAME;
+END
+GO

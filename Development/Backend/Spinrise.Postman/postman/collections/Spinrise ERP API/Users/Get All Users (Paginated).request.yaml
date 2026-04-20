@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{base_url}}/api/v1/users/paginated?pageNumber=1&pageSize=10"
+method: GET
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{auth_token}}
+queryParams:
+  pageNumber: "1"
+  pageSize: "10"
+order: 2000

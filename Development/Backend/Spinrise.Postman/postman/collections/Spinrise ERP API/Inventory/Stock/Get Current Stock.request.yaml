@@ -1,0 +1,31 @@
+$kind: http-request
+url: "{{base_url}}/api/v1/inventory/stock/current?ItemCode=ITEM001&YFDate=2026-\
+  01-01&EndDate=2026-04-11&OYM=202600&GodCode=&IncludeType12=true&IncludeType11\
+  =true"
+method: GET
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{auth_token}}
+queryParams:
+  - key: ItemCode
+    value: ITEM001
+    description: Required
+  - key: YFDate
+    value: 2026-01-01
+    description: Required - Year from date
+  - key: EndDate
+    value: 2026-04-11
+    description: Required - End date
+  - key: OYM
+    value: "202600"
+    description: Required - Format YYYY00 e.g. 202600
+  - key: GodCode
+    value: ""
+    description: Optional - Godown code
+  - key: IncludeType12
+    value: "true"
+    description: Optional - default true
+  - key: IncludeType11
+    value: "true"
+    description: Optional - default true
+order: 1000

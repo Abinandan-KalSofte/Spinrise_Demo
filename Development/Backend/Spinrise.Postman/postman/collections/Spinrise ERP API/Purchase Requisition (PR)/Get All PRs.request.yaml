@@ -1,0 +1,24 @@
+$kind: http-request
+url: "{{base_url}}/api/v1/purchase-requisitions?prNo=&fromDate=2026-01-01&toDat\
+  e=2026-04-11&depCode=&status="
+method: GET
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{auth_token}}
+queryParams:
+  - key: prNo
+    value: ""
+    description: Optional - PR number
+  - key: fromDate
+    value: 2026-01-01
+    description: Optional - From date
+  - key: toDate
+    value: 2026-04-11
+    description: Optional - To date
+  - key: depCode
+    value: ""
+    description: Optional - Department code
+  - key: status
+    value: ""
+    description: Optional - PR status
+order: 4000

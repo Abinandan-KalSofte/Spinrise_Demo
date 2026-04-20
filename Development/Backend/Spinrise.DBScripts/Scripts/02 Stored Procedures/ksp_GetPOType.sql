@@ -1,0 +1,28 @@
+CREATE OR ALTER PROCEDURE ksp_GetPOType
+    @SearchTerm VARCHAR(100) = NULL
+AS
+SET NOCOUNT ON;
+
+DECLARE @Term VARCHAR(101) = LTRIM(RTRIM(ISNULL(@SearchTerm, '')));
+
+IF LEN(@Term) = 0
+BEGIN
+    SELECT TYPE_CODE, TYPNAME
+    FROM   po_type
+    WHERE  active = 'Y'
+    ORDER BY TYPNAME;
+END
+ELSE
+BEGIN
+    SET @Term = @Term + '%';
+
+    SELECT TOP 20
+        TYPE_CODE, TYPNAME
+    FROM   po_type
+    WHERE  active = 'Y'
+      AND  (TYPE_CODE LIKE @Term OR TYPNAME LIKE @Term)
+    ORDER BY
+        CASE WHEN TYPE_CODE LIKE @Term THEN 0 ELSE 1 END,
+        TYPNAME;
+END
+GO

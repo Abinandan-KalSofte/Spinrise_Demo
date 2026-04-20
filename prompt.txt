@@ -1,0 +1,30 @@
+Update backend + frontend to support startDate & endDate for Purchase Requisition PDF Quest.
+
+Backend (C#):
+
+PurchaseReportController
+Update endpoint:
+[HttpGet(ApiRoutes.PurchaseReports.PdfQuest)]
+public async Task<IActionResult> GetPdfQuest(long id, DateTime startDate, DateTime endDate)
+Pass dates to service.
+QuestPdfPurchaseRequisitionService.cs
+Update method:
+Task<byte[]> GetPurchaseRequisitionPdfAsync(string divCode, long prNo, string user, DateTime startDate, DateTime endDate)
+Pass dates to repository.
+PurchaseRequisitionRepository.cs
+Update:
+Task<PR> GetByIdAsync(string divCode, long prNo, DateTime startDate, DateTime endDate)
+Pass to stored procedure.
+
+Frontend (TS):
+
+purchaseReportService.ts
+Update API call:
+api.get(`/purchase/reports/pr/${id}/pdf/quest`, {
+  params: { startDate, endDate },
+  responseType: 'blob'
+})
+PRSearchForm.tsx
+Extract from RangePicker:
+const [startDate, endDate] = values.dateRange;
+Pass to download function.

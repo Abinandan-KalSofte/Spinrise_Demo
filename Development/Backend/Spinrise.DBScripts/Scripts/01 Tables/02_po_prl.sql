@@ -1,0 +1,33 @@
+CREATE TABLE dbo.po_prl
+(
+    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    DivCode VARCHAR(10) NOT NULL,
+    PrNo VARCHAR(20) NOT NULL,
+    PrSNo INT NOT NULL,
+    ItemCode VARCHAR(30) NOT NULL,
+    ItemName VARCHAR(200) NULL,
+    Uom VARCHAR(20) NULL,
+    Rate DECIMAL(18,4) NULL,
+    CurrentStock DECIMAL(18,4) NULL,
+    QtyRequired DECIMAL(18,4) NOT NULL,
+    RequiredDate DATE NULL,
+    Place VARCHAR(100) NULL,
+    ApproxCost DECIMAL(18,2) NULL,
+    Remarks VARCHAR(500) NULL,
+    MachineNo VARCHAR(30) NULL,
+    CostCentreCode VARCHAR(20) NULL,
+    BudgetGroupCode VARCHAR(20) NULL,
+    SubCostCode VARCHAR(20) NULL,
+    LastPoRate DECIMAL(18,4) NULL,
+    LastPoDate DATE NULL,
+    LastPoSupplierCode VARCHAR(20) NULL,
+    LastPoSupplierName VARCHAR(100) NULL,
+    IsSample BIT NOT NULL CONSTRAINT DF_po_prl_IsSample DEFAULT (0),
+    Model VARCHAR(100) NULL,
+    MaxCost DECIMAL(18,2) NULL,
+    DirectApp VARCHAR(1) NULL CONSTRAINT DF_po_prl_DirectApp DEFAULT ('N'),
+    IsDeleted BIT NOT NULL CONSTRAINT DF_po_prl_IsDeleted DEFAULT (0),
+    CONSTRAINT UQ_po_prl_Line UNIQUE (DivCode, PrNo, PrSNo),
+    CONSTRAINT FK_po_prl_Header FOREIGN KEY (DivCode, PrNo)
+        REFERENCES dbo.po_prh (DivCode, PrNo)
+);

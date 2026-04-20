@@ -1,0 +1,26 @@
+$kind: http-request
+url: "{{base_url}}/api/v1/purchase-requisitions/item-info?depCode=PRD&itemCode=\
+  ITEM001&yfDate=2026-01-01&ylDate=2026-04-11&pendingIndentCheckEnabled=true&pe\
+  ndingPRCheckEnabled=true"
+method: GET
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{auth_token}}
+queryParams:
+  - key: depCode
+    value: PRD
+    description: Required - Department code
+  - key: itemCode
+    value: ITEM001
+    description: Required - Item code
+  - key: yfDate
+    value: 2026-01-01
+    description: Required - Year from date
+  - key: ylDate
+    value: 2026-04-11
+    description: Required - Year last date
+  - key: pendingIndentCheckEnabled
+    value: "true"
+  - key: pendingPRCheckEnabled
+    value: "true"
+order: 2000

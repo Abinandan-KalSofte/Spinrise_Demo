@@ -1,0 +1,11 @@
+$kind: http-request
+url: "{{base_url}}/api/v1/purchase-requisitions/100001/lines/1?deleteReasonCode=ERR"
+method: DELETE
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{auth_token}}
+queryParams:
+  - key: deleteReasonCode
+    value: ERR
+    description: Required - Reason code for deletion
+order: 10000

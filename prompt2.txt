@@ -1,0 +1,47 @@
+Act as a Senior Fullstack Architect (React + .NET Core + SQL Server).
+
+Goal: Analyze and clean my codebase for production readiness.
+
+Scope:
+- Frontend: React / Next.js
+- Backend: ASP.NET Core Web API
+- DB: SQL Server (SP-based)
+
+Tasks:
+
+1. ANALYZE
+- Identify:
+  - Code smells
+  - Performance issues
+  - Security risks
+  - Bad patterns (N+1, overfetching, tight coupling)
+  - Unused / duplicate code
+  - API contract inconsistencies
+
+2. CLEAN (SAFE REFACTOR)
+- Refactor ONLY code layer (NO DB schema changes)
+- Keep Stored Procedures unchanged
+- Improve:
+  - Readability
+  - Naming conventions
+  - Separation of concerns
+  - Error handling
+  - Logging
+
+3. OPTIMIZE
+- Reduce API latency
+- Minimize re-renders (React)
+- Improve async handling
+- Add caching where safe
+
+4. OUTPUT FORMAT (STRICT)
+- Section 1: Issues List (bullets)
+- Section 2: Refactored Code (only changed parts)
+- Section 3: Performance Gains (short)
+- Section 4: Risks / Edge Cases
+
+Rules:
+- DO NOT modify DB tables
+- DO NOT rewrite entire project
+- ONLY minimal, high-impact changes
+- Keep response concise

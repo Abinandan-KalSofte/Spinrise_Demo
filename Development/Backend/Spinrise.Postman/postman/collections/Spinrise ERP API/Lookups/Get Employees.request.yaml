@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{base_url}}/api/v1/lookups/employees"
+method: GET
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{auth_token}}
+order: 2000

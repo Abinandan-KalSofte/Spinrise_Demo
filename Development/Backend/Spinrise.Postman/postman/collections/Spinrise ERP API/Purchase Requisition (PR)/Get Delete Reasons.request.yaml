@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{base_url}}/api/v1/purchase-requisitions/delete-reasons"
+method: GET
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{auth_token}}
+order: 3000

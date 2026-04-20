@@ -1,0 +1,49 @@
+$kind: http-request
+url: "{{base_url}}/api/v1/purchase-requisitions/100001"
+method: PUT
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{auth_token}}
+body:
+  type: json
+  content: |-
+    {
+      "prNo": 100001,
+      "prDate": "2026-04-11T00:00:00",
+      "depCode": "PRD",
+      "section": "MECH",
+      "subCost": null,
+      "iType": "01",
+      "reqName": "RAJAN",
+      "refNo": "REF-2026-001-UPD",
+      "poGroupCode": null,
+      "scopeCode": null,
+      "saleOrderNo": null,
+      "saleOrderDate": null,
+      "lines": [
+        {
+          "itemCode": "ITEM001",
+          "qtyRequired": 15.00,
+          "requiredDate": "2026-05-05T00:00:00",
+          "place": "Stores",
+          "approxCost": 750.00,
+          "remarks": "Revised quantity",
+          "machineNo": null,
+          "costCentreCode": null,
+          "budgetGroupCode": null,
+          "subCostCode": null,
+          "isSample": false,
+          "itemName": "Steel Bolt M10",
+          "uom": "NOS",
+          "rate": 50.00,
+          "currentStock": 25.00,
+          "lastPoRate": 48.00,
+          "lastPoDate": "2026-01-15T00:00:00",
+          "lastPoSupplierCode": "SUP001",
+          "lastPoSupplierName": "ABC Suppliers",
+          "model": null,
+          "maxCost": 900.00
+        }
+      ]
+    }
+order: 8000

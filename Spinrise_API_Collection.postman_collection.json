@@ -1,0 +1,607 @@
+{
+  "info": {
+    "_postman_id": "spinrise-erp-api-collection",
+    "name": "Spinrise ERP API",
+    "description": "Complete API collection for Spinrise ERP system. Base URL: {{base_url}}. Use Bearer {{auth_token}} for authorization.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5243",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "<token_placeholder>",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Check Health",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/health",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@spinrise.com\",\n  \"password\": \"Admin@123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"<your_refresh_token_here>\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/refresh",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "refresh"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"<your_refresh_token_here>\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users"]
+            }
+          }
+        },
+        {
+          "name": "Get All Users (Paginated)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/users/paginated?pageNumber=1&pageSize=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users", "paginated"],
+              "query": [
+                { "key": "pageNumber", "value": "1" },
+                { "key": "pageSize", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/users/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@spinrise.com\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users"]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"John Doe Updated\",\n  \"email\": \"john.doe.updated@spinrise.com\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users"]
+            }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/users/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Departments",
+      "item": [
+        {
+          "name": "Get Active Departments",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/departments/active",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "departments", "active"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lookups",
+      "item": [
+        {
+          "name": "Get Departments",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/lookups/departments",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "lookups", "departments"]
+            }
+          }
+        },
+        {
+          "name": "Get Employees",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/lookups/employees",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "lookups", "employees"]
+            }
+          }
+        },
+        {
+          "name": "Get PO Types",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/lookups/po-types",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "lookups", "po-types"]
+            }
+          }
+        },
+        {
+          "name": "Get Items (with search)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/lookups/items?search=steel",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "lookups", "items"],
+              "query": [
+                { "key": "search", "value": "steel", "description": "Minimum 2 characters" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Machines",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/lookups/machines",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "lookups", "machines"]
+            }
+          }
+        },
+        {
+          "name": "Get Sub Costs",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/lookups/sub-costs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "lookups", "sub-costs"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Inventory",
+      "item": [
+        {
+          "name": "Stock",
+          "item": [
+            {
+              "name": "Get Current Stock",
+              "request": {
+                "method": "GET",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/inventory/stock/current?ItemCode=ITEM001&YFDate=2026-01-01&EndDate=2026-04-11&OYM=202600&GodCode=&IncludeType12=true&IncludeType11=true",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "inventory", "stock", "current"],
+                  "query": [
+                    { "key": "ItemCode", "value": "ITEM001", "description": "Required" },
+                    { "key": "YFDate", "value": "2026-01-01", "description": "Required - Year from date" },
+                    { "key": "EndDate", "value": "2026-04-11", "description": "Required - End date" },
+                    { "key": "OYM", "value": "202600", "description": "Required - Format YYYY00 e.g. 202600" },
+                    { "key": "GodCode", "value": "", "description": "Optional - Godown code" },
+                    { "key": "IncludeType12", "value": "true", "description": "Optional - default true" },
+                    { "key": "IncludeType11", "value": "true", "description": "Optional - default true" }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Purchase Requisition (PR)",
+      "item": [
+        {
+          "name": "Run Pre-Checks",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/purchase-requisitions/pre-checks",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "purchase-requisitions", "pre-checks"]
+            }
+          }
+        },
+        {
+          "name": "Get Item Info",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/purchase-requisitions/item-info?depCode=PRD&itemCode=ITEM001&yfDate=2026-01-01&ylDate=2026-04-11&pendingIndentCheckEnabled=true&pendingPRCheckEnabled=true",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "purchase-requisitions", "item-info"],
+              "query": [
+                { "key": "depCode", "value": "PRD", "description": "Required - Department code" },
+                { "key": "itemCode", "value": "ITEM001", "description": "Required - Item code" },
+                { "key": "yfDate", "value": "2026-01-01", "description": "Required - Year from date" },
+                { "key": "ylDate", "value": "2026-04-11", "description": "Required - Year last date" },
+                { "key": "pendingIndentCheckEnabled", "value": "true" },
+                { "key": "pendingPRCheckEnabled", "value": "true" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Delete Reasons",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/purchase-requisitions/delete-reasons",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "purchase-requisitions", "delete-reasons"]
+            }
+          }
+        },
+        {
+          "name": "Get All PRs",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/purchase-requisitions?prNo=&fromDate=2026-01-01&toDate=2026-04-11&depCode=&status=",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "purchase-requisitions"],
+              "query": [
+                { "key": "prNo", "value": "", "description": "Optional - PR number" },
+                { "key": "fromDate", "value": "2026-01-01", "description": "Optional - From date" },
+                { "key": "toDate", "value": "2026-04-11", "description": "Optional - To date" },
+                { "key": "depCode", "value": "", "description": "Optional - Department code" },
+                { "key": "status", "value": "", "description": "Optional - PR status" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All PRs (Paginated)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/purchase-requisitions/paginated?PrNo=&StartDate=2026-01-01&EndDate=2026-04-11&DepCode=&ReqName=&Status=&Page=1&PageSize=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "purchase-requisitions", "paginated"],
+              "query": [
+                { "key": "PrNo", "value": "", "description": "Optional" },
+                { "key": "StartDate", "value": "2026-01-01", "description": "Optional" },
+                { "key": "EndDate", "value": "2026-04-11", "description": "Optional" },
+                { "key": "DepCode", "value": "", "description": "Optional" },
+                { "key": "ReqName", "value": "", "description": "Optional - Requester name" },
+                { "key": "Status", "value": "", "description": "Optional" },
+                { "key": "Page", "value": "1" },
+                { "key": "PageSize", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get PR By Number",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/purchase-requisitions/100001",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "purchase-requisitions", "100001"]
+            }
+          }
+        },
+        {
+          "name": "Create PR",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prDate\": \"2026-04-11T00:00:00\",\n  \"depCode\": \"PRD\",\n  \"section\": \"MECH\",\n  \"subCost\": null,\n  \"iType\": \"01\",\n  \"reqName\": \"RAJAN\",\n  \"refNo\": \"REF-2026-001\",\n  \"poGroupCode\": null,\n  \"scopeCode\": null,\n  \"saleOrderNo\": null,\n  \"saleOrderDate\": null,\n  \"lines\": [\n    {\n      \"itemCode\": \"ITEM001\",\n      \"qtyRequired\": 10.00,\n      \"requiredDate\": \"2026-04-30T00:00:00\",\n      \"place\": \"Stores\",\n      \"approxCost\": 500.00,\n      \"remarks\": \"Urgent requirement\",\n      \"machineNo\": null,\n      \"costCentreCode\": null,\n      \"budgetGroupCode\": null,\n      \"subCostCode\": null,\n      \"isSample\": false,\n      \"itemName\": \"Steel Bolt M10\",\n      \"uom\": \"NOS\",\n      \"rate\": 50.00,\n      \"currentStock\": 25.00,\n      \"lastPoRate\": 48.00,\n      \"lastPoDate\": \"2026-01-15T00:00:00\",\n      \"lastPoSupplierCode\": \"SUP001\",\n      \"lastPoSupplierName\": \"ABC Suppliers\",\n      \"model\": null,\n      \"maxCost\": 600.00\n    }\n  ]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/purchase-requisitions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "purchase-requisitions"]
+            }
+          }
+        },
+        {
+          "name": "Update PR",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prNo\": 100001,\n  \"prDate\": \"2026-04-11T00:00:00\",\n  \"depCode\": \"PRD\",\n  \"section\": \"MECH\",\n  \"subCost\": null,\n  \"iType\": \"01\",\n  \"reqName\": \"RAJAN\",\n  \"refNo\": \"REF-2026-001-UPD\",\n  \"poGroupCode\": null,\n  \"scopeCode\": null,\n  \"saleOrderNo\": null,\n  \"saleOrderDate\": null,\n  \"lines\": [\n    {\n      \"itemCode\": \"ITEM001\",\n      \"qtyRequired\": 15.00,\n      \"requiredDate\": \"2026-05-05T00:00:00\",\n      \"place\": \"Stores\",\n      \"approxCost\": 750.00,\n      \"remarks\": \"Revised quantity\",\n      \"machineNo\": null,\n      \"costCentreCode\": null,\n      \"budgetGroupCode\": null,\n      \"subCostCode\": null,\n      \"isSample\": false,\n      \"itemName\": \"Steel Bolt M10\",\n      \"uom\": \"NOS\",\n      \"rate\": 50.00,\n      \"currentStock\": 25.00,\n      \"lastPoRate\": 48.00,\n      \"lastPoDate\": \"2026-01-15T00:00:00\",\n      \"lastPoSupplierCode\": \"SUP001\",\n      \"lastPoSupplierName\": \"ABC Suppliers\",\n      \"model\": null,\n      \"maxCost\": 900.00\n    }\n  ]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/purchase-requisitions/100001",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "purchase-requisitions", "100001"]
+            }
+          }
+        },
+        {
+          "name": "Delete PR",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/purchase-requisitions/100001?deleteReasonCode=DUP",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "purchase-requisitions", "100001"],
+              "query": [
+                { "key": "deleteReasonCode", "value": "DUP", "description": "Required - Reason code for deletion" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete PR Line",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/purchase-requisitions/100001/lines/1?deleteReasonCode=ERR",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "purchase-requisitions", "100001", "lines", "1"],
+              "query": [
+                { "key": "deleteReasonCode", "value": "ERR", "description": "Required - Reason code for deletion" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Purchase Reports",
+      "item": [
+        {
+          "name": "Export PR as PDF",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/purchase/reports/pr/100001/pdf",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "purchase", "reports", "pr", "100001", "pdf"]
+            }
+          }
+        },
+        {
+          "name": "Export PR as Excel",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/purchase/reports/pr/100001/excel",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "purchase", "reports", "pr", "100001", "excel"]
+            }
+          }
+        },
+        {
+          "name": "Export PR as CSV",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/purchase/reports/pr/100001/csv",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "purchase", "reports", "pr", "100001", "csv"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

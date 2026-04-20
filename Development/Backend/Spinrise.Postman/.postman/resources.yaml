@@ -1,0 +1,13 @@
+# Use this workspace to collaborate
+workspace:
+  id: 0e2aa8c0-3b44-45f0-8db2-038d97f95533
+
+cloudResources:
+  collections:
+    ..\postman\collections\Spinrise ERP API: 19ea8745-af66-41e9-a4a7-1116b9411b75
+
+# All resources in the `postman/` folder are automatically registered in Local View.
+# Point to additional files outside the `postman/` folder to register them individually. Example:
+#localResources:
+#  collections:
+#    - ../tests/E2E Test Collection/

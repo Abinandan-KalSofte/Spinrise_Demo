@@ -1,0 +1,11 @@
+$kind: http-request
+url: "{{base_url}}/api/v1/lookups/items?search=steel"
+method: GET
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{auth_token}}
+queryParams:
+  - key: search
+    value: steel
+    description: Minimum 2 characters
+order: 4000

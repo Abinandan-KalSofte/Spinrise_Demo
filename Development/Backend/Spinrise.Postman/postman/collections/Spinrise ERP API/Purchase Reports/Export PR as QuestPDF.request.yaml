@@ -1,0 +1,7 @@
+$kind: http-request
+name: Export PR as QuestPDF
+url: "{{base_url}}/api/v1/purchase/reports/pr/368/pdf/quest"
+method: GET
+headers:
+  Authorization: Bearer {{auth_token}}
+order: 1635

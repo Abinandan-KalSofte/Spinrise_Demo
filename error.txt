@@ -1,0 +1,110 @@
+E:\Abinandan\SPINRISE\Development\frontend\spinrise-web>npm run build
+
+> spinrise-web@0.0.0 build
+> tsc -b && vite build
+
+src/features/auth/__tests__/authService.test.ts:7:7 - error TS2353: Object literal may only specify known properties, and 'email' does not exist in type 'LoginDto'.
+
+7       email: 'admin@spinrise.com',
+        ~~~~~
+
+src/features/purchase-requisition/components/pr-list/PRSearchForm.tsx:1:67 - error TS6133: 'Space' is declared but its value is never read.
+
+1 import { Button, Col, DatePicker, Form, InputNumber, Row, Select, Space } from 'antd'
+                                                                    ~~~~~
+
+src/features/purchase-requisition/components/PRHeader.tsx:148:17 - error TS2322: Type '{ value: number; label: string; }[]' is not assignable to type 'SelectOption[]'.
+  Type '{ value: number; label: string; }' is not assignable to type 'SelectOption'.
+    Types of property 'value' are incompatible.
+      Type 'number' is not assignable to type 'string'.
+
+148                 options={subCostOptions}
+                    ~~~~~~~
+
+  node_modules/rc-select/lib/Select.d.ts:94:5
+    94     options?: OptionType[];
+           ~~~~~~~
+    The expected type comes from property 'options' which is declared here on type 'IntrinsicAttributes & SelectProps<any, SelectOption> & { children?: ReactNode; } & RefAttributes<BaseSelectRef>'
+
+src/features/purchase-requisition/components/PRItemModal.tsx:144:15 - error TS2739: Type '{ key: string; itemCode: string; itemName: string; uom: string; currentStock: number | null; qtyRequired: number; requiredDate: string | null; place: string; approxCost: number | null; remarks: string; ... 6 more ...; lastPoSupplierName: string | null; }' is missing the following properties from type 'PRLineFormItem': subCostCode, lastPoSupplierCode, model, maxCost, rate
+
+144         const lineItem: PRLineFormItem = {
+                  ~~~~~~~~
+
+src/features/purchase-requisition/components/v2/PRHeaderV2.tsx:106:9 - error TS6133: 'subCostOptions' is declared but its value is never read.
+
+106   const subCostOptions = subCosts.map((s)    => ({ value: s.sccCode,  label: `${s.sccCode} – ${s.sccName}` }))
+            ~~~~~~~~~~~~~~
+
+src/features/purchase-requisition/components/v2/PRItemFormV2.tsx:426:19 - error TS2322: Type '{ value: number; label: string; }[]' is not assignable to type 'SelectOption[]'.
+  Type '{ value: number; label: string; }' is not assignable to type 'SelectOption'.
+    Types of property 'value' are incompatible.
+      Type 'number' is not assignable to type 'string'.
+
+426                   options={subCostOpts}
+                      ~~~~~~~
+
+  node_modules/rc-select/lib/Select.d.ts:94:5
+    94     options?: OptionType[];
+           ~~~~~~~
+    The expected type comes from property 'options' which is declared here on type 'IntrinsicAttributes & SelectProps<any, SelectOption> & { children?: ReactNode; } & RefAttributes<BaseSelectRef>'
+
+src/features/purchase-requisition/components/v2/PRItemWizardModal.tsx:191:13 - error TS2739: Type '{ key: string; itemCode: string; itemName: string; uom: string; currentStock: number | null; qtyRequired: number; requiredDate: string | null; approxCost: number | null; place: string; machineNo: string; ... 6 more ...; lastPoSupplierName: string | null; }' is missing the following properties from type 'PRLineFormItem': subCostCode, lastPoSupplierCode, model, maxCost, rate
+
+191       const line: PRLineFormItem = {
+                ~~~~
+
+src/features/purchase-requisition/pages/PurchaseRequisitionPage.tsx:102:9 - error TS2353: Object literal may only specify known properties, and 'subCostCode' does not exist in type 'CreatePRRequest'.
+
+102         subCostCode:   values.subCostCode?.trim()   || undefined,
+            ~~~~~~~~~~~
+
+src/features/purchase-requisition/pages/PurchaseRequisitionPage.tsx:102:31 - error TS2339: Property 'subCostCode' does not exist on type 'PRHeaderFormValues'.
+
+102         subCostCode:   values.subCostCode?.trim()   || undefined,
+                                  ~~~~~~~~~~~
+
+src/features/purchase-requisition/pages/PurchaseRequisitionPage.tsx:127:20 - error TS2345: Argument of type 'number' is not assignable to parameter of type 'SetStateAction<string | null>'.
+
+127       setSavedPrNo(result.prNo)
+                       ~~~~~~~~~~~
+
+src/features/purchase-requisition/pages/PurchaseRequisitionPage.tsx:142:36 - error TS2554: Expected 2 arguments, but got 1.
+
+142       await purchaseRequisitionApi.deletePR(savedPrNo)
+                                       ~~~~~~~~
+
+  src/features/purchase-requisition/api/purchaseRequisitionApi.ts:80:28
+    80   deletePR: (prNo: number, deleteReasonCode: string) =>
+                                  ~~~~~~~~~~~~~~~~~~~~~~~~
+    An argument for 'deleteReasonCode' was not provided.
+
+src/features/purchase-requisition/pages/PurchaseRequisitionPage.tsx:164:55 - error TS2345: Argument of type 'string' is not assignable to parameter of type 'number'.
+
+164       const pr = await purchaseRequisitionApi.getById(savedPrNo)
+                                                          ~~~~~~~~~
+
+src/features/purchase-requisition/pages/PurchaseRequisitionV2Page.tsx:408:9 - error TS2322: Type 'number | null' is not assignable to type 'string | null'.
+  Type 'number' is not assignable to type 'string'.
+
+408         prNo={savedPrNo}
+            ~~~~
+
+  src/features/purchase-requisition/components/v2/PRActionBarV2.tsx:22:3
+    22   prNo:        string | null
+         ~~~~
+    The expected type comes from property 'prNo' which is declared here on type 'IntrinsicAttributes & PRActionBarV2Props'
+
+src/shared/layouts/MainLayout.tsx:2:31 - error TS6133: 'Tag' is declared but its value is never read.
+
+2 import { Badge, Layout, Menu, Tag, Typography } from 'antd'
+                                ~~~
+
+
+Found 14 errors.
+
+npm notice
+npm notice New minor version of npm available! 11.8.0 -> 11.12.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.12.1
+npm notice To update run: npm install -g npm@11.12.1
+npm notice

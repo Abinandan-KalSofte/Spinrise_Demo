@@ -1,0 +1,26 @@
+CREATE TABLE dbo.po_prh
+(
+    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    DivCode VARCHAR(10) NOT NULL,
+    PrNo VARCHAR(20) NOT NULL,
+    PrDate DATE NOT NULL,
+    DepCode VARCHAR(10) NOT NULL,
+    DepName VARCHAR(100) NULL,
+    Section VARCHAR(100) NULL,
+    SubCostCode VARCHAR(20) NULL,
+    IType VARCHAR(20) NULL,
+    ReqName VARCHAR(100) NULL,
+    RefNo VARCHAR(50) NULL,
+    PoGroupCode VARCHAR(20) NULL,
+    ScopeCode VARCHAR(20) NULL,
+    SaleOrderNo VARCHAR(50) NULL,
+    SaleOrderDate DATE NULL,
+    RequisitionType VARCHAR(20) NULL,
+    PrStatus VARCHAR(20) NOT NULL CONSTRAINT DF_po_prh_PrStatus DEFAULT ('DRAFT'),
+    CreatedBy VARCHAR(50) NOT NULL,
+    CreatedAt DATETIME NOT NULL CONSTRAINT DF_po_prh_CreatedAt DEFAULT (GETDATE()),
+    ModifiedBy VARCHAR(50) NULL,
+    ModifiedAt DATETIME NULL,
+    IsDeleted BIT NOT NULL CONSTRAINT DF_po_prh_IsDeleted DEFAULT (0),
+    CONSTRAINT UQ_po_prh_PrNo UNIQUE (DivCode, PrNo)
+);

@@ -1,0 +1,31 @@
+$kind: http-request
+url: "{{base_url}}/api/v1/purchase-requisitions/paginated?PrNo=&StartDate=2026-\
+  01-01&EndDate=2026-04-11&DepCode=&ReqName=&Status=&Page=1&PageSize=20"
+method: GET
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{auth_token}}
+queryParams:
+  - key: PrNo
+    value: ""
+    description: Optional
+  - key: StartDate
+    value: 2026-01-01
+    description: Optional
+  - key: EndDate
+    value: 2026-04-11
+    description: Optional
+  - key: DepCode
+    value: ""
+    description: Optional
+  - key: ReqName
+    value: ""
+    description: Optional - Requester name
+  - key: Status
+    value: ""
+    description: Optional
+  - key: Page
+    value: "1"
+  - key: PageSize
+    value: "20"
+order: 5000
