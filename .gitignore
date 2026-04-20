@@ -1,52 +1,112 @@
-# .NET
+# ============================================================
+# Spinrise ERP — .gitignore
+# ============================================================
+
+# ------------------------------------------------------------
+# .NET — build outputs
+# ------------------------------------------------------------
 **/bin/
 **/obj/
-**/*.user
-**/*.suo
-**/*.vspscc
-**/*.vssscc
-**/*.tmp
-**/*.log
-**/*.cache
+**/artifacts/
 **/*.pdb
 **/*.publish.xml
-**/artifacts/
-**/backend/Spinrise.API/bin/
-**/backend/Spinrise.API/obj/
-**/backend/Spinrise.Application/bin/
-**/backend/Spinrise.Application/obj/
-**/backend/Spinrise.Infrastructure/bin/
-**/backend/Spinrise.Infrastructure/obj/
-**/backend/Spinrise.Domain/bin/
-**/backend/Spinrise.Domain/obj/
-**/backend/Spinrise.Shared/bin/
-**/backend/Spinrise.Shared/obj/
-**/backend/Spinrise.Tests/bin/
-**/backend/Spinrise.Tests/obj/
-**/backend/Spinrise.API/appsettings.Development.json
-**/backend/Spinrise.API/appsettings.json
 
-# Visual Studio
+# ------------------------------------------------------------
+# .NET — generated / user-specific
+# ------------------------------------------------------------
+**/*.user
+**/*.suo
+**/*.sln.docstates
+**/*.vspscc
+**/*.vssscc
+**/launchSettings.json
+
+# ------------------------------------------------------------
+# Visual Studio IDE
+# ------------------------------------------------------------
 .vs/
-*.vcxproj.user
-*.user
-*.sln.docstates
+**/. vs/
+**/.vs/
 
-# Node / frontend
-frontend/spinrise-web/node_modules/
-frontend/spinrise-web/dist/
-frontend/spinrise-web/build/
-frontend/spinrise-web/.vite/
-frontend/spinrise-web/.cache/
-frontend/spinrise-web/.env*
-frontend/spinrise-web/npm-debug.log*
-frontend/spinrise-web/yarn-debug.log*
-frontend/spinrise-web/yarn-error.log*
+# ------------------------------------------------------------
+# ASP.NET — environment-specific config (keep appsettings.json)
+# ------------------------------------------------------------
+**/appsettings.Development.json
+**/appsettings.Production.json
+**/appsettings.Staging.json
+**/appsettings.local.json
 
-#RootFolder
-AI_CONTEXT.md
-CODE_REVIEW_IMPLEMENTATION_GUIDE.md
-IMPLEMENTATION_REQUIREMENTS.md
-output.xml
-RepPO.rpt
-OLD
+# ------------------------------------------------------------
+# Node / Frontend (Development/spinrise-web)
+# ------------------------------------------------------------
+**/node_modules/
+**/dist/
+**/build/
+**/.vite/
+**/.cache/
+
+# Frontend env files (all environments)
+Development/spinrise-web/.env
+Development/spinrise-web/.env.*
+!Development/spinrise-web/.env.example
+
+# Frontend debug logs
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/pnpm-debug.log*
+
+# Vite / TypeScript cache
+**/tsconfig.tsbuildinfo
+
+# ------------------------------------------------------------
+# Database scripts — generated merge file
+# ------------------------------------------------------------
+Development/Backend/Spinrise.DBScripts/merged.sql
+
+# ------------------------------------------------------------
+# Claude Code — local (machine-specific) settings only
+# ------------------------------------------------------------
+.claude/settings.local.json
+
+# Claude session memory stored at repo root (personal, not shared)
+memory/
+
+# ------------------------------------------------------------
+# Temporary / scratch files at repo root
+# ------------------------------------------------------------
+error.txt
+prompt.txt
+prompt2.txt
+prompt.md
+prompts/
+
+# ------------------------------------------------------------
+# OS artefacts
+# ------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# ------------------------------------------------------------
+# JetBrains IDEs
+# ------------------------------------------------------------
+.idea/
+*.iml
+
+# ------------------------------------------------------------
+# Test results / coverage
+# ------------------------------------------------------------
+**/TestResults/
+**/coverage/
+**/.nyc_output/
+lcov.info
+**/*.lcov
+
+# ------------------------------------------------------------
+# Publish profiles (machine-specific)
+# ------------------------------------------------------------
+**/Properties/PublishProfiles/
+**/*.pubxml
+**/*.pubxml.user

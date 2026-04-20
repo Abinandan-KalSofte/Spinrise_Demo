@@ -10,9 +10,9 @@ Spinrise is an enterprise ERP system.
 Working directory layout:
 ```
 Development/
-├── backend/         # .NET solution (Spinrise.sln)
-└── frontend/        # spinrise-web (Vite/React)
-DOCs/                # Project documentation & guides
+├── Backend/         # .NET solution (Spinrise.sln)
+└── spinrise-web/    # Vite/React frontend
+Docs/                # Project documentation & guides
 ```
 
 ---
@@ -54,7 +54,7 @@ DOCs/                # Project documentation & guides
 
 ## Frontend Architecture
 
-**Location**: `Development/frontend/spinrise-web/`
+**Location**: `Development/spinrise-web/`
 
 **Stack**: React 18, TypeScript (strict), Vite, Ant Design 5, Zustand, Axios, React Router v7, Vitest + MSW
 
@@ -121,9 +121,9 @@ src/features/<featureName>/
 ## Key Documentation
 
 - `Development/AI_CONTEXT.md` — architecture summary for AI context
-- `Development/backend/PROJECT_GUIDE.md` — backend patterns reference
-- `Development/backend/DEVELOPMENT_WORKFLOW_GUIDE.md` — dev workflow
-- `Development/backend/TESTING_GUIDE.md` — testing conventions
-- `Development/backend/SETUP_AND_DEPLOYMENT.md` — environment setup
-- `Development/frontend/Guide.md` — frontend guide
-- `DOCs/` — design documents and blueprints
+- `Development/Backend/PROJECT_GUIDE.md` — backend patterns reference
+- `Development/Backend/DEVELOPMENT_WORKFLOW_GUIDE.md` — dev workflow
+- `Development/Backend/TESTING_GUIDE.md` — testing conventions
+- `Development/Backend/SETUP_AND_DEPLOYMENT.md` — environment setup
+- `Development/spinrise-web/Guide.md` — frontend guide
+- `Docs/` — design documents and blueprints

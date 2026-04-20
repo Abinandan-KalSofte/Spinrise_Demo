@@ -4,7 +4,8 @@
       "Bash(powershell *)",
       "Bash(xargs grep *)",
       "Bash(python -c ' *)",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "Read(//e//**)"
     ]
   }
 }
