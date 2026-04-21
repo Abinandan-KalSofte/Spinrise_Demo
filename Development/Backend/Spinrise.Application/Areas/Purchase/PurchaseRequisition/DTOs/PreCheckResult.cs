@@ -27,4 +27,5 @@ public class PreCheckResult
     public bool PendingPoDetailsEnabled   { get; set; }   // Penpodetails = 'Y'
     public bool RequireRequesterName      { get; set; }   // RequireReqName = 'Y'
     public bool RequireRefNo              { get; set; }   // RequireRefNo = 'Y'
+    public bool PurTypeFlgEnabled         { get; set; }   // purtypeflg (PO_PARA)
 }

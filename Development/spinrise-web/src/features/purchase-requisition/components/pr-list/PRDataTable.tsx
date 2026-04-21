@@ -2,7 +2,8 @@ import { useMemo } from 'react'
 import { Button, Space, Table, Tag, Tooltip, Typography } from 'antd'
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
 import type { SorterResult } from 'antd/es/table/interface'
-import { DownloadOutlined, EyeOutlined, FileTextOutlined } from '@ant-design/icons'
+import { DownloadOutlined, EditOutlined, EyeOutlined, FileTextOutlined } from '@ant-design/icons'
+import { useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
 import type { DepartmentLookup, EmployeeLookup, PRSummaryResponse } from '../../types'
 import { PAGE_SIZE, STATUS_TAG } from './prListConfig'
@@ -29,6 +30,7 @@ export function PRDataTable({
   departments, employees,
   onView, onDownload, onPageChange,
 }: PRDataTableProps) {
+  const navigate = useNavigate()
   const columns = useMemo((): ColumnsType<PRSummaryResponse> => [
     {
       title:     'PR No',
@@ -113,7 +115,7 @@ export function PRDataTable({
     {
       title:  'Actions',
       key:    'actions',
-      width:  88,
+      width:  112,
       fixed:  'right',
       align:  'center',
       render: (_: unknown, row: PRSummaryResponse) => (
@@ -122,6 +124,12 @@ export function PRDataTable({
             <Button
               type="text" size="small" icon={<EyeOutlined />}
               onClick={() => onView(row.prNo)}
+            />
+          </Tooltip>
+          <Tooltip title="Edit PR">
+            <Button
+              type="text" size="small" icon={<EditOutlined />}
+              onClick={() => navigate(`/purchase/requisition/edit/${row.prNo}`)}
             />
           </Tooltip>
           <Tooltip title="Download PDF">
@@ -134,7 +142,7 @@ export function PRDataTable({
         </Space>
       ),
     },
-  ], [departments, employees, downloading, onView, onDownload])
+  ], [departments, employees, downloading, navigate, onView, onDownload])
 
   return (
     <Table<PRSummaryResponse>

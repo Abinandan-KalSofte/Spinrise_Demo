@@ -21,6 +21,10 @@ export interface ItemLookup {
   itemCode: string
   itemName: string
   uom: string
+  currentStock?: number
+  pendingPrQty?: number
+  pendingPoQty?: number
+  minLevel?: number
 }
 
 export interface MachineLookup {
@@ -60,6 +64,9 @@ export interface PRLineFormItem {
   model:        string
   maxCost:      number | null
   rate:         number | null
+  // Print fields (Rec #28)
+  drawNo:       string
+  catNo:        string
 }
 
 // ── Header form values (Ant Design Form) ─────────────────────────────────────
@@ -69,7 +76,6 @@ export interface PRHeaderFormValues {
   prDate: Dayjs
   depCode: string
   section: string
-  subCost: number | null
   iType: string
   reqName: string
   refNo: string
@@ -118,6 +124,9 @@ export interface CreatePRLineRequest {
   model?:        string
   maxCost?:      number | null
   rate?:         number | null
+  // Print fields (Rec #28)
+  drawNo?:       string
+  catNo?:        string
 }
 
 export interface CreatePRRequest {
@@ -166,6 +175,10 @@ export interface PRLineResponse {
   lastPoSupplierName?: string
   isSample: boolean
   categoryCode?: string
+  drawNo?: string
+  catNo?: string
+  model?: string
+  maxCost?: number
 }
 
 export interface PRHeaderResponse {
@@ -189,8 +202,16 @@ export interface PRHeaderResponse {
   createdAt: string
   modifiedBy?: string
   modifiedAt?: string
+  budgetBalance?: number
   hasPendingIndentWarning: boolean
   pendingIndentWarningMessage?: string
+  // Approval pipeline (display-only)
+  level1ApproverName?: string
+  level1ApprovedAt?: string
+  level2ApproverName?: string
+  level2ApprovedAt?: string
+  finalApproverName?: string
+  finalApprovedAt?: string
   lines: PRLineResponse[]
 }
 
@@ -210,6 +231,17 @@ export interface PRSummaryResponse {
   lineCount: number
 }
 
+export interface PRItemHistoryDto {
+  poNo: string
+  poDate: string
+  supplierCode?: string
+  supplierName?: string
+  rate: number
+  orderQty: number
+  receivedQty: number
+  pendingQty: number
+}
+
 export interface PreCheckResult {
   // Setup existence (V1–V3) — false means the form should be blocked
   itemMasterExists:    boolean
@@ -224,14 +256,15 @@ export interface PreCheckResult {
   approvalStatusVisible:     boolean
   manualPrNumberEnabled:     boolean
   pendingPoDetailsEnabled:   boolean
+  purTypeFlgEnabled:         boolean
   requireRequesterName:      boolean
   requireRefNo:              boolean
 }
 
 export const PR_STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  D: { label: 'Draft',     color: 'default' },
-  O: { label: 'Open',      color: 'blue'    },
-  A: { label: 'Approved',  color: 'purple'  },
-  C: { label: 'Received',  color: 'cyan'    },
-  X: { label: 'Cancelled', color: 'red'     },
+  OPEN:      { label: 'Open',      color: 'blue'    },
+  APPROVED:  { label: 'Approved',  color: 'purple'  },
+  RECEIVED:  { label: 'Received',  color: 'cyan'    },
+  CANCELLED: { label: 'Cancelled', color: 'red'     },
+  CONVERTED: { label: 'Converted', color: 'green'   },
 }

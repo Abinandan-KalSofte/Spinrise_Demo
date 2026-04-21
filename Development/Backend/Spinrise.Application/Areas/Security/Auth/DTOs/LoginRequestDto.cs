@@ -7,8 +7,8 @@ public class LoginRequestDto
     public string DivCode { get; set; } = string.Empty;
 
     [Required]
-    [StringLength(5, MinimumLength = 1)]
-    public string UserId { get; set; } = string.Empty;
+    [StringLength(100, MinimumLength = 1)]
+    public string UserName { get; set; } = string.Empty;
 
     [Required]
     public string Password { get; set; } = string.Empty;

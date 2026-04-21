@@ -93,8 +93,7 @@ BEGIN
     SET NOCOUNT ON;
     SELECT CASE WHEN EXISTS (
         SELECT 1 FROM dbo.in_cat
-        WHERE CATCODE = @CatCode
-          AND DIVCODE = @DivCode
+        WHERE CATCODE = @CatCode   -- in_cat is global; no DIVCODE column
     ) THEN 1 ELSE 0 END AS [Exists];
 END;
 GO

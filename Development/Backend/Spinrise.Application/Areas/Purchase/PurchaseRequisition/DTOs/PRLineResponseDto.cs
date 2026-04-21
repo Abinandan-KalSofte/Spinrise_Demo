@@ -24,6 +24,8 @@ public class PRLineResponseDto
     public bool IsSample { get; set; }
     public long? SubCostCode { get; set; }
     public string? CategoryCode { get; set; }
+    public string? DrawNo { get; set; }
+    public string? CatNo { get; set; }
     public string? Model { get; set; }
     public decimal? MaxCost { get; set; }
 }

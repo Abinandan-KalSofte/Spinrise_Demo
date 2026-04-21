@@ -7,7 +7,7 @@ public interface ILookupRepository
     Task<IEnumerable<DepartmentLookupDto>> GetDepartmentsAsync(string divCode);
     Task<IEnumerable<EmployeeLookupDto>>   GetEmployeesAsync(string divCode);
     Task<IEnumerable<POTypeLookupDto>>     GetPOTypesAsync();
-    Task<IEnumerable<ItemLookupDto>>       GetItemsAsync( string searchTerm);
+    Task<IEnumerable<ItemLookupDto>>       GetItemsAsync(string divCode, string searchTerm, string? depCode, string? itemGroup);
     Task<IEnumerable<MachineLookupDto>>    GetMachinesAsync(string divCode);
     Task<IEnumerable<SubCostLookupDto>>    GetSubCostsAsync(string divCode);
     Task<IEnumerable<DivisionDTO>> GetDivisionDetailsAsync(string divCode);

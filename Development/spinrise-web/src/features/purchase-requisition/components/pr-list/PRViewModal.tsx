@@ -138,6 +138,19 @@ function PRViewContent({ pr }: { pr: PRHeaderResponse }) {
               title: 'Remarks', dataIndex: 'remarks', key: 'remarks', ellipsis: true,
               render: (v: string | undefined) => v || <Typography.Text type="secondary">—</Typography.Text>,
             },
+            {
+              title: 'Machine', dataIndex: 'machineNo', key: 'machineNo', width: 90,
+              render: (v: string | undefined) => v || <Typography.Text type="secondary">—</Typography.Text>,
+            },
+            {
+              title: 'Sub-Cost', dataIndex: 'subCostCode', key: 'subCostCode', width: 80, align: 'right' as const,
+              render: (v: number | undefined) =>
+                v != null ? v : <Typography.Text type="secondary">—</Typography.Text>,
+            },
+            {
+              title: 'Cat', dataIndex: 'categoryCode', key: 'categoryCode', width: 56, align: 'center' as const,
+              render: (v: string | undefined) => v || <Typography.Text type="secondary">—</Typography.Text>,
+            },
           ]}
         />
       </Card>

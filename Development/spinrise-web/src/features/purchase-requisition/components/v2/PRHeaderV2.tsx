@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import {
+  Alert,
   Button,
   Col,
   Collapse,
@@ -7,11 +8,11 @@ import {
   Divider,
   Form,
   Input,
-  InputNumber,
   Popover,
   Row,
   Select,
   Space,
+  Steps,
   Tag,
   Typography,
 } from 'antd'
@@ -29,6 +30,7 @@ import type {
   EmployeeLookup,
   POTypeLookup,
   PRHeaderFormValues,
+  PRHeaderResponse,
 } from '../../types'
 
 // ── Props ─────────────────────────────────────────────────────────────────────
@@ -43,6 +45,10 @@ interface PRHeaderV2Props {
   onEditHeader:            () => void
   disabled?:               boolean
   pendingPoDetailsEnabled?: boolean
+  purTypeFlgEnabled?:       boolean
+  approvalStatusVisible?:   boolean
+  budgetValidationEnabled?: boolean
+  savedPr?:                 PRHeaderResponse | null
 }
 
 // ── PR Date quick-edit (inline Popover DatePicker in the collapsed summary) ───
@@ -99,6 +105,10 @@ export function PRHeaderV2({
   onEditHeader,
   disabled = false,
   pendingPoDetailsEnabled = false,
+  purTypeFlgEnabled = false,
+  approvalStatusVisible = false,
+  budgetValidationEnabled = false,
+  savedPr = null,
 }: PRHeaderV2Props) {
   const deptOptions   = departments.map((d) => ({ value: d.depCode, label: `${d.depCode} – ${d.depName}` }))
   const employeeOpts  = employees.map((e)   => ({ value: e.empNo,   label: `${e.empNo} – ${e.eName}` }))
@@ -279,7 +289,7 @@ export function PRHeaderV2({
           <Form.Item
             name="poGroupCode"
             label="PO Group"
-            rules={pendingPoDetailsEnabled ? [{ required: true, message: 'Required' }] : []}
+            rules={purTypeFlgEnabled ? [{ required: true, message: 'Required' }] : []}
           >
             <Input placeholder="PO group code" maxLength={5} />
           </Form.Item>
@@ -288,17 +298,6 @@ export function PRHeaderV2({
         <Col xs={24} sm={12} md={8} lg={6}>
           <Form.Item name="scopeCode" label="Scope Code">
             <Input placeholder="Scope code" maxLength={2} />
-          </Form.Item>
-        </Col>
-
-        <Col xs={24} sm={12} md={8} lg={6}>
-          <Form.Item name="subCost" label="Sub-Cost Centre">
-            <InputNumber
-              style={{ width: '100%' }}
-              min={1}
-              max={99999}
-              placeholder="Sub-cost centre"
-            />
           </Form.Item>
         </Col>
 
@@ -314,8 +313,75 @@ export function PRHeaderV2({
           </Form.Item>
         </Col>
       </Row>
+
+      {/* Budget balance indicator — shown in edit/view mode only when feature is enabled */}
+      {budgetValidationEnabled && savedPr?.budgetBalance != null && (
+        <Alert
+          type="warning"
+          showIcon
+          message={`Budget Balance: ₹${savedPr.budgetBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`}
+          style={{ marginTop: 4, marginBottom: 0 }}
+        />
+      )}
     </Form>
   )
+
+  // ── Approval pipeline panel ───────────────────────────────────────────────
+  const approvalPanel = isHeaderSaved && approvalStatusVisible && savedPr ? (
+    <>
+      <Divider orientation="left" orientationMargin={0} style={{ fontSize: 12, marginTop: 8 }}>
+        Approval Status
+      </Divider>
+      <Steps
+        size="small"
+        style={{ marginBottom: 8 }}
+        items={[
+          {
+            title: 'Level 1',
+            status: savedPr.level1ApproverName ? 'finish' : 'wait',
+            description: savedPr.level1ApproverName ? (
+              <Space direction="vertical" size={0}>
+                <Typography.Text style={{ fontSize: 11 }}>{savedPr.level1ApproverName}</Typography.Text>
+                {savedPr.level1ApprovedAt && (
+                  <Typography.Text type="secondary" style={{ fontSize: 11 }}>
+                    {dayjs(savedPr.level1ApprovedAt).format('DD-MM-YYYY')}
+                  </Typography.Text>
+                )}
+              </Space>
+            ) : <Typography.Text type="secondary" style={{ fontSize: 11 }}>Pending</Typography.Text>,
+          },
+          {
+            title: 'Level 2',
+            status: savedPr.level2ApproverName ? 'finish' : 'wait',
+            description: savedPr.level2ApproverName ? (
+              <Space direction="vertical" size={0}>
+                <Typography.Text style={{ fontSize: 11 }}>{savedPr.level2ApproverName}</Typography.Text>
+                {savedPr.level2ApprovedAt && (
+                  <Typography.Text type="secondary" style={{ fontSize: 11 }}>
+                    {dayjs(savedPr.level2ApprovedAt).format('DD-MM-YYYY')}
+                  </Typography.Text>
+                )}
+              </Space>
+            ) : <Typography.Text type="secondary" style={{ fontSize: 11 }}>Pending</Typography.Text>,
+          },
+          {
+            title: 'Final',
+            status: savedPr.finalApproverName ? 'finish' : 'wait',
+            description: savedPr.finalApproverName ? (
+              <Space direction="vertical" size={0}>
+                <Typography.Text style={{ fontSize: 11 }}>{savedPr.finalApproverName}</Typography.Text>
+                {savedPr.finalApprovedAt && (
+                  <Typography.Text type="secondary" style={{ fontSize: 11 }}>
+                    {dayjs(savedPr.finalApprovedAt).format('DD-MM-YYYY')}
+                  </Typography.Text>
+                )}
+              </Space>
+            ) : <Typography.Text type="secondary" style={{ fontSize: 11 }}>Pending</Typography.Text>,
+          },
+        ]}
+      />
+    </>
+  ) : null
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
@@ -333,7 +399,7 @@ export function PRHeaderV2({
         key:      'form',
         label:    collapsedLabel,
         extra:    panelExtra,
-        children: formBody,
+        children: <>{formBody}{approvalPanel}</>,
         style:    { borderRadius: 8 },
       }]}
     />

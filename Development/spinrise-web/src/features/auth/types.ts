@@ -1,6 +1,6 @@
 export interface LoginDto {
   divCode:  string
-  userId:   string
+  userName: string
   password: string
 }
 

@@ -5,7 +5,13 @@
       "Bash(xargs grep *)",
       "Bash(python -c ' *)",
       "Bash(node -e ' *)",
-      "Read(//e//**)"
+      "Read(//e//**)",
+      "Bash(xargs cat *)",
+      "Bash(dotnet build *)",
+      "Bash(cmd.exe *)",
+      "Bash(npx tsc *)",
+      "PowerShell(New-Item *)",
+      "Bash(npx vite *)"
     ]
   }
 }

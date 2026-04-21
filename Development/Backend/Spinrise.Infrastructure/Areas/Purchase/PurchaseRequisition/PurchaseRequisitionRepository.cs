@@ -217,7 +217,8 @@ public class PurchaseRequisitionRepository : IPurchaseRequisitionRepository
                 line.BudgetGroupCode,  line.SubCostCode,        line.LastPoRate,
                 line.LastPoDate,       line.LastPoSupplierCode, line.LastPoSupplierName,
                 line.IsSample,         line.Model,              line.MaxCost,
-                CatCode = line.CategoryCode
+                CatCode = line.CategoryCode,
+                line.DrawNo,           line.CatNo
             },
             transaction: _uow.Transaction,
             commandType: CommandType.StoredProcedure);
@@ -318,10 +319,20 @@ public class PurchaseRequisitionRepository : IPurchaseRequisitionRepository
     {
         var result = await _uow.Connection!.QueryFirstAsync<int>(
             StoredProcedures.PurchaseRequisition.ItemExists,
-            new { DivCode = divCode, ItemCode = itemCode },
+            new {  ItemCode = itemCode },
             transaction: _uow.Transaction,
             commandType: CommandType.StoredProcedure);
         return result == 1;
+    }
+
+    public async Task<decimal> GetItemMinLevelAsync(string divCode, string itemCode)
+    {
+        var result = await _uow.Connection!.ExecuteScalarAsync<decimal?>(
+            StoredProcedures.PurchaseRequisition.GetItemMinLevel,
+            new { DivCode = divCode, ItemCode = itemCode },
+            transaction:  _uow.Transaction,
+            commandType:  CommandType.StoredProcedure);
+        return result ?? 0m;
     }
 
     public async Task<bool> CostCentreExistsAsync(string divCode, string ccCode)
@@ -374,6 +385,17 @@ public class PurchaseRequisitionRepository : IPurchaseRequisitionRepository
             transaction: _uow.Transaction,
             commandType: CommandType.StoredProcedure);
         return result == 1;
+    }
+
+    // ── Item purchase history ─────────────────────────────────────────────────
+
+    public async Task<IEnumerable<PRItemHistoryDto>> GetItemHistoryAsync(string divCode, string itemCode)
+    {
+        return await _uow.Connection!.QueryAsync<PRItemHistoryDto>(
+            StoredProcedures.PurchaseRequisition.GetItemHistory,
+            new { DivCode = divCode, ItemCode = itemCode },
+            transaction: _uow.Transaction,
+            commandType: CommandType.StoredProcedure);
     }
 
 }

@@ -103,6 +103,18 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
         catch { await _uow.RollbackAsync(); throw; }
     }
 
+    public async Task<IEnumerable<PRItemHistoryDto>> GetItemHistoryAsync(string divCode, string itemCode)
+    {
+        await _uow.BeginAsync();
+        try
+        {
+            var data = await _repo.GetItemHistoryAsync(divCode.Trim(), itemCode.Trim());
+            await _uow.CommitAsync();
+            return data;
+        }
+        catch { await _uow.RollbackAsync(); throw; }
+    }
+
     // ── Delete reasons ────────────────────────────────────────────────────────
 
     public async Task<IEnumerable<PRDeleteReasonDto>> GetDeleteReasonsAsync()
@@ -115,10 +127,12 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
 
     // ── Create ────────────────────────────────────────────────────────────────
 
-    public async Task<(bool Success, string Message, long? PrNo)> CreateAsync(
+    public async Task<(bool Success, string Message, long? PrNo, IReadOnlyList<string> Warnings)> CreateAsync(
         CreatePRHeaderDto dto, string divCode, AuditContext audit)
     {
         divCode = divCode.Trim();
+
+        IReadOnlyList<string> lineWarnings = [];
 
         // ── Phase 1: validation (read-only transaction) ───────────────────────
         await _uow.BeginAsync();
@@ -130,7 +144,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             if (setupFailure is not null)
             {
                 await _uow.CommitAsync();
-                return (false, setupFailure, null);
+                return (false, setupFailure, null, []);
             }
 
             var today = DateTime.Today;
@@ -144,7 +158,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
                 if (dto.PrDate.Date < maxPrDate.Date || dto.PrDate.Date > today)
                 {
                     await _uow.CommitAsync();
-                    return (false, PRMessages.InvalidPrDate, null);
+                    return (false, PRMessages.InvalidPrDate, null, []);
                 }
             }
 
@@ -152,58 +166,52 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             if (!await _repo.DepartmentExistsAsync(divCode, dto.DepCode.Trim()))
             {
                 await _uow.CommitAsync();
-                return (false, PRMessages.DepartmentNotFound, null);
+                return (false, PRMessages.DepartmentNotFound, null, []);
             }
 
             // V8: order type required when flag active
             if (flags.PendingPoDetailsEnabled && string.IsNullOrWhiteSpace(dto.IType))
             {
                 await _uow.CommitAsync();
-                return (false, PRMessages.OrderTypeRequired, null);
+                return (false, PRMessages.OrderTypeRequired, null, []);
             }
 
-            // V8b: PO Group required when flag active (PurTypeFlg — flagged for backend clarification)
-            if (flags.PendingPoDetailsEnabled && string.IsNullOrWhiteSpace(dto.PoGroupCode))
+            // V8b: PO Group required when PurTypeFlg active (PO_PARA.purtypeflg)
+            if (flags.PurTypeFlgEnabled && string.IsNullOrWhiteSpace(dto.PoGroupCode))
             {
                 await _uow.CommitAsync();
-                return (false, PRMessages.PoGroupRequired, null);
+                return (false, PRMessages.PoGroupRequired, null, []);
             }
 
             // V9: requester name required when flag active
             if (flags.RequireRequesterName && string.IsNullOrWhiteSpace(dto.ReqName))
             {
                 await _uow.CommitAsync();
-                return (false, PRMessages.RequesterRequired, null);
+                return (false, PRMessages.RequesterRequired, null, []);
             }
-
-            // V10: sub cost required when BudgetQty = 'Y' will be moved into line validation
-            //if (flags.BudgetValidationEnabled && string.IsNullOrWhiteSpace(dto.SubCostCode))
-            //{
-            //    await _uow.CommitAsync();
-            //    return (false, PRMessages.SubCostRequired, null);
-            //}
 
             // V11: ref no required when flag active
             if (flags.RequireRefNo && string.IsNullOrWhiteSpace(dto.RefNo))
             {
                 await _uow.CommitAsync();
-                return (false, PRMessages.RefNoRequired, null);
+                return (false, PRMessages.RefNoRequired, null, []);
             }
 
             // V12: at least one line
             if (dto.Lines.Count == 0)
             {
                 await _uow.CommitAsync();
-                return (false, PRMessages.NoLineItems, null);
+                return (false, PRMessages.NoLineItems, null, []);
             }
 
-            // V13–V24: line-level validation (Create: duplicate by item code only)
-            var lineError = await ValidateCreateLinesAsync(
+            // V13–V25: line-level validation (Create: item+machine composite dedup, IST-15)
+            var (lineError, warnings) = await ValidateCreateLinesAsync(
                 divCode, dto.DepCode.Trim(), dto.Lines, today);
+            lineWarnings = warnings;
             if (lineError is not null)
             {
                 await _uow.CommitAsync();
-                return (false, lineError, null);
+                return (false, lineError, null, []);
             }
 
             await _uow.CommitAsync();
@@ -227,17 +235,19 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             }
 
             await _uow.CommitAsync();
-            return (true, "Purchase Requisition created successfully.", (long?)prNo);
+            return (true, "Purchase Requisition created successfully.", (long?)prNo, lineWarnings);
         }
         catch { await _uow.RollbackAsync(); throw; }
     }
 
     // ── Update ────────────────────────────────────────────────────────────────
 
-    public async Task<(bool Success, string Message)> UpdateAsync(
+    public async Task<(bool Success, string Message, IReadOnlyList<string> Warnings)> UpdateAsync(
         UpdatePRHeaderDto dto, string divCode, AuditContext audit)
     {
         divCode = divCode.Trim();
+
+        IReadOnlyList<string> lineWarnings = [];
 
         // ── Phase 1: validation ───────────────────────────────────────────────
         PurchaseRequisitionHeader existing;
@@ -248,16 +258,16 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             if (fetched is null)
             {
                 await _uow.CommitAsync();
-                return (false, PRMessages.PrNotFound);
+                return (false, PRMessages.PrNotFound, []);
             }
 
             existing = fetched;
 
-            // Block modify on approved / cancelled PRs (amdflg / CancelFlag)
-            if (IsLockedStatus(existing.PrStatus))
+            var updateLockMsg = GetLockMessage(existing);
+            if (updateLockMsg is not null)
             {
                 await _uow.CommitAsync();
-                return (false, PRMessages.PrAlreadyConverted);
+                return (false, updateLockMsg, []);
             }
 
             var flags = await _repo.RunPreChecksAsync(divCode);
@@ -265,41 +275,35 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             if (!await _repo.DepartmentExistsAsync(divCode, dto.DepCode.Trim()))
             {
                 await _uow.CommitAsync();
-                return (false, PRMessages.DepartmentNotFound);
-            }
-
-            if (flags.BudgetValidationEnabled && dto.SubCost is null)
-            {
-                await _uow.CommitAsync();
-                return (false, PRMessages.SubCostRequired);
+                return (false, PRMessages.DepartmentNotFound, []);
             }
 
             if (flags.RequireRequesterName && string.IsNullOrWhiteSpace(dto.ReqName))
             {
                 await _uow.CommitAsync();
-                return (false, PRMessages.RequesterRequired);
+                return (false, PRMessages.RequesterRequired, []);
             }
 
             if (flags.RequireRefNo && string.IsNullOrWhiteSpace(dto.RefNo))
             {
                 await _uow.CommitAsync();
-                return (false, PRMessages.RefNoRequired);
+                return (false, PRMessages.RefNoRequired, []);
             }
 
             if (dto.Lines.Count == 0)
             {
                 await _uow.CommitAsync();
-                return (false, PRMessages.NoLineItems);
+                return (false, PRMessages.NoLineItems, []);
             }
 
-            // V20: required date >= PR date on Modify
-            // V15: duplicate by (itemCode + machineNo) composite key on Modify
-            var lineError = await ValidateUpdateLinesAsync(
+            // V20: required date >= PR date | V15: item+machine composite dedup | MINLEVEL warnings
+            var (lineError, warnings) = await ValidateUpdateLinesAsync(
                 divCode, dto.DepCode.Trim(), fetched.PrDate.Date, dto.Lines);
+            lineWarnings = warnings;
             if (lineError is not null)
             {
                 await _uow.CommitAsync();
-                return (false, lineError);
+                return (false, lineError, []);
             }
 
             await _uow.CommitAsync();
@@ -319,7 +323,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             if (updatedRows <= 0)
             {
                 await _uow.RollbackAsync();
-                return (false, PRMessages.PrNotFound);
+                return (false, PRMessages.PrNotFound, []);
             }
 
             // Soft-delete existing lines then re-insert (VB6 pattern)
@@ -333,7 +337,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             }
 
             await _uow.CommitAsync();
-            return (true, "Purchase Requisition updated successfully.");
+            return (true, "Purchase Requisition updated successfully.", lineWarnings);
         }
         catch { await _uow.RollbackAsync(); throw; }
     }
@@ -364,11 +368,11 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
                 return (false, PRMessages.PrNotFound);
             }
 
-            // Block delete on locked statuses (CONVERTED / CLOSED / CANCELLED)
-            if (IsLockedStatus(header.PrStatus))
+            var deleteLockMsg = GetLockMessage(header);
+            if (deleteLockMsg is not null)
             {
                 await _uow.CommitAsync();
-                return (false, PRMessages.PrAlreadyConverted);
+                return (false, deleteLockMsg);
             }
 
             // V28: block delete if linked to an enquiry in po_enql
@@ -442,10 +446,11 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
                 return (false, PRMessages.PrNotFound);
             }
 
-            if (IsLockedStatus(existing.PrStatus))
+            var lineDeleteLockMsg = GetLockMessage(existing);
+            if (lineDeleteLockMsg is not null)
             {
                 await _uow.CommitAsync();
-                return (false, PRMessages.PrAlreadyConverted);
+                return (false, lineDeleteLockMsg);
             }
 
             var line = existing.Lines.FirstOrDefault(l => l.PrSNo == prSNo);
@@ -492,64 +497,73 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
     }
 
     /// <summary>
-    /// Create path: duplicate key is item code only (V14).
+    /// Create path: duplicate key is item+machine composite (IST-15).
     /// Required date >= processing date (V19).
     /// </summary>
-    private async Task<string?> ValidateCreateLinesAsync(
+    private async Task<(string? Error, List<string> Warnings)> ValidateCreateLinesAsync(
         string divCode, string depCode,
         IReadOnlyCollection<CreatePRLineDto> lines,
         DateTime processingDate)
     {
-        var seenItems = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var seenItems      = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var seenComposites = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var warnings       = new List<string>();
+        var lineNo         = 0;
 
         foreach (var line in lines)
         {
+            lineNo++;
             var error = await ValidateLineCommonAsync(
                 divCode, depCode, processingDate,
                 line.ItemCode, line.QtyRequired, line.RequiredDate,
                 line.MachineNo, line.CostCentreCode, line.BudgetGroupCode,
-                seenItems, itemMachineKey: null,        // Create: item-only dedup
-                PRMessages.RequiredDateInvalid);
-            if (error is not null) return error;
+                seenItems, seenComposites,
+                PRMessages.RequiredDateInvalid,
+                warnings, lineNo);
+            if (error is not null) return (error, warnings);
 
             // V25: category code must exist in IN_CAT when provided
             if (!string.IsNullOrWhiteSpace(line.CategoryCode)
                 && !await _repo.CategoryExistsAsync(divCode, line.CategoryCode.Trim()))
-                return PRMessages.CategoryNotFound;
+                return (PRMessages.CategoryNotFound, warnings);
         }
 
-        return null;
+        return (null, warnings);
     }
 
     /// <summary>
     /// Modify path: duplicate key is (item + machine) composite (V15).
     /// Required date >= PR date (V20).
     /// </summary>
-    private async Task<string?> ValidateUpdateLinesAsync(
+    private async Task<(string? Error, List<string> Warnings)> ValidateUpdateLinesAsync(
         string divCode, string depCode,
         DateTime prDate,
         IReadOnlyCollection<UpdatePRLineDto> lines)
     {
         var seenItems      = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var seenComposites = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var warnings       = new List<string>();
+        var lineNo         = 0;
 
         foreach (var line in lines)
         {
+            lineNo++;
             var error = await ValidateLineCommonAsync(
                 divCode, depCode, prDate,
                 line.ItemCode, line.QtyRequired, line.RequiredDate,
                 line.MachineNo, line.CostCentreCode, line.BudgetGroupCode,
                 seenItems, seenComposites,
-                PRMessages.RequiredDateModify);
-            if (error is not null) return error;
+                PRMessages.RequiredDateModify,
+                warnings, lineNo);
+            if (error is not null) return (error, warnings);
 
             // V25: category code must exist in IN_CAT when provided
             if (!string.IsNullOrWhiteSpace(line.CategoryCode)
                 && !await _repo.CategoryExistsAsync(divCode, line.CategoryCode.Trim()))
-                return PRMessages.CategoryNotFound;
+                return (PRMessages.CategoryNotFound, warnings);
         }
 
-        return null;
+        return (null, warnings);
     }
 
     private async Task<string?> ValidateLineCommonAsync(
@@ -563,8 +577,10 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
         string? costCentreCode,
         string? budgetGroupCode,
         ISet<string> seenItems,
-        ISet<string>? itemMachineKey,   // null = Create (item-only); non-null = Modify (composite)
-        string requiredDateMessage)
+        ISet<string> itemMachineKey,
+        string requiredDateMessage,
+        List<string> warnings,
+        int lineNo)
     {
         var normItem = itemCode.Trim().ToUpperInvariant();
 
@@ -572,20 +588,22 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
         if (!await _repo.ItemExistsAsync(divCode, normItem))
             return PRMessages.ItemNotFound;
 
-        // V14 (Create) / V15 (Modify — composite key)
+        // V14/V15: item-level then composite dedup
         if (!seenItems.Add(normItem))
             return PRMessages.DuplicateItem;
 
-        if (itemMachineKey is not null)
-        {
-            var machineKey = $"{normItem}|{(machineNo?.Trim().ToUpperInvariant() ?? string.Empty)}";
-            if (!itemMachineKey.Add(machineKey))
-                return PRMessages.DuplicateItemMachine;
-        }
+        var machineKey = $"{normItem}|{(machineNo?.Trim().ToUpperInvariant() ?? string.Empty)}";
+        if (!itemMachineKey.Add(machineKey))
+            return PRMessages.DuplicateItemMachine;
 
         // V16/V17: quantity
         if (qtyRequired <= 0)
             return PRMessages.QtyRequired;
+
+        // MINLEVEL warning (non-blocking, §4.3)
+        var minLevel = await _repo.GetItemMinLevelAsync(divCode, normItem);
+        if (minLevel > 0 && qtyRequired < minLevel)
+            warnings.Add(PRMessages.QuantityBelowMinLevel(lineNo, minLevel));
 
         // V18/V19/V20: required date
         if (requiredDate.HasValue && requiredDate.Value.Date < minRequiredDate.Date)
@@ -628,13 +646,22 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
     }
 
     /// <summary>
-    /// Statuses that block Modify — mirrors the VB6 appflg/'Y' + CancelFlag check.
+    /// Returns a lock error message when the PR cannot be modified; null when it is editable.
+    /// Approval flags (IST-5) are checked first and produce a specific message.
     /// </summary>
-    private static bool IsLockedStatus(string status)
-        => status.Equals("CONVERTED",  StringComparison.OrdinalIgnoreCase)
-        || status.Equals("CLOSED",     StringComparison.OrdinalIgnoreCase)
-        || status.Equals("CANCELLED",  StringComparison.OrdinalIgnoreCase)
-        || status.Equals("APPROVED",   StringComparison.OrdinalIgnoreCase);
+    private static string? GetLockMessage(PurchaseRequisitionHeader header)
+    {
+        if (header.IsApprovalLocked)
+            return PRMessages.PrApprovalLocked;
+
+        if (header.PrStatus.Equals("CONVERTED",  StringComparison.OrdinalIgnoreCase)
+         || header.PrStatus.Equals("RECEIVED",   StringComparison.OrdinalIgnoreCase)
+         || header.PrStatus.Equals("CANCELLED",  StringComparison.OrdinalIgnoreCase)
+         || header.PrStatus.Equals("APPROVED",   StringComparison.OrdinalIgnoreCase))
+            return PRMessages.PrAlreadyConverted;
+
+        return null;
+    }
 }
 
 // ── Audit action constants ────────────────────────────────────────────────────
@@ -668,6 +695,8 @@ internal static class PRMessages
     public const string DuplicateItem        = "Same item should not be repeated in the same PR.";
     public const string DuplicateItemMachine = "Same item with the same machine should not be repeated in the same PR.";
     public const string QtyRequired          = "Quantity Required must be greater than zero.";
+    public static string QuantityBelowMinLevel(int lineNo, decimal minLevel)
+        => $"Line {lineNo}: Required Quantity is below the minimum order quantity ({minLevel}). Please confirm.";
     public const string RequiredDateInvalid  = "Required Date must be on or after the processing date.";
     public const string RequiredDateModify   = "Required Date cannot be before the PR Date.";
     public const string MachineNotFound      = "Machine not found for the selected department.";

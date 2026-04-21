@@ -23,11 +23,18 @@ public class PurchaseRequisitionHeader
     public string? ModifiedBy { get; set; }
     public DateTime? ModifiedAt { get; set; }
 
-    // Approval / signatory fields — names match SP column names exactly for Dapper mapping
-    public string? FirstappUser { get; set; }   // SP column: FirstappUser
-    public string? FinalAppUser { get; set; }   // SP column: FinalAppUser
-    public DateTime? APP1DATE { get; set; }     // SP column: APP1DATE
-    public DateTime? APP3DATE { get; set; }     // SP column: APP3DATE
+    public decimal? BudgetBalAmt { get; set; }  // maps PO_PRH.budgetBALAMT
+
+    // True when any PO_PRL line has FirstApp/SecondApp/ThirdApp = 'Y' (IST-5 lock)
+    public bool IsApprovalLocked { get; set; }
+
+    // Approval signatory fields — names match SP column aliases for Dapper mapping
+    public string? FirstappUser { get; set; }   // SP column: FirstappUser (APP1 alias)
+    public string? SecondAppUser { get; set; }  // SP column: SecondAppUser (APP2 alias)
+    public string? FinalAppUser { get; set; }   // SP column: FinalAppUser (APP3 alias)
+    public DateTime? APP1DATE { get; set; }
+    public DateTime? APP2DATE { get; set; }
+    public DateTime? APP3DATE { get; set; }
 
     public List<PurchaseRequisitionLine> Lines { get; set; } = new();
 }

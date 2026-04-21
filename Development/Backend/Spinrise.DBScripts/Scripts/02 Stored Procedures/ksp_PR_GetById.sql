@@ -41,6 +41,16 @@ BEGIN
                     OR ISNULL(l2.SecondApp,'') = 'Y'
                     OR ISNULL(l2.ThirdApp,'')  = 'Y')
             ) THEN 'APPROVED'
+            WHEN NOT EXISTS (
+                SELECT 1 FROM dbo.po_prl l3
+                WHERE l3.divcode = h.divcode AND l3.prno = h.prno AND l3.prdate = h.prdate
+                  AND ISNULL(l3.AmdFlg,'') <> 'Y'
+                  AND ISNULL(l3.prstatus,'O') <> 'C'
+            ) AND EXISTS (
+                SELECT 1 FROM dbo.po_prl l3
+                WHERE l3.divcode = h.divcode AND l3.prno = h.prno AND l3.prdate = h.prdate
+                  AND ISNULL(l3.AmdFlg,'') <> 'Y'
+            ) THEN 'RECEIVED'
             ELSE 'OPEN'
         END                                 AS PrStatus,
         h.createdby                         AS CreatedBy,
@@ -50,7 +60,23 @@ BEGIN
             ELSE NULL
         END                                 AS CreatedAt,
         NULL                                AS ModifiedBy,
-        NULL                                AS ModifiedAt
+        NULL                                AS ModifiedAt,
+        h.budgetBALAMT                      AS BudgetBalAmt,
+        CASE WHEN EXISTS (
+            SELECT 1 FROM dbo.po_prl l2
+            WHERE l2.divcode = h.divcode
+              AND l2.prno    = h.prno
+              AND l2.prdate  = h.prdate
+              AND (ISNULL(l2.FirstApp,'')  = 'Y'
+                OR ISNULL(l2.SecondApp,'') = 'Y'
+                OR ISNULL(l2.ThirdApp,'')  = 'Y')
+        ) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS IsApprovalLocked,
+        h.APP1                              AS FirstappUser,
+        h.APP1DATE                          AS APP1DATE,
+        h.APP2                              AS SecondAppUser,
+        h.APP2DATE                          AS APP2DATE,
+        h.APP3                              AS FinalAppUser,
+        h.APP3DATE                          AS APP3DATE
     FROM dbo.po_prh h
     INNER JOIN pr_emp e
         ON h.REQNAME = e.empno

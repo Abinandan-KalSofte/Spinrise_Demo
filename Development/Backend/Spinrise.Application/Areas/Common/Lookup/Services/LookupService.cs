@@ -68,18 +68,18 @@ public class LookupService : ILookupService
         }
     }
 
-    public async Task<IEnumerable<ItemLookupDto>> GetItemsAsync( string searchTerm)
+    public async Task<IEnumerable<ItemLookupDto>> GetItemsAsync(string divCode, string searchTerm, string? depCode, string? itemGroup)
     {
         await _uow.BeginAsync();
         try
         {
-            var data = await _repo.GetItemsAsync(searchTerm);
+            var data = await _repo.GetItemsAsync(divCode, searchTerm, depCode, itemGroup);
             await _uow.CommitAsync();
             return data;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to get items lookup for division" );
+            _logger.LogError(ex, "Failed to get items lookup for division {DivCode}", divCode);
             await _uow.RollbackAsync();
             throw;
         }

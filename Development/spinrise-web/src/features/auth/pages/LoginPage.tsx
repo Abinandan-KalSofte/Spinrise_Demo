@@ -30,14 +30,14 @@ export default function LoginPage() {
     <div className="page-shell">
       <Card title="Spinrise - ERP" className="login-card">
         <Typography.Paragraph>
-          Enter your division code, user ID, and password to access the dashboard.
+          Enter your division code, username, and password to access the dashboard.
         </Typography.Paragraph>
 
         <Form
           form={form}
           layout="vertical"
           onFinish={onFinish}
-          initialValues={{ divCode: '', userId: '', password: '' }}
+          initialValues={{ divCode: '', userName: '', password: '' }}
         >
           <Form.Item
             label="Division Code"
@@ -48,11 +48,11 @@ export default function LoginPage() {
           </Form.Item>
 
           <Form.Item
-            label="User ID"
-            name="userId"
-            rules={[{ required: true, message: 'Please enter your user ID' }]}
+            label="Username"
+            name="userName"
+            rules={[{ required: true, message: 'Please enter your username' }]}
           >
-            <Input placeholder="e.g. U0001" maxLength={5} style={{ textTransform: 'uppercase' }} />
+            <Input placeholder="Enter your username" maxLength={100} />
           </Form.Item>
 
           <Form.Item

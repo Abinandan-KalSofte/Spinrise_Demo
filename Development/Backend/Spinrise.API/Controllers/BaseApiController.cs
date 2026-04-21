@@ -16,12 +16,33 @@ public abstract class BaseApiController : ControllerBase
         });
     }
 
+    protected IActionResult Success<T>(T data, string message, IReadOnlyList<string> warnings, int statusCode = StatusCodes.Status200OK)
+    {
+        return StatusCode(statusCode, new ApiResponse<T>
+        {
+            Success   = true,
+            Message   = message,
+            Data      = data,
+            Warnings  = warnings.Count > 0 ? warnings : null
+        });
+    }
+
     protected IActionResult SuccessMessage(string message = "Request completed successfully.", int statusCode = StatusCodes.Status200OK)
     {
         return StatusCode(statusCode, new ApiResponse
         {
             Success = true,
             Message = message
+        });
+    }
+
+    protected IActionResult SuccessMessage(string message, IReadOnlyList<string> warnings, int statusCode = StatusCodes.Status200OK)
+    {
+        return StatusCode(statusCode, new ApiResponse
+        {
+            Success  = true,
+            Message  = message,
+            Warnings = warnings.Count > 0 ? warnings : null
         });
     }
 

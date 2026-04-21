@@ -23,7 +23,17 @@ public class PRHeaderResponseDto
     public DateTime CreatedAt { get; set; }
     public string? ModifiedBy { get; set; }
     public DateTime? ModifiedAt { get; set; }
+    public decimal? BudgetBalance { get; set; }
     public bool HasPendingIndentWarning { get; set; }
     public string? PendingIndentWarningMessage { get; set; }
+
+    // Approval pipeline (display-only)
+    public string? Level1ApproverName { get; set; }
+    public DateTime? Level1ApprovedAt { get; set; }
+    public string? Level2ApproverName { get; set; }
+    public DateTime? Level2ApprovedAt { get; set; }
+    public string? FinalApproverName { get; set; }
+    public DateTime? FinalApprovedAt { get; set; }
+
     public List<PRLineResponseDto> Lines { get; set; } = new();
 }

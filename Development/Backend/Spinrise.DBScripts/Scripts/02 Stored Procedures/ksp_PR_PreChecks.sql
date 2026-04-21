@@ -30,7 +30,8 @@ BEGIN
         @IndItemGrp       CHAR(1)    = 'N',
         @PRApprovalStatus VARCHAR(5) = 'N',
         @ManualIndNo      CHAR(1)    = 'N',
-        @PenPoDetails     VARCHAR(10)= 'N';
+        @PenPoDetails     VARCHAR(10)= 'N',
+        @PurTypeFlg       VARCHAR(5) = 'N';
 
     SELECT
         @BudgetQty        = ISNULL(BudgetQty,        'N'),
@@ -38,7 +39,8 @@ BEGIN
         @IndItemGrp       = ISNULL(InditemGrp,        'N'),
         @PRApprovalStatus = ISNULL(PRapprovalstatus,  'N'),
         @ManualIndNo      = ISNULL(Manual_IndNo,      'N'),
-        @PenPoDetails     = ISNULL(Penpodetails,      'N')
+        @PenPoDetails     = ISNULL(Penpodetails,      'N'),
+        @PurTypeFlg       = ISNULL(purtypeflg,        'N')
     FROM dbo.po_para
     WHERE divcode = @DivCode;
 
@@ -56,5 +58,6 @@ BEGIN
         CASE WHEN @IndItemGrp       = 'Y' THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS ItemGroupFilterEnabled,
         CASE WHEN @PRApprovalStatus = 'Y' THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS ApprovalStatusVisible,
         CASE WHEN @ManualIndNo      = 'Y' THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS ManualPrNumberEnabled,
-        CASE WHEN @PenPoDetails     = 'Y' THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS PendingPoDetailsEnabled;
+        CASE WHEN @PenPoDetails     = 'Y' THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS PendingPoDetailsEnabled,
+        CASE WHEN @PurTypeFlg       <> 'N' AND @PurTypeFlg <> '' THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS PurTypeFlgEnabled;
 END;

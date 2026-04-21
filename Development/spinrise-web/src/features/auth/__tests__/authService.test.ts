@@ -5,7 +5,7 @@ describe('authService', () => {
   it('maps login responses into a normalized auth session', async () => {
     const result = await authService.login({
       divCode:  '',
-      userId:   'admin@spinrise.com',
+      userName: 'admin@spinrise.com',
       password: 'password',
     })
 

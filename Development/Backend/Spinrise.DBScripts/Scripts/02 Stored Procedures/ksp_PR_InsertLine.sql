@@ -23,7 +23,9 @@ CREATE OR ALTER PROCEDURE dbo.ksp_PR_InsertLine
     @IsSample         BIT,
     @Model            VARCHAR(100)  = NULL,
     @MaxCost          NUMERIC(11,2) = NULL,
-    @CatCode          VARCHAR(1)    = NULL
+    @CatCode          VARCHAR(1)    = NULL,
+    @DrawNo           VARCHAR(25)   = NULL,   -- accepted but not stored (derived from IN_ITEM)
+    @CatNo            VARCHAR(25)   = NULL    -- accepted but not stored (derived from IN_ITEM)
 AS
 BEGIN
     SET NOCOUNT ON;

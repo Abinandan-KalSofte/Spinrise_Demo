@@ -15,6 +15,7 @@ import {
   DownOutlined,
 } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
+import { PR_STATUS_LABELS } from '../../types'
 
 export type PrintFormat = 'pdf' | 'excel' | 'csv'
 
@@ -27,14 +28,6 @@ interface PRActionBarV2Props {
   onSubmit:    () => void
   onDelete?:   () => void
   onPrint?:    (format: PrintFormat) => void
-}
-
-const STATUS_TAG: Record<string, { label: string; color: string }> = {
-  D: { label: 'Draft',     color: 'default' },
-  O: { label: 'Open',      color: 'blue'    },
-  A: { label: 'Approved',  color: 'green'   },
-  C: { label: 'Closed',    color: 'volcano' },
-  X: { label: 'Cancelled', color: 'red'     },
 }
 
 export function PRActionBarV2({
@@ -58,7 +51,7 @@ export function PRActionBarV2({
     onClick: ({ key }) => onPrint?.(key as PrintFormat),
   }
 
-  const statusTag = prStatus ? STATUS_TAG[prStatus] : null
+  const statusTag = prStatus ? (PR_STATUS_LABELS[prStatus] ?? null) : null
 
   return (
     <div

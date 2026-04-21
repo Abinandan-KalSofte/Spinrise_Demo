@@ -6,6 +6,7 @@ import type {
   PRSummaryResponse,
   PreCheckResult,
   PRItemInfoDto,
+  PRItemHistoryDto,
 } from '../types'
 
 const BASE = 'purchase-requisitions'
@@ -47,6 +48,9 @@ export const purchaseRequisitionApi = {
 
   getItemInfo: (depCode: string, itemCode: string, yfDate: string, ylDate: string, pendingIndentCheckEnabled: boolean, pendingPRCheckEnabled: boolean) =>
     apiHelpers.get<PRItemInfoDto>(`${BASE}/item-info?depCode=${encodeURIComponent(depCode)}&itemCode=${encodeURIComponent(itemCode)}&yfDate=${encodeURIComponent(yfDate)}&ylDate=${encodeURIComponent(ylDate)}&pendingIndentCheckEnabled=${pendingIndentCheckEnabled}&pendingPRCheckEnabled=${pendingPRCheckEnabled}`),
+
+  getItemHistory: (itemCode: string) =>
+    apiHelpers.get<PRItemHistoryDto[]>(`${BASE}/item-history?itemCode=${encodeURIComponent(itemCode)}`),
 
   getById: (prNo: number, startDate?: string, endDate?: string) => {
     const params = new URLSearchParams()

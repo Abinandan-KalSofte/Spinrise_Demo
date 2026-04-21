@@ -40,13 +40,19 @@ public class LookupController : BaseApiController
     }
 
     [HttpGet("items")]
-    public async Task<IActionResult> GetItems([FromQuery] string? search = null)
+    public async Task<IActionResult> GetItems(
+        [FromQuery] string? search    = null,
+        [FromQuery] string? depCode   = null,
+        [FromQuery] string? itemGroup = null)
     {
-        var term = search?.Trim() ?? string.Empty;
+        var divCode = RequireDivCode();
+        var term    = search?.Trim() ?? string.Empty;
         if (term.Length < 2)
             return Success(Array.Empty<object>(), "Items retrieved successfully.");
 
-        return Success(await _service.GetItemsAsync( term), "Items retrieved successfully.");
+        return Success(
+            await _service.GetItemsAsync(divCode, term, depCode?.Trim(), itemGroup?.Trim()),
+            "Items retrieved successfully.");
     }
 
     [HttpGet("machines")]

@@ -20,12 +20,14 @@ public interface IPurchaseRequisitionService
         string divCode, string depCode, string itemCode,
         DateTime yfDate, DateTime ylDate, PreCheckResult flags);
 
+    Task<IEnumerable<PRItemHistoryDto>> GetItemHistoryAsync(string divCode, string itemCode);
+
     Task<IEnumerable<PRDeleteReasonDto>> GetDeleteReasonsAsync();
 
-    Task<(bool Success, string Message, long? PrNo)> CreateAsync(
+    Task<(bool Success, string Message, long? PrNo, IReadOnlyList<string> Warnings)> CreateAsync(
         CreatePRHeaderDto dto, string divCode, AuditContext audit);
 
-    Task<(bool Success, string Message)> UpdateAsync(
+    Task<(bool Success, string Message, IReadOnlyList<string> Warnings)> UpdateAsync(
         UpdatePRHeaderDto dto, string divCode, AuditContext audit);
 
     Task<(bool Success, string Message)> DeleteAsync(

@@ -161,7 +161,6 @@ export default function PurchaseRequisitionV2Page() {
     prDate:        values.prDate.format('YYYY-MM-DD'),
     depCode:       values.depCode,
     section:       values.section?.trim()       || undefined,
-    subCost:       values.subCost ?? undefined,
     iType:         values.iType?.trim()         || undefined,
     reqName:       values.reqName?.trim()       || undefined,
     refNo:         values.refNo?.trim()         || undefined,
@@ -212,12 +211,12 @@ export default function PurchaseRequisitionV2Page() {
       const values = headerForm.getFieldsValue()
       const result = await purchaseRequisitionApi.create(buildPayload(values))
       setSavedPrNo(result.prNo)
-      setPrStatus('D')
+      setPrStatus('OPEN')
       const fullPr = await purchaseRequisitionApi.getById(result.prNo)
       if (fullPr?.lines) {
         setItems(fullPr.lines.map(mapSavedLine))
       }
-      message.success(`Draft ${result.prNo} saved.`)
+      message.success(`PR ${result.prNo} saved.`)
     } catch (err: unknown) {
       message.error(err instanceof Error ? err.message : 'Failed to save draft.')
     } finally {
@@ -240,7 +239,7 @@ export default function PurchaseRequisitionV2Page() {
       const values = headerForm.getFieldsValue()
       const result = await purchaseRequisitionApi.create(buildPayload(values))
       setSavedPrNo(result.prNo)
-      setPrStatus('O')
+      setPrStatus('OPEN')
       const fullPr = await purchaseRequisitionApi.getById(result.prNo)
       if (fullPr?.lines) {
         setItems(fullPr.lines.map(mapSavedLine))
@@ -400,6 +399,7 @@ export default function PurchaseRequisitionV2Page() {
             onEditHeader={handleEditHeader}
             disabled={pageBusy}
             pendingPoDetailsEnabled={preCheckResult?.pendingPoDetailsEnabled ?? false}
+            purTypeFlgEnabled={preCheckResult?.purTypeFlgEnabled ?? false}
           />
         </Skeleton>
 

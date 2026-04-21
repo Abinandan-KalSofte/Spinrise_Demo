@@ -19,7 +19,7 @@ public class AuthService : IAuthService
     public async Task<AuthResponseDto?> Login(LoginRequestDto request)
     {
         var user = await _authUserStore.ValidateCredentialsAsync(
-            request.UserId, request.DivCode, request.Password);
+            request.UserName, request.DivCode, request.Password);
 
         if (user is null) return null;
 

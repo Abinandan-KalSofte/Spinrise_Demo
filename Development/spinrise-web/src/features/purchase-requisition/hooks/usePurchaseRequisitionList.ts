@@ -116,7 +116,7 @@ export function usePurchaseRequisitionList() {
 
     setDownloading(record.prNo)
     try {
-      const { blob, fileName } = await prListService.downloadReport(record.prNo, startDate, endDate)
+      const { blob, fileName } = await prListService.downloadReport(record.id, startDate, endDate)
       const url = URL.createObjectURL(blob)
       const a   = document.createElement('a')
       a.href     = url

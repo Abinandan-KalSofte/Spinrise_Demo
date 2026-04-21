@@ -20,13 +20,13 @@ public class DbAuthUserStore : IAuthUserStore
     }
 
     public async Task<AuthUserDto?> ValidateCredentialsAsync(
-        string userId, string divCode, string password)
+        string userName, string divCode, string password)
     {
         using var connection = _connectionFactory.CreateConnection();
 
         var record = await connection.QueryFirstOrDefaultAsync<PpPasswdRecord>(
             StoredProcedures.Auth.ValidateUser,
-            new { DivCode = divCode, UserId = userId, Password = password },
+            new { DivCode = divCode, UserName = userName, Password = password },
             commandType: CommandType.StoredProcedure);
 
         return record is null ? null : ToDto(record);

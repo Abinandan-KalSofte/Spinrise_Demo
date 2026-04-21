@@ -26,6 +26,7 @@ public interface IPurchaseRequisitionRepository
                                           DateTime pDate);
     Task<PendingIndentResult> CheckPendingIndentAsync(string divCode, string itemCode, string depCode, DateTime yfDate, DateTime ylDate);
     Task<PendingPRResult> CheckPendingPRAsync(string divCode, string itemCode);
+    Task<IEnumerable<PRItemHistoryDto>> GetItemHistoryAsync(string divCode, string itemCode);
 
     // ── Delete reasons ────────────────────────────────────────────────────────
     Task<IEnumerable<PRDeleteReasonDto>> GetDeleteReasonsAsync();
@@ -42,6 +43,9 @@ public interface IPurchaseRequisitionRepository
     // ── Audit log ─────────────────────────────────────────────────────────────
     Task InsertAuditLogAsync(PurchaseRequisitionHeader header, PurchaseRequisitionLine line,
                              string transMod, AuditContext audit);
+
+    // ── MINLEVEL ──────────────────────────────────────────────────────────────
+    Task<decimal> GetItemMinLevelAsync(string divCode, string itemCode);
 
     // ── Existence checks (all use parameterised queries) ─────────────────────
     Task<bool> DepartmentExistsAsync(string divCode, string depCode);

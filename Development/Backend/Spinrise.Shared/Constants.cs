@@ -137,7 +137,9 @@ public static class StoredProcedures
         public const string MachineExists             = "ksp_PR_MachineExists";
         public const string DeleteReasonExists        = "ksp_PR_DeleteReasonExists";
         public const string IsLinkedToEnquiry         = "ksp_PR_IsLinkedToEnquiry";
+        public const string GetItemMinLevel           = "ksp_PR_GetItemMinLevel";
         public const string CategoryExists            = "ksp_PR_CategoryExists";
+        public const string GetItemHistory            = "ksp_PR_GetItemHistory";
     }
 
     public static class Lookup
@@ -145,7 +147,8 @@ public static class StoredProcedures
         public const string GetDepartments = "ksp_GetDepartments";
         public const string GetEmployees   = "ksp_GetEmployees";
         public const string GetPOTypes     = "ksp_GetPOType";
-        public const string GetItems       = "ksp_GetItems";
+        public const string GetItems         = "ksp_GetItems";
+        public const string GetItemsEnriched = "ksp_GetItemsEnriched";
         public const string GetMachines    = "ksp_GetMachines";
         public const string GetSubCosts    = "ksp_GetSubCosts";
         public const string GetDivisionDetails = "ksp_GetDivisionDetails";

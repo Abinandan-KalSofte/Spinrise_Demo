@@ -24,8 +24,15 @@ public static class PRMappings
             PrStatus = entity.PrStatus,
             CreatedBy = entity.CreatedBy,
             CreatedAt = entity.CreatedAt,
-            ModifiedBy = entity.ModifiedBy,
-            ModifiedAt = entity.ModifiedAt,
+            ModifiedBy    = entity.ModifiedBy,
+            ModifiedAt    = entity.ModifiedAt,
+            BudgetBalance = entity.BudgetBalAmt,
+            Level1ApproverName = entity.FirstappUser,
+            Level1ApprovedAt   = entity.APP1DATE,
+            Level2ApproverName = entity.SecondAppUser,
+            Level2ApprovedAt   = entity.APP2DATE,
+            FinalApproverName  = entity.FinalAppUser,
+            FinalApprovedAt    = entity.APP3DATE,
             Lines = entity.Lines.Select(line => line.ToLineResponseDto()).ToList()
         };
     }
@@ -56,6 +63,8 @@ public static class PRMappings
             LastPoSupplierName = line.LastPoSupplierName,
             IsSample = line.IsSample,
             CategoryCode = line.CategoryCode,
+            DrawNo = line.DrawNo,
+            CatNo = line.CatNo,
             Model = line.Model,
             MaxCost = line.MaxCost
         };
@@ -135,6 +144,8 @@ public static class PRMappings
             LastPoSupplierName = dto.LastPoSupplierName?.Trim(),
             IsSample = dto.IsSample,
             CategoryCode = dto.CategoryCode?.Trim().ToUpperInvariant(),
+            DrawNo = dto.DrawNo?.Trim(),
+            CatNo = dto.CatNo?.Trim(),
             Model = dto.Model?.Trim(),
             MaxCost = dto.MaxCost
         };

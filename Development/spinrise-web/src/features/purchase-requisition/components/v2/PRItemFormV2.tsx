@@ -82,8 +82,9 @@ export function PRItemFormV2({
   const [form] = Form.useForm<ItemFormValues>()
 
   // item search state
+  interface ItemOption { value: string; label: string; currentStock?: number; pendingPrQty?: number; pendingPoQty?: number }
   const [rawResults,   setRawResults]   = useState<ItemLookup[]>([])
-  const [itemOptions,  setItemOptions]  = useState<{ value: string; label: string }[]>([])
+  const [itemOptions,  setItemOptions]  = useState<ItemOption[]>([])
   const [selectedInfo, setSelectedInfo] = useState<ItemLookup | null>(null)
   const [searching,    setSearching]    = useState(false)
 
@@ -181,12 +182,16 @@ export function PRItemFormV2({
 
     debounceRef.current = setTimeout(async () => {
       try {
-        const results = await lookupApi.searchItems(term)
+        const depCode = headerForm.getFieldValue('depCode') as string | undefined
+        const results = await lookupApi.searchItems(term, depCode)
         if (seq !== searchCountRef.current) return
         setRawResults(results)
         setItemOptions(results.map((i) => ({
-          value: i.itemCode,
-          label: `${i.itemCode} – ${i.itemName}`,
+          value:        i.itemCode,
+          label:        `${i.itemCode} – ${i.itemName}`,
+          currentStock: i.currentStock,
+          pendingPrQty: i.pendingPrQty,
+          pendingPoQty: i.pendingPoQty,
         })))
       } catch {
         if (seq === searchCountRef.current) { setRawResults([]); setItemOptions([]) }
@@ -295,11 +300,8 @@ export function PRItemFormV2({
 
   // ── Rate history data ─────────────────────────────────────────────────────
   const rateHistoryData = {
-    itemCode:           selectedInfo?.itemCode ?? editingItem?.itemCode ?? '',
-    itemName:           selectedInfo?.itemName ?? editingItem?.itemName ?? '',
-    lastPoRate,
-    lastPoDate,
-    lastPoSupplierName,
+    itemCode: selectedInfo?.itemCode ?? editingItem?.itemCode ?? '',
+    itemName: selectedInfo?.itemName ?? editingItem?.itemName ?? '',
   }
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -339,13 +341,6 @@ export function PRItemFormV2({
           />
         )}
 
-        {/* ── Sub Cost Centre — header field, rendered in item section ── */}
-        <Form form={headerForm} layout="vertical" size="middle" component={false} disabled={disabled}>
-          <Row gutter={[16, 0]} style={{ marginBottom: 0 }}>
-            
-          </Row>
-        </Form>
-
         <Form form={form} layout="vertical" size="middle" disabled={disabled}>
           {/* ── Row 1: Item + UOM + Current Stock + Qty + Required in Days ── */}
           <Row gutter={[16, 0]} align="bottom">
@@ -376,6 +371,31 @@ export function PRItemFormV2({
                   loading={searching}
                   notFoundContent={searching ? 'Searching…' : 'No items found'}
                   disabled={disabled || isEditMode}
+                  optionRender={(opt) => {
+                    const d = opt.data as ItemOption
+                    return (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 4 }}>
+                        <span style={{ flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          {d.value} — {d.label}
+                        </span>
+                        <Space size={4} style={{ flexShrink: 0 }}>
+                          <Tag color="blue" style={{ fontSize: 10, margin: 0 }}>
+                            Stock: {d.currentStock ?? '—'}
+                          </Tag>
+                          {(d.pendingPrQty ?? 0) > 0 && (
+                            <Tag color="orange" style={{ fontSize: 10, margin: 0 }}>
+                              PR: {d.pendingPrQty}
+                            </Tag>
+                          )}
+                          {(d.pendingPoQty ?? 0) > 0 && (
+                            <Tag color="red" style={{ fontSize: 10, margin: 0 }}>
+                              PO: {d.pendingPoQty}
+                            </Tag>
+                          )}
+                        </Space>
+                      </div>
+                    )
+                  }}
                 />
               </Form.Item>
             </Col>
@@ -581,9 +601,6 @@ export function PRItemFormV2({
         onClose={() => setRateHistoryOpen(false)}
         itemCode={rateHistoryData.itemCode}
         itemName={rateHistoryData.itemName}
-        lastPoRate={rateHistoryData.lastPoRate}
-        lastPoDate={rateHistoryData.lastPoDate}
-        lastPoSupplierName={rateHistoryData.lastPoSupplierName}
       />
     </>
   )

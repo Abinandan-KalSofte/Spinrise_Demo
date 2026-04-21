@@ -20,18 +20,26 @@ builder.Services.AddControllers()
         options.InvalidModelStateResponseFactory = context =>
         {
             var errors = context.ModelState
-                .Where(x => x.Value?.Errors.Count > 0)
-                .ToDictionary(
-                    x => x.Key,
-                    x => x.Value!.Errors
-                        .Select(error => string.IsNullOrWhiteSpace(error.ErrorMessage) ? "Invalid value." : error.ErrorMessage)
-                        .ToArray());
+                .Where(kvp => kvp.Value?.Errors.Count > 0)
+                .SelectMany(kvp => kvp.Value!.Errors.Select(err =>
+                {
+                    var raw = string.IsNullOrWhiteSpace(err.ErrorMessage) ? "Invalid value." : err.ErrorMessage;
+                    return new ValidationErrorDto(
+                        Field:   ValidationErrorMapper.ToCamelCaseKey(kvp.Key),
+                        Message: ValidationErrorMapper.Friendlify(raw),
+                        Code:    ValidationErrorMapper.InferCode(raw));
+                }))
+                .ToArray();
+
+            var summary = errors.Length == 1
+                ? errors[0].Message
+                : $"{errors.Length} fields have invalid values. Please review and try again.";
 
             return new BadRequestObjectResult(new ApiResponse
             {
                 Success = false,
-                Message = "Validation failed.",
-                Errors = errors
+                Message = summary,
+                Errors  = errors
             });
         };
     });

@@ -1,47 +1,62 @@
-import { Avatar, Badge, Breadcrumb, Button, Dropdown, Layout, Space, Typography } from 'antd'
+import { Avatar, Badge, Button, Dropdown, Input, Layout, Popover, Space, Typography } from 'antd'
 import {
+  AppstoreOutlined,
   BellOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
+  MenuOutlined,
   MenuUnfoldOutlined,
+  SearchOutlined,
+  UserOutlined,
 } from '@ant-design/icons'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { useAuthStore } from '@/features/auth/store/useAuthStore'
 import type { MenuProps } from 'antd'
+import { useNavigate } from 'react-router-dom'
+import { useAuthStore } from '@/features/auth/store/useAuthStore'
 
 const { Header } = Layout
 
-const ROUTE_BREADCRUMBS: Record<string, string[]> = {
-  '/': ['Overview'],
-  '/purchase/requisition/new': ['Purchase', 'Purchase Requisition'],
-  '/purchase/reports/purchase-requisition': ['Purchase', 'PR Report'],
+interface AppModule {
+  key:   string
+  label: string
+  icon:  React.ReactNode
+  color: string
 }
 
-interface Props {
-  collapsed: boolean
-  onToggle: () => void
+interface AppHeaderProps {
+  collapsed:              boolean
+  onToggle:               () => void
+  onMobileToggle:         () => void
+  activeModule:           AppModule
+  switcherOpen:           boolean
+  onSwitcherOpenChange:   (open: boolean) => void
+  switcherContent:        React.ReactNode
 }
 
-export function AppHeader({ collapsed, onToggle }: Props) {
-  const location = useLocation()
-  const navigate = useNavigate()
+export function AppHeader({
+  collapsed,
+  onToggle,
+  onMobileToggle,
+  activeModule,
+  switcherOpen,
+  onSwitcherOpenChange,
+  switcherContent,
+}: AppHeaderProps) {
+  const navigate  = useNavigate()
   const { user, clearAuthSession } = useAuthStore()
 
-  const breadcrumbs = ROUTE_BREADCRUMBS[location.pathname] ?? ['Page']
-  const displayName = user?.userName || user?.userId || user?.email || 'User'
-  const initials = displayName[0].toUpperCase()
-  const userName = displayName
+  const displayName = user?.userName || user?.userId || 'User'
+  const initials    = displayName.slice(0, 2).toUpperCase()
 
-  const dropdownItems: MenuProps['items'] = [
+  const profileMenu: MenuProps['items'] = [
     {
-      key: 'email',
+      key: 'info',
       label: (
-        <div style={{ padding: '2px 0' }}>
+        <div style={{ padding: '4px 0', minWidth: 160 }}>
           <Typography.Text strong style={{ display: 'block', fontSize: 13 }}>
-            {userName}
+            {displayName}
           </Typography.Text>
           <Typography.Text type="secondary" style={{ fontSize: 12 }}>
-            {user?.email}
+            {user?.email || `Div: ${user?.divCode}`}
           </Typography.Text>
         </div>
       ),
@@ -50,65 +65,102 @@ export function AppHeader({ collapsed, onToggle }: Props) {
     {
       key: 'role',
       label: (
-        <Typography.Text
-          type="secondary"
-          style={{ fontSize: 11, textTransform: 'capitalize', letterSpacing: '0.05em' }}
-        >
-          Role: {user?.role}
+        <Typography.Text type="secondary" style={{ fontSize: 11, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+          {user?.role ?? 'User'}
         </Typography.Text>
       ),
       disabled: true,
     },
     { type: 'divider' },
     {
-      key: 'logout',
-      label: 'Sign out',
-      icon: <LogoutOutlined />,
-      danger: true,
-      onClick: () => {
-        clearAuthSession()
-        navigate('/login')
-      },
+      key:     'logout',
+      label:   'Sign out',
+      icon:    <LogoutOutlined />,
+      danger:  true,
+      onClick: () => { clearAuthSession(); navigate('/login') },
     },
   ]
 
   return (
-    <Header className="main-layout__header">
-      <Space align="center" size={12}>
+    <Header className="topbar">
+      {/* ── Left: Toggle + Module Switcher ────────────────────────────────── */}
+      <div className="topbar__left">
+        {/* Desktop sidebar toggle */}
         <Button
           type="text"
           icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
           onClick={onToggle}
-          className="main-layout__toggle-btn"
+          className="topbar__icon-btn topbar__toggle--desktop"
         />
-        <Breadcrumb
-          items={breadcrumbs.map((label) => ({ title: label }))}
-          className="main-layout__breadcrumb"
-        />
-      </Space>
 
-      <Space align="center" size={4}>
-        <Badge count={3} size="small" offset={[-3, 3]}>
+        {/* Mobile hamburger */}
+        <Button
+          type="text"
+          icon={<MenuOutlined />}
+          onClick={onMobileToggle}
+          className="topbar__icon-btn topbar__toggle--mobile"
+        />
+
+        {/* Module Switcher */}
+        <Popover
+          open={switcherOpen}
+          onOpenChange={onSwitcherOpenChange}
+          content={switcherContent}
+          trigger="click"
+          placement="bottomLeft"
+          arrow={false}
+          overlayClassName="module-switcher-popover"
+        >
+          <button className="topbar__module-btn" type="button">
+            <div
+              className="topbar__module-icon"
+              style={{ background: activeModule.color + '18', color: activeModule.color }}
+            >
+              {activeModule.icon}
+            </div>
+            <span className="topbar__module-label">{activeModule.label}</span>
+            <AppstoreOutlined className="topbar__module-chevron" />
+          </button>
+        </Popover>
+      </div>
+
+      {/* ── Center: Global Search ─────────────────────────────────────────── */}
+      <div className="topbar__center">
+        <Input
+          prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
+          placeholder="Search items, PRs, orders…"
+          className="topbar__search"
+          variant="filled"
+        />
+      </div>
+
+      {/* ── Right: Notifications + Profile ───────────────────────────────── */}
+      <div className="topbar__right">
+        <Badge count={0} size="small" offset={[-2, 2]}>
           <Button
             type="text"
             shape="circle"
             icon={<BellOutlined />}
-            className="main-layout__icon-btn"
+            className="topbar__icon-btn"
           />
         </Badge>
 
-        <Dropdown menu={{ items: dropdownItems }} trigger={['click']} placement="bottomRight">
-          <div className="main-layout__profile-button">
-            <Avatar className="main-layout__avatar" size={34}>
+        <Dropdown
+          menu={{ items: profileMenu }}
+          trigger={['click']}
+          placement="bottomRight"
+        >
+          <button className="topbar__profile" type="button">
+            <Avatar className="topbar__avatar" size={32}>
               {initials}
             </Avatar>
-            <div className="main-layout__profile-copy">
-              <span className="main-layout__profile-name">{userName}</span>
-              <span className="main-layout__profile-role">{user?.role}</span>
+            <div className="topbar__profile-info">
+              <span className="topbar__profile-name">{displayName}</span>
+              <span className="topbar__profile-role">{user?.divCode}</span>
             </div>
-          </div>
+          </button>
         </Dropdown>
-      </Space>
+      </div>
     </Header>
   )
 }

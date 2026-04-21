@@ -45,12 +45,12 @@ public class LookupRepository : ILookupRepository
             commandType: CommandType.StoredProcedure);
     }
 
-    public async Task<IEnumerable<ItemLookupDto>> GetItemsAsync( string searchTerm)
+    public async Task<IEnumerable<ItemLookupDto>> GetItemsAsync(string divCode, string searchTerm, string? depCode, string? itemGroup)
     {
         var connection = _uow.Connection ?? throw new InvalidOperationException(ConnectionNotInitializedMessage);
         return await connection.QueryAsync<ItemLookupDto>(
-            StoredProcedures.Lookup.GetItems,
-            new { SearchTerm = searchTerm },
+            StoredProcedures.Lookup.GetItemsEnriched,
+            new { DivCode = divCode, SearchTerm = searchTerm, DepCode = depCode, ItemGroup = itemGroup },
             transaction: _uow.Transaction,
             commandType: CommandType.StoredProcedure);
     }

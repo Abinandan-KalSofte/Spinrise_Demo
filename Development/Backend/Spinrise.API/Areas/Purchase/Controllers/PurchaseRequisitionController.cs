@@ -42,6 +42,14 @@ public class PurchaseRequisitionController : BaseApiController
         return Success(result, "Pre-checks completed.");
     }
 
+    [HttpGet("item-history")]
+    public async Task<IActionResult> GetItemHistory([FromQuery] string itemCode)
+    {
+        var divCode = RequireDivCode();
+        var data = await _service.GetItemHistoryAsync(divCode, itemCode);
+        return Success(data, "Item history retrieved.");
+    }
+
     [HttpGet("item-info")]
     public async Task<IActionResult> GetItemInfo(
         [FromQuery] string depCode,
@@ -125,13 +133,13 @@ public class PurchaseRequisitionController : BaseApiController
     {
         var divCode  = RequireDivCode();
         var audit = CreateAuditContext();
-        var (success, message, prNo) = await _service.CreateAsync(dto, divCode, audit);
+        var (success, message, prNo, warnings) = await _service.CreateAsync(dto, divCode, audit);
         if (!success)
         {
             return Failure(message, StatusCodes.Status400BadRequest);
         }
 
-        return Success(new { PrNo = prNo }, message, StatusCodes.Status201Created);
+        return Success(new { PrNo = prNo }, message, warnings, StatusCodes.Status201Created);
     }
 
     [HttpPut("{prNo:long}")]
@@ -144,13 +152,13 @@ public class PurchaseRequisitionController : BaseApiController
 
         var divCode    = RequireDivCode();
         var audit = CreateAuditContext();
-        var (success, message) = await _service.UpdateAsync(dto, divCode, audit);
+        var (success, message, warnings) = await _service.UpdateAsync(dto, divCode, audit);
         if (!success)
         {
             return Failure(message, StatusCodes.Status400BadRequest);
         }
 
-        return SuccessMessage(message);
+        return SuccessMessage(message, warnings);
     }
 
     [HttpDelete("{prNo:long}")]

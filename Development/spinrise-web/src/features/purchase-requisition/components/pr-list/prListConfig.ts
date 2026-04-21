@@ -18,6 +18,7 @@ export function getFYBounds(date?: dayjs.Dayjs): [dayjs.Dayjs, dayjs.Dayjs] {
 export const STATUS_OPTIONS = [
   { value: 'OPEN',      label: 'Open'      },
   { value: 'APPROVED',  label: 'Approved'  },
+  { value: 'RECEIVED',  label: 'Received'  },
   { value: 'CONVERTED', label: 'Converted' },
   { value: 'CANCELLED', label: 'Cancelled' },
 ]
@@ -25,6 +26,7 @@ export const STATUS_OPTIONS = [
 export const STATUS_TAG: Record<string, { color: string; label: string }> = {
   OPEN:      { color: 'blue',   label: 'Open'      },
   APPROVED:  { color: 'purple', label: 'Approved'  },
+  RECEIVED:  { color: 'cyan',   label: 'Received'  },
   CONVERTED: { color: 'green',  label: 'Converted' },
   CANCELLED: { color: 'red',    label: 'Cancelled' },
 }

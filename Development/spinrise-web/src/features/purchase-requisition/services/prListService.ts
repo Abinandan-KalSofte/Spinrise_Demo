@@ -12,6 +12,6 @@ export const prListService = {
   getById:        (prNo: number, startDate?: string, endDate?: string) => purchaseRequisitionApi.getById(prNo, startDate, endDate),
   getDepartments: ()                             => lookupApi.getDepartments(),
   getEmployees:   ()                             => lookupApi.getEmployees(),
-  downloadReport: (prNo: number, startDate: string, endDate: string) =>
-    purchaseReportService.downloadPurchaseRequisitionQuestPdf(prNo, startDate, endDate),
+  downloadReport: (id: number, startDate: string, endDate: string) =>
+    purchaseReportService.downloadPurchaseRequisitionQuestPdf(id, startDate, endDate),
 }

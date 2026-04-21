@@ -60,6 +60,13 @@ public class CreatePRLineDto
     [StringLength(100)]
     public string? LastPoSupplierName { get; set; }
 
+    // ── Print fields (from IN_ITEM — required on printed PR, Rec #28) ─────────
+    [StringLength(25)]
+    public string? DrawNo { get; set; }
+
+    [StringLength(25)]
+    public string? CatNo { get; set; }
+
     // ── User-entered V2 fields ────────────────────────────────────────────────
     [StringLength(1)]
     public string? CategoryCode { get; set; }
