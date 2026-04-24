@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { Card, Col, InputNumber, List, Row, Space, Tag, Typography, message } from 'antd'
-import { Button } from '@/shared/ui'
+import { Button, Card, Col, InputNumber, List, Row, Space, Tag, Typography, message } from 'antd'
 import { purchaseReportService, type ReportFormat } from '../services/purchaseReportService'
 
 const quickIds = [1001, 1008, 1015]

@@ -162,11 +162,15 @@ public class PurchaseRequisitionController : BaseApiController
     }
 
     [HttpDelete("{prNo:long}")]
-    public async Task<IActionResult> Delete(long prNo, [FromQuery] string deleteReasonCode)
+    public async Task<IActionResult> Delete(
+        long prNo,
+        [FromQuery] string deleteReasonCode,
+        [FromQuery] DateTime? startDate = null,
+        [FromQuery] DateTime? endDate   = null)
     {
         var divCode = RequireDivCode();
         var audit = CreateAuditContext();
-        var (success, message) = await _service.DeleteAsync(divCode, prNo, deleteReasonCode, audit);
+        var (success, message) = await _service.DeleteAsync(divCode, prNo, deleteReasonCode, audit, startDate, endDate);
         if (!success)
         {
             return Failure(message, StatusCodes.Status400BadRequest);
@@ -176,11 +180,16 @@ public class PurchaseRequisitionController : BaseApiController
     }
 
     [HttpDelete("{prNo:long}/lines/{lineNo:int}")]
-    public async Task<IActionResult> DeleteLine(long prNo, int lineNo, [FromQuery] string deleteReasonCode)
+    public async Task<IActionResult> DeleteLine(
+        long prNo,
+        int lineNo,
+        [FromQuery] string deleteReasonCode,
+        [FromQuery] DateTime? startDate = null,
+        [FromQuery] DateTime? endDate   = null)
     {
         var divCode = RequireDivCode();
         var audit = CreateAuditContext();
-        var (success, message) = await _service.DeleteLineAsync(divCode, prNo, lineNo, deleteReasonCode, audit);
+        var (success, message) = await _service.DeleteLineAsync(divCode, prNo, lineNo, deleteReasonCode, audit, startDate, endDate);
         if (!success)
         {
             return Failure(message, StatusCodes.Status400BadRequest);

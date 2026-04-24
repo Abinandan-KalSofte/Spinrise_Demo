@@ -17,7 +17,6 @@ internal sealed class PurchaseRequisitionQuestDocument : IDocument
 {
     private readonly DivisionDTO _div;
     private readonly PurchaseRequisitionHeader _header;
-    private readonly string _user;
     private readonly byte[]? _logo;
 
     // ── Page ──────────────────────────────────────────────────────────────────────
@@ -67,11 +66,10 @@ internal sealed class PurchaseRequisitionQuestDocument : IDocument
     // ─────────────────────────────────────────────────────────────────────────────
 
     public PurchaseRequisitionQuestDocument(
-        DivisionDTO div, PurchaseRequisitionHeader header, string user, byte[]? logo)
+        DivisionDTO div, PurchaseRequisitionHeader header, byte[]? logo)
     {
         _div    = div;
         _header = header;
-        _user   = user;
         _logo   = logo;
     }
 
@@ -164,9 +162,10 @@ internal sealed class PurchaseRequisitionQuestDocument : IDocument
                 WidthMm: LeftPanelW, IndentMm: LeftIndent, PadVMm: 3f, RowSpacingMm: 3f,
                 Rows: new InfoRowConfig[]
                 {
-                    new("Requester Name", _header.ReqName ?? "",                     LeftLabelW, SepW),
-                    new("Department",     _header.DepName ?? _header.DepCode,        LeftLabelW, SepW),
-                    new("Reference",      _header.RefNo  ?? "",                      LeftLabelW, SepW),
+                    new("Requester Name", _header.ReqName  ?? "",                    LeftLabelW, SepW),
+                    new("Created By",     _header.CreatedBy,                          LeftLabelW, SepW),
+                    new("Department",     _header.DepName  ?? _header.DepCode,        LeftLabelW, SepW),
+                    new("Reference",      _header.RefNo    ?? "",                     LeftLabelW, SepW),
                 }),
             RightPanel: new InfoPanelConfig(
                 WidthMm: 0, IndentMm: RightIndent, PadVMm: 3f, RowSpacingMm: 3f,
@@ -186,7 +185,7 @@ internal sealed class PurchaseRequisitionQuestDocument : IDocument
         {
             var lpoRate    = line.LastPoRate ?? 0m;
             var lpoValue   = lpoRate * line.QtyRequired;
-            var approxCost = line.ApproxCost ?? lpoValue;
+            var approxCost = (line.ApproxCost is null or <= 0m) ? lpoValue : line.ApproxCost.Value;
             var stock      = line.CurrentStock ?? 0m;
 
             DcCellConfig Dc(string text, DA align) =>
@@ -286,7 +285,7 @@ internal sealed class PurchaseRequisitionQuestDocument : IDocument
             Font:        new StyleFont(FontFamily, FsSig),
             Blocks: new SigBlockConfig[]
             {
-                new("Requested By",         _user,                     Date: null,  RightBorder: true,  PadV: 8f, PadH: 10f, NamePadTop: 6f),
+                new("Requested By",         _header.ReqName ?? "",     Date: null,  RightBorder: true,  PadV: 8f, PadH: 10f, NamePadTop: 6f),
                 new("Approved By",          _header.FirstappUser ?? "", Date: app1, RightBorder: true,  PadV: 8f, PadH: 10f, NamePadTop: 6f),
                 new("Authorised Signatory", _header.FinalAppUser ?? "", Date: app3, RightBorder: false, PadV: 8f, PadH: 10f, NamePadTop: 6f),
             });

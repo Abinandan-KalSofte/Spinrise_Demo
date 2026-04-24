@@ -1,13 +1,14 @@
 CREATE OR ALTER PROCEDURE dbo.ksp_PR_GetPaginated
-    @DivCode   VARCHAR(2),
-    @PrNo      VARCHAR(20)  = NULL,
-    @StartDate DATE         = NULL,
-    @EndDate   DATE         = NULL,
-    @DepCode   VARCHAR(3)   = NULL,
-    @ReqName   VARCHAR(10)  = NULL,
-    @Status    VARCHAR(20)  = NULL,
-    @Page      INT          = 1,
-    @PageSize  INT          = 20
+    @DivCode    VARCHAR(2),
+    @PrNo       VARCHAR(20)  = NULL,
+    @StartDate  DATE         = NULL,
+    @EndDate    DATE         = NULL,
+    @DepCode    VARCHAR(3)   = NULL,
+    @ReqName    VARCHAR(10)  = NULL,
+    @Status     VARCHAR(20)  = NULL,
+    @SearchText VARCHAR(100) = NULL,
+    @Page       INT          = 1,
+    @PageSize   INT          = 20
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -30,11 +31,16 @@ BEGIN
     SELECT COUNT(DISTINCT CAST(h.prno AS VARCHAR) + CAST(h.prdate AS VARCHAR))
     FROM   dbo.po_prh h
     WHERE  h.divcode = @DivCode
-      AND  (@PrNo    IS NULL OR h.prno    = TRY_CAST(@PrNo AS NUMERIC(6,0)))
+      AND  (@PrNo       IS NULL OR h.prno    = TRY_CAST(@PrNo AS NUMERIC(6,0)))
       AND  h.prdate >= @StartDate
       AND  h.prdate <= @EndDate
-      AND  (@DepCode  IS NULL OR h.depcode = @DepCode)
-      AND  (@ReqName  IS NULL OR h.REQNAME = @ReqName)
+      AND  (@DepCode    IS NULL OR h.depcode = @DepCode)
+      AND  (@ReqName    IS NULL OR h.REQNAME = @ReqName)
+      AND  (@SearchText IS NULL
+            OR CAST(h.prno AS VARCHAR(20))  LIKE '%' + @SearchText + '%'
+            OR ISNULL(h.refno,   '')        LIKE '%' + @SearchText + '%'
+            OR ISNULL(h.REQNAME, '')        LIKE '%' + @SearchText + '%'
+           )
       AND  (
                @Status IS NULL
                OR (@Status = 'CANCELLED' AND ISNULL(h.cancelflag,'') = 'Y')
@@ -60,6 +66,10 @@ BEGIN
             WHEN ISNULL(h.APPFLG,    '') = 'Y' THEN 'CONVERTED'
             ELSE                                     'OPEN'
         END          AS PrStatus,
+        CASE WHEN ISNULL(h.cancelflag,'') = 'Y'
+             THEN CAST(1 AS BIT)
+             ELSE CAST(0 AS BIT)
+        END          AS IsDeleted,
         h.createdby  AS CreatedBy,
         CASE
             WHEN ISDATE(h.createddt) = 1 THEN CAST(h.createddt AS DATETIME)
@@ -73,11 +83,16 @@ BEGIN
           AND l.prdate  = h.prdate
           AND ISNULL(l.AmdFlg,'') <> 'Y'
     WHERE  h.divcode = @DivCode
-      AND  (@PrNo    IS NULL OR h.prno    = TRY_CAST(@PrNo AS NUMERIC(6,0)))
+      AND  (@PrNo       IS NULL OR h.prno    = TRY_CAST(@PrNo AS NUMERIC(6,0)))
       AND  h.prdate >= @StartDate
       AND  h.prdate <= @EndDate
-      AND  (@DepCode  IS NULL OR h.depcode = @DepCode)
-      AND  (@ReqName  IS NULL OR h.REQNAME = @ReqName)
+      AND  (@DepCode    IS NULL OR h.depcode = @DepCode)
+      AND  (@ReqName    IS NULL OR h.REQNAME = @ReqName)
+      AND  (@SearchText IS NULL
+            OR CAST(h.prno AS VARCHAR(20))  LIKE '%' + @SearchText + '%'
+            OR ISNULL(h.refno,   '')        LIKE '%' + @SearchText + '%'
+            OR ISNULL(h.REQNAME, '')        LIKE '%' + @SearchText + '%'
+           )
       AND  (
                @Status IS NULL
                OR (@Status = 'CANCELLED' AND ISNULL(h.cancelflag,'') = 'Y')

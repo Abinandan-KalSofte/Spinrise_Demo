@@ -10,10 +10,10 @@ BEGIN
         h.PORDDT                                        AS PoDate,
         h.SLCODE                                        AS SupplierCode,
         sl.slname                                       AS SupplierName,
-        l.RATE                                          AS Rate,
+        ISNULL(l.RATE, 0)                              AS Rate,
         ISNULL(l.ORDQTY,  0)                            AS OrderQty,
         ISNULL(l.RCVDQTY, 0)                            AS ReceivedQty,
-        ISNULL(l.ORDQTY,  0) - ISNULL(l.RCVDQTY, 0)   AS PendingQty
+        CAST(ISNULL(l.ORDQTY, 0) - ISNULL(l.RCVDQTY, 0) AS NUMERIC(12,3)) AS PendingQty
     FROM   dbo.PO_ORDH h
     INNER JOIN dbo.PO_ORDL l
         ON  l.DIVCODE = h.DIVCODE

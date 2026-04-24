@@ -65,15 +65,16 @@ public class PurchaseRequisitionRepository : IPurchaseRequisitionRepository
             StoredProcedures.PurchaseRequisition.GetPaginated,
             new
             {
-                DivCode   = divCode,
-                PrNo      = query.PrNo,
-                StartDate = query.StartDate,
-                EndDate   = query.EndDate,
-                DepCode   = query.DepCode,
-                ReqName   = query.ReqName,
-                Status    = query.Status,
-                Page      = query.Page,
-                PageSize  = query.PageSize,
+                DivCode    = divCode,
+                PrNo       = query.PrNo,
+                StartDate  = query.StartDate,
+                EndDate    = query.EndDate,
+                DepCode    = query.DepCode,
+                ReqName    = query.ReqName,
+                Status     = query.Status,
+                SearchText = query.SearchText,
+                Page       = query.Page,
+                PageSize   = query.PageSize,
             },
             transaction: _uow.Transaction,
             commandType: CommandType.StoredProcedure);
@@ -382,6 +383,16 @@ public class PurchaseRequisitionRepository : IPurchaseRequisitionRepository
         var result = await _uow.Connection!.QueryFirstAsync<int>(
             StoredProcedures.PurchaseRequisition.CategoryExists,
             new { DivCode = divCode, CatCode = catCode },
+            transaction: _uow.Transaction,
+            commandType: CommandType.StoredProcedure);
+        return result == 1;
+    }
+
+    public async Task<bool> SubCostExistsAsync(string divCode, long subCostCode)
+    {
+        var result = await _uow.Connection!.QueryFirstAsync<int>(
+            StoredProcedures.PurchaseRequisition.SubCostExists,
+            new { DivCode = divCode, SubCostCode = subCostCode },
             transaction: _uow.Transaction,
             commandType: CommandType.StoredProcedure);
         return result == 1;

@@ -1,0 +1,992 @@
+X-UIDL: UID75-1774868925
+X-Mozilla-Status: 0011
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <ceo@kalsofte.com>
+Received: from murphy.nocdirect.com
+	by murphy.nocdirect.com with LMTP
+	id W/GJD+XR2WkKiQoAet6MXA
+	(envelope-from <ceo@kalsofte.com>); Fri, 10 Apr 2026 23:45:25 -0500
+Return-path: <ceo@kalsofte.com>
+Envelope-to: palanivel@kalsofte.com,
+ abinandan.n@kalsofte.com,
+ sasikumar.r@kalsofte.com,
+ pbsaravanan@kalsofte.com,
+ mariyaiya.m@kalsofte.com,
+ muthuvel.m@kalsofte.com,
+ seenivasan.v@kalsofte.com,
+ annamalai.s@kalsofte.com,
+ sathishkumar.m@kalsofte.com,
+ hariharan.j@kalsofte.com,
+ qa@kalsofte.com,
+ support@kalsofte.com
+Delivery-date: Fri, 10 Apr 2026 23:45:25 -0500
+Received: from [49.204.234.113] (port=1056 helo=[192.168.68.100])
+	by murphy.nocdirect.com with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+	(Exim 4.99.1)
+	(envelope-from <ceo@kalsofte.com>)
+	id 1wBQDj-00000002tSA-23Lz;
+	Fri, 10 Apr 2026 23:45:25 -0500
+Content-Type: multipart/alternative;
+ boundary="------------I9YDqqNXcbpfHzt4cj7nE7tz"
+Message-ID: <008a6b4c-6e90-4ed2-a6c2-febcfdddf975@kalsofte.com>
+Date: Sat, 11 Apr 2026 10:15:29 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: =?UTF-8?Q?Re=3A_Crystal_Reports_to_FastReport_Migration_=E2=80=93_R?=
+ =?UTF-8?Q?evised_Direction_=7C_QuestPDF_+_EPPlus_=7C_Zero_Licence_Cost_for_?=
+ =?UTF-8?Q?Phase_1?=
+To: Abinandhan <abinandan.n@kalsofte.com>
+Cc: Sasi <sasikumar.r@kalsofte.com>, pbsaravanan <pbsaravanan@kalsofte.com>,
+ Kalsoft Palanivel <palanivel@kalsofte.com>,
+ Mariyaiya <mariyaiya.m@kalsofte.com>, Muthuvel Mani
+ <muthuvel.m@kalsofte.com>, Seeni <seenivasan.v@kalsofte.com>,
+ Annamalai s <annamalai.s@kalsofte.com>,
+ SathishkumarM <sathishkumar.m@kalsofte.com>,
+ HariharanJ <hariharan.j@kalsofte.com>, Quality Assurance <qa@kalsofte.com>,
+ Support <support@kalsofte.com>
+References: <baf8952e-1290-4a8f-b1e9-34316d30e196@kalsofte.com>
+ <40052abe-7dfc-4dc1-822f-e0e06ffb071e@kalsofte.com>
+Content-Language: en-US
+From: CEO <ceo@kalsofte.com>
+In-Reply-To: <40052abe-7dfc-4dc1-822f-e0e06ffb071e@kalsofte.com>
+
+This is a multi-part message in MIME format.
+--------------I9YDqqNXcbpfHzt4cj7nE7tz
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+The following is the reply from Claude, when I raised the concern on the 
+cost of "Let's consider to Procure the Standard tier at approximately 
+$499 per developer per year.". Please evaluate this.
+
+Dear Abinandan,
+
+Cost is a valid constraint and I want to give you a revised direction 
+that achieves the same reporting quality at zero additional licence cost 
+for Phase 1.
+
+*Revised reporting architecture for SPINRISE*
+
+Primary PDF engine: QuestPDF
+Excel and CSV export: EPPlus (already confirmed, continue)
+*FastReports: deferred* — evaluate only if a specific complex report 
+genuinely needs a visual designer
+
+
+*On QuestPDF*
+
+QuestPDF is a fully open-source, MIT-licensed PDF generation library for 
+.NET Core. It is free to use with no revenue-based licensing until you 
+cross $1 million annual revenue — which is not a concern at our current 
+stage. It is actively maintained, widely adopted in .NET Core ERP 
+projects, and produces high-quality, pixel-accurate PDFs.
+
+The key reason QuestPDF is better suited to SPINRISE than FastReports 
+for Phase 1 is this:*QuestPDF is code-driven.* A report template is a C# 
+class, not a .frx designer file. This means every report lives in the 
+Git repository, is version-controlled alongside the application code, 
+and changes through the same code review and source control process as 
+any other feature. When a customer asks for a print format change, it is 
+a controlled code change — not an uncontrolled designer file modification.
+
+This also changes how we approach Crystal Reports migration. Instead of 
+the current .rpt to XML to .frx conversion path (which produces partial 
+output requiring manual rework), we simply use the approved FSD as the 
+specification and build each report fresh in QuestPDF. The FSD already 
+documents exactly what every print must contain — header fields, line 
+item columns, footer signatures, conditional visibility, GST amounts. 
+Abinandan codes that specification directly into a C# QuestPDF template. 
+No conversion attempt, no rework on converted artefacts. *This is 
+actually faster than the FastReports migration path.*
+
+The PR print you produced with FastReports is proof the output works. 
+Please reproduce the same PR print using QuestPDF as a 1-day exercise 
+and compare the output quality and development effort. If QuestPDF 
+matches or exceeds the FastReports output, we adopt it as the standard 
+immediately.
+
+*On FastReports*
+
+I am not ruling FastReports out permanently. If a specific complex 
+report — multi-subreport invoices, dynamic conditional banding, complex 
+grouping across sections — genuinely requires a visual designer to build 
+efficiently, a single Standard licence ($499/year) can be procured for 
+that specific report. We do not need to buy upfront for the full 
+reporting suite. Buy only if and when a specific need justifies it.
+
+
+*On EPPlus*
+
+Continue exactly as you are. EPPlus for all Excel and CSV data exports. 
+No change to this decision.
+
+
+*What I need from you this week
+*
+*First:* reproduce the PR print in QuestPDF and share the output. One 
+day of effort. This confirms whether QuestPDF handles our standard 
+transaction print layout correctly.
+
+*Second: *give me a count of Crystal Reports in Phase 1 scope (M01, M02, 
+M03, M04). This tells us the migration workload at the correct 
+per-report effort estimate for QuestPDF.
+
+*Third: *briefly confirm why FastReports is better than RDLC (Microsoft 
+Report Viewer) for the cases where a visual designer is needed. RDLC is 
+also free and ships with Visual Studio. If RDLC can cover those cases, 
+FastReports may not be needed at all.
+
+*Good work on the POC output. The direction is now: QuestPDF for PDFs, 
+EPPlus for Excel, zero additional tool cost for Phase 1.
+*
+Regards,
+T. Mani
+
+cc: TL-Dev Sasi, PM Saravanan
+
+On 11/04/2026 10:02 am, CEO wrote:
+>
+> Dear Abinandan,
+>
+> Thank you for this evaluation. Before addressing the technical 
+> findings, let me first acknowledge what this mail represents. The PR 
+> print PDF you have attached — PR No. 368 for Ashok Textile Mills, 
+> Spinning Division — is the first actual SPINRISE output document 
+> produced from the ASP.NET Core backend. The company header, Kalsofte 
+> logo, PR details, three line items with machine numbers, previous 
+> purchase rate columns, approximate cost, and the three-signature 
+> footer are all correctly populated. Whatever its POC status, this is a 
+> working transaction print from a migrated VB6 screen running on a web 
+> platform. *That is a meaningful milestone for this project.*
+>
+> *Now on the technical findings.
+> *
+> *On the FastReports evaluation*
+>
+> *Your core finding is correct and confirmed:* there is no reliable 
+> automated .rpt to .frx conversion. The .rpt → XML → .frx path is the 
+> right approach, and manual redesign per report is the realistic 
+> expectation. This is not a failure of the tool — Crystal Reports and 
+> FastReports use fundamentally different rendering models, and 
+> pixel-perfect automated conversion has never been reliably achieved 
+> between them. The effort cost is in the manual redesign and 
+> fine-tuning per report, not in a tool limitation that can be procured 
+> around.
+>
+> The Free tier is not viable for SPINRISE production. No XLSX export, 
+> no CSV, and limited PDF capabilities are not minor gaps in an ERP 
+> system that delivers GST-compliant invoices, download reports, and MIS 
+> to 50+ customer sites. *This was always going to be a paid tool 
+> decision and your analysis confirms the reasons clearly.
+> *
+> *Decision: FastReports Standard tier*
+>
+> Let's consider to Procure the Standard tier at approximately $499 per 
+> developer per year. This covers the desktop designer, standard 
+> exports, and full PDF capability for all Phase 1 transaction print 
+> requirements — PR, PO, RMI, Sales Order, Salary. The Enterprise tier 
+> ($799) adds the online report designer and report server, which are 
+> Phase 2+ features for customer self-service report customisation. We 
+> do not need Enterprise for Phase 1. We will arrange the Standard tier 
+> licence as and when required.
+>
+> *One immediate action alongside procurement:* run a 1 to 2 day POC on 
+> the Crystal Reports import plugin that comes with the paid version. 
+> Use a complex report as the test subject — the PO print 
+> (Cry_RMIPO_JAT_NEW) or the Sales Order print (RepLSales.rpt) would be 
+> good candidates because both have multi-section layouts, grouped line 
+> items, and conditional visibility. If the import plugin recovers 40 to 
+> 50 percent of the layout correctly, it meaningfully reduces manual 
+> rework across the 50-plus Crystal reports in Phases 1 and 2. If it 
+> recovers less, you have confirmed the manual path and we plan the 
+> effort accordingly. This POC should run in parallel with Phase 1 
+> development work, not ahead of it.
+>
+> *Decision: EPPlus for Excel export, confirmed
+> *
+> Your suggestion to use EPPlus for Excel and CSV export is the correct 
+> architectural decision and I am confirming it as the SPINRISE 
+> standard. The separation is clean: FastReports handles all 
+> print-layout PDF documents (transaction prints, registers, format 
+> reports), and EPPlus handles all data-export Excel documents (MIS 
+> downloads, attendance registers, payroll abstracts, stock reports). 
+> EPPlus gives programmatic cell-level control, which produces more 
+> reliable and structured output than a layout-based export engine for 
+> tabular data. This is how we will build it across all modules.
+>
+> *One item on the PR print to investigate*
+>
+> Looking at the attached print, Item 1 (Item Code 560R002) shows the 
+> description beginning with '(IN ACTIVE) ROTO INJECT OIL...'. The PR 
+> form FSD documents that the item lookup must filter IsItemActive = 1, 
+> meaning inactive items should not appear on a PR. The presence of an 
+> inactive item in this test print could mean one of two things: either 
+> the test data includes an inactive item that was entered before the 
+> active-filter was implemented, or the IsItemActive filter is not yet 
+> applied in the trial conversion. Please confirm which it is and ensure 
+> the production implementation applies the active-item filter on item 
+> selection.
+>
+> *One question before we finalise FastReports as the standard
+> *
+> The original SPINRISE blueprint included RDLC (Microsoft Report 
+> Definition Language) as an alternative to Crystal Reports. It is free, 
+> ships with Visual Studio, and integrates natively with ASP.NET Core. 
+> Your analysis compares Crystal to FastReports but does not include 
+> RDLC. I am not asking you to reverse the recommendation — your POC 
+> work points clearly toward FastReports. But*I would like a brief note 
+> from you on why FastReports is the better choice over RDLC for 
+> SPINRISE.* The two main points I expect are: RDLC requires SQL Server 
+> Reporting Services for server-side rendering (an infrastructure 
+> dependency we want to avoid), and RDLC has significant limitations in 
+> complex multi-section layouts and conditional banding that our 
+> transaction prints require. If those are your conclusions, confirm 
+> them and I will formally close RDLC as a considered and rejected 
+> option in the SPINRISE architecture log.
+>
+> *Two things I need from you to complete this decision*
+>
+> *First:* how many Crystal Reports are in scope for Phase 1 modules 
+> (M01 PO, M02 RMI, M03 Domestic Sales, M04 HR and Payroll)? A rough 
+> count from the module FSD documents will do. Or you could find out 
+> from the respective modules IST member. This gives us the migration 
+> workload estimate.
+>
+> *Second: *once the paid licence is in place, share your POC findings 
+> on the import plugin within one week. Specifically: what percentage of 
+> layout recovery, how many hours of manual correction were needed, and 
+> your recommendation on whether to use the plugin as a starting point 
+> or start from a blank FastReports template for each report.
+>
+> *Overall*
+>
+> You have moved from theory to working output in a short time. The PR 
+> print is evidence that the SPINRISE stack is capable of producing the 
+> transaction documents our customers expect. The reporting architecture 
+> decision is now clear:*FastReports Standard for PDFs, EPPlus for 
+> Excel, import plugin to be validated. Proceed on that basis.
+> *
+> Regards,
+> T. Mani
+>
+> cc: TL-Dev Sasi, PM Saravanan
+>
+>
+>
+> -------- Forwarded Message --------
+> Subject: 	Crystal Reports to FastReport Migration – Analysis & 
+> Recommendation
+> Date: 	Fri, 10 Apr 2026 18:51:03 +0530
+> From: 	Abinandhan <abinandan.n@kalsofte.com>
+> To: 	ceo@kalsofte.com
+> CC: 	qa@kalsofte.com, sasikumar.r@kalsofte.com, 
+> mariyaiya.m@kalsofte.com, support <support@kalsofte.com>
+>
+>
+>
+> Hi Sir,
+>
+> I have completed the initial analysis and POC for migrating Crystal 
+> Reports to FastReport for the PO Requisition module. The FastReport 
+> file is attached.
+> Below is a concise update with key observations and recommendations.
+>
+> ------------------------------------------------------------------------
+>
+>
+>       Key Findings
+>
+> *1. No Direct Conversion Available*
+>
+>  *
+>
+>     There is no reliable or production-ready direct conversion from
+>     |.rpt| to |.frx|.
+>
+>  *
+>
+>     Current approach followed:
+>
+>      o
+>
+>         |.rpt → XML → .frx |
+>
+>  *
+>
+>     Output is not pixel-perfect and requires manual rework—especially
+>     around layout alignment, grouping, and formatting.
+>
+> ------------------------------------------------------------------------
+>
+> *2. Paid Version – Import Plugin (To Be Verified)*
+>
+>  *
+>
+>     FastReport Paid version offers a Crystal Reports import plugin
+>     which may support |.rpt → .frx|.
+>
+>  *
+>
+>     However:
+>
+>      o
+>
+>         This has not been validated yet in our setup.
+>
+>      o
+>
+>         Based on available references, the conversion is partial and
+>         still needs manual corrections.
+>
+>  *
+>
+>     A small POC is required before considering this as a viable path.
+>
+> ------------------------------------------------------------------------
+>
+> *3. Effort & Time Impact*
+>
+>  *
+>
+>     Each report needs manual redesign and fine-tuning.
+>
+>  *
+>
+>     Pixel-perfect reports (invoices, financial formats) will take
+>     significantly more effort due to rendering and layout differences.
+>
+> ------------------------------------------------------------------------
+>
+> *4. Free Version Limitations*
+>
+>  *
+>
+>     No Excel (XLSX) export
+>
+>  *
+>
+>     No CSV export
+>
+>  *
+>
+>     Limited PDF capabilities (no encryption/signing)
+>
+>  *
+>
+>     No end-user report designer
+>
+>  *
+>
+>     No scheduling or automation support
+>
+> ------------------------------------------------------------------------
+>
+> *5. Current Workaround*
+>
+>  *
+>
+>     For Excel/CSV requirements:
+>
+>      o
+>
+>         Using *EPPlus (Free)* for generating structured outputs
+>
+>  *
+>
+>     This gives better control and avoids layout-based export limitations.
+>
+> ------------------------------------------------------------------------
+>
+>
+>       FastReport Paid Version – Overview
+>
+> Plan 	Cost (Approx) 	Key Features
+> Standard 	~$499 / dev / year 	Desktop designer, basic exports
+> Professional 	~$599 / dev / year 	Source code, extended features
+> Enterprise 	~$799 / dev / year 	Online designer, report server, 
+> multi-tenant
+> Ultimate 	~$1499 / dev / year 	Full suite with integrations
+>
+> ------------------------------------------------------------------------
+>
+>
+>       Benefits of Paid Version
+>
+>  *
+>
+>     Advanced Excel export (structured XLSX)
+>
+>  *
+>
+>     High-quality PDF (encryption, digital signing)
+>
+>  *
+>
+>     Better designer experience (faster development)
+>
+>  *
+>
+>     Online report designer (Enterprise)
+>
+>  *
+>
+>     Built-in scheduling & report server
+>
+>  *
+>
+>     Improved performance for large datasets
+>
+>  *
+>
+>     Vendor support for faster issue resolution
+>
+> ------------------------------------------------------------------------
+>
+>
+>       Summary
+>
+>  *
+>
+>     Migration is not automated and requires manual effort per report
+>
+>  *
+>
+>     Free version has functional gaps impacting export and scalability
+>
+>  *
+>
+>     Paid version improves capabilities but does not guarantee full
+>     conversion
+>
+>  *
+>
+>     Import plugin needs validation before making a decision
+>
+> ------------------------------------------------------------------------
+>
+>
+>       Recommendation
+>
+>  *
+>
+>     Continue with the current approach (manual conversion + refinement)
+>
+>  *
+>
+>     Parallelly run a *POC on the Paid version import plugin*
+>
+>  *
+>
+>     Continue using *EPPlus for Excel export* as a stable workaround
+>
+> ------------------------------------------------------------------------
+>
+> Please let me know how you’d like to proceed, and I can plan the next 
+> steps accordingly.
+>
+> Thanks,
+> Abinandan
+> Full-Stack Developer
+>
+>
+--------------I9YDqqNXcbpfHzt4cj7nE7tz
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <p>The following is the reply from Claude, when I raised the concern
+      on the cost of "Let's consider to Procure the Standard tier at
+      approximately $499 per developer per year.". Please evaluate this.<br>
+      <br>
+      Dear Abinandan,<br>
+      <br>
+      Cost is a valid constraint and I want to give you a revised
+      direction that achieves the same reporting quality at zero
+      additional licence cost for Phase 1.<br>
+      <br>
+      <b>Revised reporting architecture for SPINRISE</b><br>
+      <br>
+      Primary PDF engine: QuestPDF<br>
+      Excel and CSV export: EPPlus (already confirmed, continue)<br>
+      <b>FastReports: deferred</b> — evaluate only if a specific complex
+      report genuinely needs a visual designer<br>
+      <br>
+      <br>
+      <font size="4"><b>On QuestPDF</b></font><br>
+      <br>
+      QuestPDF is a fully open-source, MIT-licensed PDF generation
+      library for .NET Core. It is free to use with no revenue-based
+      licensing until you cross $1 million annual revenue — which is not
+      a concern at our current stage. It is actively maintained, widely
+      adopted in .NET Core ERP projects, and produces high-quality,
+      pixel-accurate PDFs.<br>
+      <br>
+      The key reason QuestPDF is better suited to SPINRISE than
+      FastReports for Phase 1 is this:<b> QuestPDF is code-driven.</b> A
+      report template is a C# class, not a .frx designer file. This
+      means every report lives in the Git repository, is
+      version-controlled alongside the application code, and changes
+      through the same code review and source control process as any
+      other feature. When a customer asks for a print format change, it
+      is a controlled code change — not an uncontrolled designer file
+      modification.<br>
+      <br>
+      This also changes how we approach Crystal Reports migration.
+      Instead of the current .rpt to XML to .frx conversion path (which
+      produces partial output requiring manual rework), we simply use
+      the approved FSD as the specification and build each report fresh
+      in QuestPDF. The FSD already documents exactly what every print
+      must contain — header fields, line item columns, footer
+      signatures, conditional visibility, GST amounts. Abinandan codes
+      that specification directly into a C# QuestPDF template. No
+      conversion attempt, no rework on converted artefacts. <b>This is
+        actually faster than the FastReports migration path.</b><br>
+      <br>
+      The PR print you produced with FastReports is proof the output
+      works. Please reproduce the same PR print using QuestPDF as a
+      1-day exercise and compare the output quality and development
+      effort. If QuestPDF matches or exceeds the FastReports output, we
+      adopt it as the standard immediately.<br>
+      <br>
+      <b>On FastReports</b><br>
+      <br>
+      I am not ruling FastReports out permanently. If a specific complex
+      report — multi-subreport invoices, dynamic conditional banding,
+      complex grouping across sections — genuinely requires a visual
+      designer to build efficiently, a single Standard licence
+      ($499/year) can be procured for that specific report. We do not
+      need to buy upfront for the full reporting suite. Buy only if and
+      when a specific need justifies it.<br>
+      <br>
+      <br>
+      <b><font size="4">On EPPlus</font></b><br>
+      <br>
+      Continue exactly as you are. EPPlus for all Excel and CSV data
+      exports. No change to this decision.<br>
+      <br>
+      <br>
+      <b>What I need from you this week<br>
+      </b><br>
+      <b>First:</b> reproduce the PR print in QuestPDF and share the
+      output. One day of effort. This confirms whether QuestPDF handles
+      our standard transaction print layout correctly.<br>
+      <br>
+      <b>Second: </b>give me a count of Crystal Reports in Phase 1
+      scope (M01, M02, M03, M04). This tells us the migration workload
+      at the correct per-report effort estimate for QuestPDF.<br>
+      <br>
+      <b>Third: </b>briefly confirm why FastReports is better than RDLC
+      (Microsoft Report Viewer) for the cases where a visual designer is
+      needed. RDLC is also free and ships with Visual Studio. If RDLC
+      can cover those cases, FastReports may not be needed at all.<br>
+      <br>
+      <b>Good work on the POC output. The direction is now: QuestPDF for
+        PDFs, EPPlus for Excel, zero additional tool cost for Phase 1.<br>
+      </b><br>
+      Regards,<br>
+      T. Mani<br>
+      <br>
+      cc: TL-Dev Sasi, PM Saravanan</p>
+    <div class="moz-cite-prefix">On 11/04/2026 10:02 am, CEO wrote:<br>
+    </div>
+    <blockquote type="cite"
+      cite="mid:40052abe-7dfc-4dc1-822f-e0e06ffb071e@kalsofte.com">
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+      <p>Dear Abinandan,<br>
+        <br>
+        Thank you for this evaluation. Before addressing the technical
+        findings, let me first acknowledge what this mail represents.
+        The PR print PDF you have attached — PR No. 368 for Ashok
+        Textile Mills, Spinning Division — is the first actual SPINRISE
+        output document produced from the ASP.NET Core backend. The
+        company header, Kalsofte logo, PR details, three line items with
+        machine numbers, previous purchase rate columns, approximate
+        cost, and the three-signature footer are all correctly
+        populated. Whatever its POC status, this is a working
+        transaction print from a migrated VB6 screen running on a web
+        platform. <b>That is a meaningful milestone for this project.</b><br>
+        <br>
+        <b>Now on the technical findings.<br>
+        </b><br>
+        <b>On the FastReports evaluation</b><br>
+        <br>
+        <b>Your core finding is correct and confirmed:</b> there is no
+        reliable automated .rpt to .frx conversion. The .rpt → XML →
+        .frx path is the right approach, and manual redesign per report
+        is the realistic expectation. This is not a failure of the tool
+        — Crystal Reports and FastReports use fundamentally different
+        rendering models, and pixel-perfect automated conversion has
+        never been reliably achieved between them. The effort cost is in
+        the manual redesign and fine-tuning per report, not in a tool
+        limitation that can be procured around.<br>
+        <br>
+        The Free tier is not viable for SPINRISE production. No XLSX
+        export, no CSV, and limited PDF capabilities are not minor gaps
+        in an ERP system that delivers GST-compliant invoices, download
+        reports, and MIS to 50+ customer sites. <b>This was always
+          going to be a paid tool decision and your analysis confirms
+          the reasons clearly.<br>
+        </b><br>
+        <b>Decision: FastReports Standard tier</b><br>
+        <br>
+        Let's consider to Procure the Standard tier at approximately
+        $499 per developer per year. This covers the desktop designer,
+        standard exports, and full PDF capability for all Phase 1
+        transaction print requirements — PR, PO, RMI, Sales Order,
+        Salary. The Enterprise tier ($799) adds the online report
+        designer and report server, which are Phase 2+ features for
+        customer self-service report customisation. We do not need
+        Enterprise for Phase 1. We will arrange the Standard tier
+        licence as and when required.<br>
+        <br>
+        <b>One immediate action alongside procurement:</b> run a 1 to 2
+        day POC on the Crystal Reports import plugin that comes with the
+        paid version. Use a complex report as the test subject — the PO
+        print (Cry_RMIPO_JAT_NEW) or the Sales Order print
+        (RepLSales.rpt) would be good candidates because both have
+        multi-section layouts, grouped line items, and conditional
+        visibility. If the import plugin recovers 40 to 50 percent of
+        the layout correctly, it meaningfully reduces manual rework
+        across the 50-plus Crystal reports in Phases 1 and 2. If it
+        recovers less, you have confirmed the manual path and we plan
+        the effort accordingly. This POC should run in parallel with
+        Phase 1 development work, not ahead of it.<br>
+        <br>
+        <b>Decision: EPPlus for Excel export, confirmed<br>
+        </b><br>
+        Your suggestion to use EPPlus for Excel and CSV export is the
+        correct architectural decision and I am confirming it as the
+        SPINRISE standard. The separation is clean: FastReports handles
+        all print-layout PDF documents (transaction prints, registers,
+        format reports), and EPPlus handles all data-export Excel
+        documents (MIS downloads, attendance registers, payroll
+        abstracts, stock reports). EPPlus gives programmatic cell-level
+        control, which produces more reliable and structured output than
+        a layout-based export engine for tabular data. This is how we
+        will build it across all modules.<br>
+        <br>
+        <b>One item on the PR print to investigate</b><br>
+        <br>
+        Looking at the attached print, Item 1 (Item Code 560R002) shows
+        the description beginning with '(IN ACTIVE) ROTO INJECT OIL...'.
+        The PR form FSD documents that the item lookup must filter
+        IsItemActive = 1, meaning inactive items should not appear on a
+        PR. The presence of an inactive item in this test print could
+        mean one of two things: either the test data includes an
+        inactive item that was entered before the active-filter was
+        implemented, or the IsItemActive filter is not yet applied in
+        the trial conversion. Please confirm which it is and ensure the
+        production implementation applies the active-item filter on item
+        selection.<br>
+        <br>
+        <b>One question before we finalise FastReports as the standard<br>
+        </b><br>
+        The original SPINRISE blueprint included RDLC (Microsoft Report
+        Definition Language) as an alternative to Crystal Reports. It is
+        free, ships with Visual Studio, and integrates natively with
+        ASP.NET Core. Your analysis compares Crystal to FastReports but
+        does not include RDLC. I am not asking you to reverse the
+        recommendation — your POC work points clearly toward
+        FastReports. But<b> I would like a brief note from you on why
+          FastReports is the better choice over RDLC for SPINRISE.</b>
+        The two main points I expect are: RDLC requires SQL Server
+        Reporting Services for server-side rendering (an infrastructure
+        dependency we want to avoid), and RDLC has significant
+        limitations in complex multi-section layouts and conditional
+        banding that our transaction prints require. If those are your
+        conclusions, confirm them and I will formally close RDLC as a
+        considered and rejected option in the SPINRISE architecture log.<br>
+        <br>
+        <b>Two things I need from you to complete this decision</b><br>
+        <br>
+        <b>First:</b> how many Crystal Reports are in scope for Phase 1
+        modules (M01 PO, M02 RMI, M03 Domestic Sales, M04 HR and
+        Payroll)? A rough count from the module FSD documents will do.
+        Or you could find out from the respective modules IST member.
+        This gives us the migration workload estimate.<br>
+        <br>
+        <b>Second: </b>once the paid licence is in place, share your
+        POC findings on the import plugin within one week. Specifically:
+        what percentage of layout recovery, how many hours of manual
+        correction were needed, and your recommendation on whether to
+        use the plugin as a starting point or start from a blank
+        FastReports template for each report.<br>
+        <br>
+        <font size="4"><b>Overall</b></font><br>
+        <br>
+        You have moved from theory to working output in a short time.
+        The PR print is evidence that the SPINRISE stack is capable of
+        producing the transaction documents our customers expect. The
+        reporting architecture decision is now clear:<b> FastReports
+          Standard for PDFs, EPPlus for Excel, import plugin to be
+          validated. Proceed on that basis.<br>
+        </b><br>
+        Regards,<br>
+        T. Mani<br>
+        <br>
+        cc: TL-Dev Sasi, PM Saravanan</p>
+      <div class="moz-forward-container"><br>
+        <br>
+        -------- Forwarded Message --------
+        <table cellpadding="0" cellspacing="0" border="0"
+          class="moz-email-headers-table">
+          <tbody>
+            <tr>
+              <th valign="BASELINE" align="RIGHT" nowrap="nowrap">Subject:
+              </th>
+              <td>Crystal Reports to FastReport Migration – Analysis
+                &amp; Recommendation</td>
+            </tr>
+            <tr>
+              <th valign="BASELINE" align="RIGHT" nowrap="nowrap">Date:
+              </th>
+              <td>Fri, 10 Apr 2026 18:51:03 +0530</td>
+            </tr>
+            <tr>
+              <th valign="BASELINE" align="RIGHT" nowrap="nowrap">From:
+              </th>
+              <td>Abinandhan <a class="moz-txt-link-rfc2396E"
+                  href="mailto:abinandan.n@kalsofte.com"
+                  moz-do-not-send="true">&lt;abinandan.n@kalsofte.com&gt;</a></td>
+            </tr>
+            <tr>
+              <th valign="BASELINE" align="RIGHT" nowrap="nowrap">To: </th>
+              <td><a
+                  class="moz-txt-link-abbreviated moz-txt-link-freetext"
+                  href="mailto:ceo@kalsofte.com" moz-do-not-send="true">ceo@kalsofte.com</a></td>
+            </tr>
+            <tr>
+              <th valign="BASELINE" align="RIGHT" nowrap="nowrap">CC: </th>
+              <td><a
+                  class="moz-txt-link-abbreviated moz-txt-link-freetext"
+                  href="mailto:qa@kalsofte.com" moz-do-not-send="true">qa@kalsofte.com</a>,
+                <a
+                  class="moz-txt-link-abbreviated moz-txt-link-freetext"
+                  href="mailto:sasikumar.r@kalsofte.com"
+                  moz-do-not-send="true">sasikumar.r@kalsofte.com</a>, <a
+                  class="moz-txt-link-abbreviated moz-txt-link-freetext"
+                  href="mailto:mariyaiya.m@kalsofte.com"
+                  moz-do-not-send="true">mariyaiya.m@kalsofte.com</a>,
+                support <a class="moz-txt-link-rfc2396E"
+                  href="mailto:support@kalsofte.com"
+                  moz-do-not-send="true">&lt;support@kalsofte.com&gt;</a></td>
+            </tr>
+          </tbody>
+        </table>
+        <br>
+        <br>
+        <meta http-equiv="content-type"
+          content="text/html; charset=UTF-8">
+        <p>Hi Sir,</p>
+        <p>I have completed the initial analysis and POC for migrating
+          Crystal Reports to FastReport for the PO Requisition module.
+          The FastReport file is attached. <br>
+          Below is a concise update with key observations and
+          recommendations.</p>
+        <hr>
+        <h3>Key Findings</h3>
+        <p><strong>1. No Direct Conversion Available</strong></p>
+        <ul>
+          <li>
+            <p>There is no reliable or production-ready direct
+              conversion from <code>.rpt</code> to <code>.frx</code>.</p>
+          </li>
+          <li>
+            <p>Current approach followed:</p>
+            <ul>
+              <li>
+                <p><code>.rpt → XML → .frx </code></p>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <p>Output is not pixel-perfect and requires manual
+              rework—especially around layout alignment, grouping, and
+              formatting.</p>
+          </li>
+        </ul>
+        <hr>
+        <p><strong>2. Paid Version – Import Plugin (To Be Verified)</strong></p>
+        <ul>
+          <li>
+            <p>FastReport Paid version offers a Crystal Reports import
+              plugin which may support <code>.rpt → .frx</code>.</p>
+          </li>
+          <li>
+            <p>However:</p>
+            <ul>
+              <li>
+                <p>This has not been validated yet in our setup.</p>
+              </li>
+              <li>
+                <p>Based on available references, the conversion is
+                  partial and still needs manual corrections.</p>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <p>A small POC is required before considering this as a
+              viable path.</p>
+          </li>
+        </ul>
+        <hr>
+        <p><strong>3. Effort &amp; Time Impact</strong></p>
+        <ul>
+          <li>
+            <p>Each report needs manual redesign and fine-tuning.</p>
+          </li>
+          <li>
+            <p>Pixel-perfect reports (invoices, financial formats) will
+              take significantly more effort due to rendering and layout
+              differences.</p>
+          </li>
+        </ul>
+        <hr>
+        <p><strong>4. Free Version Limitations</strong></p>
+        <ul>
+          <li>
+            <p>No Excel (XLSX) export</p>
+          </li>
+          <li>
+            <p>No CSV export</p>
+          </li>
+          <li>
+            <p>Limited PDF capabilities (no encryption/signing)</p>
+          </li>
+          <li>
+            <p>No end-user report designer</p>
+          </li>
+          <li>
+            <p>No scheduling or automation support</p>
+          </li>
+        </ul>
+        <hr>
+        <p><strong>5. Current Workaround</strong></p>
+        <ul>
+          <li>
+            <p>For Excel/CSV requirements:</p>
+            <ul>
+              <li>
+                <p>Using <strong>EPPlus (Free)</strong> for generating
+                  structured outputs</p>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <p>This gives better control and avoids layout-based export
+              limitations.</p>
+          </li>
+        </ul>
+        <hr>
+        <h3>FastReport Paid Version – Overview</h3>
+        <table>
+          <thead><tr>
+              <th>Plan</th>
+              <th>Cost (Approx)</th>
+              <th>Key Features</th>
+            </tr>
+          </thead><tbody>
+            <tr>
+              <td>Standard</td>
+              <td>~$499 / dev / year</td>
+              <td>Desktop designer, basic exports</td>
+            </tr>
+            <tr>
+              <td>Professional</td>
+              <td>~$599 / dev / year</td>
+              <td>Source code, extended features</td>
+            </tr>
+            <tr>
+              <td>Enterprise</td>
+              <td>~$799 / dev / year</td>
+              <td>Online designer, report server, multi-tenant</td>
+            </tr>
+            <tr>
+              <td>Ultimate</td>
+              <td>~$1499 / dev / year</td>
+              <td>Full suite with integrations</td>
+            </tr>
+          </tbody>
+        </table>
+        <hr>
+        <h3>Benefits of Paid Version</h3>
+        <ul>
+          <li>
+            <p>Advanced Excel export (structured XLSX)</p>
+          </li>
+          <li>
+            <p>High-quality PDF (encryption, digital signing)</p>
+          </li>
+          <li>
+            <p>Better designer experience (faster development)</p>
+          </li>
+          <li>
+            <p>Online report designer (Enterprise)</p>
+          </li>
+          <li>
+            <p>Built-in scheduling &amp; report server</p>
+          </li>
+          <li>
+            <p>Improved performance for large datasets</p>
+          </li>
+          <li>
+            <p>Vendor support for faster issue resolution</p>
+          </li>
+        </ul>
+        <hr>
+        <h3>Summary</h3>
+        <ul>
+          <li>
+            <p>Migration is not automated and requires manual effort per
+              report</p>
+          </li>
+          <li>
+            <p>Free version has functional gaps impacting export and
+              scalability</p>
+          </li>
+          <li>
+            <p>Paid version improves capabilities but does not guarantee
+              full conversion</p>
+          </li>
+          <li>
+            <p>Import plugin needs validation before making a decision</p>
+          </li>
+        </ul>
+        <hr>
+        <h3>Recommendation</h3>
+        <ul>
+          <li>
+            <p>Continue with the current approach (manual conversion +
+              refinement)</p>
+          </li>
+          <li>
+            <p>Parallelly run a <strong>POC on the Paid version import
+                plugin</strong></p>
+          </li>
+          <li>
+            <p>Continue using <strong>EPPlus for Excel export</strong>
+              as a stable workaround</p>
+          </li>
+        </ul>
+        <hr>
+        <p>Please let me know how you’d like to proceed, and I can plan
+          the next steps accordingly.</p>
+        <p>Thanks,<br>
+          Abinandan<br>
+          Full-Stack Developer<br>
+          <br>
+        </p>
+        <p><br>
+        </p>
+      </div>
+    </blockquote>
+  </body>
+</html>
+
+--------------I9YDqqNXcbpfHzt4cj7nE7tz--

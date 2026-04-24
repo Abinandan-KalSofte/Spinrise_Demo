@@ -1,0 +1,1516 @@
+X-UIDL: UID89-1774868925
+X-Mozilla-Status: 0000
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <ceo@kalsofte.com>
+Received: from murphy.nocdirect.com
+	by murphy.nocdirect.com with LMTP
+	id bWe4Ko2522mDwDwAet6MXA
+	(envelope-from <ceo@kalsofte.com>); Sun, 12 Apr 2026 10:26:05 -0500
+Return-path: <ceo@kalsofte.com>
+Envelope-to: palanivel@kalsofte.com,
+ pbsaravanan@kalsofte.com,
+ sasikumar.r@kalsofte.com,
+ mariyaiya.m@kalsofte.com,
+ annamalai.s@kalsofte.com,
+ muthuvel.m@kalsofte.com,
+ seenivasan.v@kalsofte.com,
+ vignesh.vp@kalsofte.com,
+ sathishkumar.m@kalsofte.com,
+ mohanbabuvn@kalsofte.com,
+ hariharan.j@kalsofte.com,
+ abinandan.n@kalsofte.com,
+ qa@kalsofte.com,
+ support@kalsofte.com,
+ improvement@kalsofte.com,
+ documentation@kalsofte.com
+Delivery-date: Sun, 12 Apr 2026 10:26:05 -0500
+Received: from [49.204.234.113] (port=50028 helo=[192.168.68.100])
+	by murphy.nocdirect.com with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+	(Exim 4.99.1)
+	(envelope-from <ceo@kalsofte.com>)
+	id 1wBwhH-0000000Ghdk-1jzI;
+	Sun, 12 Apr 2026 10:26:05 -0500
+Content-Type: multipart/mixed; boundary="------------CUcqif7CMXzqLdXRImGB76sB"
+Message-ID: <0d007307-67fe-4c4b-ae36-7800e4d34970@kalsofte.com>
+Date: Sun, 12 Apr 2026 20:56:10 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: =?UTF-8?Q?Re=3A_SPINRISE_=E2=80=94_VB_FSD_Claude_Guide_v3_=7C_Your_?=
+ =?UTF-8?Q?Feedback_Built_This_=7C_Please_Read_and_Follow?=
+To: pbsaravanan <pbsaravanan@kalsofte.com>,
+ Kalsoft Palanivel <palanivel@kalsofte.com>, Sasi <sasikumar.r@kalsofte.com>,
+ Mariyaiya <mariyaiya.m@kalsofte.com>, Annamalai s
+ <annamalai.s@kalsofte.com>, Muthuvel Mani <muthuvel.m@kalsofte.com>,
+ Seeni <seenivasan.v@kalsofte.com>, VigneshVP <vignesh.vp@kalsofte.com>,
+ SathishkumarM <sathishkumar.m@kalsofte.com>,
+ MohanBabu <mohanbabuvn@kalsofte.com>, HariharanJ <hariharan.j@kalsofte.com>,
+ Abinandhan <abinandan.n@kalsofte.com>
+Cc: Quality Assurance <qa@kalsofte.com>, Support <support@kalsofte.com>,
+ improvement@kalsofte.com, documentation@kalsofte.com
+References: <036f0737-960e-488e-b84c-8142e9220927@kalsofte.com>
+ <1b4ba4f5-9b74-4078-a3d3-648ece98648d@kalsofte.com>
+Content-Language: en-US
+From: CEO <ceo@kalsofte.com>
+In-Reply-To: <1b4ba4f5-9b74-4078-a3d3-648ece98648d@kalsofte.com>
+
+This is a multi-part message in MIME format.
+--------------CUcqif7CMXzqLdXRImGB76sB
+Content-Type: multipart/alternative;
+ boundary="------------7dpoIbp5O4FTf8i18qzv4SID"
+
+--------------7dpoIbp5O4FTf8i18qzv4SID
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+Dear SPINRISE Team,
+
+*I am sharing with you today the updated VB FSD Claude Guide — Version 3.
+*
+Attached: SPINRISE_VB_FSD_Claude_Guide_v3-12-04-26.docx
+
+Please read it fully. *From the date of this mail, v3 is the operative 
+guide for all FSD documentation work in SPINRISE. *V2 is superseded.
+
+*Why v3 exists
+*
+Version 3 was built entirely from what you all told since V2.
+*
+A word on how we got here*
+
+When I shared v1, I said: this is version 1, your feedback will shape 
+version 2 and beyond.
+
+*The quality of SPINRISE depends on the quality of our FSDs.* The 
+quality of our FSDs depends on the rigour of our process. The rigour of 
+our process depends on each of you taking ownership of the part only you 
+can contribute — your domain knowledge, your site experience, your 
+module expertise.
+
+V3 reflects all of that. Bring the same energy to v3 that produced it.
+
+*What I need from you *
+
+Every developer and IST member: have read v3 in full.
+
+*Monday, 13th April, is when we lock the v3 process and start.*
+
+*With appreciation for what this team has already contributed, and 
+confidence in what it will deliver,
+T Mani
+*
+Attachment: SPINRISE_VB_FSD_Claude_Guide_v3-12-04-26.docx
+
+
+On 31/03/2026 01:27 pm, CEO wrote:
+>
+> Dear SPINRISE Team,
+>
+> *I am sharing with you today the updated VB FSD Claude Guide — Version 2.
+> *
+> Attached: SPINRISE_VB_FSD_Claude_Guide_v2.docx
+>
+> Please read it fully before our Saturday session. *From the date of 
+> this mail, v2 is the operative guide for all FSD documentation work in 
+> SPINRISE. *V1 is superseded.
+>
+> *Why v2 exists
+> *
+> Version 2 was built entirely from what you told me.
+>
+> Three of you responded to my v1 circulation mail with observations 
+> that were technically sharp and practically important. I want to 
+> acknowledge each contribution by name, because the team should know 
+> where v2 came from.
+>
+> *Sathishkumar *pointed out that the Kalsofte ERP distributes business 
+> logic across Common modules, Class modules, and stored procedures — 
+> not just the .frm file. He also highlighted that the TC (Transaction 
+> Code) framework, which drives stock direction and accounting entries 
+> across most of our modules, is largely implemented inside stored 
+> procedures and would be missed entirely if only the form code was 
+> submitted to Claude.
+>
+> *Mariyaiya *raised a more fundamental concern: that several PR, PO, 
+> and Service PO screens have pending customer customisations in various 
+> stages of stability. Submitting unstabilised code to Claude would 
+> produce an FSD that documents an incomplete version of the screen — 
+> and that instability would be permanently carried into SPINRISE.
+>
+> *Mariyaiya then went further.* Before I could even respond, he 
+> produced a detailed critical analysis of the Purchase Requisition form 
+> (tmpPoindent.frm) — a 9,108-line VB6 form — and shared it with 
+> Muthuvel for IST review. That document, which I have gone through in 
+> detail, identified 3 Critical defects, 3 High issues, 4 Medium issues, 
+> and 2 Low issues in the form code. It also proposed the four-category 
+> validation structure, the error message catalogue, the summary 
+> scorecard, and the customer variation register — all of which are now 
+> standard sections in the v2 FSD template.
+>
+> This is what good teamwork looks like. You were given a guide, you 
+> used it on a real form, you found its limits, and you reported back 
+> with precision. V2 is the direct result.
+>
+> *What is new in v2
+> *
+> For those who have read v1, here is what changed:
+>
+> Stage 0 is an entirely new mandatory phase that must be completed 
+> before any FSD documentation begins. It covers code stabilisation 
+> review, the screen readiness checklist, what to collect before opening 
+> Claude (no longer just the .frm file — now includes Common modules, 
+> Class modules, and all stored procedures), the TC framework reference 
+> table, the customer variation register, and the dead code 
+> identification step. Stage 0 is not optional. No FSD work begins on 
+> any screen until Stage 0 is complete and TL-Dev has signed off.
+>
+> The follow-up prompts grew from three to six. Three new prompts were 
+> added: one for Common and Class module logic, one for stored procedure 
+> business rules, and one specifically for TC framework documentation. 
+> These address the gap our first VB developer identified.
+>
+> The FSD template expanded from 8 sections to 14 sections. The six new 
+> sections are the TC Framework, Common and Class Module Dependencies, 
+> Error Message Catalogue, Customer Variation Register, SPINRISE 
+> Migration Recommendations, and the Summary Scorecard. All six are 
+> mandatory for transaction screens.
+>
+> The review chain is updated to four levels with the full IST 
+> structured questionnaire (IST-1 to IST-7) that every Module Sr IST 
+> Member must answer for each form they review.
+>
+> A new Section 8 documents eight known defect patterns to actively 
+> search for in every VB6 form before submitting to Claude: 
+> application-terminating End statements, hardcoded customer IDs, SQL 
+> string concatenation, dead code blocks, inconsistent duplicate logic, 
+> hardcoded file paths, missing transaction rollback, and typos in error 
+> messages. Each pattern has the code signature to search for and the 
+> action to take.
+>
+> Three quick reference cards are now at the back: the Developer Daily 
+> Card, the four-column Reviewer Checklist, and the new Defect Patterns 
+> Card. Print all three and keep them at your desk.
+>
+> *How I need each of you to use this guide
+> *
+> *Module VB Developers:*
+> Section 3 (Stage 0) and Section 4 (the six steps and six prompts) are 
+> your primary reference. Read them in full. Before you begin any FSD, 
+> complete Stage 0 for that screen. Do not skip the Customer Variation 
+> Register. Do not submit dead code. Run all six follow-up prompts, not 
+> just the ones you feel are relevant.
+>
+> *Module Sr IST Members:*
+> Section 6, Level 1 and the IST Structured Questionnaire (questions 
+> IST-1 to IST-7) are your reference. For every FSD you review, answer 
+> all seven questions. Section 8 (the defect patterns) is also important 
+> for you — you are the person most likely to know from site experience 
+> whether an application-terminating behaviour or a hardcoded customer 
+> variation has caused problems in practice.
+>
+> *TL-IST:*
+> Section 6, Level 2. Your role is cross-module consistency. Pay 
+> particular attention to whether TC framework values and stored 
+> procedure business rules are consistent with how the same logic is 
+> handled in other modules you have implemented.
+>
+> *Project Manager:*
+> Section 6, Level 3. Before any FSD reaches the CEO, confirm that all 
+> 14 sections are complete, all IST questions are answered, the customer 
+> variation register is filled, and the summary scorecard is present. An 
+> incomplete FSD must be returned to the developer, not passed forward.
+>
+> *New Developer (Abinandan):*
+> Welcome again. This guide is your primary reference for how SPINRISE 
+> development works. Start by reading Section 3 (Stage 0) and Section 4. 
+> The defect patterns in Section 8 will be particularly useful as you 
+> begin reading Kalsofte VB6 code for the first time — you will 
+> encounter all of these patterns. Now you know what to do with each one.
+>
+> *Jr Web Dev team:*
+> Section 4, Step 6 and Section 7 are your references. The approved FSD 
+> is your specification for React UI generation. Read Section 7 
+> carefully — it shows you exactly what prompt to use when an FSD is 
+> handed to you for code conversion.
+>
+> *A word on how we got here*
+>
+> When I shared v1, I said: this is version 1, your feedback will shape 
+> version 2. You delivered. In less than a week, the team produced two 
+> substantive pieces of written feedback and one detailed 12-section 
+> critical analysis of a real form. That is not normal. Most teams wait 
+> to be asked.
+>
+> *The quality of SPINRISE depends on the quality of our FSDs.* The 
+> quality of our FSDs depends on the rigour of our process. The rigour 
+> of our process depends on each of you taking ownership of the part 
+> only you can contribute — your domain knowledge, your site experience, 
+> your module expertise.
+>
+> V2 reflects all of that. Bring the same energy to v2 that produced it.
+>
+> *What I need from you *
+>
+> Every developer and IST member: have read v2 in full.
+>
+> Module VB Developers: bring your Stage 0 readiness assessment for your 
+> assigned module — identify which screens are stable and which carry 
+> pending customisations.
+>
+> Mariyaiya: bring the updated PR form critical analysis with the v2 FSD 
+> template applied (14 sections). Muthuvel’s IST review of that 
+> document, using the IST-1 to IST-7 questionnaire, should be underway.
+>
+> TL-Dev: bring the list of screens across all Phase 1 modules that have 
+> pending customisations or open corrections. This becomes the Stage 0 
+> stabilisation backlog.
+>
+> PM: activate the Stage 0 pre-sprint tracking in PULSE 360 for all 
+> Phase 1 modules.
+>
+> *Saturday is when we lock the v2 process and start.*
+>
+> With appreciation for what this team has already contributed, and 
+> confidence in what it will deliver,
+> T Mani
+>
+> Attachment: SPINRISE_VB_FSD_Claude_Guide_v2.docx
+>
+> cc: Project Manager, TL-Dev, Full SPINRISE Team
+>
+> On 29/03/2026 08:48 pm, CEO wrote:
+>>
+>> Dear SPINRISE Team,
+>>
+>> I am sharing with you today a guide that I have personally put 
+>> together with the assistance of Claude.
+>>
+>> The document is attached: SPINRISE VB FSD Claude Guide v1.docx
+>>
+>> *Please read it fully at your own pace and share your feedback, at 
+>> the earliest.*
+>>
+>> *What this guide is*
+>>
+>> This guide explains, in plain English, how each of us uses Claude to 
+>> convert a VB6 screen into a Form Specification Document (FSD) — and 
+>> how that FSD then travels through our four-level review chain before 
+>> it is used to generate the new SPINRISE web screen.
+>>
+>> It covers:
+>>   • What an FSD is and why we need one for every VB6 screen
+>>   • The complete five-step process for the Module VB Developer
+>>   • The exact Claude prompt to use — ready to copy and paste
+>>   • The three follow-up questions to always ask Claude after the 
+>> first output
+>>   • The four-level review chain: Module Sr IST → TL-IST → PM → CEO
+>>   • What each reviewer specifically checks and signs off
+>>   • Quick reference cards you can print and keep at your desk
+>>
+>> *Who should read which sections
+>> *
+>> *Module VB Developers:*
+>> Section 3 is your primary reference. It walks you through all five 
+>> steps with the exact prompt, the before-and-after example showing VB6 
+>> code versus Claude’s plain-English output, and the three follow-up 
+>> questions. Read this section carefully before you begin your first 
+>> FSD. The quick reference card in Section 7 is your daily desk guide.
+>>
+>> *Module Sr IST Members:*
+>> Section 4, Level 1 is written for you. It explains exactly what your 
+>> review covers, how to write your annotations in the Word document 
+>> using the [IST ADD] and [IST CONFIRMED] tags, and what you must sign 
+>> off before the FSD moves to TL-IST.
+>>
+>> *TL-IST:*
+>> Section 4, Level 2 is your reference. You are the second domain gate 
+>> — the overall domain validation after the Module Sr IST has done the 
+>> first check. Your experience across all modules and all customer 
+>> sites is what this level brings to the FSD.
+>>
+>> *Project Manager:*
+>> Section 4, Level 3. Your role is completeness — not domain accuracy. 
+>> By the time the FSD reaches you, the domain has been validated by two 
+>> levels. Your question is: is this document thorough enough for a 
+>> developer to build the screen from scratch without any ambiguity?
+>>
+>> *CEO:*
+>> Section 4, Level 4 and Section 6. The CEO review is the final domain 
+>> authority gate. No technical skill is needed. Only the question: does 
+>> this FSD accurately reflect how the business process was designed to 
+>> work, and does it carry forward the knowledge that has been built 
+>> over decades of spinning ERP implementation?
+>>
+>> *A personal note*
+>>
+>> This process — Document, Validate, Convert — is the quality backbone 
+>> of SPINRISE. Every web screen we build is only as good as the FSD 
+>> behind it.
+>>
+>> I have been saying this since we began: we are not just migrating a 
+>> software platform. We are converting decades of accumulated spinning 
+>> ERP knowledge into a permanent, structured form that will outlast the 
+>> technology it runs on. Each FSD that is reviewed and approved is a 
+>> piece of that knowledge preserved correctly.
+>>
+>> I want every one of you to understand the process fully — not just 
+>> the step that applies to your role, but the complete journey from VB6 
+>> code to live SPINRISE web screen. When everyone understands the full 
+>> chain, every handover between roles becomes cleaner, faster, and more 
+>> accurate.
+>>
+>> *What I need from you*
+>>
+>> Read the guide before this Saturday’s session.
+>>
+>> If any step is unclear, any instruction is ambiguous, or any section 
+>> does not match what you experience in practice — write it down. 
+>> *Share your feedback as reply to this mail.*
+>>
+>> This is version 1. Your feedback will shape version 2.
+>>
+>> With confidence in the team,
+>> T Mani
+>>
+>> Attachment: SPINRISE_VB_FSD_Claude_Guide_v1.docx
+>>
+--------------7dpoIbp5O4FTf8i18qzv4SID
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <p>Dear SPINRISE Team,<br>
+      <br>
+      <b>I am sharing with you today the updated VB FSD Claude Guide —
+        Version 3.<br>
+      </b><br>
+      Attached: SPINRISE_VB_FSD_Claude_Guide_v3-12-04-26.docx<br>
+      <br>
+      Please read it fully. <b>From the date of this mail, v3 is the
+        operative guide for all FSD documentation work in SPINRISE. </b>V2
+      is superseded.<br>
+      <br>
+      <b><font size="4">Why v3 exists<br>
+        </font></b><br>
+      Version 3 was built entirely from what you all told since V2.<br>
+      <b><font size="4"><br>
+          A word on how we got here</font></b><br>
+      <br>
+      When I shared v1, I said: this is version 1, your feedback will
+      shape version 2 and beyond.  <br>
+      <br>
+      <b>The quality of SPINRISE depends on the quality of our FSDs.</b>
+      The quality of our FSDs depends on the rigour of our process. The
+      rigour of our process depends on each of you taking ownership of
+      the part only you can contribute — your domain knowledge, your
+      site experience, your module expertise.<br>
+      <br>
+      V3 reflects all of that. Bring the same energy to v3 that produced
+      it.<br>
+      <br>
+      <b><font size="4">What I need from you </font></b><br>
+      <br>
+      Every developer and IST member: have read v3 in full.<br>
+      <br>
+      <b>Monday, 13th April, is when we lock the v3 process and start.</b><br>
+      <br>
+      <b>With appreciation for what this team has already contributed,
+        and confidence in what it will deliver,<br>
+        T Mani<br>
+      </b> <br>
+      Attachment: SPINRISE_VB_FSD_Claude_Guide_v3-12-04-26.docx<br>
+      <br>
+      <br>
+    </p>
+    <div class="moz-cite-prefix">On 31/03/2026 01:27 pm, CEO wrote:<br>
+    </div>
+    <blockquote type="cite"
+      cite="mid:1b4ba4f5-9b74-4078-a3d3-648ece98648d@kalsofte.com">
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <p>Dear SPINRISE Team,<br>
+        <br>
+        <b>I am sharing with you today the updated VB FSD Claude Guide —
+          Version 2.<br>
+        </b><br>
+        Attached: SPINRISE_VB_FSD_Claude_Guide_v2.docx<br>
+        <br>
+        Please read it fully before our Saturday session. <b>From the
+          date of this mail, v2 is the operative guide for all FSD
+          documentation work in SPINRISE. </b>V1 is superseded.<br>
+        <br>
+        <b><font size="4">Why v2 exists<br>
+          </font></b><br>
+        Version 2 was built entirely from what you told me.<br>
+        <br>
+        Three of you responded to my v1 circulation mail with
+        observations that were technically sharp and practically
+        important. I want to acknowledge each contribution by name,
+        because the team should know where v2 came from.<br>
+        <br>
+        <b>Sathishkumar </b>pointed out that the Kalsofte ERP
+        distributes business logic across Common modules, Class modules,
+        and stored procedures — not just the .frm file. He also
+        highlighted that the TC (Transaction Code) framework, which
+        drives stock direction and accounting entries across most of our
+        modules, is largely implemented inside stored procedures and
+        would be missed entirely if only the form code was submitted to
+        Claude.<br>
+        <br>
+        <b>Mariyaiya </b>raised a more fundamental concern: that
+        several PR, PO, and Service PO screens have pending customer
+        customisations in various stages of stability. Submitting
+        unstabilised code to Claude would produce an FSD that documents
+        an incomplete version of the screen — and that instability would
+        be permanently carried into SPINRISE.<br>
+        <br>
+        <b>Mariyaiya then went further.</b> Before I could even respond,
+        he produced a detailed critical analysis of the Purchase
+        Requisition form (tmpPoindent.frm) — a 9,108-line VB6 form — and
+        shared it with Muthuvel for IST review. That document, which I
+        have gone through in detail, identified 3 Critical defects, 3
+        High issues, 4 Medium issues, and 2 Low issues in the form code.
+        It also proposed the four-category validation structure, the
+        error message catalogue, the summary scorecard, and the customer
+        variation register — all of which are now standard sections in
+        the v2 FSD template.<br>
+        <br>
+        This is what good teamwork looks like. You were given a guide,
+        you used it on a real form, you found its limits, and you
+        reported back with precision. V2 is the direct result.<br>
+        <br>
+        <b><font size="4">What is new in v2<br>
+          </font></b><br>
+        For those who have read v1, here is what changed:<br>
+        <br>
+        Stage 0 is an entirely new mandatory phase that must be
+        completed before any FSD documentation begins. It covers code
+        stabilisation review, the screen readiness checklist, what to
+        collect before opening Claude (no longer just the .frm file —
+        now includes Common modules, Class modules, and all stored
+        procedures), the TC framework reference table, the customer
+        variation register, and the dead code identification step. Stage
+        0 is not optional. No FSD work begins on any screen until Stage
+        0 is complete and TL-Dev has signed off.<br>
+        <br>
+        The follow-up prompts grew from three to six. Three new prompts
+        were added: one for Common and Class module logic, one for
+        stored procedure business rules, and one specifically for TC
+        framework documentation. These address the gap our first VB
+        developer identified.<br>
+        <br>
+        The FSD template expanded from 8 sections to 14 sections. The
+        six new sections are the TC Framework, Common and Class Module
+        Dependencies, Error Message Catalogue, Customer Variation
+        Register, SPINRISE Migration Recommendations, and the Summary
+        Scorecard. All six are mandatory for transaction screens.<br>
+        <br>
+        The review chain is updated to four levels with the full IST
+        structured questionnaire (IST-1 to IST-7) that every Module Sr
+        IST Member must answer for each form they review.<br>
+        <br>
+        A new Section 8 documents eight known defect patterns to
+        actively search for in every VB6 form before submitting to
+        Claude: application-terminating End statements, hardcoded
+        customer IDs, SQL string concatenation, dead code blocks,
+        inconsistent duplicate logic, hardcoded file paths, missing
+        transaction rollback, and typos in error messages. Each pattern
+        has the code signature to search for and the action to take.<br>
+        <br>
+        Three quick reference cards are now at the back: the Developer
+        Daily Card, the four-column Reviewer Checklist, and the new
+        Defect Patterns Card. Print all three and keep them at your
+        desk.<br>
+        <br>
+        <b>How I need each of you to use this guide<br>
+        </b><br>
+        <b>Module VB Developers:</b><br>
+        Section 3 (Stage 0) and Section 4 (the six steps and six
+        prompts) are your primary reference. Read them in full. Before
+        you begin any FSD, complete Stage 0 for that screen. Do not skip
+        the Customer Variation Register. Do not submit dead code. Run
+        all six follow-up prompts, not just the ones you feel are
+        relevant.<br>
+        <br>
+        <b>Module Sr IST Members:</b><br>
+        Section 6, Level 1 and the IST Structured Questionnaire
+        (questions IST-1 to IST-7) are your reference. For every FSD you
+        review, answer all seven questions. Section 8 (the defect
+        patterns) is also important for you — you are the person most
+        likely to know from site experience whether an
+        application-terminating behaviour or a hardcoded customer
+        variation has caused problems in practice.<br>
+        <br>
+        <b>TL-IST:</b><br>
+        Section 6, Level 2. Your role is cross-module consistency. Pay
+        particular attention to whether TC framework values and stored
+        procedure business rules are consistent with how the same logic
+        is handled in other modules you have implemented.<br>
+        <br>
+        <b>Project Manager:</b><br>
+        Section 6, Level 3. Before any FSD reaches the CEO, confirm that
+        all 14 sections are complete, all IST questions are answered,
+        the customer variation register is filled, and the summary
+        scorecard is present. An incomplete FSD must be returned to the
+        developer, not passed forward.<br>
+        <br>
+        <b>New Developer (Abinandan):</b><br>
+        Welcome again. This guide is your primary reference for how
+        SPINRISE development works. Start by reading Section 3 (Stage 0)
+        and Section 4. The defect patterns in Section 8 will be
+        particularly useful as you begin reading Kalsofte VB6 code for
+        the first time — you will encounter all of these patterns. Now
+        you know what to do with each one.<br>
+        <br>
+        <b>Jr Web Dev team:</b><br>
+        Section 4, Step 6 and Section 7 are your references. The
+        approved FSD is your specification for React UI generation. Read
+        Section 7 carefully — it shows you exactly what prompt to use
+        when an FSD is handed to you for code conversion.<br>
+        <br>
+        <b><font size="4">A word on how we got here</font></b><br>
+        <br>
+        When I shared v1, I said: this is version 1, your feedback will
+        shape version 2. You delivered. In less than a week, the team
+        produced two substantive pieces of written feedback and one
+        detailed 12-section critical analysis of a real form. That is
+        not normal. Most teams wait to be asked.<br>
+        <br>
+        <b>The quality of SPINRISE depends on the quality of our FSDs.</b>
+        The quality of our FSDs depends on the rigour of our process.
+        The rigour of our process depends on each of you taking
+        ownership of the part only you can contribute — your domain
+        knowledge, your site experience, your module expertise.<br>
+        <br>
+        V2 reflects all of that. Bring the same energy to v2 that
+        produced it.<br>
+        <br>
+        <b><font size="4">What I need from you </font></b><br>
+        <br>
+        Every developer and IST member: have read v2 in full.<br>
+        <br>
+        Module VB Developers: bring your Stage 0 readiness assessment
+        for your assigned module — identify which screens are stable and
+        which carry pending customisations.<br>
+        <br>
+        Mariyaiya: bring the updated PR form critical analysis with the
+        v2 FSD template applied (14 sections). Muthuvel’s IST review of
+        that document, using the IST-1 to IST-7 questionnaire, should be
+        underway.<br>
+        <br>
+        TL-Dev: bring the list of screens across all Phase 1 modules
+        that have pending customisations or open corrections. This
+        becomes the Stage 0 stabilisation backlog.<br>
+        <br>
+        PM: activate the Stage 0 pre-sprint tracking in PULSE 360 for
+        all Phase 1 modules.<br>
+        <br>
+        <b>Saturday is when we lock the v2 process and start.</b><br>
+        <br>
+        With appreciation for what this team has already contributed,
+        and confidence in what it will deliver,<br>
+        T Mani<br>
+        <br>
+        Attachment: SPINRISE_VB_FSD_Claude_Guide_v2.docx<br>
+        <br>
+        cc: Project Manager, TL-Dev, Full SPINRISE Team</p>
+      <div class="moz-cite-prefix">On 29/03/2026 08:48 pm, CEO wrote:<br>
+      </div>
+      <blockquote type="cite"
+        cite="mid:036f0737-960e-488e-b84c-8142e9220927@kalsofte.com">
+        <meta http-equiv="content-type"
+          content="text/html; charset=UTF-8">
+        <p>Dear SPINRISE Team,<br>
+          <br>
+          I am sharing with you today a guide that I have personally put
+          together with the assistance of Claude.<br>
+          <br>
+          The document is attached: SPINRISE VB FSD Claude Guide v1.docx<br>
+          <br>
+          <b>Please read it fully at your own pace and share your
+            feedback, at the earliest.</b></p>
+        <p><font size="4"><b>What this guide is</b></font><br>
+          <br>
+          This guide explains, in plain English, how each of us uses
+          Claude to convert a VB6 screen into a Form Specification
+          Document (FSD) — and how that FSD then travels through our
+          four-level review chain before it is used to generate the new
+          SPINRISE web screen.<br>
+          <br>
+          It covers:<br>
+            • What an FSD is and why we need one for every VB6 screen<br>
+            • The complete five-step process for the Module VB Developer<br>
+            • The exact Claude prompt to use — ready to copy and paste<br>
+            • The three follow-up questions to always ask Claude after
+          the first output<br>
+            • The four-level review chain: Module Sr IST → TL-IST → PM →
+          CEO<br>
+            • What each reviewer specifically checks and signs off<br>
+            • Quick reference cards you can print and keep at your desk<br>
+          <br>
+          <font size="4"><b>Who should read which sections<br>
+            </b></font><br>
+          <b>Module VB Developers:</b><br>
+          Section 3 is your primary reference. It walks you through all
+          five steps with the exact prompt, the before-and-after example
+          showing VB6 code versus Claude’s plain-English output, and the
+          three follow-up questions. Read this section carefully before
+          you begin your first FSD. The quick reference card in Section
+          7 is your daily desk guide.<br>
+          <br>
+          <b>Module Sr IST Members:</b><br>
+          Section 4, Level 1 is written for you. It explains exactly
+          what your review covers, how to write your annotations in the
+          Word document using the [IST ADD] and [IST CONFIRMED] tags,
+          and what you must sign off before the FSD moves to TL-IST.<br>
+          <br>
+          <b>TL-IST:</b><br>
+          Section 4, Level 2 is your reference. You are the second
+          domain gate — the overall domain validation after the Module
+          Sr IST has done the first check. Your experience across all
+          modules and all customer sites is what this level brings to
+          the FSD.<br>
+          <br>
+          <b>Project Manager:</b><br>
+          Section 4, Level 3. Your role is completeness — not domain
+          accuracy. By the time the FSD reaches you, the domain has been
+          validated by two levels. Your question is: is this document
+          thorough enough for a developer to build the screen from
+          scratch without any ambiguity?<br>
+          <br>
+          <b>CEO:</b><br>
+          Section 4, Level 4 and Section 6. The CEO review is the final
+          domain authority gate. No technical skill is needed. Only the
+          question: does this FSD accurately reflect how the business
+          process was designed to work, and does it carry forward the
+          knowledge that has been built over decades of spinning ERP
+          implementation?<br>
+          <br>
+          <font size="4"><b>A personal note</b></font><br>
+          <br>
+          This process — Document, Validate, Convert — is the quality
+          backbone of SPINRISE. Every web screen we build is only as
+          good as the FSD behind it.<br>
+          <br>
+          I have been saying this since we began: we are not just
+          migrating a software platform. We are converting decades of
+          accumulated spinning ERP knowledge into a permanent,
+          structured form that will outlast the technology it runs on.
+          Each FSD that is reviewed and approved is a piece of that
+          knowledge preserved correctly.<br>
+          <br>
+          I want every one of you to understand the process fully — not
+          just the step that applies to your role, but the complete
+          journey from VB6 code to live SPINRISE web screen. When
+          everyone understands the full chain, every handover between
+          roles becomes cleaner, faster, and more accurate.<br>
+          <br>
+          <b><font size="4">What I need from you</font></b><br>
+          <br>
+          Read the guide before this Saturday’s session.<br>
+          <br>
+          If any step is unclear, any instruction is ambiguous, or any
+          section does not match what you experience in practice — write
+          it down. <b>Share your feedback as reply to this mail.</b><br>
+          <br>
+          This is version 1. Your feedback will shape version 2.<br>
+          <br>
+          With confidence in the team,<br>
+          T Mani<br>
+          <br>
+          Attachment: SPINRISE_VB_FSD_Claude_Guide_v1.docx</p>
+      </blockquote>
+    </blockquote>
+  </body>
+</html>
+
+--------------7dpoIbp5O4FTf8i18qzv4SID--
+--------------CUcqif7CMXzqLdXRImGB76sB
+Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document;
+ name="SPINRISE_VB_FSD_Claude_Guide_v3-12-04-26.docx"
+Content-Disposition: attachment;
+ filename="SPINRISE_VB_FSD_Claude_Guide_v3-12-04-26.docx"
+Content-Transfer-Encoding: base64
+
+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
+AAoAAAAIAHF4jFzSd/y3bQAAAHsAAAAdAAAAAAAAAAAAAAAAAFeTAAB3b3JkL19yZWxzL2Zv
+b3Rub3Rlcy54bWwucmVsc1BLAQIUAAoAAAAIAHF4jFw/So6NwQEAAJIGAAARAAAAAAAAAAAA
+AAAAAP+TAAB3b3JkL2VuZG5vdGVzLnhtbFBLAQIUAAoAAAAIAHF4jFzSd/y3bQAAAHsAAAAc
+AAAAAAAAAAAAAAAAAO+VAAB3b3JkL19yZWxzL2VuZG5vdGVzLnhtbC5yZWxzUEsBAhQACgAA
+AAgAcXiMXE2fysqhAQAAcwUAABEAAAAAAAAAAAAAAAAAlpYAAHdvcmQvc2V0dGluZ3MueG1s
+UEsBAhQACgAAAAgAcXiMXIuGOcTFAQAAxggAABEAAAAAAAAAAAAAAAAAZpgAAHdvcmQvY29t
+bWVudHMueG1sUEsBAhQACgAAAAgAcXiMXNJ3/LdtAAAAewAAABwAAAAAAAAAAAAAAAAAWpoA
+AHdvcmQvX3JlbHMvY29tbWVudHMueG1sLnJlbHNQSwECFAAKAAAACABxeIxcY+1e1h0BAABD
+AwAAEgAAAAAAAAAAAAAAAAABmwAAd29yZC9mb250VGFibGUueG1sUEsBAhQACgAAAAgAcXiM
+XNJ3/LdtAAAAewAAAB0AAAAAAAAAAAAAAAAATpwAAHdvcmQvX3JlbHMvZm9udFRhYmxlLnht
+bC5yZWxzUEsFBgAAAAAaABoAigYAAPacAAAAAA==
+
+--------------CUcqif7CMXzqLdXRImGB76sB--

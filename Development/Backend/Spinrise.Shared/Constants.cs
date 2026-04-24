@@ -21,34 +21,9 @@ public static class ApiRoutes
         public const string GetActive = $"{BaseRoute}/active";
     }
 
-    public static class Items
-    {
-        public const string BaseRoute = $"{ApiVersionPrefix}/items";
-        public const string GetActive = $"{BaseRoute}/active";
-    }
-
     public static class Lookups
     {
         public const string BaseRoute = $"{ApiVersionPrefix}/lookups";
-    }
-
-    public static class Inventory
-    {
-        public static class Stock
-        {
-            public const string BaseRoute  = $"{ApiVersionPrefix}/inventory/stock";
-            public const string GetCurrent = "current";
-        }
-    }
-
-    public static class PurchaseRequisitions
-    {
-        public const string BaseRoute = $"{ApiVersionPrefix}/purchase-requisitions";
-        public const string GetAll = BaseRoute;
-        public const string GetById = $"{BaseRoute}/{{id:int}}";
-        public const string Create = BaseRoute;
-        public const string Update = BaseRoute;
-        public const string Delete = $"{BaseRoute}/{{id:int}}";
     }
 
     /// <summary>
@@ -105,11 +80,6 @@ public static class StoredProcedures
         public const string GetByDivision = "usp_GetDepartmentsByDivision";
     }
 
-    public static class Item
-    {
-        public const string GetByDivision = "usp_GetItemsByDivision";
-    }
-
     public static class PurchaseRequisition
     {
         public const string GetAll                    = "ksp_PR_GetAll";
@@ -139,6 +109,7 @@ public static class StoredProcedures
         public const string IsLinkedToEnquiry         = "ksp_PR_IsLinkedToEnquiry";
         public const string GetItemMinLevel           = "ksp_PR_GetItemMinLevel";
         public const string CategoryExists            = "ksp_PR_CategoryExists";
+        public const string SubCostExists             = "ksp_PR_SubCostExists";
         public const string GetItemHistory            = "ksp_PR_GetItemHistory";
     }
 
@@ -159,14 +130,9 @@ public static class StoredProcedures
         public const string GetCurrentStock = "ksp_Stock_GetCurrentStock";
     }
 
-    /// <summary>
-    /// Stored procedures for Purchase report data retrieval.
-    /// Replace the demo data in FastReportService with calls to these SPs.
-    /// </summary>
     public static class PurchaseReport
     {
-        public const string GetRequisitionReportRows        = "usp_PR_Report_GetRows";
-        public const string GetDatewiseRequisitionReport    = "ksp_PO_RequisitionReport_DateWise";
+        public const string GetDatewiseRequisitionReport = "ksp_PO_RequisitionReport_DateWise";
     }
 }
 

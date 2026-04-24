@@ -1,0 +1,816 @@
+X-UIDL: UID117-1774868925
+X-Mozilla-Status: 0011
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <ceo@kalsofte.com>
+Received: from murphy.nocdirect.com
+	by murphy.nocdirect.com with LMTP
+	id hn74F3KL52lSrTkAet6MXA
+	(envelope-from <ceo@kalsofte.com>); Tue, 21 Apr 2026 09:36:34 -0500
+Return-path: <ceo@kalsofte.com>
+Envelope-to: palanivel@kalsofte.com,
+ abinandan.n@kalsofte.com,
+ sasikumar.r@kalsofte.com,
+ pbsaravanan@kalsofte.com,
+ support@kalsofte.com,
+ development@kalsofte.com,
+ qa@kalsofte.com,
+ muthuvel.m@kalsofte.com,
+ mariyaiya.m@kalsofte.com
+Delivery-date: Tue, 21 Apr 2026 09:36:34 -0500
+Received: from [111.223.127.194] (port=19329 helo=[10.0.180.171])
+	by murphy.nocdirect.com with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+	(Exim 4.99.1)
+	(envelope-from <ceo@kalsofte.com>)
+	id 1wFCDI-0000000FrHK-3BC8;
+	Tue, 21 Apr 2026 09:36:34 -0500
+Content-Type: multipart/alternative;
+ boundary="------------wQWnag93zbWHDFVNPzHTEvSJ"
+Message-ID: <57cf5056-5030-4ec0-ae2b-fb9fc8d6659a@kalsofte.com>
+Date: Tue, 21 Apr 2026 20:06:51 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: SpinRise PR No. 329 QuestPDF Print | Print Complete | FSD Note
+ Required | M01 Development Target Needed
+To: Abinandan <abinandan.n@kalsofte.com>
+Cc: Sasi <sasikumar.r@kalsofte.com>, pbsaravanan <pbsaravanan@kalsofte.com>,
+ Kalsoft Palanivel <palanivel@kalsofte.com>, support <support@kalsofte.com>,
+ development@kalsofte.com, Quality Assurance <qa@kalsofte.com>,
+ Muthuvel Mani <muthuvel.m@kalsofte.com>, Mariyaiya <mariyaiya.m@kalsofte.com>
+References: <a07a019d-9390-43d2-9f5d-c2a2d1906f36@kalsofte.com>
+ <4f8c35b5-5dba-4e41-9d01-d6e5d9823c6d@kalsofte.com>
+ <b374e54c-5a80-4dc4-97f7-4842c42864f7@kalsofte.com>
+ <07953c11-bc9d-405f-b848-777109b06403@kalsofte.com>
+ <1a3409d0-ea48-4e08-b72f-a6e4b4644d72@kalsofte.com>
+ <f2bb3fb7-8927-49fc-bd7e-4d7c3c4e8040@kalsofte.com>
+Content-Language: en-US
+From: CEO <ceo@kalsofte.com>
+In-Reply-To: <f2bb3fb7-8927-49fc-bd7e-4d7c3c4e8040@kalsofte.com>
+
+This is a multi-part message in MIME format.
+--------------wQWnag93zbWHDFVNPzHTEvSJ
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+Dear Abinandan,
+
+I have reviewed PR No. 329 carefully against all FSD requirements. This 
+is the best output in the project so far and I want to be specific about 
+what has been achieved before raising the two points that need attention.
+
+*On the PR print — complete*
+
+*All three CEO-directed corrections are applied correctly.* The Created 
+By field now shows SPGMT, correctly sourced from PO_PRH.userId and 
+separately labelled from the Requester Name. The Requested By footer 
+shows KUMARESAN.V dynamically from the record — the hardcoded 
+placeholder is gone. The App Cost Value for Item 2 now shows 26,004.00 
+and the fallback logic you implemented — Previous Purchase Rate 
+multiplied by Required Quantity when ApproxCost is null or zero — is the 
+correct business behaviour.
+
+Beyond the directed corrections, I notice the Approved Date is now 
+populated as 18-03-2026, the Approved By footer shows PM and 16-03-2026, 
+and the Authorised Signatory shows DIR and 18-03-2026. These were blank 
+in all previous versions and you have fixed them without being asked. 
+That is the right attitude toward completeness.
+
+Every FSD requirement from Section 12 Rec 17, Rec 18, and Rec 28 is now 
+fulfilled. The QuestPDF PR print is production-ready.
+
+*One minor point: *the date format has changed from DD/MM/YYYY in 
+earlier prints to DD-MM-YYYY in this version. Both formats are 
+internally consistent within this print. Confirm with Mariyaiya which 
+format the approved FSD specifies and standardise on that across all 
+SPINRISE transaction prints from this point.
+
+
+*One FSD action for Mariyaiya*
+
+The App Cost Value fallback logic — using Previous Purchase Rate times 
+Required Quantity when ApproxCost is null or zero — is correct and 
+should be retained. However, this behaviour is not documented in the 
+approved FSD v2.3. Any logic discovered or decided during development 
+that is not in the approved FSD must be documented. Mariyaiya, please 
+add this as a field-level note in Section 4 under the App Cost Value 
+field specification: when PO_PRD.AppCost is null or zero, the SPINRISE 
+print displays Previous Purchase Rate multiplied by Required Quantity as 
+the fallback value, with a note that this is a display-only computed 
+fallback and does not write back to the database.
+
+
+*On M01 form development — a target date is needed*
+
+The M01 Purchase Requisition FSD was CEO-approved on 17 April — four 
+days ago. Your mail says you are preparing for the React plus ASP.NET 
+Core development. Preparing is not a status. I need to know what has 
+actually started and when the first working SPINRISE PR form will be 
+ready for internal review.
+
+*Specifically:* has the React component been scaffolded? Has the ASP.NET 
+Core API controller and endpoint been created? Has 
+ksl_Tran_PORequisition been wired to the API? What is your committed 
+date for completing the M01 PR form to a state where it can be 
+demonstrated end-to-end — data entry, save, and print?
+
+*Please reply with a specific completion target at your earliest. The 
+approved FSD is the locked baseline. Development starts now, not when 
+you finish preparing.
+*
+Regards,
+T. Mani
+cc: TL-Dev Sasi, Mariyaiya (FSD App Cost fallback note to add), PM Saravanan
+
+On 21/04/2026 07:47 pm, Abinandan wrote:
+>
+> Dear Sir,
+>
+> I have completed the corrections and updates as per your observations 
+> on the PR No. 329 print. The revised output is attached for your review.
+>
+> *Updates completed:*
+>
+>   * Added *“Created By”*field in the header, sourced from ERP login
+>     user (PO_PRH.userId / createdby).
+>   * Updated *“Requested By”*footer to display dynamic Requester Name
+>     from the record (removed hardcoded value).
+>   * - Corrected **App Cost Value** for Item 2 (101B124 BELT). The
+>     value was coming as 0 from the database, which caused it to render
+>     as blank. The logic has now been updated to fallback to Previous
+>     Purchase Rate × QtyRequired when ApproxCost is null or zero.
+>
+> The print now aligns with the FSD content requirements.
+>
+> In parallel, I am preparing for the *M01 Purchase Requisition form 
+> development*(React + ASP.NET Core) based on the approved FSD baseline.
+>
+> Kindly review the attached output and share your feedback.
+>
+> Regards,
+> Abinandan
+>
+>
+> On 17-04-2026 19:22, CEO wrote:
+>> Dear Abinandan,
+>>
+>> Thank you for the updated PR print and the Excel report. I have 
+>> reviewed both outputs against the FSD requirements.
+>>
+>> *QuestPDF and EPPlus — technology decision confirmed*
+>>
+>> Both evaluations are accepted. *QuestPDF is confirmed as the SPINRISE 
+>> standard for all transaction PDF prints. EPPlus is confirmed for all 
+>> Excel and CSV data exports*. FastReports is not needed for Phase 1. 
+>> The two-tool architecture —*QuestPDF for PDFs, EPPlus for Excel — is 
+>> now the final decision for SPINRISE.
+>> *
+>> Your observation that QuestPDF layout design is time-consuming 
+>> initially but straightforward and maintainable once done is the 
+>> correct way to think about it. The initial investment in the QuestPDF 
+>> C# template is a one-time cost per transaction print. Once the 
+>> pattern is established for the PR print, *every subsequent print in 
+>> the project follows the same structure.
+>> *
+>> *On the PR No. 329 print — three improvements, two corrections still 
+>> needed*
+>>
+>> Three improvements are clearly visible compared to the previous PR 
+>> 368 output. Drawing Number and Catalogue Number sub-rows are now 
+>> present under every line item — this fulfils FSD Section 12 Rec 28. 
+>> The Previous Purchase Date column is now populated correctly. 
+>> Multi-page pagination is working — seven items across two pages 
+>> renders cleanly.
+>>
+>> *Two items still need attention before this print is production-ready.*
+>>
+>> *First:* the ERP login username is still absent. FSD Section 12 Rec 
+>> 17 requires a 'Created By' field showing the ERP login user who typed 
+>> the PR into the system (from PO_PRH.userId or createdby). This is 
+>> separate from the Requester Name (KUMARESAN.V) which is already 
+>> shown. Both must appear as labelled fields in the header. Add 
+>> 'Created By: [ERP login username]' sourced from the API response.
+>>
+>> *Second:* the 'Requested By' footer still shows 'Kalsofte' as 
+>> hardcoded text. It was 'spinrise' in the previous version — the 
+>> change shows progress but it must be a dynamic value from the data, 
+>> not a company name. Replace with the actual Requester Name from the 
+>> record — KUMARESAN.V in this case.
+>>
+>> Also confirm: Item 2 (101B124 BELT) shows a blank in the App Cost 
+>> Value column. The Previous Purchase Value of 26,004 is present but 
+>> the App Cost column appears empty. Verify whether this is a data gap 
+>> or a template mapping issue and fix accordingly.
+>>
+>> *Alignment refinement is secondary to these content corrections — 
+>> complete content first, then polish alignment.*
+>>
+>> *Next step*
+>>
+>> With the four FSD approvals now imminent and the technology stack 
+>> confirmed, *your next priority is the first SPINRISE form development 
+>> from an approved FSD*. Once M01 PR Form FSD receives CEO approval, 
+>> you will have the locked baseline to begin React component and 
+>> ASP.NET Core API development for the Purchase Requisition screen. 
+>> *Prepare for that.*
+>>
+>> Regards,
+>> T. Mani
+>>
+>> On 17/04/2026 04:48 pm, Abinandhan wrote:
+>>>
+>>> Dear Sir,
+>>> I have completed the report generation using QuestPDF for PDF and 
+>>> EPPlus for Excel.
+>>>
+>>> From the evaluation:
+>>>
+>>>   * QuestPDF is suitable for generating PDF reports. Converting
+>>>     Crystal Reports to QuestPDF is achievable, though it is
+>>>     time-consuming due to layout design and alignment requirements.
+>>>     Once completed, the logic is straightforward and maintainable.
+>>>   * EPPlus is efficient and easy to use for Excel report generation,
+>>>     with good control over formatting and data structure.
+>>>
+>>> I have attached the PO Requisition reports for your review.
+>>>
+>>> Regards,
+>>> Abinandan
+>>> Fullstack Developer
+>>>
+>>>
+>>>
+>>> On 16/04/2026 08:00 pm, Abinandhan wrote:
+>>>>
+>>>> Dear Sir,
+>>>>
+>>>> I am still working on the pending items for the PR print and 
+>>>> related evaluation.
+>>>>
+>>>> I have corrected the changes you mentioned in the previous review, 
+>>>> including the required content updates. Alignment adjustments are 
+>>>> in progress.
+>>>>
+>>>> Regarding report generation:
+>>>>
+>>>>  *
+>>>>
+>>>>     QuestPDF is currently being used only for generating PDF reports.
+>>>>
+>>>>  *
+>>>>
+>>>>     For Excel, I have generated a date-wise report using EPPlus and
+>>>>     attached it for your review.
+>>>>
+>>>> I am continuing to work on the remaining items and will try to 
+>>>> complete everything by tomorrow.
+>>>>
+>>>> Regards,
+>>>> Abinandan
+>>>>
+>>>>
+>>>> On 14/04/2026 10:35 am, CEO wrote:
+>>>>>
+>>>>> Dear Abinandan,
+>>>>>
+>>>>> Thank you for the QuestPDF POC output. I have reviewed the PR 
+>>>>> print carefully.
+>>>>>
+>>>>> *What the print has achieved*
+>>>>>
+>>>>> This is the first working SPINRISE transaction print in the 
+>>>>> project and it is a meaningful milestone. The architecture is 
+>>>>> proven. Company header with the Ashok logo, full address, phone, 
+>>>>> email — correct. Document title, all header fields — PR Number, 
+>>>>> Date, Requester Name, Department, Reference — all present and 
+>>>>> rendering correctly. The three-line item grid with Machine No 
+>>>>> sub-rows, the Previous Purchase Details columns, and the 
+>>>>> three-panel signature footer are all structurally sound. 
+>>>>> *QuestPDF's capability to produce a production-quality transaction 
+>>>>> print is confirmed from this output.
+>>>>> *
+>>>>> This is exactly the kind of concrete progress that the project 
+>>>>> needs and I want to acknowledge it.
+>>>>>
+>>>>> *Four specific corrections before this print is complete
+>>>>> *
+>>>>> Against the M01 FSD requirements — specifically Section 12 Rec 17, 
+>>>>> Rec 18, and Rec 28 — I have identified four items the print must 
+>>>>> address.
+>>>>>
+>>>>> *First: *ERP login username is missing. The FSD requires two 
+>>>>> separate identity fields on the PR print. The Requester Name field 
+>>>>> shows AARTHIMA L, which is correct — this is the department 
+>>>>> employee who needs the items, sourced from PO_PRH.REQNAME via 
+>>>>> PR_EMP.ENAME. But the ERP login username — the person who actually 
+>>>>> typed the PR into the system, from PO_PRH.userId or createdby — is 
+>>>>> not shown anywhere on the print. Both must appear as separately 
+>>>>> labelled fields. Add a second label below or alongside Requester 
+>>>>> Name: 'Created By: [ERP login username]'. Source field: 
+>>>>> PO_PRH.userId or createdby from the API response. This is Section 
+>>>>> 12 Rec 17.
+>>>>>
+>>>>> *Second: *Footer 'Requested By' shows 'spinrise' as hardcoded 
+>>>>> text. This was clearly a test placeholder. It should display the 
+>>>>> actual Requester Name from the data — AARTHIMA L in this case — or 
+>>>>> alternatively the ERP login user. Not the word 'spinrise'. Replace 
+>>>>> with the dynamic value from the API.
+>>>>>
+>>>>> Third: Drawing Number and Catalogue Number columns are missing 
+>>>>> from the item grid. FSD Section 12 Rec 28 is explicit: these two 
+>>>>> columns must always appear on the printed PR, unconditionally, 
+>>>>> without suppression logic, regardless of whether data is present. 
+>>>>> Source fields: IN_ITEM.DRAWNO and IN_ITEM.CATLNO from the 
+>>>>> ksl_Tran_PORequisition SP via J-6. Both columns must be added to 
+>>>>> the grid and populated from the SP output.
+>>>>>
+>>>>> *Fourth: *Previous Purchase Date sub-column is blank for all three 
+>>>>> lines. Confirm whether LPO_DATE data exists for these items in the 
+>>>>> test data, or whether the SP is not returning this field. If the 
+>>>>> SP returns it, wire it to the column.
+>>>>>
+>>>>> *Alignment polish is secondary to these four content corrections. 
+>>>>> Fix content first, alignment after.*
+>>>>>
+>>>>>
+>>>>> *On the Excel and CSV evaluation*
+>>>>>
+>>>>> The QuestPDF PDF output is confirmed feasible. The Excel and CSV 
+>>>>> capability assessment is still pending and that assessment 
+>>>>> determines whether QuestPDF can replace EPPlus entirely or whether 
+>>>>> we retain both. This evaluation must be completed on Wenesday 
+>>>>> alongside the alignment corrections. It is a simpler test — 
+>>>>> generate a sample Excel file from a data set using the tool and 
+>>>>> verify that cell formatting, column widths, and data types render 
+>>>>> correctly. It does not require all services running simultaneously.
+>>>>>
+>>>>> *On the RAM upgrade request*
+>>>>>
+>>>>> Your request is reasonable and I support it. Running Visual 
+>>>>> Studio, SQL Server, Chrome, PMS server, and Spinnova server 
+>>>>> concurrently on 8 GB RAM is a genuine hardware constraint for .NET 
+>>>>> development work. 16 GB is the correct specification for this 
+>>>>> workload. The consistent 90% RAM usage you have described is a 
+>>>>> real productivity constraint and a server stability risk.
+>>>>>
+>>>>> *I will approve the RAM upgrade. Sasi, please action the 
+>>>>> procurement immediately so this does not delay the next sprint of 
+>>>>> development work. Confirm the upgrade date to me once scheduled.
+>>>>> *
+>>>>> Abinandan, I expect the four print corrections, the alignment 
+>>>>> polish, and the Excel/CSV evaluation all completed and sent to me 
+>>>>> by end of Wednesday. The QuestPDF decision will be finalised once 
+>>>>> the Excel/CSV output is verified.
+>>>>>
+>>>>> Regards,
+>>>>> T. Mani
+>>>>> cc: PM Saravanan, TL-Dev Sasi (RAM procurement action)
+>>>>>
+>>>>> On 13/04/2026 07:27 pm, Abinandhan wrote:
+>>>>>>
+>>>>>> Hi Sir,
+>>>>>>
+>>>>>> As discussed in the review meeting, I was expected to complete 
+>>>>>> the QuestPDF evaluation (including feasibility for Excel/CSV 
+>>>>>> output) by today. However, I was unable to complete it due to 
+>>>>>> system performance limitations.
+>>>>>>
+>>>>>> I have attached the report as completed so far; however, there 
+>>>>>> are still some alignment changes pending, which I will complete 
+>>>>>> by the next working day.
+>>>>>>
+>>>>>> My current system (8 GB RAM) is handling both development and 
+>>>>>> server workloads simultaneously (Visual Studio, SQL Server, 
+>>>>>> Chrome, PMS server, and Spinnova server). RAM usage consistently 
+>>>>>> exceeds 90%, leading to slow builds, IDE freezes, and reduced 
+>>>>>> productivity. There is also a potential risk to server stability 
+>>>>>> during peak usage.
+>>>>>>
+>>>>>> We have already attempted optimizations, but the constraint is 
+>>>>>> hardware-related.
+>>>>>>
+>>>>>> *Request:*
+>>>>>> Upgrade the current system RAM 16 GB to improve performance and 
+>>>>>> ensure timely delivery.
+>>>>>>
+>>>>>> This upgrade will directly help in completing the QuestPDF 
+>>>>>> evaluation and improve overall development efficiency.
+>>>>>>
+>>>>>> Regards,
+>>>>>> Abinandan
+>>>>>> Fullstack developer
+>>>>>>
+> -- 
+> Abinandan N
+> Fullstack Developer
+--------------wQWnag93zbWHDFVNPzHTEvSJ
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <p>Dear Abinandan,<br>
+      <br>
+      I have reviewed PR No. 329 carefully against all FSD requirements.
+      This is the best output in the project so far and I want to be
+      specific about what has been achieved before raising the two
+      points that need attention.<br>
+      <br>
+      <b>On the PR print — complete</b><br>
+      <br>
+      <b>All three CEO-directed corrections are applied correctly.</b>
+      The Created By field now shows SPGMT, correctly sourced from
+      PO_PRH.userId and separately labelled from the Requester Name. The
+      Requested By footer shows KUMARESAN.V dynamically from the record
+      — the hardcoded placeholder is gone. The App Cost Value for Item 2
+      now shows 26,004.00 and the fallback logic you implemented —
+      Previous Purchase Rate multiplied by Required Quantity when
+      ApproxCost is null or zero — is the correct business behaviour.<br>
+      <br>
+      Beyond the directed corrections, I notice the Approved Date is now
+      populated as 18-03-2026, the Approved By footer shows PM and
+      16-03-2026, and the Authorised Signatory shows DIR and 18-03-2026.
+      These were blank in all previous versions and you have fixed them
+      without being asked. That is the right attitude toward
+      completeness.<br>
+      <br>
+      Every FSD requirement from Section 12 Rec 17, Rec 18, and Rec 28
+      is now fulfilled. The QuestPDF PR print is production-ready.<br>
+      <br>
+      <b>One minor point: </b>the date format has changed from
+      DD/MM/YYYY in earlier prints to DD-MM-YYYY in this version. Both
+      formats are internally consistent within this print. Confirm with
+      Mariyaiya which format the approved FSD specifies and standardise
+      on that across all SPINRISE transaction prints from this point.<br>
+      <br>
+      <br>
+      <b><font size="4">One FSD action for Mariyaiya</font></b><br>
+      <br>
+      The App Cost Value fallback logic — using Previous Purchase Rate
+      times Required Quantity when ApproxCost is null or zero — is
+      correct and should be retained. However, this behaviour is not
+      documented in the approved FSD v2.3. Any logic discovered or
+      decided during development that is not in the approved FSD must be
+      documented. Mariyaiya, please add this as a field-level note in
+      Section 4 under the App Cost Value field specification: when
+      PO_PRD.AppCost is null or zero, the SPINRISE print displays
+      Previous Purchase Rate multiplied by Required Quantity as the
+      fallback value, with a note that this is a display-only computed
+      fallback and does not write back to the database.<br>
+      <br>
+      <br>
+      <b>On M01 form development — a target date is needed</b><br>
+      <br>
+      The M01 Purchase Requisition FSD was CEO-approved on 17 April —
+      four days ago. Your mail says you are preparing for the React plus
+      ASP.NET Core development. Preparing is not a status. I need to
+      know what has actually started and when the first working SPINRISE
+      PR form will be ready for internal review.<br>
+      <br>
+      <b>Specifically:</b> has the React component been scaffolded? Has
+      the ASP.NET Core API controller and endpoint been created? Has
+      ksl_Tran_PORequisition been wired to the API? What is your
+      committed date for completing the M01 PR form to a state where it
+      can be demonstrated end-to-end — data entry, save, and print?<br>
+      <br>
+      <b>Please reply with a specific completion target at your
+        earliest. The approved FSD is the locked baseline. Development
+        starts now, not when you finish preparing.<br>
+      </b><br>
+      Regards,<br>
+      T. Mani<br>
+      cc: TL-Dev Sasi, Mariyaiya (FSD App Cost fallback note to add), PM
+      Saravanan</p>
+    <div class="moz-cite-prefix">On 21/04/2026 07:47 pm, Abinandan
+      wrote:<br>
+    </div>
+    <blockquote type="cite"
+      cite="mid:f2bb3fb7-8927-49fc-bd7e-4d7c3c4e8040@kalsofte.com">
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <p>Dear Sir,<br>
+      </p>
+      <p class="isSelectedEnd"><span>I have completed the corrections
+          and updates as per your observations on the PR No. 329 print.
+          The revised output is attached for your review.</span></p>
+      <p class="isSelectedEnd"><strong><span>Updates completed:</span></strong></p>
+      <ul data-spread="false">
+        <li><span>Added </span><strong><span>“Created By”</span></strong><span>
+            field in the header, sourced from ERP login user
+            (PO_PRH.userId / createdby).</span></li>
+        <li><span>Updated </span><strong><span>“Requested By”</span></strong><span>
+            footer to display dynamic Requester Name from the record
+            (removed hardcoded value).</span></li>
+        <li><span>- Corrected **App Cost Value** for Item 2 (101B124
+            BELT). The value was coming as 0 from the database, which
+            caused it to render as blank. The logic has now been updated
+            to fallback to Previous Purchase Rate × QtyRequired when
+            ApproxCost is null or zero.</span></li>
+      </ul>
+      <p class="isSelectedEnd"><span>The print now aligns with the FSD
+          content requirements. </span></p>
+      <p class="isSelectedEnd"><span>In parallel, I am preparing for the
+        </span><strong><span>M01 Purchase Requisition form development</span></strong><span>
+          (React + ASP.NET Core) based on the approved FSD baseline.</span></p>
+      <p class="isSelectedEnd"><span>Kindly review the attached output
+          and share your feedback.</span></p>
+      <p><span>Regards,</span><br>
+        <span>Abinandan</span></p>
+      <p><br>
+      </p>
+      <div class="moz-cite-prefix">On 17-04-2026 19:22, CEO wrote:<br>
+      </div>
+      <blockquote type="cite"
+        cite="mid:1a3409d0-ea48-4e08-b72f-a6e4b4644d72@kalsofte.com">
+        <meta http-equiv="Content-Type"
+          content="text/html; charset=UTF-8">
+        Dear Abinandan,<br>
+        <br>
+        Thank you for the updated PR print and the Excel report. I have
+        reviewed both outputs against the FSD requirements.<br>
+        <br>
+        <b>QuestPDF and EPPlus — technology decision confirmed</b><br>
+        <br>
+        Both evaluations are accepted. <b>QuestPDF is confirmed as the
+          SPINRISE standard for all transaction PDF prints. EPPlus is
+          confirmed for all Excel and CSV data exports</b>. FastReports
+        is not needed for Phase 1. The two-tool architecture —<b>
+          QuestPDF for PDFs, EPPlus for Excel — is now the final
+          decision for SPINRISE.<br>
+        </b><br>
+        Your observation that QuestPDF layout design is time-consuming
+        initially but straightforward and maintainable once done is the
+        correct way to think about it. The initial investment in the
+        QuestPDF C# template is a one-time cost per transaction print.
+        Once the pattern is established for the PR print, <b>every
+          subsequent print in the project follows the same structure.<br>
+        </b><br>
+        <b>On the PR No. 329 print — three improvements, two corrections
+          still needed</b><br>
+        <br>
+        Three improvements are clearly visible compared to the previous
+        PR 368 output. Drawing Number and Catalogue Number sub-rows are
+        now present under every line item — this fulfils FSD Section 12
+        Rec 28. The Previous Purchase Date column is now populated
+        correctly. Multi-page pagination is working — seven items across
+        two pages renders cleanly.<br>
+        <br>
+        <b>Two items still need attention before this print is
+          production-ready.</b><br>
+        <br>
+        <b>First:</b> the ERP login username is still absent. FSD
+        Section 12 Rec 17 requires a 'Created By' field showing the ERP
+        login user who typed the PR into the system (from PO_PRH.userId
+        or createdby). This is separate from the Requester Name
+        (KUMARESAN.V) which is already shown. Both must appear as
+        labelled fields in the header. Add 'Created By: [ERP login
+        username]' sourced from the API response.<br>
+        <br>
+        <b>Second:</b> the 'Requested By' footer still shows 'Kalsofte'
+        as hardcoded text. It was 'spinrise' in the previous version —
+        the change shows progress but it must be a dynamic value from
+        the data, not a company name. Replace with the actual Requester
+        Name from the record — KUMARESAN.V in this case.<br>
+        <br>
+        Also confirm: Item 2 (101B124 BELT) shows a blank in the App
+        Cost Value column. The Previous Purchase Value of 26,004 is
+        present but the App Cost column appears empty. Verify whether
+        this is a data gap or a template mapping issue and fix
+        accordingly.<br>
+        <br>
+        <b>Alignment refinement is secondary to these content
+          corrections — complete content first, then polish alignment.</b><br>
+        <br>
+        <font size="4"><b>Next step</b></font><br>
+        <br>
+        With the four FSD approvals now imminent and the technology
+        stack confirmed, <b>your next priority is the first SPINRISE
+          form development from an approved FSD</b>. Once M01 PR Form
+        FSD receives CEO approval, you will have the locked baseline to
+        begin React component and ASP.NET Core API development for the
+        Purchase Requisition screen. <b>Prepare for that.</b><br>
+        <br>
+        Regards,<br>
+        T. Mani<br>
+        <br>
+        <div class="moz-cite-prefix">On 17/04/2026 04:48 pm, Abinandhan
+          wrote:<br>
+        </div>
+        <blockquote type="cite"
+          cite="mid:07953c11-bc9d-405f-b848-777109b06403@kalsofte.com">
+          <meta http-equiv="Content-Type"
+            content="text/html; charset=UTF-8">
+          <p class="isSelectedEnd"><span>Dear Sir,<br>
+              I have completed the report generation using QuestPDF for
+              PDF and EPPlus for Excel.</span></p>
+          <p class="isSelectedEnd"><span>From the evaluation:</span></p>
+          <ul data-spread="false">
+            <li><span>QuestPDF is suitable for generating PDF reports.
+                Converting Crystal Reports to QuestPDF is achievable,
+                though it is time-consuming due to layout design and
+                alignment requirements. Once completed, the logic is
+                straightforward and maintainable.</span></li>
+            <li><span>EPPlus is efficient and easy to use for Excel
+                report generation, with good control over formatting and
+                data structure.</span></li>
+          </ul>
+          <p class="isSelectedEnd"><span>I have attached the PO
+              Requisition reports for your review.</span></p>
+          <p><span>Regards,</span><br>
+            <span>Abinandan<br>
+              Fullstack Developer</span></p>
+          <br>
+          <p><br>
+          </p>
+          <div class="moz-cite-prefix">On 16/04/2026 08:00 pm,
+            Abinandhan wrote:<br>
+          </div>
+          <blockquote type="cite"
+            cite="mid:b374e54c-5a80-4dc4-97f7-4842c42864f7@kalsofte.com">
+            <meta http-equiv="Content-Type"
+              content="text/html; charset=UTF-8">
+            <p>Dear Sir,</p>
+            <p>I am still working on the pending items for the PR print
+              and related evaluation.</p>
+            <p>I have corrected the changes you mentioned in the
+              previous review, including the required content updates.
+              Alignment adjustments are in progress.</p>
+            <p>Regarding report generation:</p>
+            <ul>
+              <li>
+                <p>QuestPDF is currently being used only for generating
+                  PDF reports.</p>
+              </li>
+              <li>
+                <p>For Excel, I have generated a date-wise report using
+                  EPPlus and attached it for your review.</p>
+              </li>
+            </ul>
+            <p>I am continuing to work on the remaining items and will
+              try to complete everything by tomorrow.</p>
+            <p>Regards,<br>
+              Abinandan</p>
+            <p><br>
+            </p>
+            <div class="moz-cite-prefix">On 14/04/2026 10:35 am, CEO
+              wrote:<br>
+            </div>
+            <blockquote type="cite"
+cite="mid:4f8c35b5-5dba-4e41-9d01-d6e5d9823c6d@kalsofte.com">
+              <meta http-equiv="Content-Type"
+                content="text/html; charset=UTF-8">
+              <p>Dear Abinandan,<br>
+                <br>
+                Thank you for the QuestPDF POC output. I have reviewed
+                the PR print carefully.<br>
+                <br>
+                <font size="4"><b>What the print has achieved</b></font><br>
+                <br>
+                This is the first working SPINRISE transaction print in
+                the project and it is a meaningful milestone. The
+                architecture is proven. Company header with the Ashok
+                logo, full address, phone, email — correct. Document
+                title, all header fields — PR Number, Date, Requester
+                Name, Department, Reference — all present and rendering
+                correctly. The three-line item grid with Machine No
+                sub-rows, the Previous Purchase Details columns, and the
+                three-panel signature footer are all structurally sound.
+                <b>QuestPDF's capability to produce a production-quality
+                  transaction print is confirmed from this output.<br>
+                </b><br>
+                This is exactly the kind of concrete progress that the
+                project needs and I want to acknowledge it.<br>
+                <br>
+                <b>Four specific corrections before this print is
+                  complete<br>
+                </b><br>
+                Against the M01 FSD requirements — specifically Section
+                12 Rec 17, Rec 18, and Rec 28 — I have identified four
+                items the print must address.<br>
+                <br>
+                <b>First: </b>ERP login username is missing. The FSD
+                requires two separate identity fields on the PR print.
+                The Requester Name field shows AARTHIMA L, which is
+                correct — this is the department employee who needs the
+                items, sourced from PO_PRH.REQNAME via PR_EMP.ENAME. But
+                the ERP login username — the person who actually typed
+                the PR into the system, from PO_PRH.userId or createdby
+                — is not shown anywhere on the print. Both must appear
+                as separately labelled fields. Add a second label below
+                or alongside Requester Name: 'Created By: [ERP login
+                username]'. Source field: PO_PRH.userId or createdby
+                from the API response. This is Section 12 Rec 17.<br>
+                <br>
+                <b>Second: </b>Footer 'Requested By' shows 'spinrise'
+                as hardcoded text. This was clearly a test placeholder.
+                It should display the actual Requester Name from the
+                data — AARTHIMA L in this case — or alternatively the
+                ERP login user. Not the word 'spinrise'. Replace with
+                the dynamic value from the API.<br>
+                <br>
+                Third: Drawing Number and Catalogue Number columns are
+                missing from the item grid. FSD Section 12 Rec 28 is
+                explicit: these two columns must always appear on the
+                printed PR, unconditionally, without suppression logic,
+                regardless of whether data is present. Source fields:
+                IN_ITEM.DRAWNO and IN_ITEM.CATLNO from the
+                ksl_Tran_PORequisition SP via J-6. Both columns must be
+                added to the grid and populated from the SP output.<br>
+                <br>
+                <b>Fourth: </b>Previous Purchase Date sub-column is
+                blank for all three lines. Confirm whether LPO_DATE data
+                exists for these items in the test data, or whether the
+                SP is not returning this field. If the SP returns it,
+                wire it to the column.<br>
+                <br>
+                <b>Alignment polish is secondary to these four content
+                  corrections. Fix content first, alignment after.</b><br>
+                <br>
+                <br>
+                <b><font size="4">On the Excel and CSV evaluation</font></b><br>
+                <br>
+                The QuestPDF PDF output is confirmed feasible. The Excel
+                and CSV capability assessment is still pending and that
+                assessment determines whether QuestPDF can replace
+                EPPlus entirely or whether we retain both. This
+                evaluation must be completed on Wenesday alongside the
+                alignment corrections. It is a simpler test — generate a
+                sample Excel file from a data set using the tool and
+                verify that cell formatting, column widths, and data
+                types render correctly. It does not require all services
+                running simultaneously.<br>
+                <br>
+                <b>On the RAM upgrade request</b><br>
+                <br>
+                Your request is reasonable and I support it. Running
+                Visual Studio, SQL Server, Chrome, PMS server, and
+                Spinnova server concurrently on 8 GB RAM is a genuine
+                hardware constraint for .NET development work. 16 GB is
+                the correct specification for this workload. The
+                consistent 90% RAM usage you have described is a real
+                productivity constraint and a server stability risk.<br>
+                <br>
+                <b>I will approve the RAM upgrade. Sasi, please action
+                  the procurement immediately so this does not delay the
+                  next sprint of development work. Confirm the upgrade
+                  date to me once scheduled.<br>
+                </b><br>
+                Abinandan, I expect the four print corrections, the
+                alignment polish, and the Excel/CSV evaluation all
+                completed and sent to me by end of Wednesday. The
+                QuestPDF decision will be finalised once the Excel/CSV
+                output is verified.<br>
+                <br>
+                Regards,<br>
+                T. Mani<br>
+                cc: PM Saravanan, TL-Dev Sasi (RAM procurement action)</p>
+              <div class="moz-cite-prefix">On 13/04/2026 07:27 pm,
+                Abinandhan wrote:<br>
+              </div>
+              <blockquote type="cite"
+cite="mid:a07a019d-9390-43d2-9f5d-c2a2d1906f36@kalsofte.com">
+                <meta http-equiv="content-type"
+                  content="text/html; charset=UTF-8">
+                <p>Hi Sir,</p>
+                <p>As discussed in the review meeting, I was expected to
+                  complete the QuestPDF evaluation (including
+                  feasibility for Excel/CSV output) by today. However, I
+                  was unable to complete it due to system performance
+                  limitations.</p>
+                <p>I have attached the report as completed so far;
+                  however, there are still some alignment changes
+                  pending, which I will complete by the next working
+                  day.</p>
+                <p>My current system (8 GB RAM) is handling both
+                  development and server workloads simultaneously
+                  (Visual Studio, SQL Server, Chrome, PMS server, and
+                  Spinnova server). RAM usage consistently exceeds 90%,
+                  leading to slow builds, IDE freezes, and reduced
+                  productivity. There is also a potential risk to server
+                  stability during peak usage.</p>
+                <p>We have already attempted optimizations, but the
+                  constraint is hardware-related.</p>
+                <p><strong>Request:</strong><br>
+                  Upgrade the current system RAM 16 GB to improve
+                  performance and ensure timely delivery.</p>
+                <p>This upgrade will directly help in completing the
+                  QuestPDF evaluation and improve overall development
+                  efficiency.</p>
+                <p>Regards,<br>
+                  Abinandan<br>
+                  Fullstack developer</p>
+              </blockquote>
+            </blockquote>
+          </blockquote>
+        </blockquote>
+      </blockquote>
+      <pre class="moz-signature" cols="72">-- 
+Abinandan N
+Fullstack Developer</pre>
+    </blockquote>
+  </body>
+</html>
+
+--------------wQWnag93zbWHDFVNPzHTEvSJ--

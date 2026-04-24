@@ -21,6 +21,7 @@ export interface PRPaginatedFilters {
   depCode?: string
   reqName?: string
   status?: string
+  searchText?: string
   page?: number
   pageSize?: number
 }
@@ -69,9 +70,17 @@ export const purchaseRequisitionApi = {
   getDeleteReasons: () =>
     apiHelpers.get<Array<{ reasonCode: string; reasonDesc: string }>>(`${BASE}/delete-reasons`),
 
-  deletePR: (prNo: number, deleteReasonCode: string) =>
-    apiHelpers.delete(`${BASE}/${prNo}?deleteReasonCode=${encodeURIComponent(deleteReasonCode)}`),
+  deletePR: (prNo: number, deleteReasonCode: string, startDate?: string, endDate?: string) => {
+    const params = new URLSearchParams({ deleteReasonCode })
+    if (startDate) params.set('startDate', startDate)
+    if (endDate)   params.set('endDate',   endDate)
+    return apiHelpers.delete(`${BASE}/${prNo}?${params.toString()}`)
+  },
 
-  deleteLine: (prNo: number, lineNo: number, deleteReasonCode: string) =>
-    apiHelpers.delete(`${BASE}/${prNo}/lines/${lineNo}?deleteReasonCode=${encodeURIComponent(deleteReasonCode)}`),
+  deleteLine: (prNo: number, lineNo: number, deleteReasonCode: string, startDate?: string, endDate?: string) => {
+    const params = new URLSearchParams({ deleteReasonCode })
+    if (startDate) params.set('startDate', startDate)
+    if (endDate)   params.set('endDate',   endDate)
+    return apiHelpers.delete(`${BASE}/${prNo}/lines/${lineNo}?${params.toString()}`)
+  },
 }

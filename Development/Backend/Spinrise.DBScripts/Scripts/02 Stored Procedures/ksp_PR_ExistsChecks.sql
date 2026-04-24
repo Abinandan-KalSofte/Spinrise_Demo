@@ -98,6 +98,20 @@ BEGIN
 END;
 GO
 
+-- ── Sub Cost Exists ──────────────────────────────────────────────────────
+CREATE OR ALTER PROCEDURE dbo.ksp_PR_SubCostExists
+    @DivCode     VARCHAR(2),
+    @SubCostCode NUMERIC(5,0)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT CASE WHEN EXISTS (
+        SELECT 1 FROM dbo.in_scc
+        WHERE DIVCODE = @DivCode AND SCCCODE = @SubCostCode AND active = 'Y'
+    ) THEN 1 ELSE 0 END AS [Exists];
+END;
+GO
+
 -- ── PR Linked to Enquiry (block delete) ───────────────────────────────────
 CREATE OR ALTER PROCEDURE dbo.ksp_PR_IsLinkedToEnquiry
     @DivCode VARCHAR(2),

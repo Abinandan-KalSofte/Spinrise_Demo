@@ -1,0 +1,674 @@
+X-UIDL: UID37-1774868925
+X-Mozilla-Status: 0011
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <palanivel@kalsofte.com>
+Received: from murphy.nocdirect.com
+	by murphy.nocdirect.com with LMTP
+	id T1M/O4Np0mlFsjkAet6MXA
+	(envelope-from <palanivel@kalsofte.com>); Sun, 05 Apr 2026 08:54:11 -0500
+Return-path: <palanivel@kalsofte.com>
+Envelope-to: ceo@kalsofte.com,
+ mariyaiya.m@kalsofte.com,
+ muthuvel.m@kalsofte.com,
+ pbsaravanan@kalsofte.com,
+ sasikumar.r@kalsofte.com,
+ annamalai.s@kalsofte.com,
+ sathishkumar.m@kalsofte.com,
+ seenivasan.v@kalsofte.com,
+ vignesh.vp@kalsofte.com,
+ mohanbabuvn@kalsofte.com,
+ hariharan.j@kalsofte.com,
+ qa@kalsofte.com,
+ support@kalsofte.com,
+ improvement@kalsofte.com,
+ abinandan.n@kalsofte.com
+Delivery-date: Sun, 05 Apr 2026 08:54:12 -0500
+Received: from [157.51.71.229] (port=59698 helo=[10.85.231.164])
+	by murphy.nocdirect.com with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+	(Exim 4.99.1)
+	(envelope-from <palanivel@kalsofte.com>)
+	id 1w9NvW-0000000FrUi-2NwZ;
+	Sun, 05 Apr 2026 08:54:11 -0500
+Content-Type: multipart/alternative;
+ boundary="------------CsOB5fZ8rUDiDXiBcLXA245p"
+Message-ID: <c246c215-ff5b-455e-b539-91389ffa5874@kalsofte.com>
+Date: Sun, 5 Apr 2026 19:23:55 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: =?UTF-8?Q?Re=3A_SPINRISE_=E2=80=94_VB_FSD_Claude_Guide_v2_=7C_Your_?=
+ =?UTF-8?Q?Feedback_Built_This_=7C_Please_Read_and_Follow?=
+To: CEO <ceo@kalsofte.com>, Mariyaiya <mariyaiya.m@kalsofte.com>,
+ Muthuvel Mani <muthuvel.m@kalsofte.com>,
+ pbsaravanan <pbsaravanan@kalsofte.com>
+Cc: Sasi <sasikumar.r@kalsofte.com>, Annamalai s <annamalai.s@kalsofte.com>,
+ SathishkumarM <sathishkumar.m@kalsofte.com>,
+ Seeni <seenivasan.v@kalsofte.com>, VigneshVP <vignesh.vp@kalsofte.com>,
+ MohanBabu <mohanbabuvn@kalsofte.com>, HariharanJ <hariharan.j@kalsofte.com>,
+ Quality Assurance <qa@kalsofte.com>, Support <support@kalsofte.com>,
+ improvement@kalsofte.com, abinandan.n@kalsofte.com
+References: <036f0737-960e-488e-b84c-8142e9220927@kalsofte.com>
+ <1b4ba4f5-9b74-4078-a3d3-648ece98648d@kalsofte.com>
+Content-Language: en-US
+From: Palanivel <palanivel@kalsofte.com>
+In-Reply-To: <1b4ba4f5-9b74-4078-a3d3-648ece98648d@kalsofte.com>
+
+This is a multi-part message in MIME format.
+--------------CsOB5fZ8rUDiDXiBcLXA245p
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+Dear Sir,
+
+I have reviewed the attached document, *VB FSD Claude Guide v2*.
+
+The document clearly outlines and allocates the roles and 
+responsibilities in a well-structured manner for all our Team Members. 
+The responsibilities are defined with proper clarity, and the overall 
+framework supports effective coordination and follow-up.
+
+Overall, the document is comprehensive and provides a clear direction 
+for execution and accountability.
+
+This is for your kind information.
+
+Thanks & Regards,
+
+V. Palanivel
+
+On 31/03/2026 01:27 pm, CEO wrote:
+>
+> Dear SPINRISE Team,
+>
+> *I am sharing with you today the updated VB FSD Claude Guide — Version 2.
+> *
+> Attached: SPINRISE_VB_FSD_Claude_Guide_v2.docx
+>
+> Please read it fully before our Saturday session. *From the date of 
+> this mail, v2 is the operative guide for all FSD documentation work in 
+> SPINRISE. *V1 is superseded.
+>
+> *Why v2 exists
+> *
+> Version 2 was built entirely from what you told me.
+>
+> Three of you responded to my v1 circulation mail with observations 
+> that were technically sharp and practically important. I want to 
+> acknowledge each contribution by name, because the team should know 
+> where v2 came from.
+>
+> *Sathishkumar *pointed out that the Kalsofte ERP distributes business 
+> logic across Common modules, Class modules, and stored procedures — 
+> not just the .frm file. He also highlighted that the TC (Transaction 
+> Code) framework, which drives stock direction and accounting entries 
+> across most of our modules, is largely implemented inside stored 
+> procedures and would be missed entirely if only the form code was 
+> submitted to Claude.
+>
+> *Mariyaiya *raised a more fundamental concern: that several PR, PO, 
+> and Service PO screens have pending customer customisations in various 
+> stages of stability. Submitting unstabilised code to Claude would 
+> produce an FSD that documents an incomplete version of the screen — 
+> and that instability would be permanently carried into SPINRISE.
+>
+> *Mariyaiya then went further.* Before I could even respond, he 
+> produced a detailed critical analysis of the Purchase Requisition form 
+> (tmpPoindent.frm) — a 9,108-line VB6 form — and shared it with 
+> Muthuvel for IST review. That document, which I have gone through in 
+> detail, identified 3 Critical defects, 3 High issues, 4 Medium issues, 
+> and 2 Low issues in the form code. It also proposed the four-category 
+> validation structure, the error message catalogue, the summary 
+> scorecard, and the customer variation register — all of which are now 
+> standard sections in the v2 FSD template.
+>
+> This is what good teamwork looks like. You were given a guide, you 
+> used it on a real form, you found its limits, and you reported back 
+> with precision. V2 is the direct result.
+>
+> *What is new in v2
+> *
+> For those who have read v1, here is what changed:
+>
+> Stage 0 is an entirely new mandatory phase that must be completed 
+> before any FSD documentation begins. It covers code stabilisation 
+> review, the screen readiness checklist, what to collect before opening 
+> Claude (no longer just the .frm file — now includes Common modules, 
+> Class modules, and all stored procedures), the TC framework reference 
+> table, the customer variation register, and the dead code 
+> identification step. Stage 0 is not optional. No FSD work begins on 
+> any screen until Stage 0 is complete and TL-Dev has signed off.
+>
+> The follow-up prompts grew from three to six. Three new prompts were 
+> added: one for Common and Class module logic, one for stored procedure 
+> business rules, and one specifically for TC framework documentation. 
+> These address the gap our first VB developer identified.
+>
+> The FSD template expanded from 8 sections to 14 sections. The six new 
+> sections are the TC Framework, Common and Class Module Dependencies, 
+> Error Message Catalogue, Customer Variation Register, SPINRISE 
+> Migration Recommendations, and the Summary Scorecard. All six are 
+> mandatory for transaction screens.
+>
+> The review chain is updated to four levels with the full IST 
+> structured questionnaire (IST-1 to IST-7) that every Module Sr IST 
+> Member must answer for each form they review.
+>
+> A new Section 8 documents eight known defect patterns to actively 
+> search for in every VB6 form before submitting to Claude: 
+> application-terminating End statements, hardcoded customer IDs, SQL 
+> string concatenation, dead code blocks, inconsistent duplicate logic, 
+> hardcoded file paths, missing transaction rollback, and typos in error 
+> messages. Each pattern has the code signature to search for and the 
+> action to take.
+>
+> Three quick reference cards are now at the back: the Developer Daily 
+> Card, the four-column Reviewer Checklist, and the new Defect Patterns 
+> Card. Print all three and keep them at your desk.
+>
+> *How I need each of you to use this guide
+> *
+> *Module VB Developers:*
+> Section 3 (Stage 0) and Section 4 (the six steps and six prompts) are 
+> your primary reference. Read them in full. Before you begin any FSD, 
+> complete Stage 0 for that screen. Do not skip the Customer Variation 
+> Register. Do not submit dead code. Run all six follow-up prompts, not 
+> just the ones you feel are relevant.
+>
+> *Module Sr IST Members:*
+> Section 6, Level 1 and the IST Structured Questionnaire (questions 
+> IST-1 to IST-7) are your reference. For every FSD you review, answer 
+> all seven questions. Section 8 (the defect patterns) is also important 
+> for you — you are the person most likely to know from site experience 
+> whether an application-terminating behaviour or a hardcoded customer 
+> variation has caused problems in practice.
+>
+> *TL-IST:*
+> Section 6, Level 2. Your role is cross-module consistency. Pay 
+> particular attention to whether TC framework values and stored 
+> procedure business rules are consistent with how the same logic is 
+> handled in other modules you have implemented.
+>
+> *Project Manager:*
+> Section 6, Level 3. Before any FSD reaches the CEO, confirm that all 
+> 14 sections are complete, all IST questions are answered, the customer 
+> variation register is filled, and the summary scorecard is present. An 
+> incomplete FSD must be returned to the developer, not passed forward.
+>
+> *New Developer (Abinandan):*
+> Welcome again. This guide is your primary reference for how SPINRISE 
+> development works. Start by reading Section 3 (Stage 0) and Section 4. 
+> The defect patterns in Section 8 will be particularly useful as you 
+> begin reading Kalsofte VB6 code for the first time — you will 
+> encounter all of these patterns. Now you know what to do with each one.
+>
+> *Jr Web Dev team:*
+> Section 4, Step 6 and Section 7 are your references. The approved FSD 
+> is your specification for React UI generation. Read Section 7 
+> carefully — it shows you exactly what prompt to use when an FSD is 
+> handed to you for code conversion.
+>
+> *A word on how we got here*
+>
+> When I shared v1, I said: this is version 1, your feedback will shape 
+> version 2. You delivered. In less than a week, the team produced two 
+> substantive pieces of written feedback and one detailed 12-section 
+> critical analysis of a real form. That is not normal. Most teams wait 
+> to be asked.
+>
+> *The quality of SPINRISE depends on the quality of our FSDs.* The 
+> quality of our FSDs depends on the rigour of our process. The rigour 
+> of our process depends on each of you taking ownership of the part 
+> only you can contribute — your domain knowledge, your site experience, 
+> your module expertise.
+>
+> V2 reflects all of that. Bring the same energy to v2 that produced it.
+>
+> *What I need from you *
+>
+> Every developer and IST member: have read v2 in full.
+>
+> Module VB Developers: bring your Stage 0 readiness assessment for your 
+> assigned module — identify which screens are stable and which carry 
+> pending customisations.
+>
+> Mariyaiya: bring the updated PR form critical analysis with the v2 FSD 
+> template applied (14 sections). Muthuvel’s IST review of that 
+> document, using the IST-1 to IST-7 questionnaire, should be underway.
+>
+> TL-Dev: bring the list of screens across all Phase 1 modules that have 
+> pending customisations or open corrections. This becomes the Stage 0 
+> stabilisation backlog.
+>
+> PM: activate the Stage 0 pre-sprint tracking in PULSE 360 for all 
+> Phase 1 modules.
+>
+> *Saturday is when we lock the v2 process and start.*
+>
+> With appreciation for what this team has already contributed, and 
+> confidence in what it will deliver,
+> T Mani
+>
+> Attachment: SPINRISE_VB_FSD_Claude_Guide_v2.docx
+>
+> cc: Project Manager, TL-Dev, Full SPINRISE Team
+>
+> On 29/03/2026 08:48 pm, CEO wrote:
+>>
+>> Dear SPINRISE Team,
+>>
+>> I am sharing with you today a guide that I have personally put 
+>> together with the assistance of Claude.
+>>
+>> The document is attached: SPINRISE VB FSD Claude Guide v1.docx
+>>
+>> *Please read it fully at your own pace and share your feedback, at 
+>> the earliest.*
+>>
+>> *What this guide is*
+>>
+>> This guide explains, in plain English, how each of us uses Claude to 
+>> convert a VB6 screen into a Form Specification Document (FSD) — and 
+>> how that FSD then travels through our four-level review chain before 
+>> it is used to generate the new SPINRISE web screen.
+>>
+>> It covers:
+>>   • What an FSD is and why we need one for every VB6 screen
+>>   • The complete five-step process for the Module VB Developer
+>>   • The exact Claude prompt to use — ready to copy and paste
+>>   • The three follow-up questions to always ask Claude after the 
+>> first output
+>>   • The four-level review chain: Module Sr IST → TL-IST → PM → CEO
+>>   • What each reviewer specifically checks and signs off
+>>   • Quick reference cards you can print and keep at your desk
+>>
+>> *Who should read which sections
+>> *
+>> *Module VB Developers:*
+>> Section 3 is your primary reference. It walks you through all five 
+>> steps with the exact prompt, the before-and-after example showing VB6 
+>> code versus Claude’s plain-English output, and the three follow-up 
+>> questions. Read this section carefully before you begin your first 
+>> FSD. The quick reference card in Section 7 is your daily desk guide.
+>>
+>> *Module Sr IST Members:*
+>> Section 4, Level 1 is written for you. It explains exactly what your 
+>> review covers, how to write your annotations in the Word document 
+>> using the [IST ADD] and [IST CONFIRMED] tags, and what you must sign 
+>> off before the FSD moves to TL-IST.
+>>
+>> *TL-IST:*
+>> Section 4, Level 2 is your reference. You are the second domain gate 
+>> — the overall domain validation after the Module Sr IST has done the 
+>> first check. Your experience across all modules and all customer 
+>> sites is what this level brings to the FSD.
+>>
+>> *Project Manager:*
+>> Section 4, Level 3. Your role is completeness — not domain accuracy. 
+>> By the time the FSD reaches you, the domain has been validated by two 
+>> levels. Your question is: is this document thorough enough for a 
+>> developer to build the screen from scratch without any ambiguity?
+>>
+>> *CEO:*
+>> Section 4, Level 4 and Section 6. The CEO review is the final domain 
+>> authority gate. No technical skill is needed. Only the question: does 
+>> this FSD accurately reflect how the business process was designed to 
+>> work, and does it carry forward the knowledge that has been built 
+>> over decades of spinning ERP implementation?
+>>
+>> *A personal note*
+>>
+>> This process — Document, Validate, Convert — is the quality backbone 
+>> of SPINRISE. Every web screen we build is only as good as the FSD 
+>> behind it.
+>>
+>> I have been saying this since we began: we are not just migrating a 
+>> software platform. We are converting decades of accumulated spinning 
+>> ERP knowledge into a permanent, structured form that will outlast the 
+>> technology it runs on. Each FSD that is reviewed and approved is a 
+>> piece of that knowledge preserved correctly.
+>>
+>> I want every one of you to understand the process fully — not just 
+>> the step that applies to your role, but the complete journey from VB6 
+>> code to live SPINRISE web screen. When everyone understands the full 
+>> chain, every handover between roles becomes cleaner, faster, and more 
+>> accurate.
+>>
+>> *What I need from you*
+>>
+>> Read the guide before this Saturday’s session.
+>>
+>> If any step is unclear, any instruction is ambiguous, or any section 
+>> does not match what you experience in practice — write it down. 
+>> *Share your feedback as reply to this mail.*
+>>
+>> This is version 1. Your feedback will shape version 2.
+>>
+>> With confidence in the team,
+>> T Mani
+>>
+>> Attachment: SPINRISE_VB_FSD_Claude_Guide_v1.docx
+>>
+--------------CsOB5fZ8rUDiDXiBcLXA245p
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <p><span>Dear Sir,</span></p>
+    <p class="isSelectedEnd"><span>I have reviewed the attached
+        document, </span><strong><span>VB FSD Claude Guide v2</span></strong><span>.</span></p>
+    <p class="isSelectedEnd"><span>The document clearly outlines and
+        allocates the roles and responsibilities in a well-structured
+        manner for all our Team Members. The responsibilities are
+        defined with proper clarity, and the overall framework supports
+        effective coordination and follow-up.</span></p>
+    <p class="isSelectedEnd"><span>Overall, the document is
+        comprehensive and provides a clear direction for execution and
+        accountability.</span></p>
+    <p class="isSelectedEnd"><span>This is for your kind information.</span></p>
+    <p></p>
+    <p>Thanks &amp; Regards,</p>
+    <p>V. Palanivel</p>
+    <div class="moz-cite-prefix">On 31/03/2026 01:27 pm, CEO wrote:<br>
+    </div>
+    <blockquote type="cite"
+      cite="mid:1b4ba4f5-9b74-4078-a3d3-648ece98648d@kalsofte.com">
+      <p>Dear SPINRISE Team,<br>
+        <br>
+        <b>I am sharing with you today the updated VB FSD Claude Guide —
+          Version 2.<br>
+        </b><br>
+        Attached: SPINRISE_VB_FSD_Claude_Guide_v2.docx<br>
+        <br>
+        Please read it fully before our Saturday session. <b>From the
+          date of this mail, v2 is the operative guide for all FSD
+          documentation work in SPINRISE. </b>V1 is superseded.<br>
+        <br>
+        <b>Why v2 exists<br>
+        </b><br>
+        Version 2 was built entirely from what you told me.<br>
+        <br>
+        Three of you responded to my v1 circulation mail with
+        observations that were technically sharp and practically
+        important. I want to acknowledge each contribution by name,
+        because the team should know where v2 came from.<br>
+        <br>
+        <b>Sathishkumar </b>pointed out that the Kalsofte ERP
+        distributes business logic across Common modules, Class modules,
+        and stored procedures — not just the .frm file. He also
+        highlighted that the TC (Transaction Code) framework, which
+        drives stock direction and accounting entries across most of our
+        modules, is largely implemented inside stored procedures and
+        would be missed entirely if only the form code was submitted to
+        Claude.<br>
+        <br>
+        <b>Mariyaiya </b>raised a more fundamental concern: that
+        several PR, PO, and Service PO screens have pending customer
+        customisations in various stages of stability. Submitting
+        unstabilised code to Claude would produce an FSD that documents
+        an incomplete version of the screen — and that instability would
+        be permanently carried into SPINRISE.<br>
+        <br>
+        <b>Mariyaiya then went further.</b> Before I could even respond,
+        he produced a detailed critical analysis of the Purchase
+        Requisition form (tmpPoindent.frm) — a 9,108-line VB6 form — and
+        shared it with Muthuvel for IST review. That document, which I
+        have gone through in detail, identified 3 Critical defects, 3
+        High issues, 4 Medium issues, and 2 Low issues in the form code.
+        It also proposed the four-category validation structure, the
+        error message catalogue, the summary scorecard, and the customer
+        variation register — all of which are now standard sections in
+        the v2 FSD template.<br>
+        <br>
+        This is what good teamwork looks like. You were given a guide,
+        you used it on a real form, you found its limits, and you
+        reported back with precision. V2 is the direct result.<br>
+        <br>
+        <b>What is new in v2<br>
+        </b><br>
+        For those who have read v1, here is what changed:<br>
+        <br>
+        Stage 0 is an entirely new mandatory phase that must be
+        completed before any FSD documentation begins. It covers code
+        stabilisation review, the screen readiness checklist, what to
+        collect before opening Claude (no longer just the .frm file —
+        now includes Common modules, Class modules, and all stored
+        procedures), the TC framework reference table, the customer
+        variation register, and the dead code identification step. Stage
+        0 is not optional. No FSD work begins on any screen until Stage
+        0 is complete and TL-Dev has signed off.<br>
+        <br>
+        The follow-up prompts grew from three to six. Three new prompts
+        were added: one for Common and Class module logic, one for
+        stored procedure business rules, and one specifically for TC
+        framework documentation. These address the gap our first VB
+        developer identified.<br>
+        <br>
+        The FSD template expanded from 8 sections to 14 sections. The
+        six new sections are the TC Framework, Common and Class Module
+        Dependencies, Error Message Catalogue, Customer Variation
+        Register, SPINRISE Migration Recommendations, and the Summary
+        Scorecard. All six are mandatory for transaction screens.<br>
+        <br>
+        The review chain is updated to four levels with the full IST
+        structured questionnaire (IST-1 to IST-7) that every Module Sr
+        IST Member must answer for each form they review.<br>
+        <br>
+        A new Section 8 documents eight known defect patterns to
+        actively search for in every VB6 form before submitting to
+        Claude: application-terminating End statements, hardcoded
+        customer IDs, SQL string concatenation, dead code blocks,
+        inconsistent duplicate logic, hardcoded file paths, missing
+        transaction rollback, and typos in error messages. Each pattern
+        has the code signature to search for and the action to take.<br>
+        <br>
+        Three quick reference cards are now at the back: the Developer
+        Daily Card, the four-column Reviewer Checklist, and the new
+        Defect Patterns Card. Print all three and keep them at your
+        desk.<br>
+        <br>
+        <b>How I need each of you to use this guide<br>
+        </b><br>
+        <b>Module VB Developers:</b><br>
+        Section 3 (Stage 0) and Section 4 (the six steps and six
+        prompts) are your primary reference. Read them in full. Before
+        you begin any FSD, complete Stage 0 for that screen. Do not skip
+        the Customer Variation Register. Do not submit dead code. Run
+        all six follow-up prompts, not just the ones you feel are
+        relevant.<br>
+        <br>
+        <b>Module Sr IST Members:</b><br>
+        Section 6, Level 1 and the IST Structured Questionnaire
+        (questions IST-1 to IST-7) are your reference. For every FSD you
+        review, answer all seven questions. Section 8 (the defect
+        patterns) is also important for you — you are the person most
+        likely to know from site experience whether an
+        application-terminating behaviour or a hardcoded customer
+        variation has caused problems in practice.<br>
+        <br>
+        <b>TL-IST:</b><br>
+        Section 6, Level 2. Your role is cross-module consistency. Pay
+        particular attention to whether TC framework values and stored
+        procedure business rules are consistent with how the same logic
+        is handled in other modules you have implemented.<br>
+        <br>
+        <b>Project Manager:</b><br>
+        Section 6, Level 3. Before any FSD reaches the CEO, confirm that
+        all 14 sections are complete, all IST questions are answered,
+        the customer variation register is filled, and the summary
+        scorecard is present. An incomplete FSD must be returned to the
+        developer, not passed forward.<br>
+        <br>
+        <b>New Developer (Abinandan):</b><br>
+        Welcome again. This guide is your primary reference for how
+        SPINRISE development works. Start by reading Section 3 (Stage 0)
+        and Section 4. The defect patterns in Section 8 will be
+        particularly useful as you begin reading Kalsofte VB6 code for
+        the first time — you will encounter all of these patterns. Now
+        you know what to do with each one.<br>
+        <br>
+        <b>Jr Web Dev team:</b><br>
+        Section 4, Step 6 and Section 7 are your references. The
+        approved FSD is your specification for React UI generation. Read
+        Section 7 carefully — it shows you exactly what prompt to use
+        when an FSD is handed to you for code conversion.<br>
+        <br>
+        <b>A word on how we got here</b><br>
+        <br>
+        When I shared v1, I said: this is version 1, your feedback will
+        shape version 2. You delivered. In less than a week, the team
+        produced two substantive pieces of written feedback and one
+        detailed 12-section critical analysis of a real form. That is
+        not normal. Most teams wait to be asked.<br>
+        <br>
+        <b>The quality of SPINRISE depends on the quality of our FSDs.</b>
+        The quality of our FSDs depends on the rigour of our process.
+        The rigour of our process depends on each of you taking
+        ownership of the part only you can contribute — your domain
+        knowledge, your site experience, your module expertise.<br>
+        <br>
+        V2 reflects all of that. Bring the same energy to v2 that
+        produced it.<br>
+        <br>
+        <b>What I need from you </b><br>
+        <br>
+        Every developer and IST member: have read v2 in full.<br>
+        <br>
+        Module VB Developers: bring your Stage 0 readiness assessment
+        for your assigned module — identify which screens are stable and
+        which carry pending customisations.<br>
+        <br>
+        Mariyaiya: bring the updated PR form critical analysis with the
+        v2 FSD template applied (14 sections). Muthuvel’s IST review of
+        that document, using the IST-1 to IST-7 questionnaire, should be
+        underway.<br>
+        <br>
+        TL-Dev: bring the list of screens across all Phase 1 modules
+        that have pending customisations or open corrections. This
+        becomes the Stage 0 stabilisation backlog.<br>
+        <br>
+        PM: activate the Stage 0 pre-sprint tracking in PULSE 360 for
+        all Phase 1 modules.<br>
+        <br>
+        <b>Saturday is when we lock the v2 process and start.</b><br>
+        <br>
+        With appreciation for what this team has already contributed,
+        and confidence in what it will deliver,<br>
+        T Mani<br>
+        <br>
+        Attachment: SPINRISE_VB_FSD_Claude_Guide_v2.docx<br>
+        <br>
+        cc: Project Manager, TL-Dev, Full SPINRISE Team</p>
+      <div class="moz-cite-prefix">On 29/03/2026 08:48 pm, CEO wrote:<br>
+      </div>
+      <blockquote type="cite"
+        cite="mid:036f0737-960e-488e-b84c-8142e9220927@kalsofte.com">
+        <p>Dear SPINRISE Team,<br>
+          <br>
+          I am sharing with you today a guide that I have personally put
+          together with the assistance of Claude.<br>
+          <br>
+          The document is attached: SPINRISE VB FSD Claude Guide v1.docx<br>
+          <br>
+          <b>Please read it fully at your own pace and share your
+            feedback, at the earliest.</b></p>
+        <p><b>What this guide is</b><br>
+          <br>
+          This guide explains, in plain English, how each of us uses
+          Claude to convert a VB6 screen into a Form Specification
+          Document (FSD) — and how that FSD then travels through our
+          four-level review chain before it is used to generate the new
+          SPINRISE web screen.<br>
+          <br>
+          It covers:<br>
+            • What an FSD is and why we need one for every VB6 screen<br>
+            • The complete five-step process for the Module VB Developer<br>
+            • The exact Claude prompt to use — ready to copy and paste<br>
+            • The three follow-up questions to always ask Claude after
+          the first output<br>
+            • The four-level review chain: Module Sr IST → TL-IST → PM →
+          CEO<br>
+            • What each reviewer specifically checks and signs off<br>
+            • Quick reference cards you can print and keep at your desk<br>
+          <br>
+          <b>Who should read which sections<br>
+          </b><br>
+          <b>Module VB Developers:</b><br>
+          Section 3 is your primary reference. It walks you through all
+          five steps with the exact prompt, the before-and-after example
+          showing VB6 code versus Claude’s plain-English output, and the
+          three follow-up questions. Read this section carefully before
+          you begin your first FSD. The quick reference card in Section
+          7 is your daily desk guide.<br>
+          <br>
+          <b>Module Sr IST Members:</b><br>
+          Section 4, Level 1 is written for you. It explains exactly
+          what your review covers, how to write your annotations in the
+          Word document using the [IST ADD] and [IST CONFIRMED] tags,
+          and what you must sign off before the FSD moves to TL-IST.<br>
+          <br>
+          <b>TL-IST:</b><br>
+          Section 4, Level 2 is your reference. You are the second
+          domain gate — the overall domain validation after the Module
+          Sr IST has done the first check. Your experience across all
+          modules and all customer sites is what this level brings to
+          the FSD.<br>
+          <br>
+          <b>Project Manager:</b><br>
+          Section 4, Level 3. Your role is completeness — not domain
+          accuracy. By the time the FSD reaches you, the domain has been
+          validated by two levels. Your question is: is this document
+          thorough enough for a developer to build the screen from
+          scratch without any ambiguity?<br>
+          <br>
+          <b>CEO:</b><br>
+          Section 4, Level 4 and Section 6. The CEO review is the final
+          domain authority gate. No technical skill is needed. Only the
+          question: does this FSD accurately reflect how the business
+          process was designed to work, and does it carry forward the
+          knowledge that has been built over decades of spinning ERP
+          implementation?<br>
+          <br>
+          <b>A personal note</b><br>
+          <br>
+          This process — Document, Validate, Convert — is the quality
+          backbone of SPINRISE. Every web screen we build is only as
+          good as the FSD behind it.<br>
+          <br>
+          I have been saying this since we began: we are not just
+          migrating a software platform. We are converting decades of
+          accumulated spinning ERP knowledge into a permanent,
+          structured form that will outlast the technology it runs on.
+          Each FSD that is reviewed and approved is a piece of that
+          knowledge preserved correctly.<br>
+          <br>
+          I want every one of you to understand the process fully — not
+          just the step that applies to your role, but the complete
+          journey from VB6 code to live SPINRISE web screen. When
+          everyone understands the full chain, every handover between
+          roles becomes cleaner, faster, and more accurate.<br>
+          <br>
+          <b>What I need from you</b><br>
+          <br>
+          Read the guide before this Saturday’s session.<br>
+          <br>
+          If any step is unclear, any instruction is ambiguous, or any
+          section does not match what you experience in practice — write
+          it down. <b>Share your feedback as reply to this mail.</b><br>
+          <br>
+          This is version 1. Your feedback will shape version 2.<br>
+          <br>
+          With confidence in the team,<br>
+          T Mani<br>
+          <br>
+          Attachment: SPINRISE_VB_FSD_Claude_Guide_v1.docx</p>
+      </blockquote>
+    </blockquote>
+  </body>
+</html>
+
+--------------CsOB5fZ8rUDiDXiBcLXA245p--

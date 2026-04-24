@@ -6,6 +6,7 @@ CREATE OR ALTER PROCEDURE dbo.ksp_GetItemsEnriched
 AS
 BEGIN
     SET NOCOUNT ON;
+    SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 
     DECLARE @Term VARCHAR(101) = LTRIM(RTRIM(@SearchTerm));
 
@@ -25,36 +26,45 @@ BEGIN
 
     SET @Term = @Term + '%';
 
+    -- Build temp aggregates for pending PR and PO qty — single pass instead of N subqueries
+    WITH PendingPr AS
+    (
+        SELECT
+            prl.ITEMCODE,
+            SUM(ISNULL(prl.QTYREQD, 0)) AS TotalPendingPr
+        FROM   dbo.PO_PRL prl
+        WHERE  prl.DIVCODE = @DivCode
+          AND  ISNULL(prl.prstatus, ' ') NOT IN ('O', 'C')
+          AND  ISNULL(prl.AmdFlg, '') <> 'Y'
+        GROUP BY prl.ITEMCODE
+    ),
+    PendingPo AS
+    (
+        SELECT
+            o.ITEMCODE,
+            SUM(ISNULL(o.ORDQTY, 0) - ISNULL(o.RCVDQTY, 0)) AS TotalPendingPo
+        FROM   dbo.PO_ORDL o
+        INNER JOIN dbo.PO_ORDH h
+            ON  h.DIVCODE = o.DIVCODE
+            AND h.PORDNO  = o.PORDNO
+            AND h.PORDDT  = o.PORDDT
+            AND h.POGRP   = o.POGRP
+        WHERE  o.DIVCODE = @DivCode
+          AND  ISNULL(h.CANFLG, 'N') = 'N'
+          AND  (ISNULL(o.ORDQTY, 0) - ISNULL(o.RCVDQTY, 0)) > 0
+        GROUP BY o.ITEMCODE
+    )
     SELECT TOP 20
-        i.ITEMCODE                          AS ItemCode,
-        i.ITEMNAME                          AS ItemName,
-        i.UOM                               AS Uom,
-        i.CURSTK                            AS CurrentStock,
-        ISNULL(i.MINLEVEL, 0)               AS MinLevel,
-        -- Pending PR qty: lines not yet converted to PO or received
-        (
-            SELECT ISNULL(SUM(prl.QTYREQD), 0)
-            FROM   dbo.PO_PRL prl
-            WHERE  prl.ITEMCODE              = i.ITEMCODE
-              AND  prl.DIVCODE               = @DivCode
-              AND  ISNULL(prl.prstatus, ' ')  NOT IN ('O', 'C')
-              AND  ISNULL(prl.AmdFlg,   '')   <>  'Y'
-        )                                   AS PendingPrQty,
-        -- Pending PO qty: ordered but not fully received, non-cancelled orders
-        (
-            SELECT ISNULL(SUM(ISNULL(o.ORDQTY, 0) - ISNULL(o.RCVDQTY, 0)), 0)
-            FROM   dbo.PO_ORDL o
-            JOIN   dbo.PO_ORDH h
-                ON  h.DIVCODE = o.DIVCODE
-                AND h.PORDNO  = o.PORDNO
-                AND h.PORDDT  = o.PORDDT
-                AND h.POGRP   = o.POGRP
-            WHERE  o.ITEMCODE              = i.ITEMCODE
-              AND  o.DIVCODE               = @DivCode
-              AND  ISNULL(h.CANFLG, 'N')   = 'N'
-              AND  (ISNULL(o.ORDQTY, 0) - ISNULL(o.RCVDQTY, 0)) > 0
-        )                                   AS PendingPoQty
+        i.ITEMCODE                                  AS ItemCode,
+        i.ITEMNAME                                  AS ItemName,
+        i.UOM                                       AS Uom,
+        i.CURSTK                                    AS CurrentStock,
+        ISNULL(i.MINLEVEL, 0)                       AS MinLevel,
+        ISNULL(pp.TotalPendingPr, 0)                AS PendingPrQty,
+        ISNULL(po.TotalPendingPo, 0)                AS PendingPoQty
     FROM   dbo.in_item i
+    LEFT JOIN PendingPr pp ON pp.ITEMCODE = i.ITEMCODE
+    LEFT JOIN PendingPo po ON po.ITEMCODE = i.ITEMCODE
     WHERE  i.IsItemActive = 1
       AND  (i.ITEMCODE LIKE @Term OR i.ITEMNAME LIKE @Term)
     ORDER BY

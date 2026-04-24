@@ -1,0 +1,694 @@
+X-UIDL: UID80-1774868925
+X-Mozilla-Status: 0000
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <ceo@kalsofte.com>
+Received: from murphy.nocdirect.com
+	by murphy.nocdirect.com with LMTP
+	id WmpvK2L92WmS0g4Aet6MXA
+	(envelope-from <ceo@kalsofte.com>); Sat, 11 Apr 2026 02:50:58 -0500
+Return-path: <ceo@kalsofte.com>
+Envelope-to: palanivel@kalsofte.com,
+ pbsaravanan@kalsofte.com,
+ sasikumar.r@kalsofte.com,
+ mariyaiya.m@kalsofte.com,
+ annamalai.s@kalsofte.com,
+ muthuvel.m@kalsofte.com,
+ seenivasan.v@kalsofte.com,
+ sathishkumar.m@kalsofte.com,
+ abinandan.n@kalsofte.com,
+ hariharan.j@kalsofte.com,
+ vignesh.vp@kalsofte.com,
+ mohanbabuvn@kalsofte.com,
+ support@kalsofte.com,
+ qa@kalsofte.com,
+ project.management@kalsofte.com
+Delivery-date: Sat, 11 Apr 2026 02:50:58 -0500
+Received: from [49.204.234.113] (port=41426 helo=[192.168.68.100])
+	by murphy.nocdirect.com with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+	(Exim 4.99.1)
+	(envelope-from <ceo@kalsofte.com>)
+	id 1wBT7I-000000044dn-3c1Q;
+	Sat, 11 Apr 2026 02:50:58 -0500
+Content-Type: multipart/mixed; boundary="------------g2ZRYbNELfC4ies3kvENmC7F"
+Message-ID: <45c22232-b851-494e-8cff-3eb7b2021aff@kalsofte.com>
+Date: Sat, 11 Apr 2026 13:21:08 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: pbsaravanan <pbsaravanan@kalsofte.com>,
+ Kalsoft Palanivel <palanivel@kalsofte.com>, Sasi <sasikumar.r@kalsofte.com>,
+ Mariyaiya <mariyaiya.m@kalsofte.com>, Annamalai s
+ <annamalai.s@kalsofte.com>, Muthuvel Mani <muthuvel.m@kalsofte.com>,
+ Seeni <seenivasan.v@kalsofte.com>,
+ SathishkumarM <sathishkumar.m@kalsofte.com>,
+ Abinandhan <abinandan.n@kalsofte.com>, HariharanJ <hariharan.j@kalsofte.com>
+Cc: VigneshVP <vignesh.vp@kalsofte.com>, MohanBabu
+ <mohanbabuvn@kalsofte.com>, Support <support@kalsofte.com>,
+ Quality Assurance <qa@kalsofte.com>,
+ Proj Mgmt <project.management@kalsofte.com>
+From: CEO <ceo@kalsofte.com>
+Subject: =?UTF-8?Q?_SPINRISE_=E2=80=94_Pre-Meeting_Module_Status_+_FSD_Revie?=
+ =?UTF-8?Q?w_Checklist_=28Attached=29_=7C_Next_Review=3A_Friday_17_April_5_P?=
+ =?UTF-8?Q?M?=
+
+This is a multi-part message in MIME format.
+--------------g2ZRYbNELfC4ies3kvENmC7F
+Content-Type: multipart/alternative;
+ boundary="------------X6Oe6viAx0zhRd4uRb09dxTW"
+
+--------------X6Oe6viAx0zhRd4uRb09dxTW
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+Dear Team,
+
+Please find below the module-wise status of SPINRISE ahead of today's 5 
+PM review meeting, along with a process change effective from Monday 13 
+April.
+
+*WORKING CALENDAR — NEXT WEEK*
+
+Monday 13 April: First working day.
+Tuesday 14 April: Leave — Tamil New Year Eve.
+Wednesday 15, Thursday 16, Friday 17 April: Working days.
+Saturday 18 April: 3rd Saturday — non-working holiday.
+
+We have only 4 working days next week. The next Saturday review is 25 
+April. To maintain momentum despite the short week, I am scheduling the 
+next review meeting for Friday 17 April at 5 PM. Going forward, we will 
+hold one review meeting every week — on Friday evenings where Saturday 
+is a holiday, and on Saturday evenings otherwise.
+
+*I will ask each module leader to share their committed completion dates 
+for their open items at today's meeting. *The targets below are not 
+imposed — they are placeholders to be confirmed or revised by the team 
+this evening.
+
+*M01 — Purchase Order: Purchase Requisition Form*
+Developer: Mariyaiya | IST: Muthuvel | TL-IST: Palanivel
+
+This is the most advanced FSD in the project. FSD v2.1 has all 20 IST 
+questions resolved, Stage 0 complete, Zero CustID blocks confirmed, nine 
+defects documented, and the po_para 63-column analysis incorporated. 
+Mariyaiya and Muthuvel have done commendable work reaching this stage.
+
+Four short additions remain for CEO approval: Stage 0 sign-off in the 
+Document Identity header, po_para audit result in Section 13 Q19, TC=1 
+rate override marked as dead code in Section 5, and Remarks varchar(50) 
+truncation flagged as a Critical Defect in Section 12. Mariyaiya, please 
+complete these before 5 PM today.
+
+One IST blocker remains: the web approval screen URL. Palanivel, this 
+has been asked three times. Please bring it to this evening's meeting.
+
+If both conditions are met tonight: First CEO-approved FSD in SPINRISE. 
+Sprint 0 begins Monday 13 April.
+
+
+*M02 — Raw Material Inventory: RMI Purchase Order*
+Developer: TL-Dev Sasi | IST: PM Saravanan | TL-IST: Palanivel
+
+This FSD has the strongest technical foundation of the four. Stage 0 
+confirmed. TC Framework with full GL journal sets the project standard. 
+All 10 IST questions answered. Sasi's work here reflects TL-Dev-level 
+depth — acknowledged.
+
+One critical section is missing: Section 5.11, the PR-to-PO conversion 
+workflow. This is the primary daily operation for this screen and cannot 
+be absent from the FSD. SP_PRToPO_RMI and SP_PRToPO_RMIFilter codes also 
+need to be submitted to Claude via Follow-up Prompt B. Saravanan, the 
+web approval screen URL is pending for M02 as well.
+
+Sasi and Saravanan to commit to completion dates this evening.
+
+
+*M03 — Domestic Sales: Sale Order*
+Developer: Annamalai | IST: Seenivasan | TL-IST: Palanivel
+
+Annamalai's v1 to v2 revision was a significant improvement. 
+Seenivasan's Round 2 IST responses were factual and actionable. The CSM 
+Phase 2 decision simplifies Phase 1 scope meaningfully.
+
+The most critical open question: Stage 0 is not confirmed. Section 11 
+lists 11 customer-specific CustID-based variations and the FSD itself 
+rates Customer Configurability at 3 out of 5. SPINRISE cannot be built 
+from a form with hardcoded customer ID checks. Annamalai must confirm 
+with TL-Dev Sasi whether Stage 0 is complete on frmcontract.frm and 
+whether the CustID blocks have been replaced with ig_param flags. This 
+is the gating item for M03.
+
+Three SP codes not yet submitted, audit trail missing from Section 8.3, 
+document number race condition not flagged as Critical Defect. 
+Seenivasan has two short follow-up answers outstanding.
+
+Annamalai and Seenivasan to commit to completion dates this evening.
+
+
+*M04 — HR and Payroll: Daily Attendance Download*
+Developer: Sathiskumar | IST: Palanivel
+
+Sathiskumar's first draft was a strong submission with 14 sections and 
+detailed SP analysis. Stage 0 is not yet confirmed in the document 
+header. Seven IST items remain open. KSP_AttendanceTransferDate SP code 
+has not been submitted to Claude. Two screen names (weekly-off exception 
+review, OT approval) are pending from Palanivel.
+
+Reminder: priority for M04 is the payroll transaction forms — salary 
+processing, deductions, leave encashment — over the attendance download 
+form.
+
+Sathiskumar and Palanivel to commit to completion dates this evening.
+
+
+*SPRINT 0*
+
+Sprint 0 begins once at least one FSD has CEO approval. M01 is the 
+candidate for tonight. Claude Code usage on any SPINRISE form is 
+permitted only after CEO approval of that form's FSD.
+
+
+*NEW: FSD REVIEW CHECKLIST — MANDATORY FROM MONDAY 13 APRIL*
+
+The detailed checklist is attached as a Word file. Please download, 
+read, and keep it at hand.
+
+In brief, the checklist covers five stages:
+
+Stage 0 (Developer + TL-Dev): Code cleaning, CustID block removal, line 
+count confirmation, TL-Dev sign-off.
+Stage 1 (Developer): Complete 14-section FSD draft with SP code 
+analysis, exact error messages, parameter flags with SPINRISE defaults, 
+and Critical Defects with specific fixes.
+Stage 2 (Module Sr IST): Section 13 answers from personal field 
+experience — minimum 5 support patterns for IST-4, approval screen name 
+for IST-2, no 'developer confirmed' or 'should be' answers.
+Stage 3 (TL-IST Palanivel): Independent review with own commentary — not 
+a forward, not bare 'Yes, I agreed' responses.
+Stage 4 (PM Saravanan): Quality gate before CEO — verify IST answers are 
+current-state, confirm all sections complete, name specific gaps in any 
+rejection.
+Stage 5 (CEO): Final approval, locked baseline, Sprint authorisation.
+
+ From Monday 13 April: no submission at any stage will be accepted 
+without the corresponding checklist section completed and signed. The PM 
+will return any submission that arrives without it.
+
+This is not additional bureaucracy. *It is the single change that will 
+reduce the multi-round correction cycles and get each FSD to approval in 
+one clean pass.
+*
+See you all at 5 PM today.
+
+Regards,
+T. Mani
+
+Attachment: SPINRISE_FSD_Review_Checklist_v1.0.docx
+
+To: Sasi, Mariyaiya, Abinandan, Annamalai, Sathiskumar, PM Saravanan, 
+Muthuvel, Seenivasan, TL-IST Palanivel, Hariharan
+
+--------------X6Oe6viAx0zhRd4uRb09dxTW
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <p>Dear Team,<br>
+      <br>
+      Please find below the module-wise status of SPINRISE ahead of
+      today's 5 PM review meeting, along with a process change effective
+      from Monday 13 April.<br>
+      <br>
+      <b>WORKING CALENDAR — NEXT WEEK</b><br>
+      <br>
+      Monday 13 April: First working day.<br>
+      Tuesday 14 April: Leave — Tamil New Year Eve.<br>
+      Wednesday 15, Thursday 16, Friday 17 April: Working days.<br>
+      Saturday 18 April: 3rd Saturday — non-working holiday.<br>
+      <br>
+      We have only 4 working days next week. The next Saturday review is
+      25 April. To maintain momentum despite the short week, I am
+      scheduling the next review meeting for Friday 17 April at 5 PM.
+      Going forward, we will hold one review meeting every week — on
+      Friday evenings where Saturday is a holiday, and on Saturday
+      evenings otherwise.<br>
+      <br>
+      <b>I will ask each module leader to share their committed
+        completion dates for their open items at today's meeting. </b>The
+      targets below are not imposed — they are placeholders to be
+      confirmed or revised by the team this evening.<br>
+      <br>
+      <b>M01 — Purchase Order: Purchase Requisition Form</b><br>
+      Developer: Mariyaiya | IST: Muthuvel | TL-IST: Palanivel<br>
+      <br>
+      This is the most advanced FSD in the project. FSD v2.1 has all 20
+      IST questions resolved, Stage 0 complete, Zero CustID blocks
+      confirmed, nine defects documented, and the po_para 63-column
+      analysis incorporated. Mariyaiya and Muthuvel have done
+      commendable work reaching this stage.<br>
+      <br>
+      Four short additions remain for CEO approval: Stage 0 sign-off in
+      the Document Identity header, po_para audit result in Section 13
+      Q19, TC=1 rate override marked as dead code in Section 5, and
+      Remarks varchar(50) truncation flagged as a Critical Defect in
+      Section 12. Mariyaiya, please complete these before 5 PM today.<br>
+      <br>
+      One IST blocker remains: the web approval screen URL. Palanivel,
+      this has been asked three times. Please bring it to this evening's
+      meeting.<br>
+      <br>
+      If both conditions are met tonight: First CEO-approved FSD in
+      SPINRISE. Sprint 0 begins Monday 13 April.<br>
+      <br>
+      <br>
+      <b>M02 — Raw Material Inventory: RMI Purchase Order</b><br>
+      Developer: TL-Dev Sasi | IST: PM Saravanan | TL-IST: Palanivel<br>
+      <br>
+      This FSD has the strongest technical foundation of the four. Stage
+      0 confirmed. TC Framework with full GL journal sets the project
+      standard. All 10 IST questions answered. Sasi's work here reflects
+      TL-Dev-level depth — acknowledged.<br>
+      <br>
+      One critical section is missing: Section 5.11, the PR-to-PO
+      conversion workflow. This is the primary daily operation for this
+      screen and cannot be absent from the FSD. SP_PRToPO_RMI and
+      SP_PRToPO_RMIFilter codes also need to be submitted to Claude via
+      Follow-up Prompt B. Saravanan, the web approval screen URL is
+      pending for M02 as well.<br>
+      <br>
+      Sasi and Saravanan to commit to completion dates this evening.<br>
+      <br>
+      <br>
+      <b>M03 — Domestic Sales: Sale Order</b><br>
+      Developer: Annamalai | IST: Seenivasan | TL-IST: Palanivel<br>
+      <br>
+      Annamalai's v1 to v2 revision was a significant improvement.
+      Seenivasan's Round 2 IST responses were factual and actionable.
+      The CSM Phase 2 decision simplifies Phase 1 scope meaningfully.<br>
+      <br>
+      The most critical open question: Stage 0 is not confirmed. Section
+      11 lists 11 customer-specific CustID-based variations and the FSD
+      itself rates Customer Configurability at 3 out of 5. SPINRISE
+      cannot be built from a form with hardcoded customer ID checks.
+      Annamalai must confirm with TL-Dev Sasi whether Stage 0 is
+      complete on frmcontract.frm and whether the CustID blocks have
+      been replaced with ig_param flags. This is the gating item for
+      M03.<br>
+      <br>
+      Three SP codes not yet submitted, audit trail missing from Section
+      8.3, document number race condition not flagged as Critical
+      Defect. Seenivasan has two short follow-up answers outstanding.<br>
+      <br>
+      Annamalai and Seenivasan to commit to completion dates this
+      evening.<br>
+      <br>
+      <br>
+      <b>M04 — HR and Payroll: Daily Attendance Download</b><br>
+      Developer: Sathiskumar | IST: Palanivel<br>
+      <br>
+      Sathiskumar's first draft was a strong submission with 14 sections
+      and detailed SP analysis. Stage 0 is not yet confirmed in the
+      document header. Seven IST items remain open.
+      KSP_AttendanceTransferDate SP code has not been submitted to
+      Claude. Two screen names (weekly-off exception review, OT
+      approval) are pending from Palanivel.<br>
+      <br>
+      Reminder: priority for M04 is the payroll transaction forms —
+      salary processing, deductions, leave encashment — over the
+      attendance download form.<br>
+      <br>
+      Sathiskumar and Palanivel to commit to completion dates this
+      evening.<br>
+      <br>
+      <br>
+      <b>SPRINT 0</b><br>
+      <br>
+      Sprint 0 begins once at least one FSD has CEO approval. M01 is the
+      candidate for tonight. Claude Code usage on any SPINRISE form is
+      permitted only after CEO approval of that form's FSD.<br>
+      <br>
+      <br>
+      <b>NEW: FSD REVIEW CHECKLIST — MANDATORY FROM MONDAY 13 APRIL</b><br>
+      <br>
+      The detailed checklist is attached as a Word file. Please
+      download, read, and keep it at hand.<br>
+      <br>
+      In brief, the checklist covers five stages:<br>
+      <br>
+      Stage 0 (Developer + TL-Dev): Code cleaning, CustID block removal,
+      line count confirmation, TL-Dev sign-off.<br>
+      Stage 1 (Developer): Complete 14-section FSD draft with SP code
+      analysis, exact error messages, parameter flags with SPINRISE
+      defaults, and Critical Defects with specific fixes.<br>
+      Stage 2 (Module Sr IST): Section 13 answers from personal field
+      experience — minimum 5 support patterns for IST-4, approval screen
+      name for IST-2, no 'developer confirmed' or 'should be' answers.<br>
+      Stage 3 (TL-IST Palanivel): Independent review with own commentary
+      — not a forward, not bare 'Yes, I agreed' responses.<br>
+      Stage 4 (PM Saravanan): Quality gate before CEO — verify IST
+      answers are current-state, confirm all sections complete, name
+      specific gaps in any rejection.<br>
+      Stage 5 (CEO): Final approval, locked baseline, Sprint
+      authorisation.<br>
+      <br>
+      From Monday 13 April: no submission at any stage will be accepted
+      without the corresponding checklist section completed and signed.
+      The PM will return any submission that arrives without it.<br>
+      <br>
+      This is not additional bureaucracy. <b>It is the single change
+        that will reduce the multi-round correction cycles and get each
+        FSD to approval in one clean pass.<br>
+      </b><br>
+      See you all at 5 PM today.<br>
+      <br>
+      Regards,<br>
+      T. Mani<br>
+      <br>
+      Attachment: SPINRISE_FSD_Review_Checklist_v1.0.docx<br>
+      <br>
+      To: Sasi, Mariyaiya, Abinandan, Annamalai, Sathiskumar, PM
+      Saravanan, Muthuvel, Seenivasan, TL-IST Palanivel, Hariharan</p>
+  </body>
+</html>
+
+--------------X6Oe6viAx0zhRd4uRb09dxTW--
+--------------g2ZRYbNELfC4ies3kvENmC7F
+Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document;
+ name="SPINRISE_FSD_Review_Checklist_v1.0.docx"
+Content-Disposition: attachment;
+ filename="SPINRISE_FSD_Review_Checklist_v1.0.docx"
+Content-Transfer-Encoding: base64
+
+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
+3DQVcXCcLBgWX55JgoPHfTtcYF3mG+/Uh6ExVTUjEXUQe69XRPWRM+lUKssgr9Iy9TFbwEr+
+TYHxZO0Z2/8H4PIDUEsBAhQACgAAAAAADD2LXAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAQAAAA
+AAAAAHdvcmQvUEsBAhQACgAAAAAADD2LXAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAQAAAAIwAA
+AHdvcmQvX3JlbHMvUEsBAhQACgAAAAgADD2LXFjLDW8PAQAAIQUAABwAAAAAAAAAAAAAAAAA
+TAAAAHdvcmQvX3JlbHMvZG9jdW1lbnQueG1sLnJlbHNQSwECFAAKAAAACAAMPYtcV8RgEr8Z
+AAA1TQIAEQAAAAAAAAAAAAAAAACVAQAAd29yZC9kb2N1bWVudC54bWxQSwECFAAKAAAACAAM
+PYtcxL3x018DAABLFAAADwAAAAAAAAAAAAAAAACDGwAAd29yZC9zdHlsZXMueG1sUEsBAhQA
+CgAAAAAADD2LXAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAQAAAADx8AAGRvY1Byb3BzL1BLAQIU
+AAoAAAAIAAw9i1z8v1Q6PAEAAIMCAAARAAAAAAAAAAAAAAAAADYfAABkb2NQcm9wcy9jb3Jl
+LnhtbFBLAQIUAAoAAAAIAAw9i1weKelacAIAAGQMAAASAAAAAAAAAAAAAAAAAKEgAAB3b3Jk
+L251bWJlcmluZy54bWxQSwECFAAKAAAAAAAMPYtcAAAAAAAAAAAAAAAABgAAAAAAAAAAABAA
+AABBIwAAX3JlbHMvUEsBAhQACgAAAAgADD2LXB+jkpbmAAAAzgIAAAsAAAAAAAAAAAAAAAAA
+ZSMAAF9yZWxzLy5yZWxzUEsBAhQACgAAAAgADD2LXNJ3/LdtAAAAewAAABsAAAAAAAAAAAAA
+AAAAdCQAAHdvcmQvX3JlbHMvaGVhZGVyMS54bWwucmVsc1BLAQIUAAoAAAAIAAw9i1zSd/y3
+bQAAAHsAAAAbAAAAAAAAAAAAAAAAABolAAB3b3JkL19yZWxzL2Zvb3RlcjEueG1sLnJlbHNQ
+SwECFAAKAAAACAAMPYtc6FV602ECAAAxCQAAEAAAAAAAAAAAAAAAAADAJQAAd29yZC9oZWFk
+ZXIxLnhtbFBLAQIUAAoAAAAIAAw9i1z+3wMxJQIAAPoHAAAQAAAAAAAAAAAAAAAAAE8oAAB3
+b3JkL2Zvb3RlcjEueG1sUEsBAhQACgAAAAgADD2LXFNQVxOuAQAAOAkAABMAAAAAAAAAAAAA
+AAAAoioAAFtDb250ZW50X1R5cGVzXS54bWxQSwECFAAKAAAACAAMPYtcWHnbIpIAAADkAAAA
+EwAAAAAAAAAAAAAAAACBLAAAZG9jUHJvcHMvY3VzdG9tLnhtbFBLAQIUAAoAAAAIAAw9i1zi
+/J3akwAAAOYAAAAQAAAAAAAAAAAAAAAAAEQtAABkb2NQcm9wcy9hcHAueG1sUEsBAhQACgAA
+AAgADD2LXJyJyZHOAQAArQYAABIAAAAAAAAAAAAAAAAABS4AAHdvcmQvZm9vdG5vdGVzLnht
+bFBLAQIUAAoAAAAIAAw9i1zSd/y3bQAAAHsAAAAdAAAAAAAAAAAAAAAAAAMwAAB3b3JkL19y
+ZWxzL2Zvb3Rub3Rlcy54bWwucmVsc1BLAQIUAAoAAAAIAAw9i1w/So6NwQEAAJIGAAARAAAA
+AAAAAAAAAAAAAKswAAB3b3JkL2VuZG5vdGVzLnhtbFBLAQIUAAoAAAAIAAw9i1zSd/y3bQAA
+AHsAAAAcAAAAAAAAAAAAAAAAAJsyAAB3b3JkL19yZWxzL2VuZG5vdGVzLnhtbC5yZWxzUEsB
+AhQACgAAAAgADD2LXE2fysqhAQAAcwUAABEAAAAAAAAAAAAAAAAAQjMAAHdvcmQvc2V0dGlu
+Z3MueG1sUEsBAhQACgAAAAgADD2LXIuGOcTFAQAAxggAABEAAAAAAAAAAAAAAAAAEjUAAHdv
+cmQvY29tbWVudHMueG1sUEsBAhQACgAAAAgADD2LXNJ3/LdtAAAAewAAABwAAAAAAAAAAAAA
+AAAABjcAAHdvcmQvX3JlbHMvY29tbWVudHMueG1sLnJlbHNQSwECFAAKAAAACAAMPYtcY+1e
+1h0BAABDAwAAEgAAAAAAAAAAAAAAAACtNwAAd29yZC9mb250VGFibGUueG1sUEsBAhQACgAA
+AAgADD2LXNJ3/LdtAAAAewAAAB0AAAAAAAAAAAAAAAAA+jgAAHdvcmQvX3JlbHMvZm9udFRh
+YmxlLnhtbC5yZWxzUEsFBgAAAAAaABoAigYAAKI5AAAAAA==
+
+--------------g2ZRYbNELfC4ies3kvENmC7F--

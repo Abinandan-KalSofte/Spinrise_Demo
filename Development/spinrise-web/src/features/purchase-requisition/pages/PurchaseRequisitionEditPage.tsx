@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import {
-  Alert, App, Breadcrumb, Button, Card, Form, Modal,
+  Alert, App, Breadcrumb, Button, Form, Modal,
   Select, Skeleton, Space, Spin, Tag, Typography, theme,
 } from 'antd'
 import {
@@ -13,9 +13,8 @@ import dayjs from 'dayjs'
 
 import { purchaseRequisitionApi } from '../api/purchaseRequisitionApi'
 import { useLookupStore } from '../store/useLookupStore'
-import { PRHeaderV2 } from '../components/v2/PRHeaderV2'
-import { PRItemFormV2 } from '../components/v2/PRItemFormV2'
-import { PRItemTableV2 } from '../components/v2/PRItemTableV2'
+import { PRHeaderCards } from '../components/v2/PRHeaderCards'
+import { PRLineItemsTable } from '../components/v2/PRLineItemsTable'
 import { PR_STATUS_LABELS } from '../types'
 import type {
   PRHeaderFormValues,
@@ -35,6 +34,7 @@ const LOCKED_STATUSES = new Set(['APPROVED', 'RECEIVED', 'CONVERTED', 'CANCELLED
 function mapLine(line: PRLineResponse): PRLineFormItem {
   return {
     key:                crypto.randomUUID(),
+    prSNo:              line.prSNo,
     itemCode:           line.itemCode,
     itemName:           line.itemName           ?? '',
     uom:                line.uom                ?? '',
@@ -73,12 +73,11 @@ export default function PurchaseRequisitionEditPage() {
   const [headerForm] = Form.useForm<PRHeaderFormValues>()
 
   // ── State ──────────────────────────────────────────────────────────────────
-  const [loadingPr,    setLoadingPr]    = useState(true)
-  const [savedPr,      setSavedPr]      = useState<PRHeaderResponse | null>(null)
-  const [items,        setItems]        = useState<PRLineFormItem[]>([])
-  const [editingKey,   setEditingKey]   = useState<string | null>(null)
-  const [isHeaderSaved, setIsHeaderSaved] = useState(false)
-  const [saving,       setSaving]       = useState(false)
+  const [loadingPr,  setLoadingPr]  = useState(true)
+  const [savedPr,    setSavedPr]    = useState<PRHeaderResponse | null>(null)
+  const [items,      setItems]      = useState<PRLineFormItem[]>([])
+  const [saving,     setSaving]     = useState(false)
+  const [warnings,   setWarnings]   = useState<string[]>([])
 
   const [preCheckResult, setPreCheckResult] = useState<PreCheckResult | null>(null)
 
@@ -89,7 +88,7 @@ export default function PurchaseRequisitionEditPage() {
 
   // ── Lookups ────────────────────────────────────────────────────────────────
   const {
-    departments, employees, poTypes, machines, subCosts,
+    departments, employees, poTypes, machines,
     loaded: lookupsLoaded, loading: lookupsLoading, loadAll,
   } = useLookupStore()
 
@@ -128,16 +127,12 @@ export default function PurchaseRequisitionEditPage() {
   }, [prNo]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Derived ────────────────────────────────────────────────────────────────
-  const isLocked         = LOCKED_STATUSES.has(savedPr?.prStatus ?? '')
-  const statusInfo       = savedPr
+  const isLocked   = LOCKED_STATUSES.has(savedPr?.prStatus ?? '')
+  const statusInfo = savedPr
     ? (PR_STATUS_LABELS[savedPr.prStatus] ?? { label: savedPr.prStatus, color: 'default' as const })
     : null
-  const pageBusy         = saving || cancelling
-  const canSave          = isHeaderSaved && items.length > 0 && !pageBusy && !isLocked
-  const editingItem      = items.find((l) => l.key === editingKey) ?? null
-  const existingItemCodes = items
-    .filter((l) => l.key !== editingKey)
-    .map((l) => l.itemCode)
+  const pageBusy = saving || cancelling
+  const canSave  = items.length > 0 && !pageBusy && !isLocked
 
   // ── Build update payload ───────────────────────────────────────────────────
   const buildPayload = (values: PRHeaderFormValues): UpdatePRRequest => ({
@@ -174,20 +169,15 @@ export default function PurchaseRequisitionEditPage() {
       lastPoDate:         l.lastPoDate          ?? undefined,
       lastPoSupplierCode: l.lastPoSupplierCode  ?? undefined,
       lastPoSupplierName: l.lastPoSupplierName  ?? undefined,
-      categoryCode:       l.categoryCode         || undefined,
-      model:              l.model               || undefined,
-      maxCost:            l.maxCost             ?? undefined,
+      categoryCode:       l.categoryCode        || undefined,
+      model:              l.model              || undefined,
+      maxCost:            l.maxCost            ?? undefined,
+      drawNo:             l.drawNo             || undefined,
+      catNo:              l.catNo              || undefined,
     })),
   })
 
   // ── Handlers ───────────────────────────────────────────────────────────────
-  const handleSaveHeader = async () => {
-    try {
-      await headerForm.validateFields()
-      setIsHeaderSaved(true)
-    } catch { /* inline field errors */ }
-  }
-
   const handleUpdate = async () => {
     if (items.length === 0) { void message.error('At least one item is required.'); return }
     setSaving(true)
@@ -261,72 +251,55 @@ export default function PurchaseRequisitionEditPage() {
           />
         )}
 
-        {/* Header form */}
+        {/* Warnings */}
+        {warnings.map((warn) => (
+          <Alert key={warn} type="warning" showIcon message={warn} closable style={{ marginBottom: 8 }} />
+        ))}
+
+        {/* Header */}
         <Skeleton active loading={!lookupsLoaded}>
-          <PRHeaderV2
+          <PRHeaderCards
             form={headerForm}
             departments={departments}
             employees={employees}
             poTypes={poTypes}
-            isHeaderSaved={isHeaderSaved}
-            onSaveHeader={() => void handleSaveHeader()}
-            onEditHeader={() => setIsHeaderSaved(false)}
+            savedPrNo={savedPr?.prNo ?? null}
             disabled={pageBusy || isLocked}
             purTypeFlgEnabled={preCheckResult?.purTypeFlgEnabled ?? false}
-            approvalStatusVisible={preCheckResult?.approvalStatusVisible ?? false}
+            requireRequesterName={preCheckResult?.requireRequesterName ?? false}
+            requireRefNo={preCheckResult?.requireRefNo ?? false}
+            pendingPoDetailsEnabled={preCheckResult?.pendingPoDetailsEnabled ?? false}
+            backDateAllowed={preCheckResult?.backDateAllowed ?? true}
             budgetValidationEnabled={preCheckResult?.budgetValidationEnabled ?? false}
-            savedPr={savedPr}
+            budgetBalance={savedPr?.budgetBalance ?? null}
+            approvalVisible={preCheckResult?.approvalStatusVisible ?? false}
+            level1ApproverName={savedPr?.level1ApproverName ?? null}
+            level1ApprovedAt={savedPr?.level1ApprovedAt ?? null}
+            level2ApproverName={savedPr?.level2ApproverName ?? null}
+            level2ApprovedAt={savedPr?.level2ApprovedAt ?? null}
+            finalApproverName={savedPr?.finalApproverName ?? null}
+            finalApprovedAt={savedPr?.finalApprovedAt ?? null}
           />
         </Skeleton>
 
-        {/* Item section */}
-        {isHeaderSaved && (
-          <Space direction="vertical" style={{ width: '100%' }} size={16}>
-            {!isLocked && (
-              <PRItemFormV2
-                machines={machines}
-                subCosts={subCosts}
-                headerForm={headerForm}
-                editingItem={editingItem}
-                existingItemCodes={existingItemCodes}
-                onAdd={(item) => setItems((prev) => [...prev, item])}
-                onUpdate={(updated) => {
-                  setItems((prev) => prev.map((l) => (l.key === updated.key ? updated : l)))
-                  setEditingKey(null)
-                }}
-                onCancelEdit={() => setEditingKey(null)}
-                disabled={pageBusy}
-                pendingIndentCheckEnabled={preCheckResult?.pendingIndentCheckEnabled ?? false}
-                pendingPRCheckEnabled={preCheckResult?.pendingPRCheckEnabled ?? false}
-              />
-            )}
-
-            {items.length > 0 && (
-              <Card
-                size="small"
-                title={
-                  <Space>
-                    Line Items
-                    <Typography.Text type="secondary" style={{ fontWeight: 'normal', fontSize: 12 }}>
-                      ({items.length})
-                    </Typography.Text>
-                  </Space>
-                }
-              >
-                <PRItemTableV2
-                  lines={items}
-                  editingKey={editingKey}
-                  onEdit={(item) => setEditingKey(item.key)}
-                  onDelete={(key) => {
-                    if (editingKey === key) setEditingKey(null)
-                    setItems((prev) => prev.filter((l) => l.key !== key))
-                  }}
-                  disabled={pageBusy || isLocked}
-                />
-              </Card>
-            )}
-          </Space>
-        )}
+        {/* Items */}
+        <PRLineItemsTable
+          items={items}
+          machines={machines}
+          depCode={savedPr?.depCode ?? ''}
+          prDate={savedPr?.prDate}
+          preCheckResult={preCheckResult}
+          disabled={pageBusy || isLocked}
+          savedPrNo={savedPr?.prNo}
+          deleteReasons={cancelReasons}
+          onAdd={(item) => setItems((prev) => [...prev, item])}
+          onUpdate={(updated) => setItems((prev) => prev.map((l) => (l.key === updated.key ? updated : l)))}
+          onDelete={(key) => setItems((prev) => prev.filter((l) => l.key !== key))}
+          onWarning={(msg) => {
+            setWarnings((prev) => [...new Set([...prev, msg])])
+            setTimeout(() => setWarnings((prev) => prev.filter((m) => m !== msg)), 5000)
+          }}
+        />
       </div>
 
       {/* Sticky footer */}

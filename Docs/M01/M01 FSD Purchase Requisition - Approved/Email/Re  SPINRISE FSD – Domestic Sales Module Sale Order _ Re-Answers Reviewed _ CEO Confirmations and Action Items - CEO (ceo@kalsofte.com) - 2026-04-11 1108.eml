@@ -1,0 +1,2252 @@
+X-UIDL: UID77-1774868925
+X-Mozilla-Status: 0000
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <ceo@kalsofte.com>
+Received: from murphy.nocdirect.com
+	by murphy.nocdirect.com with LMTP
+	id V5lKHzbe2Wmd0gsAet6MXA
+	(envelope-from <ceo@kalsofte.com>); Sat, 11 Apr 2026 00:37:58 -0500
+Return-path: <ceo@kalsofte.com>
+Envelope-to: palanivel@kalsofte.com,
+ seenivasan.v@kalsofte.com,
+ annamalai.s@kalsofte.com,
+ pbsaravanan@kalsofte.com,
+ sasikumar.r@kalsofte.com,
+ mariyaiya.m@kalsofte.com,
+ sathishkumar.m@kalsofte.com,
+ abinandan.n@kalsofte.com,
+ muthuvel.m@kalsofte.com,
+ qa@kalsofte.com,
+ support@kalsofte.com
+Delivery-date: Sat, 11 Apr 2026 00:37:58 -0500
+Received: from [49.204.234.113] (port=61520 helo=[192.168.68.100])
+	by murphy.nocdirect.com with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+	(Exim 4.99.1)
+	(envelope-from <ceo@kalsofte.com>)
+	id 1wBR2Y-00000003FLB-1R0x;
+	Sat, 11 Apr 2026 00:37:58 -0500
+Content-Type: multipart/alternative;
+ boundary="------------xF0iPjln5xG0G2NQgDRCBEqS"
+Message-ID: <d1d83cbc-29e1-49a4-88dd-759626beb60c@kalsofte.com>
+Date: Sat, 11 Apr 2026 11:08:06 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: =?UTF-8?Q?Re=3A_SPINRISE_FSD_=E2=80=93_Domestic_Sales_Module_Sale_O?=
+ =?UTF-8?Q?rder_=7C_Re-Answers_Reviewed_=7C_CEO_Confirmations_and_Action_Ite?=
+ =?UTF-8?Q?ms?=
+To: Seenivasan <seenivasan.v@kalsofte.com>,
+ Annamalai S <annamalai.s@kalsofte.com>
+Cc: Palanivel Venkatachalam <palanivel@kalsofte.com>,
+ pbsaravanan <pbsaravanan@kalsofte.com>, Sasikumar
+ <sasikumar.r@kalsofte.com>, Mariyaiya <mariyaiya.m@kalsofte.com>,
+ SathishkumarM <sathishkumar.m@kalsofte.com>,
+ Abinandhan <abinandan.n@kalsofte.com>,
+ Muthuvel Mani <muthuvel.m@kalsofte.com>, Quality Assurance
+ <qa@kalsofte.com>, Kalsoft support <support@kalsofte.com>
+References: <60cccf98-2064-4b03-bccd-95b6bc48cc01@kalsofte.com>
+ <6b25f379-e415-4eb6-936a-d6e8f2212a72@kalsofte.com>
+ <9276c89c-94f1-4fc7-b6e1-5f2b413e2598@kalsofte.com>
+ <938d3068-94d0-4bcd-b6ac-4dbb30201050@kalsofte.com>
+ <bcecfe77-aa3d-4608-a19b-df61dad6dfdb@kalsofte.com>
+ <29f19680-40ab-45ef-8b8b-63af63781ac7@kalsofte.com>
+ <70cf2a7a-21c3-4dbd-9ff4-e40894658138@kalsofte.com>
+Content-Language: en-US
+From: CEO <ceo@kalsofte.com>
+In-Reply-To: <70cf2a7a-21c3-4dbd-9ff4-e40894658138@kalsofte.com>
+
+This is a multi-part message in MIME format.
+--------------xF0iPjln5xG0G2NQgDRCBEqS
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+Dear Seenivasan and Annamalai,
+
+Thank you Seenivasan. This second round of responses is significantly 
+better and resolves most of the outstanding questions. The pattern issue 
+from the first round — recommending what SPINRISE should do instead of 
+describing what the current system does — has been corrected across all 
+eight re-answers. These are factual, current-state descriptions and that 
+is exactly the IST role.
+
+*What is confirmed and the FSD actions required*
+
+IST-1 (Credit Limit Override): Confirmed. CRLimitLockFlg controls the 
+behaviour, not ulevel. No user-hierarchy-based override exists. Only the 
+Bannari customer currently uses CRLimitLockFlg='Y' (hard block). All 
+other ERP 7.4 customers do not use credit limit control. Annamalai, 
+update Section 5.5 to record this and add Bannari as a customer-specific 
+entry in Section 11 with CRLimitLockFlg='Y' as the onboarding setting.
+
+One sub-question remains from IST-1. When CRLimitLockFlg='N', the system 
+shows a Yes/No warning dialog and allows the user to proceed. In the 
+current VB6 system, can any logged-in user click Yes to override, or is 
+there any user level check before the override is permitted? One line 
+answer is all that is needed.
+
+IST-3 (OfferRateFlg): Confirmed. ig_param.OfferRateFlg. Not used by any 
+customer currently. Rate and Discount columns are accessible to all 
+users. Annamalai, update Section 5.1 Rate Calculation to document: 
+OfferRateFlg reads from ig_param. Currently inactive at all customer 
+sites. SPINRISE default: N. When N, the Offer Rate and Discount columns 
+should be hidden in the React UI.
+
+IST-4 (CSM Integration): Confirmed. CSM API exists in VB6 but is NOT 
+currently live at any customer site. It was implemented for one 
+customer, stopped due to system corruption, and the customer intends to 
+reuse it. This is a definitive scoping answer. Annamalai, update Section 
+2.3 to mark CSM fields as Phase 2 and add to Section 12: CSM integration 
+is not live. SPINRISE Phase 1 will not implement CSM integration. It is 
+a Phase 2 roadmap item to be designed fresh when the customer 
+reactivates it.
+
+IST-5 (TCS Threshold): This is a critical finding with two important 
+parts. First, the TCS threshold is hard-coded inside 
+KSP_TCSAmountCheckLSales — it is NOT in a configuration table. This is a 
+defect that must be fixed in SPINRISE. Annamalai, add to Section 12 as a 
+Critical Defect: TCS threshold hard-coded in SP logic. SPINRISE fix: 
+move threshold to a dedicated TCS configuration table, referenced by 
+KSP_TCSAmountCheckLSales with a configurable parameter. Second, TCS 
+applies only for Scrap Sales — not for all domestic sale orders. This is 
+an important scoping correction. Annamalai, update Section 4 and Section 
+8.5 to add: TCS calculation is triggered only when the contract type is 
+Scrap Sales AND ig_param.tcs_flag='Y'.
+
+One confirmation needed: is 'Scrap Sales' a specific contract type code 
+in ig_conttype, or is it a customer-specific configuration? Annamalai, 
+check the contract type master and confirm which code represents Scrap 
+Sales so the FSD documents the exact trigger condition.
+
+IST-7 (Despatch Instruction flag): Confirmed. 
+IG_PARAM.Despatch_Instruction. Y routes to IG_INSBODT (two-step Despatch 
+Instruction flow), N routes to IG_BODT (direct despatch). This completes 
+Section 5.7. Annamalai, update Section 5.7 Despatch Workflow to add the 
+specific flag name and routing logic.
+
+IST-8 (RateDeciPos): Confirmed. ig_param.RateDeciPos = 2 decimal places 
+universally across all customers and divisions. No variation. SPINRISE: 
+rate fields use 2 decimal places. No division-level configuration 
+needed. Annamalai, document in Section 11 as a standard flag with 
+universal default of 2.
+
+IST-10 (Report Footer): Confirmed fields: Prepared By, Checked By, 
+Signature. DLL-based. Seenivasan also says it is not actively required 
+and not in use currently. Annamalai, document these fields in Section 7 
+and mark as currently inactive. SPINRISE should implement this as a 
+standard configurable division-level footer — even if no customer uses 
+it today, it is a basic ERP document requirement that new customers will 
+need.
+
+One clarification needed on IST-10: in a previous round you said 
+fr_RepFooter is maintained division-wise. In this round you say it is 
+not in use. Please clarify: is the footer data configured in the 
+database per division but simply not printing, or is it genuinely not 
+configured at any site?
+
+IST-12 (Auto Mail): Confirmed. ig_param.automail (Y/N). SMTP 
+configuration from PP_divmas. Not used by any customer currently. 
+Annamalai, update Section 7.4 Auto-Email with the specific flag name and 
+configuration source.
+
+
+*One SPINRISE scope decision from IST-4*
+
+The confirmation that CSM integration has never been stably live in 
+production simplifies Phase 1 significantly. Remove all CSM-specific 
+fields, API calls, and conditional visibility from the Phase 1 SPINRISE 
+sale order form. The CSM checkbox, work order number, and sale order 
+number fields can be left as a documented Phase 2 feature. This reduces 
+the Phase 1 development scope and avoids building around an integration 
+that has no confirmed production stability.
+
+*For Annamalai — consolidated FSD update list*
+
+Update the following sections before the next review:
+
+Section 5.1: OfferRateFlg from ig_param, default N, inactive at all 
+customers, grid columns hidden when N.
+Section 5.5: CRLimitLockFlg='Y' hard blocks, Bannari only. 
+CRLimitLockFlg='N' warning path, confirm override question pending.
+Section 5.7: IG_PARAM.Despatch_Instruction flag name confirmed, complete 
+the two-path workflow documentation.
+Section 7.4: ig_param.automail, PP_divmas SMTP config, currently inactive.
+Section 7 Print: Footer fields Prepared By, Checked By, Signature, 
+DLL-based, currently inactive.
+Section 8.5: KSP_TCSAmountCheckLSales — threshold hard-coded in SP, TCS 
+applies to Scrap Sales contract type only.
+Section 11: Add all ig_param configuration flags confirmed in this 
+exchange with their current values and SPINRISE defaults.
+Section 11: Bannari as customer variation for CRLimitLockFlg='Y'.
+Section 12: CSM integration — Phase 2 only. TCS threshold hard-coded — 
+Critical Defect.
+Section 13: Mark IST-1, 3, 4, 5, 7, 8, 10, 12 as RESOLVED with confirmed 
+answers.
+
+*Overall*
+
+Seenivasan, this second round is the quality of IST review this project 
+requires. IST-7 alone — naming the exact IG_PARAM flag that controls the 
+dispatch path — is a single detail that saves the SPINRISE developer 
+from a day of VB6 code archaeology. Apply the same precision to the two 
+remaining follow-ups (CRLimitLockFlg='N' override and IST-10 footer 
+clarification) and the Section 13 IST review for this module will be 
+complete.
+
+Regards,
+T. Mani
+
+cc: TL-IST Palanivel, PM Saravanan, TL-Dev Sasi
+
+On 10/04/2026 08:40 pm, Seenivasan wrote:
+>
+> Dear sir,
+>
+>   Please find the Re-Answering the below mentioned your query and IST 
+> response below
+>
+>
+>     *IST-1 (Credit Limit Override) – Current System*
+>
+>   * In the *current VB6 ERP*, credit limit handling is controlled by
+>     *|CRLimitLockFlg|*:
+>       o *|CRLimitLockFlg = 'Y'|*
+>         → System *does NOT allow order save* when credit limit is exceeded
+>         → Order is *blocked and must go through approval process*
+>
+> ------------------------------------------------------------------------
+>
+>
+>       *User Control / ulevel*
+>
+>   * ❌ *Override is NOT controlled by |ulevel| in |PP_Passwd|*
+>   * ❌ *No specific |ulevel| exists for credit limit override*
+>   * Control is *fully driven by |CRLimitLockFlg|*, not user hierarchy
+>   * Only Spinning - Bannari Customer used,ERP 7.4 Customer are not
+>     used as of now
+>
+> ------------------------------------------------------------------------
+> ------------------------------------------------------------------------
+>
+>
+>     *IST-3 (OfferRateFlg)*
+>
+>   * Parameter table: *|ig_param|*
+>   * Field name: *|OfferRateFlg|*
+>
+>
+>       *Current Usage*
+>
+>   * ❌ *Not actively used by any customer*
+>   * Rate and Discount:
+>       o Available *for all users*
+>       o ❌ Not restricted by division or product segment
+>
+> ------------------------------------------------------------------------
+>
+>
+>     *IST-4 (CSM Integration)*
+>
+>   * ✅ CSM API integration exists in current VB6 system
+>
+>
+>       *Current Status*
+>
+>   * Initially used in production by a customer
+>   * Later *stopped due to system issues (corruption)*
+>   * Currently:
+>       o *Not actively used*
+>       o Customer has *initiated plan to reuse CSM integration*
+>
+> 👉 Conclusion:
+>
+>   * Exists in system
+>   * ❌ *Not actively live at any customer site as of now*
+>
+> ------------------------------------------------------------------------
+>
+>
+>     *IST-5 (TCS Threshold)*
+>
+>   * Controlled via *|ig_param|*
+>   * Field: *|tcs_flag| (Y/N)*
+>
+>
+>       *Current Logic*
+>
+>   * If |tcs_flag = 'Y'|:
+>       o System calculates *TCS based on cumulative customer sales value*
+>       o Logic handled in *stored procedure (KSP_TCSAmountCheckLSales)*
+>
+>
+>       *Business Rule*
+>
+>   * As per current implementation:
+>       o *TCS applied only for Scrap Sales*
+>   * Threshold is *handled within SP logic (not separately configurable)*
+>
+> ------------------------------------------------------------------------
+>
+>
+>     *IST-8 (RateDeciPos)*
+>
+>   * Parameter: *|ig_param.RateDeciPos|*
+>
+>
+>       *Current Usage*
+>
+>   * ✅ *Standard value = 2 decimal places*
+>   * ✔ Same across:
+>       o All customers
+>       o All divisions
+>   * ❌ No division-wise variation
+>
+> ------------------------------------------------------------------------
+>
+>
+>     *Additional IST Clarifications*
+>
+>
+>       *IST-7 (Dispatch Instruction Flag)*
+>
+>   * Table: *|IG_PARAM|*
+>   * Field: *|Despatch_Instruction|*
+>   * Controls:
+>       o Whether system follows:
+>           + *Despatch Instruction flow (IG_INSBODT)* OR
+>           + *Direct Despatch flow (IG_BODT)*
+>
+> ------------------------------------------------------------------------
+>
+>
+>       *IST-10 (Report Footer Configuration)*
+>
+>   * Used for:
+>       o DLL-based report printing footer
+>
+>
+>       *Includes fields like:*
+>
+>   * Prepared By
+>   * Checked By
+>   * Signature section
+>
+>
+>       *Current Status*
+>
+>   * ❌ *Not actively required / not in use now*
+>
+> ------------------------------------------------------------------------
+>
+>
+>       *IST-12 (Auto Mail Function)*
+>
+>   * Table: *|IG_PARAM|*
+>   * Field: *|automail| (Y/N)*
+>
+>
+>       *Logic*
+>
+>   * If enabled:
+>       o Fetch email configuration from *|PP_divmas|*
+>           + SMTP
+>           + Mail ID
+>           + Password
+>
+>
+>       *Current Status*
+>
+>   * ❌ *Not used by any customer currently*
+>
+> This for your kind information.
+>
+> Thanks & Regards,
+> V.Seenivasan
+> On 10/04/2026 06:49 PM, CEO wrote:
+>>
+>> Dear Seenivasan and Annamalai,
+>>
+>> Thank you Seenivasan for responding to the Section 13 IST questions. 
+>> I have reviewed all twelve responses carefully. Before giving you the 
+>> specific feedback, I want to first explain a pattern I am seeing that 
+>> affects more than half of your answers — because correcting this 
+>> pattern will make the second round of responses significantly more 
+>> useful.
+>>
+>>
+>> *On the IST reviewer's role — a clarification for the whole team*
+>>
+>> In several responses, Seenivasan has answered the question 'what 
+>> should SPINRISE do' instead of 'what does the current VB6 system do.' 
+>> For example, IST-3 says 'OfferRateFlg should be controlled as a 
+>> system parameter' and IST-5 says 'TCS threshold should be stored in a 
+>> parameter table.' These are SPINRISE design recommendations, not IST 
+>> answers.
+>>
+>> *The IST reviewer's role in the FSD process is to describe current, 
+>> factual behaviour from field experience at customer sites.* The CEO 
+>> and TL-Dev take those factual descriptions and make the SPINRISE 
+>> design decisions. If an IST response says 'should be' or 'recommended 
+>> to be', that is a future-state opinion. *What I need is 'currently 
+>> is' or 'at site X, this is how it works.'
+>> *
+>> *This applies to IST-1, IST-3, IST-4, IST-5, and IST-8. I will 
+>> address each specifically below.
+>> *
+>>
+>> *What is well answered and confirmed for the FSD*
+>>
+>> *IST-6 (Mix Ratio):* Confirmed as applicable only for JW contract 
+>> type. SPINRISE will make the Mix Ratio constraint 
+>> contract-type-configurable so that future contract types can be added 
+>> without code changes. Annamalai, update FSD Section 4 to confirm 
+>> JW-only with a note that SPINRISE will make this configurable.
+>>
+>> *IST-7 (IG_INSBODT vs IG_BODT):* This is the best answer in the 
+>> submission and provides genuinely valuable domain knowledge that is 
+>> not visible in the FSD at all. IG_INSBODT is the two-step despatch 
+>> path — Sale Order to Despatch Instruction to Goods Out — used when 
+>> Sales or Planning must issue a formal internal instruction to Stores 
+>> before goods move. IG_BODT is the one-step direct despatch path — 
+>> Sale Order to Goods Out — where no Despatch Instruction is needed. 
+>> Both paths are controlled by parameter settings. Annamalai, add this 
+>> as Section 5.7 — Despatch Workflow: document both paths, state that 
+>> SPINRISE must support both, and note that the controlling ig_param 
+>> flag name is to be confirmed (see IST-7 follow-up below).
+>>
+>> *IST-9 (Deletion vs Cancellation):* Confirmed correctly. Physical 
+>> delete is permitted only when no downstream transactions (dispatch, 
+>> invoice) exist. Once any transaction has been performed, cancellation 
+>> (CANCELLED='Y') is the only permitted action. This aligns with the 
+>> existing FSD delete guard. Annamalai, confirm in FSD Section 5.4 
+>> Workflow Rules that cancellation is the post-transaction action and 
+>> physical delete guard checks both ig_bodt and ig_insbodt records 
+>> before permitting deletion.
+>>
+>> *IST-11 (Multi-division): *Confirmed. A sale order is always 
+>> division-specific. divcode is fixed at creation. SPINRISE does not 
+>> need to support cross-division orders. This is a clean architectural 
+>> confirmation. Annamalai, add this to FSD Section 3 as a Field Rule 
+>> for divcode.
+>>
+>> *IST-2 (Agent Code):* The Party Type reference (D1, D2, D5) is useful 
+>> new domain knowledge not in the FSD. The agent mandatory rule is 
+>> driven by Party Type classification, not a universal company or 
+>> division parameter. Annamalai, add this to FSD Section 4 Header 
+>> Validations: Agent Code mandatory when customer party type falls 
+>> within the configured types. However, Seenivasan, one addition is 
+>> needed — which ig_param or MASTERLEN entry currently controls the 
+>> party type list that requires agent code? Is AgentSelectFlag in 
+>> Spinmod.bas the controlling flag, or is it something else?
+>>
+>> *IST-10 (Report Footer) and IST-12 (Auto-mail): *Both are partially 
+>> answered. Footer is confirmed as division-wise, and SMTP is confirmed 
+>> as the email mechanism triggered during print or order confirmation. 
+>> These are sufficient for now, but see the follow-up questions below.
+>>
+>>
+>> *Responses that need re-answering — current state, not future 
+>> recommendation*
+>>
+>> *IST-1 (Credit Limit Override): *Your answer says credit limit 
+>> override 'must not be permitted to all users.' That is a design 
+>> recommendation for SPINRISE, not a description of the current system. 
+>> What I need to know is: in the current VB6 ERP, which users can 
+>> override a credit limit breach today? Is it controlled by the ulevel 
+>> field in PP_Passwd? Is there a specific ulevel value that grants 
+>> override permission? Has IST ever had to assist a customer in 
+>> bypassing a credit limit, and how was that done? The FSD already 
+>> documents that CRLimitLockFlg='N' allows a warning with Yes/No 
+>> override and CRLimitLockFlg='Y' sends the order to an approval queue. 
+>> Which of these two modes is currently used at most customer sites? 
+>> That is the IST answer needed.
+>>
+>> *IST-3 (OfferRateFlg): *Your answer says it 'should be controlled as 
+>> a system parameter.' It already is a system parameter in the current 
+>> ERP — the FSD documents that OfferRateFlg is read from ig_param. What 
+>> the question asks is: what is the actual ig_param column name? Which 
+>> customers or divisions currently have it set to True? Is it used by 
+>> specific product segments (e.g., fabric vs yarn) or specific 
+>> customers only? Understanding who uses it today determines whether 
+>> SPINRISE shows the Offer Rate and Discount columns for all users or 
+>> only for specific divisions.
+>>
+>> *IST-4 (CSM Integration): *This is not a future system design 
+>> question. The CSM REST API integration is already coded in 
+>> frmcontract.frm today — the VB6 code calls GetApiResponse() with an 
+>> endpoint URL read from CSM_API_Details table. The question asks 
+>> whether this integration is live at any customer site right now. Is 
+>> it? If yes, which customer site uses CSM integration currently? If it 
+>> is not live at any site, please state that explicitly. That single 
+>> factual answer determines whether SPINRISE is migrating an existing 
+>> live integration or building something new. These have very different 
+>> scopes.
+>>
+>> *IST-5 (TCS Threshold):* Your answer says the threshold 'should be 
+>> stored in a parameter table.' What I need to know is where it is 
+>> CURRENTLY stored. Is the TCS threshold of Rs. 50 lakhs (the standard 
+>> statutory threshold) hard-coded inside KSP_TCSAmountCheckLSales? Or 
+>> does the SP read it from ig_param or a separate TCS configuration 
+>> table? If it is hard-coded in the SP, that is a defect that SPINRISE 
+>> must fix. If it is already in a table, name the table.
+>>
+>> *IST-8 (RateDeciPos):* Your answer says it should be configurable 
+>> between 2 and 4 decimal places. That is a SPINRISE recommendation. 
+>> What is the CURRENT standard value used at Kalsofte customer sites? 
+>> Do all customers use the same precision, or do some divisions use 2 
+>> and others use 4? A simple query — SELECT divcode, RateDeciPos FROM 
+>> ig_param — at any live customer site will answer this.
+>>
+>>
+>> *Follow-up additions needed from Seenivasan*
+>>
+>> Beyond the five re-answers above, three short additions will complete 
+>> the IST review:
+>>
+>> IST-7 follow-up: Which ig_param flag name controls whether the 
+>> Despatch Instruction path (IG_INSBODT) or the Direct Despatch path 
+>> (IG_BODT) is active? The FSD references IG_PARAM.DesInstr but this 
+>> needs confirmation from IST.
+>>
+>> IST-10 follow-up: What specific fields does fr_RepFooter configure? 
+>> Company address, authorised signatory name, bank details, terms and 
+>> conditions? Which table stores the footer data — ig_repfoot or 
+>> another table?
+>>
+>> IST-12 follow-up: Is CheckAutoMail currently active at any live 
+>> customer site? Which ig_param flag is checked by CheckAutoMail()?
+>>
+>>
+>> *For Annamalai — FSD updates to make immediately
+>> *
+>> Do not wait for all IST responses before updating the FSD. The 
+>> confirmed answers above generate specific FSD additions that can be 
+>> written now:
+>>
+>> Section 4: Add JW Mix Ratio validation as confirmed. Add Agent 
+>> mandatory rule based on Party Type classification.
+>>
+>> Section 5: Add Section 5.7 Despatch Workflow (IG_INSBODT vs IG_BODT 
+>> as described above). Update Section 5.4 deletion guard to confirm 
+>> both ig_bodt and ig_insbodt checks. Add multi-division: always 
+>> division-specific.
+>>
+>> FSD Section 3: divcode is division-specific and fixed at order creation.
+>>
+>> Sections 1, 3, 7, and 8: Mark CSM integration, OfferRateFlg scope, 
+>> TCS threshold storage, and RateDeciPos current values as [PENDING IST 
+>> RESPONSE] so the FSD clearly shows what is still open.
+>>
+>>
+>> *Overall*
+>>
+>> Seenivasan, the IST-7 answer alone demonstrates that you have the 
+>> domain knowledge this FSD needs. The despatch path distinction is the 
+>> kind of field experience that no code analysis produces. Apply that 
+>> same approach to the five re-answers above — describe what you have 
+>> seen at customer sites, not what you think SPINRISE should do.
+>>
+>> The corrected responses and the three follow-up additions are all 
+>> achievable today. Please revert by end of day.
+>>
+>> Regards,
+>> T. Mani
+>>
+>> cc: TL-IST Palanivel, PM Saravanan
+>>
+>> On 10/04/2026 04:08 pm, Seenivasan wrote:
+>>>
+>>> Dear Sir,
+>>>
+>>> Please find below the IST review questions along with our responses 
+>>> for the Sale Order (Domestic Sales) module in SPINRISE ERP.
+>>>
+>>>
+>>>       *1. Credit Limit Override*
+>>>
+>>> *Question:*
+>>> Who is permitted to override a credit limit breach and save the 
+>>> order? Is this controlled by user level (ulevel) or a separate 
+>>> approval workflow?
+>>>
+>>> *Answer:*
+>>> Credit limit override must *not be permitted to all users*. It 
+>>> should be controlled through a *role-based approval workflow*, 
+>>> rather than relying only on user level (ulevel). Only authorized 
+>>> users (e.g., Sales Manager / Finance) should have override permissions.
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>>
+>>>       *2. Agent Code Requirement*
+>>>
+>>> *Question:*
+>>> Is the Agent Code requirement company-wide or configurable per 
+>>> division? Which parameter / setup table controls this?
+>>>
+>>> *Answer:*
+>>> Currently, the Agent Code requirement is *not configured at company 
+>>> or division level*. It is controlled based on *Party Type 
+>>> configuration* (e.g., D1, D2, D5, etc.). However, it is recommended 
+>>> to make this *configurable via parameter setup* for better flexibility.
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>>
+>>>       *3. Offer Rate Flag (OfferRateFlg)*
+>>>
+>>> *Question:*
+>>> What business condition triggers OfferRateFlg = True? Is this a 
+>>> system parameter, user preference, or customer-specific setting?
+>>>
+>>> *Answer:*
+>>> OfferRateFlg should be controlled as a *system parameter*, with the 
+>>> option to allow *customer-level override* where required.
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>>
+>>>       *4. CSM Integration*
+>>>
+>>> *Question:*
+>>> What is the endpoint, authentication method, and payload structure 
+>>> for the CSM external system (apiUrl)? Is this live in production?
+>>>
+>>> *Answer:*
+>>> CSM integration should be implemented using a *standard REST API*, 
+>>> with proper *authentication (e.g., token-based)* and a *structured 
+>>> JSON payload*. This needs to be clearly defined and validated for 
+>>> production readiness.
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>>
+>>>       *5. TCS Threshold*
+>>>
+>>> *Question:*
+>>> What is the current TCS threshold amount? Is this stored in a table 
+>>> or hard-coded?
+>>>
+>>> *Answer:*
+>>> The TCS threshold should be stored in a *parameter/configuration 
+>>> table* and maintained dynamically. It should *not be hard-coded*.
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>>
+>>>       *6. Mix Ratio Rules*
+>>>
+>>> *Question:*
+>>> Are there contract types other than JW that require Mix Ratio %? Are 
+>>> there other contract-type-specific rules not visible in this form?
+>>>
+>>> *Answer:*
+>>> Currently, Mix Ratio % is applicable *only for JW (Job Work) 
+>>> contract type*. However, the system should be designed to support 
+>>> *other contract types through a configurable rules engine* if 
+>>> required in future.
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>>
+>>>       *7. IG_INSBODT vs IG_BODT (Dispatch Process)*
+>>>
+>>> *Question:*
+>>> What is the business difference between IG_INSBODT and IG_BODT for 
+>>> partial dispatch tracking? When is each used?
+>>>
+>>> *Answer:*
+>>>
+>>>   * *IG_INSBODT:*
+>>>     Used for *Despatch Instruction-based process*, where dispatch is
+>>>     initiated through an *internal instruction* from Sales/Planning
+>>>     to Stores/Dispatch. This flow is *controlled by parameter
+>>>     settings*.
+>>>   * *IG_BODT:*
+>>>     Used for *Direct Despatch Advice*, where dispatch is made
+>>>     *directly against the Sale Order*, skipping the Despatch
+>>>     Instruction stage. This depends on *customer-specific or
+>>>     business process requirements*.
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>>
+>>>       *8. Rate Decimal Precision (RateDeciPos)*
+>>>
+>>> *Question:*
+>>> What is the standard value of RateDeciPos? Do different divisions 
+>>> use different precisions?
+>>>
+>>> *Answer:*
+>>> RateDeciPos should be *configurable at the division level*, 
+>>> typically ranging from *2 to 4 decimal places*, depending on 
+>>> business requirements.
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>>
+>>>       *9. Deletion vs Cancellation of Sale Order*
+>>>
+>>> *Question:*
+>>> Is there ever a requirement to physically delete a sale order, or is 
+>>> cancellation (CANCELLED='Y') always sufficient for audit?
+>>>
+>>> *Answer:*
+>>>
+>>>   * *Deletion* should be allowed *only if no further transactions*
+>>>     (dispatch, invoice, etc.) have been performed, as part of
+>>>     internal process control.
+>>>   * Once the order is processed, *cancellation (CANCELLED = 'Y')
+>>>     should be used* to ensure proper audit tracking.
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>>
+>>>       *10. Report Footer Configuration (fr_RepFooter)*
+>>>
+>>> *Question:*
+>>> What does fr_RepFooter configure? Are there footer variants per 
+>>> customer or division?
+>>>
+>>> *Answer:*
+>>> fr_RepFooter is used to configure *report footer details*, which are 
+>>> maintained *division-wise*
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>>
+>>>       *11. Multi-Division Sale Order*
+>>>
+>>> *Question:*
+>>> Can a single sale order span multiple divisions, or is each order 
+>>> always division-specific?
+>>>
+>>> *Answer:*
+>>> A sale order is *always division-specific*. A single order cannot 
+>>> span multiple divisions.
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>>
+>>>       *12. Auto-Mail System (CheckAutoMail)*
+>>>
+>>> *Question:*
+>>> What email system is used for CheckAutoMail? SMTP or third-party? 
+>>> What triggers auto-mail?
+>>>
+>>> *Answer:*
+>>> Auto-mail functionality currently uses an *SMTP server 
+>>> configuration*. Integration with *third-party email services* can 
+>>> also be implemented if required. Auto-mail is typically triggered 
+>>> during *print or order confirmation process*.
+>>>
+>>> This is for your kind information
+>>>
+>>> Thanks & Regards,
+>>> V.Seenivasan
+>>> On 10/04/2026 01:13 PM, CEO wrote:
+>>>>
+>>>> Dear Annamalai and Seenivasan,
+>>>>
+>>>> I have reviewed both the 2 April and the 10 April versions of the 
+>>>> Sales Order FSD from the QA mail ID. I want to give both of you a 
+>>>> clear picture of what has improved, what still needs to be done, 
+>>>> and what each of you must action before this document can proceed.
+>>>>
+>>>> *On the improvement from version 1 to version 2 — Annamalai*
+>>>>
+>>>> *This is a substantial revision and the effort is visible.* Between 
+>>>> 2 April and today, ten sections that were either absent or 
+>>>> inadequate have been brought to a proper standard. Let me be specific.
+>>>>
+>>>> Section 3 (Field Rules) is new and covers 25 fields with mandatory 
+>>>> flags, data types, lengths, defaults, and notes. Section 4 
+>>>> (Validation Rules) is now correctly structured into four categories 
+>>>> — Pre-Add, Header, Line Entry, and Customer-Specific — with error 
+>>>> messages inline. This was entirely absent in version 1. Section 6 
+>>>> (TC Framework) is now present and correctly states that the Sale 
+>>>> Order form does not trigger stock movements or accounting entries 
+>>>> at the point of order creation — TC activation happens downstream 
+>>>> at despatch and invoice. This is the correct understanding and it 
+>>>> protects the SPINRISE developer from building the wrong integration 
+>>>> point.
+>>>>
+>>>> Section 7 (Common Module Dependencies) now analyses Spinmod.bas, 
+>>>> modGeneral.bas, and clsCrystal.cls at the function level. Section 8 
+>>>> (DB Operations) now documents both KSP_LSALES_SALEORDER and 
+>>>> KSP_TCSAmountCheckLSales with their business rules. Section 9 
+>>>> (Error Messages) is entirely new — 39 exact messages with trigger 
+>>>> conditions. Sections 12 (SPINRISE Recommendations), 13 (IST Review 
+>>>> Questions), and 14 (Summary Scorecard) are all new additions. This 
+>>>> is a complete restructuring of the document and it is aligned with 
+>>>> the v2 template.
+>>>>
+>>>> *This is the level of quality that should have been in the first 
+>>>> submission.* That said, the first submission was made on 2 April — 
+>>>> eight days before the current date — and Seenivasan had eight days 
+>>>> to review it and provide feedback. No IST feedback was provided. I 
+>>>> will address that separately below.
+>>>>
+>>>> *What still needs to be completed before this FSD can proceed to 
+>>>> IST review*
+>>>>
+>>>> *1. Stage 0 confirmation is absent from the document header.*
+>>>> The Document Identity table does not record Stage 0 completion 
+>>>> status, the line count before and after cleaning, or TL-Dev 
+>>>> sign-off. The RMI module FSD correctly showed '12,198 lines cleaned 
+>>>> to 11,066 lines' in its header. This document shows only '453 KB' 
+>>>> as the file size with no cleaning record. Annamalai: please confirm 
+>>>> with TL-Dev Sasi whether Stage 0 has been completed on 
+>>>> frmcontract.frm, add the line count before and after, and add 
+>>>> TL-Dev Sasi's sign-off to the document header.
+>>>>
+>>>> *2. CustID-based hardcoding — has Stage 0 actually resolved this?*
+>>>> Section 11 (Customer Variations) lists 11 customer-specific 
+>>>> behaviours. Most of these are described against customer names 
+>>>> rather than ig_param configuration flags. The Summary Scorecard in 
+>>>> Section 14 itself rates Customer Configurability at 3 out of 5 with 
+>>>> the note 'mostly hard-coded with if-then-else rather than 
+>>>> configuration-table driven.' This is the same issue that required 
+>>>> extensive correction in the PO module's PR form, which had 13 
+>>>> hardcoded CustID blocks that Stage 0 had to remove and replace with 
+>>>> po_para flags. The question for Annamalai is direct: has Stage 0 
+>>>> removed the CustID-based conditional blocks (SLVSM, SARANYA, 
+>>>> CHERAN, SKY, SKS, KUMARAGIRI, LMW, JTCL, SCM/JAT) from the cleaned 
+>>>> form, and replaced them with ig_param flag-driven behaviour? If 
+>>>> not, Stage 0 is not complete for this form. SPINRISE cannot be 
+>>>> built from a form that still contains hardcoded customer ID checks.
+>>>>
+>>>> *3. Three stored procedures require code submission and Follow-up 
+>>>> Prompt B analysis.*
+>>>> Section 8.4 documents KSP_LSALES_SALEORDER and Section 8.5 
+>>>> documents KSP_TCSAmountCheckLSales at a business-rule description 
+>>>> level. Section 5.5 references a third SP, Ksp_PendingOrderVal, used 
+>>>> in the credit limit calculation. None of the three have been 
+>>>> analysed from the actual SQL code. The rate calculation inside 
+>>>> KSP_LSALES_SALEORDER, the union logic and threshold comparison 
+>>>> inside KSP_TCSAmountCheckLSales, and the pending order value query 
+>>>> inside Ksp_PendingOrderVal must all be submitted to Claude using 
+>>>> Follow-up Prompt B from the v2 guide. The SP analysis must come 
+>>>> from the code, not from a description of what the SP is intended to 
+>>>> do. Please obtain all three SP codes from SQL Server Management 
+>>>> Studio and run Follow-up Prompt B on each.
+>>>>
+>>>> *4. The audit trail write is missing from the Save Sequence.*
+>>>> Section 8.3 documents the Save Sequence in seven steps. Notably 
+>>>> absent is the INSERT into ig_trans_log_sales, which was documented 
+>>>> in detail in version 1 of this document including the exact SQL 
+>>>> with IP address, hostname, and user ID. This is a regression — the 
+>>>> audit trail write existed in v1 and has been lost in v2. Please add 
+>>>> it as a step in Section 8.3, with the field mapping.
+>>>>
+>>>> *5. The document number race condition must be flagged as a 
+>>>> Critical Defect.*
+>>>> Section 12 Recommendation 4 correctly identifies that IG_DOCCONTROL 
+>>>> document numbering should be replaced with a sequence service. But 
+>>>> the underlying risk is not stated as a defect. The current code 
+>>>> reads MAX+1 from IG_DOCCONTROL without a lock, which means 
+>>>> concurrent saves from two users can produce duplicate order 
+>>>> numbers. The RMI PO FSD correctly flagged this as CD-2 with an 
+>>>> explicit SPINRISE fix. Please add this as a Critical Defect entry — 
+>>>> the same pattern exists here and the same UPDLOCK-based sequence 
+>>>> fix applies.
+>>>>
+>>>> *6. Section 11 needs SPINRISE configuration flag names and defaults.*
+>>>> The RMI PO FSD mapped each RM_PARAM flag to a SPINRISE config name 
+>>>> with a recommended default value. The Sales Order Section 11 
+>>>> describes what each customer variation does but does not say how 
+>>>> SPINRISE should handle it. For each of the 11 variation rows, 
+>>>> please add two columns: the SPINRISE config parameter name, and the 
+>>>> recommended default for a new customer installation.
+>>>>
+>>>> *7. Auto-email flow not sufficiently documented.*
+>>>> Section 1 correctly lists auto-email as a capability. Section 12 
+>>>> references it. But the trigger logic (CheckAutoMail reads 
+>>>> ig_param.AutoMail flag), the export path (Sales_PrintSMTP exports 
+>>>> Crystal to KALFOLDERDATA), and the CDO SMTP configuration (server, 
+>>>> port, SSL, credentials from pp_divmas) are not in Section 8 or 
+>>>> Section 7 at the level needed for SPINRISE migration. In SPINRISE, 
+>>>> the email flow will be replaced by a transactional email service — 
+>>>> but the trigger conditions, the recipient (customer email from 
+>>>> fa_slmas), and the attachment format must be documented so the 
+>>>> SPINRISE developer knows exactly when and how to send the email.
+>>>>
+>>>> *For Seenivasan — on your role in this review*
+>>>>
+>>>> *Seenivasan, I want to be direct.* Annamalai submitted the version 
+>>>> 1 FSD to you on 2 April. That was eight days ago. You have not 
+>>>> provided a single IST review comment on that document. Your mail 
+>>>> today asks Annamalai for a 'revised FSD' without telling him what 
+>>>> needs to be revised. *That is not how the IST review process works.
+>>>> *
+>>>> The IST reviewer's job is to read the document, answer the IST 
+>>>> review questions in Section 13, and flag any domain-level 
+>>>> inaccuracies in the business logic, validation rules, and customer 
+>>>> variations. The developer revises based on IST feedback. *You have 
+>>>> that sequence reversed.*
+>>>>
+>>>> Version 2 of the FSD has arrived, with Section 13 now containing 12 
+>>>> structured IST questions. *Your responsibility is to answer all 12 
+>>>> of those questions directly in the document.* The questions cover 
+>>>> credit limit override authority (IST-1), agent mandatory setup 
+>>>> (IST-2), offer rate flag trigger (IST-3), CSM integration status 
+>>>> (IST-4), TCS threshold (IST-5), JW rules (IST-6), IG_INSBODT vs 
+>>>> IG_BODT (IST-7), rate decimal configuration (IST-8), cancellation 
+>>>> policy (IST-9), report footer variants (IST-10), multi-division 
+>>>> orders (IST-11), and auto-mail system (IST-12).
+>>>>
+>>>> *Please complete your IST review of Section 13 and send your 
+>>>> responses to Annamalai so the document can be updated. Tomorrow is 
+>>>> the Saturday review meeting. I expect a status update on M03 that 
+>>>> shows IST engagement, not silence.*
+>>>>
+>>>>
+>>>> *Overall assessment*
+>>>>
+>>>> The improvement from version 1 to version 2 represents exactly the 
+>>>> standard the v2 guide is designed to produce. Annamalai has used 
+>>>> the eight days since version 1 productively and the document is now 
+>>>> structurally sound. The seven items above are what stands between 
+>>>> this document and the formal IST review chain.
+>>>>
+>>>> *Annamalai,* address items 1 through 7 above. The most urgent are 
+>>>> Stage 0 confirmation (item 1) and the CustID hardcoding question 
+>>>> (item 2), because those determine whether the form is 
+>>>> migration-ready at all.
+>>>>
+>>>> *Seenivasan,* answer the IST questions. The developer has done his 
+>>>> part.
+>>>>
+>>>> Regards,
+>>>> T. Mani
+>>>>
+>>>> cc: TL-Dev Sasi, PM Saravanan, TL-IST Palanivel
+>>>>
+>>>> On 10/04/2026 12:50 pm, Annamalai S wrote:
+>>>>>
+>>>>> Dear Mr. Seenivasan,
+>>>>>
+>>>>> Please find attached the *Sales Order Transaction form* from the 
+>>>>> *Domestic Sales Module FSD document*.
+>>>>>
+>>>>> Kindly review and confirm.
+>>>>>
+>>>>> Regards,
+>>>>> Annamalai S
+>>>>>
+>>>>>
+>>>>> On 10/04/2026 12:30 pm, Seenivasan wrote:
+>>>>>>
+>>>>>> Dear Sir,
+>>>>>>
+>>>>>> Kindly share the *revised *SPINRISE FSD document (transaction 
+>>>>>> screen markdown) for the Domestic Sales module at the earliest.
+>>>>>>
+>>>>>> If there are any constraints, please raise an email so that the 
+>>>>>> same can be resolved promptly.
+>>>>>>
+>>>>>> Thank you for your understanding.
+>>>>>>
+>>>>>> Thanks & Regards,
+>>>>>> V.Seenivasan
+>>>>>> On 02/04/2026 11:56 AM, Annamalai S wrote:
+>>>>>>>
+>>>>>>> Dear Sir,
+>>>>>>>
+>>>>>>> Please find attached the *Sales Order Transaction document* from 
+>>>>>>> the *Sales Management System (frmcontract.frm)*. This has been 
+>>>>>>> prepared as part of the *SPINRISE FSD documentation process*.
+>>>>>>>
+>>>>>>> This document includes a detailed analysis of the VB6 form code 
+>>>>>>> across the following sections:
+>>>>>>>
+>>>>>>>   * Form Overview and Screen Layout
+>>>>>>>   * Header and Item Entry Fields (with mandatory flags)
+>>>>>>>   * Toolbar Buttons and their behavior
+>>>>>>>   * Validation Rules (Pre-Add, Header, Item Line, and
+>>>>>>>     Customer-Specific)
+>>>>>>>   * Business Logic and Auto-Fill Rules
+>>>>>>>   * Database Tables and Stored Procedures
+>>>>>>>   * Error Messages Catalogue
+>>>>>>>   * Related Screens and Navigation
+>>>>>>>   * SPINRISE Migration Recommendations
+>>>>>>>
+>>>>>>> Kindly review and verify all *domain-level details*, including 
+>>>>>>> validation rules, business logic, customer-specific variations .
+>>>>>>>
+>>>>>>> The document is attached in both *Word (.docx)* and *Markdown 
+>>>>>>> (.md)* formats for your convenience.
+>>>>>>>
+>>>>>>> Kindly share your *review comments and approval* at the earliest.
+>>>>>>>
+>>>>>>> -- 
+>>>>>>> Regards,
+>>>>>>> Annamalai S
+>>>>>>>
+>>>>>>>
+>>>>>
+--------------xF0iPjln5xG0G2NQgDRCBEqS
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <p>Dear Seenivasan and Annamalai,<br>
+      <br>
+      Thank you Seenivasan. This second round of responses is
+      significantly better and resolves most of the outstanding
+      questions. The pattern issue from the first round — recommending
+      what SPINRISE should do instead of describing what the current
+      system does — has been corrected across all eight re-answers.
+      These are factual, current-state descriptions and that is exactly
+      the IST role.<br>
+      <br>
+      <b>What is confirmed and the FSD actions required</b><br>
+      <br>
+      IST-1 (Credit Limit Override): Confirmed. CRLimitLockFlg controls
+      the behaviour, not ulevel. No user-hierarchy-based override
+      exists. Only the Bannari customer currently uses
+      CRLimitLockFlg='Y' (hard block). All other ERP 7.4 customers do
+      not use credit limit control. Annamalai, update Section 5.5 to
+      record this and add Bannari as a customer-specific entry in
+      Section 11 with CRLimitLockFlg='Y' as the onboarding setting.<br>
+      <br>
+      One sub-question remains from IST-1. When CRLimitLockFlg='N', the
+      system shows a Yes/No warning dialog and allows the user to
+      proceed. In the current VB6 system, can any logged-in user click
+      Yes to override, or is there any user level check before the
+      override is permitted? One line answer is all that is needed.<br>
+      <br>
+      IST-3 (OfferRateFlg): Confirmed. ig_param.OfferRateFlg. Not used
+      by any customer currently. Rate and Discount columns are
+      accessible to all users. Annamalai, update Section 5.1 Rate
+      Calculation to document: OfferRateFlg reads from ig_param.
+      Currently inactive at all customer sites. SPINRISE default: N.
+      When N, the Offer Rate and Discount columns should be hidden in
+      the React UI.<br>
+      <br>
+      IST-4 (CSM Integration): Confirmed. CSM API exists in VB6 but is
+      NOT currently live at any customer site. It was implemented for
+      one customer, stopped due to system corruption, and the customer
+      intends to reuse it. This is a definitive scoping answer.
+      Annamalai, update Section 2.3 to mark CSM fields as Phase 2 and
+      add to Section 12: CSM integration is not live. SPINRISE Phase 1
+      will not implement CSM integration. It is a Phase 2 roadmap item
+      to be designed fresh when the customer reactivates it.<br>
+      <br>
+      IST-5 (TCS Threshold): This is a critical finding with two
+      important parts. First, the TCS threshold is hard-coded inside
+      KSP_TCSAmountCheckLSales — it is NOT in a configuration table.
+      This is a defect that must be fixed in SPINRISE. Annamalai, add to
+      Section 12 as a Critical Defect: TCS threshold hard-coded in SP
+      logic. SPINRISE fix: move threshold to a dedicated TCS
+      configuration table, referenced by KSP_TCSAmountCheckLSales with a
+      configurable parameter. Second, TCS applies only for Scrap Sales —
+      not for all domestic sale orders. This is an important scoping
+      correction. Annamalai, update Section 4 and Section 8.5 to add:
+      TCS calculation is triggered only when the contract type is Scrap
+      Sales AND ig_param.tcs_flag='Y'.<br>
+      <br>
+      One confirmation needed: is 'Scrap Sales' a specific contract type
+      code in ig_conttype, or is it a customer-specific configuration?
+      Annamalai, check the contract type master and confirm which code
+      represents Scrap Sales so the FSD documents the exact trigger
+      condition.<br>
+      <br>
+      IST-7 (Despatch Instruction flag): Confirmed.
+      IG_PARAM.Despatch_Instruction. Y routes to IG_INSBODT (two-step
+      Despatch Instruction flow), N routes to IG_BODT (direct despatch).
+      This completes Section 5.7. Annamalai, update Section 5.7 Despatch
+      Workflow to add the specific flag name and routing logic.<br>
+      <br>
+      IST-8 (RateDeciPos): Confirmed. ig_param.RateDeciPos = 2 decimal
+      places universally across all customers and divisions. No
+      variation. SPINRISE: rate fields use 2 decimal places. No
+      division-level configuration needed. Annamalai, document in
+      Section 11 as a standard flag with universal default of 2.<br>
+      <br>
+      IST-10 (Report Footer): Confirmed fields: Prepared By, Checked By,
+      Signature. DLL-based. Seenivasan also says it is not actively
+      required and not in use currently. Annamalai, document these
+      fields in Section 7 and mark as currently inactive. SPINRISE
+      should implement this as a standard configurable division-level
+      footer — even if no customer uses it today, it is a basic ERP
+      document requirement that new customers will need.<br>
+      <br>
+      One clarification needed on IST-10: in a previous round you said
+      fr_RepFooter is maintained division-wise. In this round you say it
+      is not in use. Please clarify: is the footer data configured in
+      the database per division but simply not printing, or is it
+      genuinely not configured at any site?<br>
+      <br>
+      IST-12 (Auto Mail): Confirmed. ig_param.automail (Y/N). SMTP
+      configuration from PP_divmas. Not used by any customer currently.
+      Annamalai, update Section 7.4 Auto-Email with the specific flag
+      name and configuration source.<br>
+      <br>
+      <br>
+      <b>One SPINRISE scope decision from IST-4</b><br>
+      <br>
+      The confirmation that CSM integration has never been stably live
+      in production simplifies Phase 1 significantly. Remove all
+      CSM-specific fields, API calls, and conditional visibility from
+      the Phase 1 SPINRISE sale order form. The CSM checkbox, work order
+      number, and sale order number fields can be left as a documented
+      Phase 2 feature. This reduces the Phase 1 development scope and
+      avoids building around an integration that has no confirmed
+      production stability.<br>
+      <br>
+      <b>For Annamalai — consolidated FSD update list</b><br>
+      <br>
+      Update the following sections before the next review:<br>
+      <br>
+      Section 5.1: OfferRateFlg from ig_param, default N, inactive at
+      all customers, grid columns hidden when N.<br>
+      Section 5.5: CRLimitLockFlg='Y' hard blocks, Bannari only.
+      CRLimitLockFlg='N' warning path, confirm override question
+      pending.<br>
+      Section 5.7: IG_PARAM.Despatch_Instruction flag name confirmed,
+      complete the two-path workflow documentation.<br>
+      Section 7.4: ig_param.automail, PP_divmas SMTP config, currently
+      inactive.<br>
+      Section 7 Print: Footer fields Prepared By, Checked By, Signature,
+      DLL-based, currently inactive.<br>
+      Section 8.5: KSP_TCSAmountCheckLSales — threshold hard-coded in
+      SP, TCS applies to Scrap Sales contract type only.<br>
+      Section 11: Add all ig_param configuration flags confirmed in this
+      exchange with their current values and SPINRISE defaults.<br>
+      Section 11: Bannari as customer variation for CRLimitLockFlg='Y'.<br>
+      Section 12: CSM integration — Phase 2 only. TCS threshold
+      hard-coded — Critical Defect.<br>
+      Section 13: Mark IST-1, 3, 4, 5, 7, 8, 10, 12 as RESOLVED with
+      confirmed answers.<br>
+      <br>
+      <b>Overall</b><br>
+      <br>
+      Seenivasan, this second round is the quality of IST review this
+      project requires. IST-7 alone — naming the exact IG_PARAM flag
+      that controls the dispatch path — is a single detail that saves
+      the SPINRISE developer from a day of VB6 code archaeology. Apply
+      the same precision to the two remaining follow-ups
+      (CRLimitLockFlg='N' override and IST-10 footer clarification) and
+      the Section 13 IST review for this module will be complete.<br>
+      <br>
+      Regards,<br>
+      T. Mani<br>
+      <br>
+      cc: TL-IST Palanivel, PM Saravanan, TL-Dev Sasi</p>
+    <div class="moz-cite-prefix">On 10/04/2026 08:40 pm, Seenivasan
+      wrote:<br>
+    </div>
+    <blockquote type="cite"
+      cite="mid:70cf2a7a-21c3-4dbd-9ff4-e40894658138@kalsofte.com">
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <p>Dear sir,</p>
+      <p>  Please find the Re-Answering the below mentioned your query
+        and IST response below</p>
+      <h2 data-section-id="1vz8sl" data-start="129" data-end="182"><span
+          role="text"><strong data-start="132" data-end="182">IST-1
+            (Credit Limit Override) – Current System</strong></span></h2>
+      <ul data-start="184" data-end="670">
+        <li data-section-id="9t2alm" data-start="184" data-end="670"> In
+          the <strong data-start="193" data-end="212">current VB6 ERP</strong>,
+          credit limit handling is controlled by <strong
+            data-start="253" data-end="273"><code data-start="255"
+              data-end="271">CRLimitLockFlg</code></strong>:
+          <ul data-start="278" data-end="670">
+            <li data-section-id="1mtcjov" data-start="278"
+              data-end="449"> <strong data-start="280" data-end="306"><code
+                  data-start="282" data-end="304">CRLimitLockFlg = 'Y'</code></strong><br
+                data-start="306" data-end="309">
+              → System <strong data-start="322" data-end="351">does NOT
+                allow order save</strong> when credit limit is exceeded<br
+                data-start="381" data-end="384">
+              → Order is <strong data-start="399" data-end="447">blocked
+                and must go through approval process</strong> </li>
+          </ul>
+        </li>
+      </ul>
+      <hr data-start="672" data-end="675">
+      <h3 data-section-id="1sh335o" data-start="677" data-end="706"><span
+          role="text"><strong data-start="681" data-end="706">User
+            Control / ulevel</strong></span></h3>
+      <ul data-start="708" data-end="901">
+        <li data-section-id="zo2zvb" data-start="708" data-end="769"> ❌
+          <strong data-start="712" data-end="769">Override is NOT
+            controlled by <code data-start="744" data-end="752">ulevel</code>
+            in <code data-start="756" data-end="767">PP_Passwd</code></strong>
+        </li>
+        <li data-section-id="zwo4pd" data-start="770" data-end="831"> ❌
+          <strong data-start="774" data-end="831">No specific <code
+              data-start="788" data-end="796">ulevel</code> exists for
+            credit limit override</strong> </li>
+        <li data-section-id="1nt4nvf" data-start="832" data-end="901">
+          Control is <strong data-start="845" data-end="881">fully
+            driven by <code data-start="863" data-end="879">CRLimitLockFlg</code></strong>,
+          not user hierarchy</li>
+        <li data-section-id="1nt4nvf" data-start="832" data-end="901">Only
+          Spinning - Bannari Customer used,ERP 7.4 Customer are not used
+          as of now</li>
+      </ul>
+      <hr data-start="1182" data-end="1185">
+      <hr data-start="1376" data-end="1379">
+      <h2 data-section-id="10aozoj" data-start="1381" data-end="1408"><span
+          role="text"><strong data-start="1384" data-end="1408">IST-3
+            (OfferRateFlg)</strong></span></h2>
+      <ul data-start="1410" data-end="1476">
+        <li data-section-id="1eel0e3" data-start="1410" data-end="1443">
+          Parameter table: <strong data-start="1429" data-end="1443"><code
+              data-start="1431" data-end="1441">ig_param</code></strong>
+        </li>
+        <li data-section-id="cmnpls" data-start="1444" data-end="1476">
+          Field name: <strong data-start="1458" data-end="1476"><code
+              data-start="1460" data-end="1474">OfferRateFlg</code></strong>
+        </li>
+      </ul>
+      <h3 data-section-id="1r803m2" data-start="1478" data-end="1499"><span
+          role="text"><strong data-start="1482" data-end="1499">Current
+            Usage</strong></span></h3>
+      <ul data-start="1501" data-end="1647">
+        <li data-section-id="g5txs6" data-start="1501" data-end="1542">
+          ❌ <strong data-start="1505" data-end="1542">Not actively used
+            by any customer</strong> </li>
+        <li data-section-id="19r7w9w" data-start="1543" data-end="1647">
+          Rate and Discount:
+          <ul data-start="1566" data-end="1647">
+            <li data-section-id="11npd49" data-start="1566"
+              data-end="1595"> Available <strong data-start="1578"
+                data-end="1595">for all users</strong> </li>
+            <li data-section-id="1b7e1e3" data-start="1598"
+              data-end="1647"> ❌ Not restricted by division or product
+              segment </li>
+          </ul>
+        </li>
+      </ul>
+      <hr data-start="1649" data-end="1652">
+      <h2 data-section-id="1kc74ls" data-start="1654" data-end="1684"><span
+          role="text"><strong data-start="1657" data-end="1684">IST-4
+            (CSM Integration)</strong></span></h2>
+      <ul data-start="1686" data-end="1738">
+        <li data-section-id="y1dwm7" data-start="1686" data-end="1738">
+          ✅ CSM API integration exists in current VB6 system </li>
+      </ul>
+      <h3 data-section-id="iy31q3" data-start="1740" data-end="1762"><span
+          role="text"><strong data-start="1744" data-end="1762">Current
+            Status</strong></span></h3>
+      <ul data-start="1764" data-end="1962">
+        <li data-section-id="1nlwpmm" data-start="1764" data-end="1808">
+          Initially used in production by a customer </li>
+        <li data-section-id="dus0kb" data-start="1809" data-end="1862">
+          Later <strong data-start="1817" data-end="1862">stopped due
+            to system issues (corruption)</strong> </li>
+        <li data-section-id="1hk4bkz" data-start="1863" data-end="1962">
+          Currently:
+          <ul data-start="1878" data-end="1962">
+            <li data-section-id="5li29v" data-start="1878"
+              data-end="1901"> <strong data-start="1880"
+                data-end="1901">Not actively used</strong> </li>
+            <li data-section-id="18ma1f2" data-start="1904"
+              data-end="1962"> Customer has <strong data-start="1919"
+                data-end="1962">initiated plan to reuse CSM integration</strong>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p data-start="1964" data-end="1980">👉 Conclusion:</p>
+      <ul data-start="1981" data-end="2058">
+        <li data-section-id="1p61coa" data-start="1981" data-end="2001">
+          Exists in system </li>
+        <li data-section-id="3m5bi7" data-start="2002" data-end="2058">
+          ❌ <strong data-start="2006" data-end="2058">Not actively live
+            at any customer site as of now</strong> </li>
+      </ul>
+      <hr data-start="2060" data-end="2063">
+      <h2 data-section-id="18a4qsh" data-start="2065" data-end="2093"><span
+          role="text"><strong data-start="2068" data-end="2093">IST-5
+            (TCS Threshold)</strong></span></h2>
+      <ul data-start="2095" data-end="2156">
+        <li data-section-id="1iiy5ia" data-start="2095" data-end="2126">
+          Controlled via <strong data-start="2112" data-end="2126"><code
+              data-start="2114" data-end="2124">ig_param</code></strong>
+        </li>
+        <li data-section-id="1lvslq6" data-start="2127" data-end="2156">
+          Field: <strong data-start="2136" data-end="2156"><code
+              data-start="2138" data-end="2148">tcs_flag</code> (Y/N)</strong>
+        </li>
+      </ul>
+      <h3 data-section-id="16704qp" data-start="2158" data-end="2179"><span
+          role="text"><strong data-start="2162" data-end="2179">Current
+            Logic</strong></span></h3>
+      <ul data-start="2181" data-end="2343">
+        <li data-section-id="sohxr" data-start="2181" data-end="2343">
+          If <code data-start="2186" data-end="2202">tcs_flag = 'Y'</code>:
+          <ul data-start="2206" data-end="2343">
+            <li data-section-id="1g2km90" data-start="2206"
+              data-end="2274"> System calculates <strong
+                data-start="2226" data-end="2274">TCS based on
+                cumulative customer sales value</strong> </li>
+            <li data-section-id="164geh1" data-start="2277"
+              data-end="2343"> Logic handled in <strong
+                data-start="2296" data-end="2343">stored procedure
+                (KSP_TCSAmountCheckLSales)</strong> </li>
+          </ul>
+        </li>
+      </ul>
+      <h3 data-section-id="1h4gnce" data-start="2345" data-end="2366"><span
+          role="text"><strong data-start="2349" data-end="2366">Business
+            Rule</strong></span></h3>
+      <ul data-start="2368" data-end="2514">
+        <li data-section-id="8o5dvy" data-start="2368" data-end="2441">
+          As per current implementation:
+          <ul data-start="2403" data-end="2441">
+            <li data-section-id="tzb471" data-start="2403"
+              data-end="2441"> <strong data-start="2405"
+                data-end="2441">TCS applied only for Scrap Sales</strong>
+            </li>
+          </ul>
+        </li>
+        <li data-section-id="2psdwg" data-start="2442" data-end="2514">
+          Threshold is <strong data-start="2457" data-end="2514">handled
+            within SP logic (not separately configurable)</strong> </li>
+      </ul>
+      <hr data-start="2516" data-end="2519">
+      <h2 data-section-id="1j9fp6" data-start="2521" data-end="2547"><span
+          role="text"><strong data-start="2524" data-end="2547">IST-8
+            (RateDeciPos)</strong></span></h2>
+      <ul data-start="2549" data-end="2588">
+        <li data-section-id="1en2lwu" data-start="2549" data-end="2588">
+          Parameter: <strong data-start="2562" data-end="2588"><code
+              data-start="2564" data-end="2586">ig_param.RateDeciPos</code></strong>
+        </li>
+      </ul>
+      <h3 data-section-id="1r803m2" data-start="2590" data-end="2611"><span
+          role="text"><strong data-start="2594" data-end="2611">Current
+            Usage</strong></span></h3>
+      <ul data-start="2613" data-end="2739">
+        <li data-section-id="1xef1yp" data-start="2613" data-end="2654">
+          ✅ <strong data-start="2617" data-end="2654">Standard value =
+            2 decimal places</strong> </li>
+        <li data-section-id="8cnlbi" data-start="2655" data-end="2707">
+          ✔ Same across:
+          <ul data-start="2674" data-end="2707">
+            <li data-section-id="1sggr5q" data-start="2674"
+              data-end="2689"> All customers </li>
+            <li data-section-id="3fqssz" data-start="2692"
+              data-end="2707"> All divisions </li>
+          </ul>
+        </li>
+        <li data-section-id="y762bc" data-start="2709" data-end="2739">
+          ❌ No division-wise variation </li>
+      </ul>
+      <hr data-start="2741" data-end="2744">
+      <h2 data-section-id="1kxlun9" data-start="2746" data-end="2782"><span
+          role="text"><strong data-start="2749" data-end="2782">Additional
+            IST Clarifications</strong></span></h2>
+      <h3 data-section-id="1xehzp3" data-start="2784" data-end="2825"><span
+          role="text"><strong data-start="2788" data-end="2825">IST-7
+            (Dispatch Instruction Flag)</strong></span></h3>
+      <ul data-start="2827" data-end="3020">
+        <li data-section-id="1jbhxg2" data-start="2827" data-end="2850">
+          Table: <strong data-start="2836" data-end="2850"><code
+              data-start="2838" data-end="2848">IG_PARAM</code></strong>
+        </li>
+        <li data-section-id="1v77akr" data-start="2851" data-end="2886">
+          Field: <strong data-start="2860" data-end="2886"><code
+              data-start="2862" data-end="2884">Despatch_Instruction</code></strong>
+        </li>
+        <li data-section-id="epolox" data-start="2888" data-end="3020">
+          Controls:
+          <ul data-start="2902" data-end="3020">
+            <li data-section-id="1usbfbs" data-start="2902"
+              data-end="3020"> Whether system follows:
+              <ul data-start="2932" data-end="3020">
+                <li data-section-id="1oglcd6" data-start="2932"
+                  data-end="2979"> <strong data-start="2934"
+                    data-end="2976">Despatch Instruction flow
+                    (IG_INSBODT)</strong> OR </li>
+                <li data-section-id="17repja" data-start="2984"
+                  data-end="3020"> <strong data-start="2986"
+                    data-end="3020">Direct Despatch flow (IG_BODT)</strong>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <hr data-start="3022" data-end="3025">
+      <h3 data-section-id="1lqgw2m" data-start="3027" data-end="3071"><span
+          role="text"><strong data-start="3031" data-end="3071">IST-10
+            (Report Footer Configuration)</strong></span></h3>
+      <ul data-start="3073" data-end="3121">
+        <li data-section-id="1xsqmqz" data-start="3073" data-end="3121">
+          Used for:
+          <ul data-start="3087" data-end="3121">
+            <li data-section-id="1ju2uga" data-start="3087"
+              data-end="3121"> DLL-based report printing footer </li>
+          </ul>
+        </li>
+      </ul>
+      <h3 data-section-id="g151zd" data-start="3123" data-end="3152"><span
+          role="text"><strong data-start="3127" data-end="3152">Includes
+            fields like:</strong></span></h3>
+      <ul data-start="3153" data-end="3205">
+        <li data-section-id="19i34ba" data-start="3153" data-end="3168">
+          Prepared By </li>
+        <li data-section-id="bofro" data-start="3169" data-end="3183">
+          Checked By </li>
+        <li data-section-id="1i1nvd1" data-start="3184" data-end="3205">
+          Signature section </li>
+      </ul>
+      <h3 data-section-id="iy31q3" data-start="3207" data-end="3229"><span
+          role="text"><strong data-start="3211" data-end="3229">Current
+            Status</strong></span></h3>
+      <ul data-start="3231" data-end="3277">
+        <li data-section-id="1o72r61" data-start="3231" data-end="3277">
+          ❌ <strong data-start="3235" data-end="3277">Not actively
+            required / not in use now</strong> </li>
+      </ul>
+      <hr data-start="3279" data-end="3282">
+      <h3 data-section-id="dy8ww3" data-start="3284" data-end="3319"><span
+          role="text"><strong data-start="3288" data-end="3319">IST-12
+            (Auto Mail Function)</strong></span></h3>
+      <ul data-start="3321" data-end="3374">
+        <li data-section-id="1jbhxg2" data-start="3321" data-end="3344">
+          Table: <strong data-start="3330" data-end="3344"><code
+              data-start="3332" data-end="3342">IG_PARAM</code></strong>
+        </li>
+        <li data-section-id="nn4p3j" data-start="3345" data-end="3374">
+          Field: <strong data-start="3354" data-end="3374"><code
+              data-start="3356" data-end="3366">automail</code> (Y/N)</strong>
+        </li>
+      </ul>
+      <h3 data-section-id="ihqhxk" data-start="3376" data-end="3389"><span
+          role="text"><strong data-start="3380" data-end="3389">Logic</strong></span></h3>
+      <ul data-start="3391" data-end="3501">
+        <li data-section-id="v43dn8" data-start="3391" data-end="3501">
+          If enabled:
+          <ul data-start="3407" data-end="3501">
+            <li data-section-id="kp706b" data-start="3407"
+              data-end="3501"> Fetch email configuration from <strong
+                data-start="3440" data-end="3455"><code
+                  data-start="3442" data-end="3453">PP_divmas</code></strong>
+              <ul data-start="3460" data-end="3501">
+                <li data-section-id="5khus2" data-start="3460"
+                  data-end="3468"> SMTP </li>
+                <li data-section-id="1hz9dd8" data-start="3473"
+                  data-end="3484"> Mail ID </li>
+                <li data-section-id="ozy787" data-start="3489"
+                  data-end="3501"> Password </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <h3 data-section-id="iy31q3" data-start="3503" data-end="3525"><span
+          role="text"><strong data-start="3507" data-end="3525">Current
+            Status</strong></span></h3>
+      <ul data-start="3527" data-end="3569">
+        <li data-section-id="850kj" data-start="3527" data-end="3569"> ❌
+          <strong data-start="3531" data-end="3569">Not used by any
+            customer currently</strong></li>
+      </ul>
+      <p>This for your kind information.</p>
+      <pre class="moz-signature" cols="72">Thanks &amp; Regards,
+V.Seenivasan</pre>
+      <div class="moz-cite-prefix">On 10/04/2026 06:49 PM, CEO wrote:<br>
+      </div>
+      <blockquote type="cite"
+        cite="mid:29f19680-40ab-45ef-8b8b-63af63781ac7@kalsofte.com">
+        <meta http-equiv="Content-Type"
+          content="text/html; charset=UTF-8">
+        <p>Dear Seenivasan and Annamalai,<br>
+          <br>
+          Thank you Seenivasan for responding to the Section 13 IST
+          questions. I have reviewed all twelve responses carefully.
+          Before giving you the specific feedback, I want to first
+          explain a pattern I am seeing that affects more than half of
+          your answers — because correcting this pattern will make the
+          second round of responses significantly more useful.<br>
+          <br>
+          <br>
+          <b><font size="4">On the IST reviewer's role — a clarification
+              for the whole team</font></b><br>
+          <br>
+          In several responses, Seenivasan has answered the question
+          'what should SPINRISE do' instead of 'what does the current
+          VB6 system do.' For example, IST-3 says 'OfferRateFlg should
+          be controlled as a system parameter' and IST-5 says 'TCS
+          threshold should be stored in a parameter table.' These are
+          SPINRISE design recommendations, not IST answers.<br>
+          <br>
+          <b>The IST reviewer's role in the FSD process is to describe
+            current, factual behaviour from field experience at customer
+            sites.</b> The CEO and TL-Dev take those factual
+          descriptions and make the SPINRISE design decisions. If an IST
+          response says 'should be' or 'recommended to be', that is a
+          future-state opinion. <b>What I need is 'currently is' or 'at
+            site X, this is how it works.'<br>
+          </b><br>
+          <b>This applies to IST-1, IST-3, IST-4, IST-5, and IST-8. I
+            will address each specifically below.<br>
+          </b><br>
+          <br>
+          <b>What is well answered and confirmed for the FSD</b><br>
+          <br>
+          <b>IST-6 (Mix Ratio):</b> Confirmed as applicable only for JW
+          contract type. SPINRISE will make the Mix Ratio constraint
+          contract-type-configurable so that future contract types can
+          be added without code changes. Annamalai, update FSD Section 4
+          to confirm JW-only with a note that SPINRISE will make this
+          configurable.<br>
+          <br>
+          <b>IST-7 (IG_INSBODT vs IG_BODT):</b> This is the best answer
+          in the submission and provides genuinely valuable domain
+          knowledge that is not visible in the FSD at all. IG_INSBODT is
+          the two-step despatch path — Sale Order to Despatch
+          Instruction to Goods Out — used when Sales or Planning must
+          issue a formal internal instruction to Stores before goods
+          move. IG_BODT is the one-step direct despatch path — Sale
+          Order to Goods Out — where no Despatch Instruction is needed.
+          Both paths are controlled by parameter settings. Annamalai,
+          add this as Section 5.7 — Despatch Workflow: document both
+          paths, state that SPINRISE must support both, and note that
+          the controlling ig_param flag name is to be confirmed (see
+          IST-7 follow-up below).<br>
+          <br>
+          <b>IST-9 (Deletion vs Cancellation):</b> Confirmed correctly.
+          Physical delete is permitted only when no downstream
+          transactions (dispatch, invoice) exist. Once any transaction
+          has been performed, cancellation (CANCELLED='Y') is the only
+          permitted action. This aligns with the existing FSD delete
+          guard. Annamalai, confirm in FSD Section 5.4 Workflow Rules
+          that cancellation is the post-transaction action and physical
+          delete guard checks both ig_bodt and ig_insbodt records before
+          permitting deletion.<br>
+          <br>
+          <b>IST-11 (Multi-division): </b>Confirmed. A sale order is
+          always division-specific. divcode is fixed at creation.
+          SPINRISE does not need to support cross-division orders. This
+          is a clean architectural confirmation. Annamalai, add this to
+          FSD Section 3 as a Field Rule for divcode.<br>
+          <br>
+          <b>IST-2 (Agent Code):</b> The Party Type reference (D1, D2,
+          D5) is useful new domain knowledge not in the FSD. The agent
+          mandatory rule is driven by Party Type classification, not a
+          universal company or division parameter. Annamalai, add this
+          to FSD Section 4 Header Validations: Agent Code mandatory when
+          customer party type falls within the configured types.
+          However, Seenivasan, one addition is needed — which ig_param
+          or MASTERLEN entry currently controls the party type list that
+          requires agent code? Is AgentSelectFlag in Spinmod.bas the
+          controlling flag, or is it something else?<br>
+          <br>
+          <b>IST-10 (Report Footer) and IST-12 (Auto-mail): </b>Both
+          are partially answered. Footer is confirmed as division-wise,
+          and SMTP is confirmed as the email mechanism triggered during
+          print or order confirmation. These are sufficient for now, but
+          see the follow-up questions below.<br>
+          <br>
+          <br>
+          <b><font color="#ff0000">Responses that need re-answering —
+              current state, not future recommendation</font></b><br>
+          <br>
+          <b>IST-1 (Credit Limit Override): </b>Your answer says credit
+          limit override 'must not be permitted to all users.' That is a
+          design recommendation for SPINRISE, not a description of the
+          current system. What I need to know is: in the current VB6
+          ERP, which users can override a credit limit breach today? Is
+          it controlled by the ulevel field in PP_Passwd? Is there a
+          specific ulevel value that grants override permission? Has IST
+          ever had to assist a customer in bypassing a credit limit, and
+          how was that done? The FSD already documents that
+          CRLimitLockFlg='N' allows a warning with Yes/No override and
+          CRLimitLockFlg='Y' sends the order to an approval queue. Which
+          of these two modes is currently used at most customer sites?
+          That is the IST answer needed.<br>
+          <br>
+          <b>IST-3 (OfferRateFlg): </b>Your answer says it 'should be
+          controlled as a system parameter.' It already is a system
+          parameter in the current ERP — the FSD documents that
+          OfferRateFlg is read from ig_param. What the question asks is:
+          what is the actual ig_param column name? Which customers or
+          divisions currently have it set to True? Is it used by
+          specific product segments (e.g., fabric vs yarn) or specific
+          customers only? Understanding who uses it today determines
+          whether SPINRISE shows the Offer Rate and Discount columns for
+          all users or only for specific divisions.<br>
+          <br>
+          <b>IST-4 (CSM Integration): </b>This is not a future system
+          design question. The CSM REST API integration is already coded
+          in frmcontract.frm today — the VB6 code calls GetApiResponse()
+          with an endpoint URL read from CSM_API_Details table. The
+          question asks whether this integration is live at any customer
+          site right now. Is it? If yes, which customer site uses CSM
+          integration currently? If it is not live at any site, please
+          state that explicitly. That single factual answer determines
+          whether SPINRISE is migrating an existing live integration or
+          building something new. These have very different scopes.<br>
+          <br>
+          <b>IST-5 (TCS Threshold):</b> Your answer says the threshold
+          'should be stored in a parameter table.' What I need to know
+          is where it is CURRENTLY stored. Is the TCS threshold of Rs.
+          50 lakhs (the standard statutory threshold) hard-coded inside
+          KSP_TCSAmountCheckLSales? Or does the SP read it from ig_param
+          or a separate TCS configuration table? If it is hard-coded in
+          the SP, that is a defect that SPINRISE must fix. If it is
+          already in a table, name the table.<br>
+          <br>
+          <b>IST-8 (RateDeciPos):</b> Your answer says it should be
+          configurable between 2 and 4 decimal places. That is a
+          SPINRISE recommendation. What is the CURRENT standard value
+          used at Kalsofte customer sites? Do all customers use the same
+          precision, or do some divisions use 2 and others use 4? A
+          simple query — SELECT divcode, RateDeciPos FROM ig_param — at
+          any live customer site will answer this.<br>
+          <br>
+          <br>
+          <b>Follow-up additions needed from Seenivasan</b><br>
+          <br>
+          Beyond the five re-answers above, three short additions will
+          complete the IST review:<br>
+          <br>
+          IST-7 follow-up: Which ig_param flag name controls whether the
+          Despatch Instruction path (IG_INSBODT) or the Direct Despatch
+          path (IG_BODT) is active? The FSD references IG_PARAM.DesInstr
+          but this needs confirmation from IST.<br>
+          <br>
+          IST-10 follow-up: What specific fields does fr_RepFooter
+          configure? Company address, authorised signatory name, bank
+          details, terms and conditions? Which table stores the footer
+          data — ig_repfoot or another table?<br>
+          <br>
+          IST-12 follow-up: Is CheckAutoMail currently active at any
+          live customer site? Which ig_param flag is checked by
+          CheckAutoMail()?<br>
+          <br>
+          <br>
+          <b>For Annamalai — FSD updates to make immediately<br>
+          </b><br>
+          Do not wait for all IST responses before updating the FSD. The
+          confirmed answers above generate specific FSD additions that
+          can be written now:<br>
+          <br>
+          Section 4: Add JW Mix Ratio validation as confirmed. Add Agent
+          mandatory rule based on Party Type classification.<br>
+          <br>
+          Section 5: Add Section 5.7 Despatch Workflow (IG_INSBODT vs
+          IG_BODT as described above). Update Section 5.4 deletion guard
+          to confirm both ig_bodt and ig_insbodt checks. Add
+          multi-division: always division-specific.<br>
+          <br>
+          FSD Section 3: divcode is division-specific and fixed at order
+          creation.<br>
+          <br>
+          Sections 1, 3, 7, and 8: Mark CSM integration, OfferRateFlg
+          scope, TCS threshold storage, and RateDeciPos current values
+          as [PENDING IST RESPONSE] so the FSD clearly shows what is
+          still open.<br>
+          <br>
+          <br>
+          <b><font size="4">Overall</font></b><br>
+          <br>
+          Seenivasan, the IST-7 answer alone demonstrates that you have
+          the domain knowledge this FSD needs. The despatch path
+          distinction is the kind of field experience that no code
+          analysis produces. Apply that same approach to the five
+          re-answers above — describe what you have seen at customer
+          sites, not what you think SPINRISE should do.<br>
+          <br>
+          The corrected responses and the three follow-up additions are
+          all achievable today. Please revert by end of day.<br>
+          <br>
+          Regards,<br>
+          T. Mani<br>
+          <br>
+          cc: TL-IST Palanivel, PM Saravanan</p>
+        <div class="moz-cite-prefix">On 10/04/2026 04:08 pm, Seenivasan
+          wrote:<br>
+        </div>
+        <blockquote type="cite"
+          cite="mid:bcecfe77-aa3d-4608-a19b-df61dad6dfdb@kalsofte.com">
+          <meta http-equiv="Content-Type"
+            content="text/html; charset=UTF-8">
+          <p class="isSelectedEnd"><span>Dear Sir,</span></p>
+          <p><span>Please find below the IST review questions along with
+              our responses for the Sale Order (Domestic Sales) module
+              in SPINRISE ERP.</span></p>
+          <h3 data-section-id="ro1tpx" data-start="226" data-end="258"><span
+              role="text"><strong data-start="230" data-end="258">1.
+                Credit Limit Override</strong></span></h3>
+          <p data-start="260" data-end="421"><strong data-start="260"
+              data-end="273">Question:</strong><br data-start="273"
+              data-end="276">
+            Who is permitted to override a credit limit breach and save
+            the order? Is this controlled by user level (ulevel) or a
+            separate approval workflow?</p>
+          <p data-start="423" data-end="703"><strong data-start="423"
+              data-end="434">Answer:</strong><br data-start="434"
+              data-end="437">
+            Credit limit override must <strong data-start="464"
+              data-end="497">not be permitted to all users</strong>. It
+            should be controlled through a <strong data-start="533"
+              data-end="565">role-based approval workflow</strong>,
+            rather than relying only on user level (ulevel). Only
+            authorized users (e.g., Sales Manager / Finance) should have
+            override permissions.</p>
+          <hr data-start="705" data-end="708">
+          <h3 data-section-id="1qrq0k1" data-start="710" data-end="743"><span
+              role="text"><strong data-start="714" data-end="743">2.
+                Agent Code Requirement</strong></span></h3>
+          <p data-start="745" data-end="878"><strong data-start="745"
+              data-end="758">Question:</strong><br data-start="758"
+              data-end="761">
+            Is the Agent Code requirement company-wide or configurable
+            per division? Which parameter / setup table controls this?</p>
+          <p data-start="880" data-end="1165"><strong data-start="880"
+              data-end="891">Answer:</strong><br data-start="891"
+              data-end="894">
+            Currently, the Agent Code requirement is <strong
+              data-start="935" data-end="982">not configured at company
+              or division level</strong>. It is controlled based on <strong
+              data-start="1010" data-end="1038">Party Type configuration</strong>
+            (e.g., D1, D2, D5, etc.). However, it is recommended to make
+            this <strong data-start="1105" data-end="1141">configurable
+              via parameter setup</strong> for better flexibility.</p>
+          <hr data-start="1167" data-end="1170">
+          <h3 data-section-id="xcekmz" data-start="1172" data-end="1213"><span
+              role="text"><strong data-start="1176" data-end="1213">3.
+                Offer Rate Flag (OfferRateFlg)</strong></span></h3>
+          <p data-start="1215" data-end="1359"><strong data-start="1215"
+              data-end="1228">Question:</strong><br data-start="1228"
+              data-end="1231">
+            What business condition triggers OfferRateFlg = True? Is
+            this a system parameter, user preference, or
+            customer-specific setting?</p>
+          <p data-start="1361" data-end="1504"><strong data-start="1361"
+              data-end="1372">Answer:</strong><br data-start="1372"
+              data-end="1375">
+            OfferRateFlg should be controlled as a <strong
+              data-start="1414" data-end="1434">system parameter</strong>,
+            with the option to allow <strong data-start="1461"
+              data-end="1488">customer-level override</strong> where
+            required.</p>
+          <hr data-start="1506" data-end="1509">
+          <h3 data-section-id="b4uk8v" data-start="1511" data-end="1537"><span
+              role="text"><strong data-start="1515" data-end="1537">4.
+                CSM Integration</strong></span></h3>
+          <p data-start="1539" data-end="1687"><strong data-start="1539"
+              data-end="1552">Question:</strong><br data-start="1552"
+              data-end="1555">
+            What is the endpoint, authentication method, and payload
+            structure for the CSM external system (apiUrl)? Is this live
+            in production?</p>
+          <p data-start="1689" data-end="1930"><strong data-start="1689"
+              data-end="1700">Answer:</strong><br data-start="1700"
+              data-end="1703">
+            CSM integration should be implemented using a <strong
+              data-start="1749" data-end="1770">standard REST API</strong>,
+            with proper <strong data-start="1784" data-end="1822">authentication
+              (e.g., token-based)</strong> and a <strong
+              data-start="1829" data-end="1856">structured JSON payload</strong>.
+            This needs to be clearly defined and validated for
+            production readiness.</p>
+          <hr data-start="1932" data-end="1935">
+          <h3 data-section-id="1tbht66" data-start="1937"
+            data-end="1961"><span role="text"><strong data-start="1941"
+                data-end="1961">5. TCS Threshold</strong></span></h3>
+          <p data-start="1963" data-end="2061"><strong data-start="1963"
+              data-end="1976">Question:</strong><br data-start="1976"
+              data-end="1979">
+            What is the current TCS threshold amount? Is this stored in
+            a table or hard-coded?</p>
+          <p data-start="2063" data-end="2211"><strong data-start="2063"
+              data-end="2074">Answer:</strong><br data-start="2074"
+              data-end="2077">
+            The TCS threshold should be stored in a <strong
+              data-start="2117" data-end="2150">parameter/configuration
+              table</strong> and maintained dynamically. It should <strong
+              data-start="2189" data-end="2210">not be hard-coded</strong>.</p>
+          <hr data-start="2213" data-end="2216">
+          <h3 data-section-id="1mldese" data-start="2218"
+            data-end="2244"><span role="text"><strong data-start="2222"
+                data-end="2244">6. Mix Ratio Rules</strong></span></h3>
+          <p data-start="2246" data-end="2397"><strong data-start="2246"
+              data-end="2259">Question:</strong><br data-start="2259"
+              data-end="2262">
+            Are there contract types other than JW that require Mix
+            Ratio %? Are there other contract-type-specific rules not
+            visible in this form?</p>
+          <p data-start="2399" data-end="2625"><strong data-start="2399"
+              data-end="2410">Answer:</strong><br data-start="2410"
+              data-end="2413">
+            Currently, Mix Ratio % is applicable <strong
+              data-start="2450" data-end="2490">only for JW (Job Work)
+              contract type</strong>. However, the system should be
+            designed to support <strong data-start="2542"
+              data-end="2602">other contract types through a
+              configurable rules engine</strong> if required in future.</p>
+          <hr data-start="2627" data-end="2630">
+          <h3 data-section-id="18rmu38" data-start="2632"
+            data-end="2683"><span role="text"><strong data-start="2636"
+                data-end="2683">7. IG_INSBODT vs IG_BODT (Dispatch
+                Process)</strong></span></h3>
+          <p data-start="2685" data-end="2813"><strong data-start="2685"
+              data-end="2698">Question:</strong><br data-start="2698"
+              data-end="2701">
+            What is the business difference between IG_INSBODT and
+            IG_BODT for partial dispatch tracking? When is each used?</p>
+          <p data-start="2815" data-end="2828"><strong data-start="2815"
+              data-end="2826">Answer:</strong></p>
+          <ul data-start="2829" data-end="3284">
+            <li data-section-id="1aa2ktb" data-start="2829"
+              data-end="3054"> <strong data-start="2831"
+                data-end="2846">IG_INSBODT:</strong><br
+                data-start="2846" data-end="2849">
+              Used for <strong data-start="2860" data-end="2898">Despatch
+                Instruction-based process</strong>, where dispatch is
+              initiated through an <strong data-start="2939"
+                data-end="2963">internal instruction</strong> from
+              Sales/Planning to Stores/Dispatch. This flow is <strong
+                data-start="3017" data-end="3053">controlled by
+                parameter settings</strong>. </li>
+            <li data-section-id="1x2a6wb" data-start="3056"
+              data-end="3284"> <strong data-start="3058"
+                data-end="3070">IG_BODT:</strong><br data-start="3070"
+                data-end="3073">
+              Used for <strong data-start="3084" data-end="3110">Direct
+                Despatch Advice</strong>, where dispatch is made <strong
+                data-start="3135" data-end="3170">directly against the
+                Sale Order</strong>, skipping the Despatch Instruction
+              stage. This depends on <strong data-start="3229"
+                data-end="3283">customer-specific or business process
+                requirements</strong>. </li>
+          </ul>
+          <hr data-start="3286" data-end="3289">
+          <h3 data-section-id="wn8o2z" data-start="3291" data-end="3338"><span
+              role="text"><strong data-start="3295" data-end="3338">8.
+                Rate Decimal Precision (RateDeciPos)</strong></span></h3>
+          <p data-start="3340" data-end="3447"><strong data-start="3340"
+              data-end="3353">Question:</strong><br data-start="3353"
+              data-end="3356">
+            What is the standard value of RateDeciPos? Do different
+            divisions use different precisions?</p>
+          <p data-start="3449" data-end="3610"><strong data-start="3449"
+              data-end="3460">Answer:</strong><br data-start="3460"
+              data-end="3463">
+            RateDeciPos should be <strong data-start="3485"
+              data-end="3523">configurable at the division level</strong>,
+            typically ranging from <strong data-start="3548"
+              data-end="3573">2 to 4 decimal places</strong>, depending
+            on business requirements.</p>
+          <hr data-start="3612" data-end="3615">
+          <h3 data-section-id="16odi2z" data-start="3617"
+            data-end="3666"><span role="text"><strong data-start="3621"
+                data-end="3666">9. Deletion vs Cancellation of Sale
+                Order</strong></span></h3>
+          <p data-start="3668" data-end="3810"><strong data-start="3668"
+              data-end="3681">Question:</strong><br data-start="3681"
+              data-end="3684">
+            Is there ever a requirement to physically delete a sale
+            order, or is cancellation (CANCELLED='Y') always sufficient
+            for audit?</p>
+          <p data-start="3812" data-end="3825"><strong data-start="3812"
+              data-end="3823">Answer:</strong></p>
+          <ul data-start="3826" data-end="4091">
+            <li data-section-id="tq7hji" data-start="3826"
+              data-end="3977"> <strong data-start="3828"
+                data-end="3840">Deletion</strong> should be allowed <strong
+                data-start="3856" data-end="3891">only if no further
+                transactions</strong> (dispatch, invoice, etc.) have
+              been performed, as part of internal process control. </li>
+            <li data-section-id="1yvulo3" data-start="3978"
+              data-end="4091"> Once the order is processed, <strong
+                data-start="4009" data-end="4058">cancellation
+                (CANCELLED = 'Y') should be used</strong> to ensure
+              proper audit tracking. </li>
+          </ul>
+          <hr data-start="4093" data-end="4096">
+          <h3 data-section-id="1cgo8nu" data-start="4098"
+            data-end="4152"><span role="text"><strong data-start="4102"
+                data-end="4152">10. Report Footer Configuration
+                (fr_RepFooter)</strong></span></h3>
+          <p data-start="4154" data-end="4255"><strong data-start="4154"
+              data-end="4167">Question:</strong><br data-start="4167"
+              data-end="4170">
+            What does fr_RepFooter configure? Are there footer variants
+            per customer or division?</p>
+          <p data-start="4257" data-end="4419"><strong data-start="4257"
+              data-end="4268">Answer:</strong><br data-start="4268"
+              data-end="4271">
+            fr_RepFooter is used to configure <strong data-start="4305"
+              data-end="4330">report footer details</strong>, which are
+            maintained <strong data-start="4353" data-end="4370">division-wise</strong></p>
+          <hr data-start="4421" data-end="4424">
+          <h3 data-section-id="1fmqnu8" data-start="4426"
+            data-end="4463"><span role="text"><strong data-start="4430"
+                data-end="4463">11. Multi-Division Sale Order</strong></span></h3>
+          <p data-start="4465" data-end="4572"><strong data-start="4465"
+              data-end="4478">Question:</strong><br data-start="4478"
+              data-end="4481">
+            Can a single sale order span multiple divisions, or is each
+            order always division-specific?</p>
+          <p data-start="4574" data-end="4680"><strong data-start="4574"
+              data-end="4585">Answer:</strong><br data-start="4585"
+              data-end="4588">
+            A sale order is <strong data-start="4604" data-end="4632">always
+              division-specific</strong>. A single order cannot span
+            multiple divisions.</p>
+          <hr data-start="4682" data-end="4685">
+          <h3 data-section-id="37238k" data-start="4687" data-end="4731"><span
+              role="text"><strong data-start="4691" data-end="4731">12.
+                Auto-Mail System (CheckAutoMail)</strong></span></h3>
+          <p data-start="4733" data-end="4839"><strong data-start="4733"
+              data-end="4746">Question:</strong><br data-start="4746"
+              data-end="4749">
+            What email system is used for CheckAutoMail? SMTP or
+            third-party? What triggers auto-mail?</p>
+          <p data-start="4841" data-end="5093"><strong data-start="4841"
+              data-end="4852">Answer:</strong><br data-start="4852"
+              data-end="4855">
+            Auto-mail functionality currently uses an <strong
+              data-start="4897" data-end="4926">SMTP server
+              configuration</strong>. Integration with <strong
+              data-start="4945" data-end="4975">third-party email
+              services</strong> can also be implemented if required.
+            Auto-mail is typically triggered during <strong
+              data-start="5053" data-end="5092">print or order
+              confirmation process</strong>.</p>
+          <p>This is for your kind information</p>
+          <pre class="moz-signature" cols="72">Thanks &amp; Regards,
+V.Seenivasan</pre>
+          <div class="moz-cite-prefix">On 10/04/2026 01:13 PM, CEO
+            wrote:<br>
+          </div>
+          <blockquote type="cite"
+            cite="mid:938d3068-94d0-4bcd-b6ac-4dbb30201050@kalsofte.com">
+            <meta http-equiv="Content-Type"
+              content="text/html; charset=UTF-8">
+            <p>Dear Annamalai and Seenivasan,<br>
+              <br>
+              I have reviewed both the 2 April and the 10 April versions
+              of the Sales Order FSD from the QA mail ID. I want to give
+              both of you a clear picture of what has improved, what
+              still needs to be done, and what each of you must action
+              before this document can proceed.<br>
+              <br>
+              <b>On the improvement from version 1 to version 2 —
+                Annamalai</b><br>
+              <br>
+              <b>This is a substantial revision and the effort is
+                visible.</b> Between 2 April and today, ten sections
+              that were either absent or inadequate have been brought to
+              a proper standard. Let me be specific.<br>
+              <br>
+              Section 3 (Field Rules) is new and covers 25 fields with
+              mandatory flags, data types, lengths, defaults, and notes.
+              Section 4 (Validation Rules) is now correctly structured
+              into four categories — Pre-Add, Header, Line Entry, and
+              Customer-Specific — with error messages inline. This was
+              entirely absent in version 1. Section 6 (TC Framework) is
+              now present and correctly states that the Sale Order form
+              does not trigger stock movements or accounting entries at
+              the point of order creation — TC activation happens
+              downstream at despatch and invoice. This is the correct
+              understanding and it protects the SPINRISE developer from
+              building the wrong integration point.<br>
+              <br>
+              Section 7 (Common Module Dependencies) now analyses
+              Spinmod.bas, modGeneral.bas, and clsCrystal.cls at the
+              function level. Section 8 (DB Operations) now documents
+              both KSP_LSALES_SALEORDER and KSP_TCSAmountCheckLSales
+              with their business rules. Section 9 (Error Messages) is
+              entirely new — 39 exact messages with trigger conditions.
+              Sections 12 (SPINRISE Recommendations), 13 (IST Review
+              Questions), and 14 (Summary Scorecard) are all new
+              additions. This is a complete restructuring of the
+              document and it is aligned with the v2 template.<br>
+              <br>
+              <b>This is the level of quality that should have been in
+                the first submission.</b> That said, the first
+              submission was made on 2 April — eight days before the
+              current date — and Seenivasan had eight days to review it
+              and provide feedback. No IST feedback was provided. I will
+              address that separately below.<br>
+              <br>
+              <b>What still needs to be completed before this FSD can
+                proceed to IST review</b><br>
+              <br>
+              <b>1. Stage 0 confirmation is absent from the document
+                header.</b><br>
+              The Document Identity table does not record Stage 0
+              completion status, the line count before and after
+              cleaning, or TL-Dev sign-off. The RMI module FSD correctly
+              showed '12,198 lines cleaned to 11,066 lines' in its
+              header. This document shows only '453 KB' as the file size
+              with no cleaning record. Annamalai: please confirm with
+              TL-Dev Sasi whether Stage 0 has been completed on
+              frmcontract.frm, add the line count before and after, and
+              add TL-Dev Sasi's sign-off to the document header.<br>
+              <br>
+              <b>2. CustID-based hardcoding — has Stage 0 actually
+                resolved this?</b><br>
+              Section 11 (Customer Variations) lists 11
+              customer-specific behaviours. Most of these are described
+              against customer names rather than ig_param configuration
+              flags. The Summary Scorecard in Section 14 itself rates
+              Customer Configurability at 3 out of 5 with the note
+              'mostly hard-coded with if-then-else rather than
+              configuration-table driven.' This is the same issue that
+              required extensive correction in the PO module's PR form,
+              which had 13 hardcoded CustID blocks that Stage 0 had to
+              remove and replace with po_para flags. The question for
+              Annamalai is direct: has Stage 0 removed the CustID-based
+              conditional blocks (SLVSM, SARANYA, CHERAN, SKY, SKS,
+              KUMARAGIRI, LMW, JTCL, SCM/JAT) from the cleaned form, and
+              replaced them with ig_param flag-driven behaviour? If not,
+              Stage 0 is not complete for this form. SPINRISE cannot be
+              built from a form that still contains hardcoded customer
+              ID checks.<br>
+              <br>
+              <b>3. Three stored procedures require code submission and
+                Follow-up Prompt B analysis.</b><br>
+              Section 8.4 documents KSP_LSALES_SALEORDER and Section 8.5
+              documents KSP_TCSAmountCheckLSales at a business-rule
+              description level. Section 5.5 references a third SP,
+              Ksp_PendingOrderVal, used in the credit limit calculation.
+              None of the three have been analysed from the actual SQL
+              code. The rate calculation inside KSP_LSALES_SALEORDER,
+              the union logic and threshold comparison inside
+              KSP_TCSAmountCheckLSales, and the pending order value
+              query inside Ksp_PendingOrderVal must all be submitted to
+              Claude using Follow-up Prompt B from the v2 guide. The SP
+              analysis must come from the code, not from a description
+              of what the SP is intended to do. Please obtain all three
+              SP codes from SQL Server Management Studio and run
+              Follow-up Prompt B on each.<br>
+              <br>
+              <b>4. The audit trail write is missing from the Save
+                Sequence.</b><br>
+              Section 8.3 documents the Save Sequence in seven steps.
+              Notably absent is the INSERT into ig_trans_log_sales,
+              which was documented in detail in version 1 of this
+              document including the exact SQL with IP address,
+              hostname, and user ID. This is a regression — the audit
+              trail write existed in v1 and has been lost in v2. Please
+              add it as a step in Section 8.3, with the field mapping.<br>
+              <br>
+              <b>5. The document number race condition must be flagged
+                as a Critical Defect.</b><br>
+              Section 12 Recommendation 4 correctly identifies that
+              IG_DOCCONTROL document numbering should be replaced with a
+              sequence service. But the underlying risk is not stated as
+              a defect. The current code reads MAX+1 from IG_DOCCONTROL
+              without a lock, which means concurrent saves from two
+              users can produce duplicate order numbers. The RMI PO FSD
+              correctly flagged this as CD-2 with an explicit SPINRISE
+              fix. Please add this as a Critical Defect entry — the same
+              pattern exists here and the same UPDLOCK-based sequence
+              fix applies.<br>
+              <br>
+              <b>6. Section 11 needs SPINRISE configuration flag names
+                and defaults.</b><br>
+              The RMI PO FSD mapped each RM_PARAM flag to a SPINRISE
+              config name with a recommended default value. The Sales
+              Order Section 11 describes what each customer variation
+              does but does not say how SPINRISE should handle it. For
+              each of the 11 variation rows, please add two columns: the
+              SPINRISE config parameter name, and the recommended
+              default for a new customer installation.<br>
+              <br>
+              <b>7. Auto-email flow not sufficiently documented.</b><br>
+              Section 1 correctly lists auto-email as a capability.
+              Section 12 references it. But the trigger logic
+              (CheckAutoMail reads ig_param.AutoMail flag), the export
+              path (Sales_PrintSMTP exports Crystal to KALFOLDERDATA),
+              and the CDO SMTP configuration (server, port, SSL,
+              credentials from pp_divmas) are not in Section 8 or
+              Section 7 at the level needed for SPINRISE migration. In
+              SPINRISE, the email flow will be replaced by a
+              transactional email service — but the trigger conditions,
+              the recipient (customer email from fa_slmas), and the
+              attachment format must be documented so the SPINRISE
+              developer knows exactly when and how to send the email.<br>
+              <br>
+              <font size="4"><b>For Seenivasan — on your role in this
+                  review</b></font><br>
+              <br>
+              <b>Seenivasan, I want to be direct.</b> Annamalai
+              submitted the version 1 FSD to you on 2 April. That was
+              eight days ago. You have not provided a single IST review
+              comment on that document. Your mail today asks Annamalai
+              for a 'revised FSD' without telling him what needs to be
+              revised. <b>That is not how the IST review process works.<br>
+              </b><br>
+              The IST reviewer's job is to read the document, answer the
+              IST review questions in Section 13, and flag any
+              domain-level inaccuracies in the business logic,
+              validation rules, and customer variations. The developer
+              revises based on IST feedback. <b>You have that sequence
+                reversed.</b><br>
+              <br>
+              Version 2 of the FSD has arrived, with Section 13 now
+              containing 12 structured IST questions. <b>Your
+                responsibility is to answer all 12 of those questions
+                directly in the document.</b> The questions cover credit
+              limit override authority (IST-1), agent mandatory setup
+              (IST-2), offer rate flag trigger (IST-3), CSM integration
+              status (IST-4), TCS threshold (IST-5), JW rules (IST-6),
+              IG_INSBODT vs IG_BODT (IST-7), rate decimal configuration
+              (IST-8), cancellation policy (IST-9), report footer
+              variants (IST-10), multi-division orders (IST-11), and
+              auto-mail system (IST-12).<br>
+              <br>
+              <b>Please complete your IST review of Section 13 and send
+                your responses to Annamalai so the document can be
+                updated. Tomorrow is the Saturday review meeting. I
+                expect a status update on M03 that shows IST engagement,
+                not silence.</b><br>
+              <br>
+              <br>
+              <font size="4"><b>Overall assessment</b></font><br>
+              <br>
+              The improvement from version 1 to version 2 represents
+              exactly the standard the v2 guide is designed to produce.
+              Annamalai has used the eight days since version 1
+              productively and the document is now structurally sound.
+              The seven items above are what stands between this
+              document and the formal IST review chain.<br>
+              <br>
+              <b>Annamalai,</b> address items 1 through 7 above. The
+              most urgent are Stage 0 confirmation (item 1) and the
+              CustID hardcoding question (item 2), because those
+              determine whether the form is migration-ready at all.<br>
+              <br>
+              <b>Seenivasan,</b> answer the IST questions. The developer
+              has done his part.<br>
+              <br>
+              Regards,<br>
+              T. Mani<br>
+              <br>
+              cc: TL-Dev Sasi, PM Saravanan, TL-IST Palanivel</p>
+            <div class="moz-cite-prefix">On 10/04/2026 12:50 pm,
+              Annamalai S wrote:<br>
+            </div>
+            <blockquote type="cite"
+cite="mid:9276c89c-94f1-4fc7-b6e1-5f2b413e2598@kalsofte.com">
+              <meta http-equiv="Content-Type"
+                content="text/html; charset=UTF-8">
+              <p data-start="65" data-end="89"><span data-start="65"
+                  data-end="89">Dear Mr. Seenivasan,</span></p>
+              <p data-start="91" data-end="197">Please find attached the
+                <strong data-start="116" data-end="148">Sales Order
+                  Transaction form</strong> from the <strong
+                  data-start="158" data-end="196">Domestic Sales Module
+                  FSD document</strong>.</p>
+              <p data-start="199" data-end="225">Kindly review and
+                confirm.</p>
+              <p data-start="227" data-end="257"><span data-start="227"
+                  data-end="239">Regards,</span><br data-start="239"
+                  data-end="242">
+                <span data-start="242" data-end="257">Annamalai S</span></p>
+              <p><br>
+              </p>
+              <div class="moz-cite-prefix">On 10/04/2026 12:30 pm,
+                Seenivasan wrote:<br>
+              </div>
+              <blockquote type="cite"
+cite="mid:6b25f379-e415-4eb6-936a-d6e8f2212a72@kalsofte.com">
+                <meta http-equiv="Content-Type"
+                  content="text/html; charset=UTF-8">
+                <p class="isSelectedEnd"><span>Dear Sir,</span></p>
+                <p class="isSelectedEnd"><span>Kindly share the <b>revised
+                    </b>SPINRISE FSD document (transaction screen
+                    markdown) for the Domestic Sales module at the
+                    earliest.</span></p>
+                <p class="isSelectedEnd"><span>If there are any
+                    constraints, please raise an email so that the same
+                    can be resolved promptly.</span></p>
+                <p><span>Thank you for your understanding.</span></p>
+                <pre class="moz-signature" cols="72">Thanks &amp; Regards,
+V.Seenivasan</pre>
+                <div class="moz-cite-prefix">On 02/04/2026 11:56 AM,
+                  Annamalai S wrote:<br>
+                </div>
+                <blockquote type="cite"
+cite="mid:60cccf98-2064-4b03-bccd-95b6bc48cc01@kalsofte.com">
+                  <meta http-equiv="content-type"
+                    content="text/html; charset=UTF-8">
+                  <p>Dear Sir,</p>
+                  <p data-start="242" data-end="437">Please find
+                    attached the <strong data-start="267"
+                      data-end="303">Sales Order Transaction document</strong>
+                    from the <strong data-start="313" data-end="358">Sales
+                      Management System (frmcontract.frm)</strong>. This
+                    has been prepared as part of the <strong
+                      data-start="398" data-end="436">SPINRISE FSD
+                      documentation process</strong>.</p>
+                  <p data-start="439" data-end="533">This document
+                    includes a detailed analysis of the VB6 form code
+                    across the following sections:</p>
+                  <ul data-start="535" data-end="922">
+                    <li data-section-id="1bd91k0" data-start="535"
+                      data-end="570"> Form Overview and Screen Layout </li>
+                    <li data-section-id="1610fzb" data-start="571"
+                      data-end="626"> Header and Item Entry Fields (with
+                      mandatory flags) </li>
+                    <li data-section-id="cbwp41" data-start="627"
+                      data-end="665"> Toolbar Buttons and their behavior
+                    </li>
+                    <li data-section-id="rz0m2m" data-start="666"
+                      data-end="738"> Validation Rules (Pre-Add, Header,
+                      Item Line, and Customer-Specific) </li>
+                    <li data-section-id="1shdxaz" data-start="739"
+                      data-end="777"> Business Logic and Auto-Fill Rules
+                    </li>
+                    <li data-section-id="1378nam" data-start="778"
+                      data-end="819"> Database Tables and Stored
+                      Procedures </li>
+                    <li data-section-id="16uf9gr" data-start="820"
+                      data-end="848"> Error Messages Catalogue </li>
+                    <li data-section-id="16jcp5l" data-start="849"
+                      data-end="883"> Related Screens and Navigation </li>
+                    <li data-section-id="c929mf" data-start="884"
+                      data-end="922"> SPINRISE Migration Recommendations
+                    </li>
+                  </ul>
+                  <p data-start="924" data-end="1100">Kindly review and
+                    verify all <strong data-start="953" data-end="977">domain-level
+                      details</strong>, including validation rules,
+                    business logic, customer-specific variations .</p>
+                  <p data-start="1204" data-end="1306">The document is
+                    attached in both <strong data-start="1237"
+                      data-end="1253">Word (.docx)</strong> and <strong
+                      data-start="1258" data-end="1276">Markdown (.md)</strong>
+                    formats for your convenience.</p>
+                  <p data-start="1308" data-end="1375">Kindly share your
+                    <strong data-start="1326" data-end="1358">review
+                      comments and approval</strong> at the earliest.</p>
+                  <div class="moz-signature">-- <br>
+                    Regards,<br>
+                    Annamalai S<br>
+                     
+                    <p><br>
+                    </p>
+                  </div>
+                </blockquote>
+              </blockquote>
+              <div class="moz-signature"> 
+                <p><br>
+                </p>
+              </div>
+            </blockquote>
+          </blockquote>
+        </blockquote>
+      </blockquote>
+    </blockquote>
+  </body>
+</html>
+
+--------------xF0iPjln5xG0G2NQgDRCBEqS--

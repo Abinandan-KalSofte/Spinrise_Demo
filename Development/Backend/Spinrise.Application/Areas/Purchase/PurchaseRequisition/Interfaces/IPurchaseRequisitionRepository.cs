@@ -55,4 +55,5 @@ public interface IPurchaseRequisitionRepository
     Task<bool> MachineExistsAsync(string divCode, string depCode, string machineNo);
     Task<bool> IsLinkedToEnquiryAsync(string divCode, long prNo);
     Task<bool> CategoryExistsAsync(string divCode, string catCode);
+    Task<bool> SubCostExistsAsync(string divCode, long subCostCode);
 }

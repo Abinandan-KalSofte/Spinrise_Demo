@@ -193,7 +193,7 @@ export default function MainLayout() {
         </div>
         {!collapsed && (
           <div className="sidebar__brand-copy">
-            <Typography.Text strong style={{ fontSize: 15, color: '#0f172a' }}>
+            <Typography.Text strong style={{ fontSize: 15, color: '#e2e8f0' }}>
               Spinrise
             </Typography.Text>
             <Typography.Text type="secondary" style={{ fontSize: 11 }}>
@@ -256,7 +256,7 @@ export default function MainLayout() {
   )
 
   return (
-    <Layout style={{ minHeight: '100vh', background: '#f4f6fb' }}>
+    <Layout style={{ minHeight: '100vh' }}>
       {/* ── Desktop Sidebar ──────────────────────────────────────────────────── */}
       <Sider
         breakpoint="md"
@@ -264,7 +264,7 @@ export default function MainLayout() {
         onCollapse={setCollapsed}
         collapsedWidth={64}
         width={240}
-        theme="light"
+        theme="dark"
         className="main-sider"
       >
         {sidebarContent}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Modal, Table, Tag, Typography } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { HistoryOutlined } from '@ant-design/icons'
@@ -13,69 +13,69 @@ interface PRRateHistoryModalProps {
   itemName: string
 }
 
-const COLUMNS: ColumnsType<PRItemHistoryDto> = [
-  {
-    title:     'PO No',
-    dataIndex: 'poNo',
-    key:       'poNo',
-    width:     90,
-  },
-  {
-    title:     'PO Date',
-    dataIndex: 'poDate',
-    key:       'poDate',
-    width:     100,
-    render:    (v: string) => dayjs(v).format('DD-MM-YYYY'),
-  },
-  {
-    title:     'Supplier',
-    dataIndex: 'supplierName',
-    key:       'supplierName',
-    ellipsis:  true,
-    render:    (v?: string) => v || <Typography.Text type="secondary">—</Typography.Text>,
-  },
-  {
-    title:     'Rate (₹)',
-    dataIndex: 'rate',
-    key:       'rate',
-    width:     100,
-    align:     'right',
-    render:    (v: number) => (
-      <Tag color="blue" style={{ fontVariantNumeric: 'tabular-nums' }}>
-        ₹{v.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-      </Tag>
-    ),
-  },
-  {
-    title:     'Order Qty',
-    dataIndex: 'orderQty',
-    key:       'orderQty',
-    width:     90,
-    align:     'right',
-  },
-  {
-    title:     'Rcvd Qty',
-    dataIndex: 'receivedQty',
-    key:       'receivedQty',
-    width:     85,
-    align:     'right',
-  },
-  {
-    title:     'Pending',
-    dataIndex: 'pendingQty',
-    key:       'pendingQty',
-    width:     80,
-    align:     'right',
-    render:    (v: number) =>
-      v > 0
-        ? <Tag color="orange" style={{ fontVariantNumeric: 'tabular-nums' }}>{v}</Tag>
-        : <Typography.Text type="secondary">—</Typography.Text>,
-  },
-]
-
 export function PRRateHistoryModal({ open, onClose, itemCode, itemName }: PRRateHistoryModalProps) {
   const [rows,    setRows]    = useState<PRItemHistoryDto[]>([])
   const [loading, setLoading] = useState(false)
+
+  const COLUMNS = useMemo((): ColumnsType<PRItemHistoryDto> => [
+    {
+      title:     'PO No',
+      dataIndex: 'poNo',
+      key:       'poNo',
+      width:     90,
+    },
+    {
+      title:     'PO Date',
+      dataIndex: 'poDate',
+      key:       'poDate',
+      width:     100,
+      render:    (v: string) => dayjs(v).format('DD-MM-YYYY'),
+    },
+    {
+      title:     'Supplier',
+      dataIndex: 'supplierName',
+      key:       'supplierName',
+      ellipsis:  true,
+      render:    (v?: string) => v || <Typography.Text type="secondary">—</Typography.Text>,
+    },
+    {
+      title:     'Rate (₹)',
+      dataIndex: 'rate',
+      key:       'rate',
+      width:     100,
+      align:     'right',
+      render:    (v: number) => (
+        <Tag color="blue" style={{ fontVariantNumeric: 'tabular-nums' }}>
+          ₹ {Number(v ?? 0).toFixed(2)}
+        </Tag>
+      ),
+    },
+    {
+      title:     'Order Qty',
+      dataIndex: 'orderQty',
+      key:       'orderQty',
+      width:     90,
+      align:     'right',
+    },
+    {
+      title:     'Rcvd Qty',
+      dataIndex: 'receivedQty',
+      key:       'receivedQty',
+      width:     85,
+      align:     'right',
+    },
+    {
+      title:     'Pending',
+      dataIndex: 'pendingQty',
+      key:       'pendingQty',
+      width:     80,
+      align:     'right',
+      render:    (v: number) =>
+        v > 0
+          ? <Tag color="orange" style={{ fontVariantNumeric: 'tabular-nums' }}>{v}</Tag>
+          : <Typography.Text type="secondary">—</Typography.Text>,
+    },
+  ], [])
 
   useEffect(() => {
     if (!open || !itemCode) return

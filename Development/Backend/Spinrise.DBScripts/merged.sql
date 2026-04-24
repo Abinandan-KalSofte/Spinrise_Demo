@@ -459,6 +459,19 @@ BEGIN
 END;
 GO
 
+CREATE OR ALTER PROCEDURE dbo.ksp_PR_SubCostExists
+    @DivCode     VARCHAR(2),
+    @SubCostCode NUMERIC(5,0)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT CASE WHEN EXISTS (
+        SELECT 1 FROM dbo.in_scc
+        WHERE DIVCODE = @DivCode AND SCCCODE = @SubCostCode AND active = 'Y'
+    ) THEN 1 ELSE 0 END AS [Exists];
+END;
+GO
+
 CREATE OR ALTER PROCEDURE dbo.ksp_PR_IsLinkedToEnquiry
     @DivCode VARCHAR(2),
     @PrNo    NUMERIC(6,0)
@@ -577,15 +590,16 @@ GO
 
 -- ksp_PR_GetPaginated
 CREATE OR ALTER PROCEDURE dbo.ksp_PR_GetPaginated
-    @DivCode   VARCHAR(2),
-    @PrNo      VARCHAR(20)  = NULL,
-    @StartDate DATE         = NULL,
-    @EndDate   DATE         = NULL,
-    @DepCode   VARCHAR(3)   = NULL,
-    @ReqName   VARCHAR(10)  = NULL,
-    @Status    VARCHAR(20)  = NULL,
-    @Page      INT          = 1,
-    @PageSize  INT          = 20
+    @DivCode    VARCHAR(2),
+    @PrNo       VARCHAR(20)  = NULL,
+    @StartDate  DATE         = NULL,
+    @EndDate    DATE         = NULL,
+    @DepCode    VARCHAR(3)   = NULL,
+    @ReqName    VARCHAR(10)  = NULL,
+    @Status     VARCHAR(20)  = NULL,
+    @SearchText VARCHAR(100) = NULL,
+    @Page       INT          = 1,
+    @PageSize   INT          = 20
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -606,11 +620,16 @@ BEGIN
     SELECT COUNT(DISTINCT CAST(h.prno AS VARCHAR) + CAST(h.prdate AS VARCHAR))
     FROM   dbo.po_prh h
     WHERE  h.divcode = @DivCode
-      AND  (@PrNo    IS NULL OR h.prno    = TRY_CAST(@PrNo AS NUMERIC(6,0)))
+      AND  (@PrNo       IS NULL OR h.prno    = TRY_CAST(@PrNo AS NUMERIC(6,0)))
       AND  h.prdate >= @StartDate
       AND  h.prdate <= @EndDate
-      AND  (@DepCode  IS NULL OR h.depcode = @DepCode)
-      AND  (@ReqName  IS NULL OR h.REQNAME = @ReqName)
+      AND  (@DepCode    IS NULL OR h.depcode = @DepCode)
+      AND  (@ReqName    IS NULL OR h.REQNAME = @ReqName)
+      AND  (@SearchText IS NULL
+            OR CAST(h.prno AS VARCHAR(20))  LIKE '%' + @SearchText + '%'
+            OR ISNULL(h.refno,   '')        LIKE '%' + @SearchText + '%'
+            OR ISNULL(h.REQNAME, '')        LIKE '%' + @SearchText + '%'
+           )
       AND  (
                @Status IS NULL
                OR (@Status = 'CANCELLED' AND ISNULL(h.cancelflag,'') = 'Y')
@@ -635,6 +654,10 @@ BEGIN
             WHEN ISNULL(h.APPFLG,    '') = 'Y' THEN 'CONVERTED'
             ELSE                                     'OPEN'
         END          AS PrStatus,
+        CASE WHEN ISNULL(h.cancelflag,'') = 'Y'
+             THEN CAST(1 AS BIT)
+             ELSE CAST(0 AS BIT)
+        END          AS IsDeleted,
         h.createdby  AS CreatedBy,
         CASE
             WHEN ISDATE(h.createddt) = 1 THEN CAST(h.createddt AS DATETIME)
@@ -648,11 +671,16 @@ BEGIN
           AND l.prdate  = h.prdate
           AND ISNULL(l.AmdFlg,'') <> 'Y'
     WHERE  h.divcode = @DivCode
-      AND  (@PrNo    IS NULL OR h.prno    = TRY_CAST(@PrNo AS NUMERIC(6,0)))
+      AND  (@PrNo       IS NULL OR h.prno    = TRY_CAST(@PrNo AS NUMERIC(6,0)))
       AND  h.prdate >= @StartDate
       AND  h.prdate <= @EndDate
-      AND  (@DepCode  IS NULL OR h.depcode = @DepCode)
-      AND  (@ReqName  IS NULL OR h.REQNAME = @ReqName)
+      AND  (@DepCode    IS NULL OR h.depcode = @DepCode)
+      AND  (@ReqName    IS NULL OR h.REQNAME = @ReqName)
+      AND  (@SearchText IS NULL
+            OR CAST(h.prno AS VARCHAR(20))  LIKE '%' + @SearchText + '%'
+            OR ISNULL(h.refno,   '')        LIKE '%' + @SearchText + '%'
+            OR ISNULL(h.REQNAME, '')        LIKE '%' + @SearchText + '%'
+           )
       AND  (
                @Status IS NULL
                OR (@Status = 'CANCELLED' AND ISNULL(h.cancelflag,'') = 'Y')
@@ -692,7 +720,7 @@ BEGIN
         h.SECTION                           AS Section,
         CONVERT(VARCHAR(10), h.SubCost)     AS SubCost,
         h.ITYPE                             AS IType,
-        e.ename                             AS ReqName,
+        ISNULL(e.ename, h.REQNAME)          AS ReqName,
         h.refno                             AS RefNo,
         h.PO_GRP                            AS PoGroupCode,
         h.scopecode                         AS ScopeCode,
@@ -748,10 +776,10 @@ BEGIN
         h.APP3                              AS FinalAppUser,
         h.APP3DATE                          AS APP3DATE
     FROM dbo.po_prh h
-    INNER JOIN pr_emp e
+    LEFT JOIN pr_emp e
         ON h.REQNAME = e.empno
        AND e.divcode = h.divcode
-    INNER JOIN in_dep d
+    LEFT JOIN in_dep d
         ON h.depcode = d.DEPCODE
        AND d.divcode = h.divcode
     WHERE h.divcode = @DivCode
@@ -765,7 +793,7 @@ BEGIN
         l.prno                              AS PrNo,
         l.prsno                             AS PrSNo,
         l.itemcode                          AS ItemCode,
-        l.ITEMMEMO                          AS ItemName,
+        i.ITEMNAME                          AS ItemName,
         i.UOM                               AS Uom,
         l.RATE                              AS Rate,
         l.curstock                          AS CurrentStock,

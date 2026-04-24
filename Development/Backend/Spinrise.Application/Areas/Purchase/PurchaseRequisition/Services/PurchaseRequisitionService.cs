@@ -109,8 +109,22 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
         try
         {
             var data = await _repo.GetItemHistoryAsync(divCode.Trim(), itemCode.Trim());
+            
+            // Safeguard: ensure pending qty is never negative (null-safe)
+            var validated = data.Select(x => new PRItemHistoryDto
+            {
+                PoNo         = x.PoNo,
+                PoDate       = x.PoDate,
+                SupplierCode = x.SupplierCode,
+                SupplierName = x.SupplierName,
+                Rate         = x.Rate >= 0 ? x.Rate : 0,
+                OrderQty     = x.OrderQty >= 0 ? x.OrderQty : 0,
+                ReceivedQty  = x.ReceivedQty >= 0 ? x.ReceivedQty : 0,
+                PendingQty   = Math.Max(x.OrderQty - x.ReceivedQty, 0),  // Never negative
+            });
+            
             await _uow.CommitAsync();
-            return data;
+            return validated;
         }
         catch { await _uow.RollbackAsync(); throw; }
     }
@@ -345,7 +359,8 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
     // ── Delete ────────────────────────────────────────────────────────────────
 
     public async Task<(bool Success, string Message)> DeleteAsync(
-        string divCode, long prNo, string deleteReasonCode, AuditContext audit)
+        string divCode, long prNo, string deleteReasonCode, AuditContext audit,
+        DateTime? startDate = null, DateTime? endDate = null)
     {
         if (string.IsNullOrWhiteSpace(divCode) || prNo <= 0)
             return (false, PRMessages.PrNotFound);
@@ -361,7 +376,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
         await _uow.BeginAsync();
         try
         {
-            var header = await _repo.GetByIdAsync(divCode, prNo);
+            var header = await _repo.GetByIdAsync(divCode, prNo, startDate, endDate);
             if (header is null)
             {
                 await _uow.CommitAsync();
@@ -417,7 +432,8 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
     // ── Delete line ───────────────────────────────────────────────────────────
 
     public async Task<(bool Success, string Message)> DeleteLineAsync(
-        string divCode, long prNo, int prSNo, string deleteReasonCode, AuditContext audit)
+        string divCode, long prNo, int prSNo, string deleteReasonCode, AuditContext audit,
+        DateTime? startDate = null, DateTime? endDate = null)
     {
         if (string.IsNullOrWhiteSpace(divCode) || prNo <= 0 || prSNo <= 0)
             return (false, PRMessages.PrNotFound);
@@ -439,7 +455,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
                 return (false, PRMessages.DeleteReasonInvalid);
             }
 
-            var existing = await _repo.GetByIdAsync(divCode, prNo);
+            var existing = await _repo.GetByIdAsync(divCode, prNo, startDate, endDate);
             if (existing is null)
             {
                 await _uow.CommitAsync();
@@ -526,6 +542,11 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             if (!string.IsNullOrWhiteSpace(line.CategoryCode)
                 && !await _repo.CategoryExistsAsync(divCode, line.CategoryCode.Trim()))
                 return (PRMessages.CategoryNotFound, warnings);
+
+            // V26: sub cost code must exist in in_scc when provided
+            if (line.SubCostCode.HasValue
+                && !await _repo.SubCostExistsAsync(divCode, line.SubCostCode.Value))
+                return (string.Format(PRMessages.SubCostNotFound, line.SubCostCode), warnings);
         }
 
         return (null, warnings);
@@ -561,6 +582,11 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             if (!string.IsNullOrWhiteSpace(line.CategoryCode)
                 && !await _repo.CategoryExistsAsync(divCode, line.CategoryCode.Trim()))
                 return (PRMessages.CategoryNotFound, warnings);
+
+            // V26: sub cost code must exist in in_scc when provided
+            if (line.SubCostCode.HasValue
+                && !await _repo.SubCostExistsAsync(divCode, line.SubCostCode.Value))
+                return (string.Format(PRMessages.SubCostNotFound, line.SubCostCode), warnings);
         }
 
         return (null, warnings);
@@ -701,6 +727,7 @@ internal static class PRMessages
     public const string RequiredDateModify   = "Required Date cannot be before the PR Date.";
     public const string MachineNotFound      = "Machine not found for the selected department.";
     public const string CostCentreNotFound   = "Cost Centre not found.";
+    public const string SubCostNotFound      = "Sub Cost Centre code {0} not found.";
     public const string CategoryNotFound     = "Category Code not found. Please enter a valid category.";
     public const string BudgetGroupNotFound  = "Budget Group not found.";
     // Delete (V28–V29)

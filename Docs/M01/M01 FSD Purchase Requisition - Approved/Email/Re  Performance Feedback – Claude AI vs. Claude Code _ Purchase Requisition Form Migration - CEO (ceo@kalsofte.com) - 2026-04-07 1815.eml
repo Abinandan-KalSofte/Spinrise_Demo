@@ -1,0 +1,530 @@
+X-UIDL: UID42-1774868925
+X-Mozilla-Status: 0011
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <ceo@kalsofte.com>
+Received: from murphy.nocdirect.com
+	by murphy.nocdirect.com with LMTP
+	id TEYBCnT81GneUwAAet6MXA
+	(envelope-from <ceo@kalsofte.com>); Tue, 07 Apr 2026 07:45:40 -0500
+Return-path: <ceo@kalsofte.com>
+Envelope-to: palanivel@kalsofte.com,
+ mariyaiya.m@kalsofte.com,
+ sasikumar.r@kalsofte.com,
+ annamalai.s@kalsofte.com,
+ sathishkumar.m@kalsofte.com,
+ abinandan.n@kalsofte.com,
+ mohanbabuvn@kalsofte.com,
+ hariharan.j@kalsofte.com,
+ muthuvel.m@kalsofte.com,
+ seenivasan.v@kalsofte.com,
+ vignesh.vp@kalsofte.com,
+ support@kalsofte.com,
+ qa@kalsofte.com,
+ pbsaravanan@kalsofte.com
+Delivery-date: Tue, 07 Apr 2026 07:45:40 -0500
+Received: from [1.38.111.169] (port=5565 helo=[172.20.10.5])
+	by murphy.nocdirect.com with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+	(Exim 4.99.1)
+	(envelope-from <ceo@kalsofte.com>)
+	id 1wA5oH-000000005XO-2hLL;
+	Tue, 07 Apr 2026 07:45:39 -0500
+Content-Type: multipart/alternative;
+ boundary="------------0j7Z3FUpL1hId9stricl6qQg"
+Message-ID: <7a4cc647-947a-4b45-9f18-11a6473c269e@kalsofte.com>
+Date: Tue, 7 Apr 2026 18:15:44 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: =?UTF-8?Q?Re=3A_Performance_Feedback_=E2=80=93_Claude_AI_vs=2E_Clau?=
+ =?UTF-8?Q?de_Code_=7C_Purchase_Requisition_Form_Migration?=
+To: MariyaiyaM <mariyaiya.m@kalsofte.com>
+References: <cb1b9bc2-29dc-4ead-91e5-b5fd45b8f3ca@kalsofte.com>
+Content-Language: en-US
+Cc: Sasi <sasikumar.r@kalsofte.com>, Annamalai s <annamalai.s@kalsofte.com>,
+ SathishkumarM <sathishkumar.m@kalsofte.com>, abinandan.n@kalsofte.com,
+ MohanBabu <mohanbabuvn@kalsofte.com>, HariharanJ <hariharan.j@kalsofte.com>,
+ Kalsoft Palanivel <palanivel@kalsofte.com>,
+ Muthuvel Mani <muthuvel.m@kalsofte.com>, Seeni <seenivasan.v@kalsofte.com>,
+ VigneshVP <vignesh.vp@kalsofte.com>, Support <support@kalsofte.com>,
+ Quality Assurance <qa@kalsofte.com>, pbsaravanan <pbsaravanan@kalsofte.com>
+From: CEO <ceo@kalsofte.com>
+In-Reply-To: <cb1b9bc2-29dc-4ead-91e5-b5fd45b8f3ca@kalsofte.com>
+
+This is a multi-part message in MIME format.
+--------------0j7Z3FUpL1hId9stricl6qQg
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+Dear Mariyaiya,
+
+Thank you for this feedback. I have gone through it carefully, and I 
+want to respond in full — both to acknowledge what you have accomplished 
+and *to give the entire team the correct framework for using these two 
+tools in SPINRISE.
+*
+*Before anything else:* completing the Purchase Requisition form 
+end-to-end using Claude Code in one to two days, as a first attempt, on 
+one of the most technically complex forms in the entire Kalsofte ERP — a 
+form with 9,108 lines of VB6 code, 24 database tables, three stored 
+procedures, 25 error messages, and a 10-state approval lifecycle — is a 
+significant achievement. This is the first concrete proof that the 
+SPINRISE migration approach is technically viable at the scale we are 
+targeting. *Well done.*
+
+*Your technical observations are accurate. Let me validate and extend 
+them for the team.*
+
+*On Claude AI*
+
+Your description is correct.*Claude AI,* accessed through the browser, 
+is a code and documentation generator. It produces complete, 
+well-structured output from a single prompt, but it has no access to the 
+file system, cannot create project folders, cannot install packages, and 
+cannot run or test the code it generates. Every block of code it 
+produces must be manually extracted, placed in the right file, connected 
+to the right modules, and tested by the developer. For a single-screen 
+prototype this is manageable. For 98 forms across the PO module 
+alone,*it is not a scalable approach for code generation.
+*
+However — and *this is important for the whole team to understand *— 
+Claude AI is not the wrong tool. It is the right tool for the wrong 
+stage if used for code generation. Claude AI is the correct tool for 
+Stage 0 and FSD documentation. It reads VB6 code and produces 
+plain-English specifications faster and more thoroughly than any 
+developer can write them manually. The entire FSD process we have built 
+— Stage 0, the 14-section template, the six follow-up prompts, the IST 
+structured questionnaire — is designed around Claude AI. That is where 
+it belongs.
+
+
+*On Claude Code*
+
+Your description is also correct.*Claude Code is an agentic developer 
+running inside VS Code*. It has direct access to the project file 
+system. It creates files, folders, and scaffolds. It installs packages, 
+runs commands, reads compile errors, and corrects them without being 
+asked. It builds front-end and back-end together in the same session. 
+*The developer's role changes from manual code assembler to prompt 
+director and quality reviewer. *This is the right tool for Stage 1 — 
+code generation from an approved FSD.
+
+Your observation that it requires incremental prompting throughout is an 
+important nuance for the team to understand.*Claude Code is not a 
+one-prompt solution.* *It works in phases:* project scaffold, API 
+service layer, React components, validation logic, error handling, 
+testing. *The developer must guide each phase with precise prompts. *The 
+quality of the prompting directly determines the quality and speed of 
+the output. This is a skill that must be built deliberately.
+
+*The sequence that must never be violated*
+
+*For the full team, I want to state the SPINRISE tool sequence as a 
+rule, not a guideline:*
+
+   Stage 0 and FSD documentation  →  Claude AI (browser)
+   FSD review chain  →  Four human review levels, CEO approval
+   Code generation  →  Claude Code (VS Code), using ONLY the 
+CEO-approved FSD as input
+   IST validation  →  Module Sr IST Member tests Claude Code output 
+against VB6 original
+
+This sequence exists for one reason. Claude Code will implement exactly 
+what it is told. If it is given the approved FSD — which correctly marks 
+the three Critical defects in the PR form as defects to be corrected, 
+not replicated — it will build the corrected version. If it is instead 
+given the raw VB6 code, it will replicate the application-terminating 
+End statement, the hardcoded customer ID logic, the SQL injection 
+patterns, and the Oracle SQL branches directly into the new SPINRISE 
+screen. *The FSD is the quality filter between the legacy defects and 
+the new platform*. Bypassing it bypasses that filter entirely.
+
+*No developer may use Claude Code on any SPINRISE module form until that 
+form has a CEO-approved FSD.* Exploratory familiarisation on 
+non-production practice forms this week is encouraged. *Production 
+SPINRISE forms: approved FSD first, then Claude Code.*
+
+*A question that must be answered before the PR form is considered complete
+*
+Mariyaiya, I need to understand the basis on which you used Claude Code 
+for the PR form. Were you working from the approved FSD — which does not 
+yet exist for this form, as Muthuvel's IST review is still pending — or 
+were you working from your own domain knowledge and the VB6 code? I ask 
+this not to diminish the work but because the answer determines the 
+validation required. If the Claude Code output was generated from the 
+VB6 code directly, the three Critical defects may exist in the generated 
+screen and must be found and corrected before the output can be 
+accepted. Muthuvel's IST validation of the Claude Code output against 
+the VB6 original is mandatory regardless of the input source. A 
+generated screen is not a validated screen.
+
+*On project structure — a prerequisite before the team scales Claude Code*
+
+Before any developer other than Mariyaiya begins Claude Code work on 
+SPINRISE module forms, the following must be in place:
+
+*TL-Dev Sasi must define and lock the SPINRISE project structure *— 
+folder conventions, naming standards, API response format, React 
+component patterns, error handling patterns, and database connection 
+approach. Claude Code creates files and folders. If each developer 
+starts independently without a locked structure, the codebase will be 
+inconsistent across modules and impossible to maintain. *The project 
+scaffold is TL-Dev's responsibility and it must be done before the team 
+scales.*
+
+This is the action I am asking TL-Dev Sasi to prioritise this week 
+alongside Stage 0 readiness for M02.
+
+*For the team — five instructions effective immediately*
+
+1.  The tool sequence is mandatory. Claude AI for FSD documentation. 
+Claude Code for code generation from an approved FSD. In that order. No 
+exceptions.
+
+2. *Mariyaiya to present a Claude Code demonstration to the full team 
+this Saturday, 11 April morning session.* Show the prompting sequence, 
+the project structure created, and the output produced for the PR form. 
+PM Saravanan to add this to Saturday's agenda. This is the most valuable 
+knowledge transfer we can do this week.
+
+3.  Mariyaiya to document the Claude Code prompting sequence used for 
+the PR form as a written note — the phases, the key prompts, the 
+corrections made, the time taken per phase. This becomes the first entry 
+in the SPINRISE Developer Reference for Claude Code usage. *Share with 
+the team before Saturday.*
+
+4. *TL-Dev Sasi to define and share the SPINRISE project structure this 
+week.* All developers to align to this structure before beginning any 
+Claude Code work on module forms.
+
+5. *All developers to begin Claude Code familiarisation this week on 
+non-production exploratory forms. *Build the prompting skill before the 
+approved FSDs arrive. When the first approved FSD is ready, you should 
+be able to use Claude Code fluently on day one.
+*
+The bigger picture*
+
+*Mariyaiya's result *— one to two days for a complete PR form cycle 
+using Claude Code — gives us our first real productivity benchmark for 
+the SPINRISE migration. Across 98 items in the PO module, even at a 
+conservative average of one and a half days per transaction form, the 
+code generation phase becomes a weeks-long exercise rather than a 
+months-long one. *The constraint is no longer development speed. The 
+constraint is the quality and completeness of the approved FSDs that 
+feed Claude Code.*
+
+This is why the Stage 0 and FSD documentation work we are doing right 
+now is not preliminary work. It is the main work. It is what determines 
+how fast and how accurately Claude Code can build SPINRISE. Every week 
+we invest in getting the FSDs right is a week we save in rework after 
+code generation.
+
+*The tools are working. The process is sound. The team is moving.*
+
+With confidence in what this team is building,
+T Mani
+
+cc: TL-Dev Sasi, PM Saravanan, Muthuvel, Annamalai, Sathiskumar, 
+Abinandan, Hariharan, TL-IST Palanivel, Full SPINRISE Team
+
+On 07/04/2026 02:43 pm, MariyaiyaM wrote:
+> Dear Sir,
+>
+> I hope this message finds you well. I am writing to share my 
+> performance feedback following my recent hands-on experience with two 
+> AI tools — Claude AI and Claude Code — in the context of migrating our 
+> Purchase Requisition Form.
+>
+> **Claude AI**
+> Claude AI is capable of generating a complete project overview within 
+> one or two prompts, providing the entire form structure at once. 
+> However, the output requires manual intervention, as the code must be 
+> created and integrated folder by folder. The design quality produced 
+> is at a moderate level.
+>
+> **Claude Code**
+> Claude Code requires integration with VS Code and involves providing 
+> prompts incrementally throughout the development process. That said, 
+> it delivers a full-cycle solution — covering both front-end and 
+> back-end development through to deployment — without requiring us to 
+> manually create any components. The entire workflow is handled 
+> end-to-end, provided the prompts are supplied consistently until 
+> completion.
+>
+> **Recommendation**
+> Based on my working experience, Claude Code yields significantly 
+> better results for end-to-end project development. I would recommend 
+> that the team familiarize themselves with Claude Code, ideally by 
+> developing one or two forms initially to build proficiency with the tool.
+>
+> As a reference, I have successfully completed the full development 
+> cycle of the Purchase Requisition Form using Claude Code. As this was 
+> my first attempt, it took approximately one to two days to complete 
+> the form to a satisfactory standard.
+>
+> I believe wider adoption of Claude Code within the team has strong 
+> potential to improve our development efficiency. I am happy to 
+> demonstrate or share my learnings with the team at your convenience.
+>
+>
+>
+> Warm regards,
+> Mariyaiya. M
+--------------0j7Z3FUpL1hId9stricl6qQg
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <p>Dear Mariyaiya,<br>
+      <br>
+      Thank you for this feedback. I have gone through it carefully, and
+      I want to respond in full — both to acknowledge what you have
+      accomplished and <b>to give the entire team the correct framework
+        for using these two tools in SPINRISE.<br>
+      </b><br>
+      <b>Before anything else:</b> completing the Purchase Requisition
+      form end-to-end using Claude Code in one to two days, as a first
+      attempt, on one of the most technically complex forms in the
+      entire Kalsofte ERP — a form with 9,108 lines of VB6 code, 24
+      database tables, three stored procedures, 25 error messages, and a
+      10-state approval lifecycle — is a significant achievement. This
+      is the first concrete proof that the SPINRISE migration approach
+      is technically viable at the scale we are targeting. <b>Well
+        done.</b><br>
+      <br>
+      <b>Your technical observations are accurate. Let me validate and
+        extend them for the team.</b><br>
+      <br>
+      <b><font size="4">On Claude AI</font></b><br>
+      <br>
+      Your description is correct.<b> Claude AI,</b> accessed through
+      the browser, is a code and documentation generator. It produces
+      complete, well-structured output from a single prompt, but it has
+      no access to the file system, cannot create project folders,
+      cannot install packages, and cannot run or test the code it
+      generates. Every block of code it produces must be manually
+      extracted, placed in the right file, connected to the right
+      modules, and tested by the developer. For a single-screen
+      prototype this is manageable. For 98 forms across the PO module
+      alone,<b> it is not a scalable approach for code generation.<br>
+      </b><br>
+      However — and <b>this is important for the whole team to
+        understand </b>— Claude AI is not the wrong tool. It is the
+      right tool for the wrong stage if used for code generation. Claude
+      AI is the correct tool for Stage 0 and FSD documentation. It reads
+      VB6 code and produces plain-English specifications faster and more
+      thoroughly than any developer can write them manually. The entire
+      FSD process we have built — Stage 0, the 14-section template, the
+      six follow-up prompts, the IST structured questionnaire — is
+      designed around Claude AI. That is where it belongs.<br>
+      <br>
+      <br>
+      <b><font size="4">On Claude Code</font></b><br>
+      <br>
+      Your description is also correct.<b> Claude Code is an agentic
+        developer running inside VS Code</b>. It has direct access to
+      the project file system. It creates files, folders, and scaffolds.
+      It installs packages, runs commands, reads compile errors, and
+      corrects them without being asked. It builds front-end and
+      back-end together in the same session. <b>The developer's role
+        changes from manual code assembler to prompt director and
+        quality reviewer. </b>This is the right tool for Stage 1 — code
+      generation from an approved FSD.<br>
+      <br>
+      Your observation that it requires incremental prompting throughout
+      is an important nuance for the team to understand.<b> Claude Code
+        is not a one-prompt solution.</b> <b>It works in phases:</b>
+      project scaffold, API service layer, React components, validation
+      logic, error handling, testing. <b>The developer must guide each
+        phase with precise prompts. </b>The quality of the prompting
+      directly determines the quality and speed of the output. This is a
+      skill that must be built deliberately.<br>
+      <br>
+      <font size="4"><b>The sequence that must never be violated</b></font><br>
+      <br>
+      <b>For the full team, I want to state the SPINRISE tool sequence
+        as a rule, not a guideline:</b><br>
+      <br>
+        Stage 0 and FSD documentation  →  Claude AI (browser)<br>
+        FSD review chain  →  Four human review levels, CEO approval<br>
+        Code generation  →  Claude Code (VS Code), using ONLY the
+      CEO-approved FSD as input<br>
+        IST validation  →  Module Sr IST Member tests Claude Code output
+      against VB6 original<br>
+      <br>
+      This sequence exists for one reason. Claude Code will implement
+      exactly what it is told. If it is given the approved FSD — which
+      correctly marks the three Critical defects in the PR form as
+      defects to be corrected, not replicated — it will build the
+      corrected version. If it is instead given the raw VB6 code, it
+      will replicate the application-terminating End statement, the
+      hardcoded customer ID logic, the SQL injection patterns, and the
+      Oracle SQL branches directly into the new SPINRISE screen. <b>The
+        FSD is the quality filter between the legacy defects and the new
+        platform</b>. Bypassing it bypasses that filter entirely.<br>
+      <br>
+      <b>No developer may use Claude Code on any SPINRISE module form
+        until that form has a CEO-approved FSD.</b> Exploratory
+      familiarisation on non-production practice forms this week is
+      encouraged. <b>Production SPINRISE forms: approved FSD first,
+        then Claude Code.</b><br>
+      <br>
+      <b>A question that must be answered before the PR form is
+        considered complete<br>
+      </b><br>
+      Mariyaiya, I need to understand the basis on which you used Claude
+      Code for the PR form. Were you working from the approved FSD —
+      which does not yet exist for this form, as Muthuvel's IST review
+      is still pending — or were you working from your own domain
+      knowledge and the VB6 code? I ask this not to diminish the work
+      but because the answer determines the validation required. If the
+      Claude Code output was generated from the VB6 code directly, the
+      three Critical defects may exist in the generated screen and must
+      be found and corrected before the output can be accepted.
+      Muthuvel's IST validation of the Claude Code output against the
+      VB6 original is mandatory regardless of the input source. A
+      generated screen is not a validated screen.<br>
+      <br>
+      <b>On project structure — a prerequisite before the team scales
+        Claude Code</b><br>
+      <br>
+      Before any developer other than Mariyaiya begins Claude Code work
+      on SPINRISE module forms, the following must be in place:<br>
+      <br>
+      <b>TL-Dev Sasi must define and lock the SPINRISE project structure
+      </b>— folder conventions, naming standards, API response format,
+      React component patterns, error handling patterns, and database
+      connection approach. Claude Code creates files and folders. If
+      each developer starts independently without a locked structure,
+      the codebase will be inconsistent across modules and impossible to
+      maintain. <b>The project scaffold is TL-Dev's responsibility and
+        it must be done before the team scales.</b><br>
+      <br>
+      This is the action I am asking TL-Dev Sasi to prioritise this week
+      alongside Stage 0 readiness for M02.<br>
+      <br>
+      <b>For the team — five instructions effective immediately</b><br>
+      <br>
+      1.  The tool sequence is mandatory. Claude AI for FSD
+      documentation. Claude Code for code generation from an approved
+      FSD. In that order. No exceptions.<br>
+      <br>
+      2. <b> Mariyaiya to present a Claude Code demonstration to the
+        full team this Saturday, 11 April morning session.</b> Show the
+      prompting sequence, the project structure created, and the output
+      produced for the PR form. PM Saravanan to add this to Saturday's
+      agenda. This is the most valuable knowledge transfer we can do
+      this week.<br>
+      <br>
+      3.  Mariyaiya to document the Claude Code prompting sequence used
+      for the PR form as a written note — the phases, the key prompts,
+      the corrections made, the time taken per phase. This becomes the
+      first entry in the SPINRISE Developer Reference for Claude Code
+      usage. <b>Share with the team before Saturday.</b><br>
+      <br>
+      4.  <b>TL-Dev Sasi to define and share the SPINRISE project
+        structure this week.</b> All developers to align to this
+      structure before beginning any Claude Code work on module forms.<br>
+      <br>
+      5. <b> All developers to begin Claude Code familiarisation this
+        week on non-production exploratory forms. </b>Build the
+      prompting skill before the approved FSDs arrive. When the first
+      approved FSD is ready, you should be able to use Claude Code
+      fluently on day one.<br>
+      <font size="5"><b><br>
+          The bigger picture</b></font><br>
+      <br>
+      <b>Mariyaiya's result </b>— one to two days for a complete PR
+      form cycle using Claude Code — gives us our first real
+      productivity benchmark for the SPINRISE migration. Across 98 items
+      in the PO module, even at a conservative average of one and a half
+      days per transaction form, the code generation phase becomes a
+      weeks-long exercise rather than a months-long one. <b>The
+        constraint is no longer development speed. The constraint is the
+        quality and completeness of the approved FSDs that feed Claude
+        Code.</b><br>
+      <br>
+      This is why the Stage 0 and FSD documentation work we are doing
+      right now is not preliminary work. It is the main work. It is what
+      determines how fast and how accurately Claude Code can build
+      SPINRISE. Every week we invest in getting the FSDs right is a week
+      we save in rework after code generation.<br>
+      <br>
+      <b>The tools are working. The process is sound. The team is
+        moving.</b><br>
+      <br>
+      With confidence in what this team is building,<br>
+      T Mani<br>
+      <br>
+      cc: TL-Dev Sasi, PM Saravanan, Muthuvel, Annamalai, Sathiskumar,
+      Abinandan, Hariharan, TL-IST Palanivel, Full SPINRISE Team</p>
+    <div class="moz-cite-prefix">On 07/04/2026 02:43 pm, MariyaiyaM
+      wrote:<br>
+    </div>
+    <blockquote type="cite"
+      cite="mid:cb1b9bc2-29dc-4ead-91e5-b5fd45b8f3ca@kalsofte.com">Dear
+      Sir,
+      <br>
+      <br>
+      I hope this message finds you well. I am writing to share my
+      performance feedback following my recent hands-on experience with
+      two AI tools — Claude AI and Claude Code — in the context of
+      migrating our Purchase Requisition Form.
+      <br>
+      <br>
+      **Claude AI**
+      <br>
+      Claude AI is capable of generating a complete project overview
+      within one or two prompts, providing the entire form structure at
+      once. However, the output requires manual intervention, as the
+      code must be created and integrated folder by folder. The design
+      quality produced is at a moderate level.
+      <br>
+      <br>
+      **Claude Code**
+      <br>
+      Claude Code requires integration with VS Code and involves
+      providing prompts incrementally throughout the development
+      process. That said, it delivers a full-cycle solution — covering
+      both front-end and back-end development through to deployment —
+      without requiring us to manually create any components. The entire
+      workflow is handled end-to-end, provided the prompts are supplied
+      consistently until completion.
+      <br>
+      <br>
+      **Recommendation**
+      <br>
+      Based on my working experience, Claude Code yields significantly
+      better results for end-to-end project development. I would
+      recommend that the team familiarize themselves with Claude Code,
+      ideally by developing one or two forms initially to build
+      proficiency with the tool.
+      <br>
+      <br>
+      As a reference, I have successfully completed the full development
+      cycle of the Purchase Requisition Form using Claude Code. As this
+      was my first attempt, it took approximately one to two days to
+      complete the form to a satisfactory standard.
+      <br>
+      <br>
+      I believe wider adoption of Claude Code within the team has strong
+      potential to improve our development efficiency. I am happy to
+      demonstrate or share my learnings with the team at your
+      convenience.
+      <br>
+      <br>
+      <br>
+      <br>
+      Warm regards,
+      <br>
+      Mariyaiya. M
+      <br>
+    </blockquote>
+  </body>
+</html>
+
+--------------0j7Z3FUpL1hId9stricl6qQg--

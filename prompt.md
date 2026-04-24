@@ -1,132 +1,157 @@
-# Purchase Requisition — FSD Audit & Fix Prompt
+Act as Senior ERP UI Architect (React + Ant Design + AG Grid).
 
-## Role
-You are a Senior ERP Architect with 15+ years in Finance/Purchase modules, VB6-to-.NET migrations, and SQL Server. You think in layers: DB → SP → API → UI.
+Goal:
+Refactor New Purchase Requisition screen for:
+- Faster data entry
+- Clean hierarchy
+- Modern ERP look (Zoho / Microsoft style)
+- High contrast + depth
 
-## Context
-- **FSD**: `@"D:\Spinrise\Docs\M01\M01 FSD Purchase Requisition - Approved\PR_Implementation_Planner.md"`
-- **System**: Purchase Module — ASP.NET Core 8 API + Dapper SPs + React 18 frontend
-- **Hard constraints**:
-  - NO table/schema changes
-  - Changes allowed ONLY in: Stored Procedures · .NET Backend · Frontend validation
-  - Maintain full backward compatibility
+STRICT:
+- No API/backend changes
+- No field removal except specified
+- Keep validations
+- UI/UX only
 
----
+-----------------------------------
+CHANGES
+-----------------------------------
 
-## Instructions
+1. REMOVE FIELD
+- Remove "Scope" from Financial Info
 
-Work through the steps below in order. Do not skip steps. Output each step's result before moving to the next.
+-----------------------------------
 
----
+2. RENAME
+- "Line Items" → "Items"
 
-### STEP 1 — FSD Extraction
+-----------------------------------
 
-Parse the full FSD. Extract every field, rule, and workflow state into this exact JSON structure:
+3. ROW HANDLING (CRITICAL)
 
-```json
-{
-  "HeaderFields": [
-    { "name": "", "type": "", "mandatory": true|false, "default": null|"value", "notes": "" }
-  ],
-  "LineFields": [
-    { "name": "", "type": "", "mandatory": true|false, "default": null|"value", "notes": "" }
-  ],
-  "Validations": [
-    { "id": "V01", "field": "", "rule": "", "layer": "SP|API|UI", "blocking": true|false }
-  ],
-  "BusinessRules": [
-    { "id": "BR01", "description": "", "layer": "SP|API|UI" }
-  ],
-  "Workflow": [
-    { "fromStatus": "", "toStatus": "", "trigger": "", "conditions": "" }
-  ]
-}
-```
+REMOVE:
+- "Add Item" button
 
----
+IMPLEMENT:
+- Always keep minimum 1 row
+- Auto-add new row when:
+  - User completes last row (on Enter or last cell blur)
 
-### STEP 2 — Current System Scan
+- Auto-remove:
+  - If last row is empty
 
-Scan the existing Purchase module. For each layer, list what is implemented:
+- Focus:
+  - New row → auto focus Item Code
 
-- **DTOs**: field names and types
-- **Controller**: endpoints, HTTP methods, route paths
-- **Service**: method signatures, business logic present
-- **Stored Procedures**: parameters, validations enforced, output columns
+-----------------------------------
 
----
+4. TABLE (REPLACE WITH AG GRID)
 
-### STEP 3 — Gap Analysis
+Use AG Grid instead of Ant Table
 
-Compare Step 1 (FSD) vs Step 2 (current). Output as a table:
+FEATURES:
+- Editable cells
+- Keyboard navigation:
+  Tab → next cell
+  Enter → next row
+- Auto row add logic
+- Virtual scrolling
 
-| # | Type | Name | FSD Expected | Current State | Gap |
-|---|---|---|---|---|---|
-| 1 | Field/Validation/Rule/Workflow | ... | ... | Missing/Wrong/Partial | ... |
+COLUMNS:
+- Item Code (searchable)
+- Description
+- Qty
+- UOM
+- Unit Price
+- Total (auto calc)
+- Req Date
+- Actions (delete)
 
-Types: `Field` · `Validation` · `BusinessRule` · `Workflow`
+UI:
+- Solid header background
+- Light text (high contrast)
+- Dense rows
+- Hover highlight
 
----
+-----------------------------------
 
-### STEP 4 — Fix Prompts
+5. FORM REDESIGN (IMPORTANT)
 
-For each gap in Step 3, generate one minimal fix prompt. No explanation — only the exact change.
+REMOVE:
+- 3 card layout (Basic / Dept / Financial)
 
-```
-### Fix <n>
-Gap: <gap # from Step 3>
-Target: SP | API | UI
-File: <exact file or SP name>
-Change:
-<precise code instruction or diff>
-```
+REPLACE WITH:
+- Single compact form panel
 
-Rules:
-- Prefer pushing logic to SP over API/UI
-- One fix prompt per gap
-- No schema changes
+LAYOUT:
+Row1: PR No | PR Date | Department
+Row2: Requester | Required Date | Cost Centre
+Row3: Section/Team | Order Type
+Row4: Remarks (full width)
 
----
+STYLE:
+- Label top aligned
+- Reduce spacing
+- Align inputs properly
 
-### STEP 5 — Validation Alignment Checklist
+-----------------------------------
 
-Confirm each validation from Step 1 is enforced at the correct layer after fixes:
+6. VISUAL DESIGN FIX
 
-| Validation ID | Rule | Enforced In | Status |
-|---|---|---|---|
-| V01 | ... | SP / API / UI | Covered / Gap remains |
+PROBLEM:
+- Low contrast
+- Borders messy
+- Background blending
 
----
+FIX:
 
-### STEP 6 — Postman Collection
+- Form background: pure white
+- Section container: subtle border (token.colorBorderSecondary)
+- Inputs:
+  - border: clear visible
+  - focus: primary color outline
 
-Generate a complete Postman collection (JSON, v2.1 schema) covering:
+- Remove colored card backgrounds
+- Use left border accent (optional)
 
-- `POST /api/purchase-requisition` — Create PR
-- `PUT /api/purchase-requisition/{id}` — Update PR
-- `GET /api/purchase-requisition/{id}` — Get by ID
-- `GET /api/purchase-requisition` — Paginated list
-- Approve / Reject endpoints (only if workflow exists in FSD)
+TYPOGRAPHY:
+- Label: medium weight
+- Value: normal
+- Section title: bold
 
-Each request must include:
-- Method + URL
-- Headers (`Content-Type`, `Authorization: Bearer <token>`)
-- Sample request body (realistic values)
-- Expected success response
-- Expected error response (at least one)
+-----------------------------------
 
----
+7. ADVANCED FIELDS
 
-## Output Order
+CHANGE:
+- Remove inline expanded block
 
-1. FSD Extract (JSON)
-2. Gap Analysis Table
-3. Fix Prompts (numbered)
-4. Validation Alignment Checklist
-5. Postman Collection (JSON)
+USE:
+- Drawer / Side panel
+- Open per row
 
-## Output Rules
-- No filler text or re-statements of the instructions
-- Use exact field/SP/file names from the codebase — no invented names
-- Compact structured output throughout
-- Flag any FSD ambiguity inline as `[AMBIGUOUS: <question>]` rather than assuming
+-----------------------------------
+
+8. SUMMARY
+
+- Keep bottom/right summary
+- Auto update totals
+- Highlight change briefly
+
+-----------------------------------
+
+OUTPUT
+
+- Refactored React components
+- AG Grid implementation
+- Clean form layout
+- No pseudo code
+
+-----------------------------------
+
+EXPECTED RESULT
+
+- ERP-grade form (fast, clean)
+- Excel-like item entry
+- Reduced clicks
+- High readability

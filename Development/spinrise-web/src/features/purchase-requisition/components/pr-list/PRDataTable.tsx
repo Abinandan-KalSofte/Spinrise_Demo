@@ -1,184 +1,238 @@
-import { useMemo } from 'react'
-import { Button, Space, Table, Tag, Tooltip, Typography } from 'antd'
-import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
-import type { SorterResult } from 'antd/es/table/interface'
-import { DownloadOutlined, EditOutlined, EyeOutlined, FileTextOutlined } from '@ant-design/icons'
+import { useMemo, useCallback, useRef } from 'react'
+import { AgGridReact } from 'ag-grid-react'
+import type { CellStyle, ColDef, GridReadyEvent, ICellRendererParams } from 'ag-grid-community'
+import { AllCommunityModule, ModuleRegistry, themeQuartz } from 'ag-grid-community'
+import { Button, Space, Tag, Tooltip, Typography } from 'antd'
+import { DeleteOutlined, EditOutlined, EyeOutlined, FileTextOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
-import type { DepartmentLookup, EmployeeLookup, PRSummaryResponse } from '../../types'
-import { PAGE_SIZE, STATUS_TAG } from './prListConfig'
+import type { DepartmentLookup, PRSummaryResponse } from '../../types'
+import { STATUS_TAG } from './prListConfig'
+
+ModuleRegistry.registerModules([AllCommunityModule])
 
 interface PRDataTableProps {
   rows:         PRSummaryResponse[]
-  total:        number
-  page:         number
   loading:      boolean
-  downloading:  number | null
+  deletingPrNo: number | null
   departments:  DepartmentLookup[]
-  employees:    EmployeeLookup[]
   onView:       (prNo: number) => void
-  onDownload:   (record: PRSummaryResponse) => void
-  onPageChange: (
-    pagination: TablePaginationConfig,
-    filters:    unknown,
-    sorter:     SorterResult<PRSummaryResponse> | SorterResult<PRSummaryResponse>[],
-  ) => void
+  onDelete:     (prNo: number) => void
 }
 
+const HEADER_HEIGHT = 38
+const ROW_HEIGHT    = 34
+
+const CELL_BASE: CellStyle = { display: 'flex', alignItems: 'center' }
+
+const STATUS_COLORS: Record<string, string> = {
+  OPEN:      'blue',
+  APPROVED:  'green',
+  RECEIVED:  'cyan',
+  CONVERTED: 'geekblue',
+  CANCELLED: 'red',
+  REJECTED:  'red',
+}
+
+const prTheme = themeQuartz.withParams({
+  headerBackgroundColor:     '#1e293b',
+  headerTextColor:           '#f8fafc',
+  headerFontWeight:          700,
+  headerFontSize:            12,
+  rowHeight:                 ROW_HEIGHT,
+  headerHeight:              HEADER_HEIGHT,
+  oddRowBackgroundColor:     '#f8fafc',
+  rowHoverColor:             '#eff6ff',
+  borderColor:               '#f1f5f9',
+  cellTextColor:             '#1e293b',
+  fontSize:                  13,
+  rowBorder:                 true,
+  columnBorder:              false,
+})
+
 export function PRDataTable({
-  rows, total, page, loading, downloading,
-  departments, employees,
-  onView, onDownload, onPageChange,
+  rows, loading, deletingPrNo, departments, onView, onDelete,
 }: PRDataTableProps) {
   const navigate = useNavigate()
-  const columns = useMemo((): ColumnsType<PRSummaryResponse> => [
+  const gridRef  = useRef<AgGridReact<PRSummaryResponse>>(null)
+
+  const canDelete = useCallback(
+    (row: PRSummaryResponse) =>
+      !row.isDeleted && row.prStatus !== 'CANCELLED' && row.prStatus !== 'CONVERTED',
+    [],
+  )
+
+  const colDefs = useMemo((): ColDef<PRSummaryResponse>[] => [
     {
-      title:     'PR No',
-      dataIndex: 'prNo',
-      key:       'prNo',
-      width:     88,
-      sorter:    true,
-      render: (v: number) => <Typography.Text strong>#{v}</Typography.Text>,
+      headerName: 'PR No',
+      field:      'prNo',
+      width:      90,
+      sortable:   true,
+      cellStyle:  { ...CELL_BASE, fontWeight: 700, color: '#1677ff' },
+      valueFormatter: ({ value }: { value: number }) => `#${value}`,
     },
     {
-      title:            'PR Date',
-      dataIndex:        'prDate',
-      key:              'prDate',
-      width:            108,
-      sorter:           true,
-      defaultSortOrder: 'descend',
-      render: (v: string) => v ? dayjs(v).format('DD/MM/YYYY') : '—',
+      headerName: 'PR Date',
+      field:      'prDate',
+      width:      112,
+      sortable:   true,
+      sort:       'desc',
+      cellStyle:  CELL_BASE,
+      valueFormatter: ({ value }: { value: string }) =>
+        value ? dayjs(value).format('DD/MM/YYYY') : '—',
     },
     {
-      title:     'Department',
-      dataIndex: 'depCode',
-      key:       'depCode',
-      ellipsis:  true,
-      render: (code: string) => {
-        const dept = departments.find((d) => d.depCode === code)
-        return dept
-          ? <Tooltip title={dept.depName}><span>{dept.depName}</span></Tooltip>
-          : (code || '—')
+      headerName: 'Department',
+      field:      'depCode',
+      flex:       1,
+      minWidth:   140,
+      sortable:   true,
+      cellStyle:  CELL_BASE,
+      valueFormatter: ({ value }: { value: string }) => {
+        const d = departments.find((dep) => dep.depCode === value)
+        return d ? d.depName : (value || '—')
       },
     },
     {
-      title:     'Ref No',
-      dataIndex: 'refNo',
-      key:       'refNo',
-      width:     100,
-      render: (v: string | undefined) => v || <Typography.Text type="secondary">—</Typography.Text>,
+      headerName: 'Requested By',
+      field:      'reqName',
+      flex:       1,
+      minWidth:   140,
+      sortable:   true,
+      cellStyle:  CELL_BASE,
+      valueFormatter: ({ value }: { value: string | undefined }) => value || '—',
     },
     {
-      title:     'Plan No',
-      dataIndex: 'planNo',
-      key:       'planNo',
-      width:     80,
-      align:     'right',
-      render: (v: number | undefined) =>
-        v != null ? v : <Typography.Text type="secondary">—</Typography.Text>,
-    },
-    {
-      title:     'Requested By',
-      dataIndex: 'reqName',
-      key:       'reqName',
-      width:     140,
-      render: (code: string | undefined) => {
-        if (!code) return <Typography.Text type="secondary">—</Typography.Text>
-        const emp = employees.find((e) => e.empNo === code)
-        return emp ? <Tooltip title={emp.eName}><span>{emp.eName}</span></Tooltip> : code
-      },
-    },
-    {
-      title:     'Lines',
-      dataIndex: 'lineCount',
-      key:       'lineCount',
-      width:     64,
-      align:     'center',
-      render: (v: number) => (
-        <Tag style={{ minWidth: 28, textAlign: 'center', fontVariantNumeric: 'tabular-nums' }}>{v}</Tag>
+      headerName:  'Items',
+      field:       'lineCount',
+      width:       76,
+      sortable:    true,
+      headerClass: 'ag-header-center',
+      cellStyle:   { ...CELL_BASE, justifyContent: 'center' },
+      cellRenderer: ({ value }: ICellRendererParams) => (
+        <Tag style={{ minWidth: 28, textAlign: 'center', fontVariantNumeric: 'tabular-nums', margin: 0 }}>
+          {value}
+        </Tag>
       ),
     },
     {
-      title:     'Status',
-      dataIndex: 'prStatus',
-      key:       'prStatus',
-      width:     108,
-      render: (v: string) => {
-        const s = STATUS_TAG[v] ?? { color: 'default', label: v }
+      headerName: 'Status',
+      field:      'prStatus',
+      width:      112,
+      sortable:   true,
+      cellStyle:  { ...CELL_BASE, justifyContent: 'center' },
+      cellRenderer: ({ value }: ICellRendererParams) => {
+        const s = STATUS_TAG[value as string] ?? { label: value }
         return (
-          <Tag color={s.color} style={{ fontWeight: 600, minWidth: 72, textAlign: 'center' }}>
+          <Tag
+            color={STATUS_COLORS[value as string] ?? 'default'}
+            style={{ fontWeight: 600, minWidth: 70, textAlign: 'center', margin: 0 }}
+          >
             {s.label}
           </Tag>
         )
       },
     },
     {
-      title:  'Actions',
-      key:    'actions',
-      width:  112,
-      fixed:  'right',
-      align:  'center',
-      render: (_: unknown, row: PRSummaryResponse) => (
-        <Space size={4}>
-          <Tooltip title="View Details">
-            <Button
-              type="text" size="small" icon={<EyeOutlined />}
-              onClick={() => onView(row.prNo)}
-            />
-          </Tooltip>
-          <Tooltip title="Edit PR">
-            <Button
-              type="text" size="small" icon={<EditOutlined />}
-              onClick={() => navigate(`/purchase/requisition/edit/${row.prNo}`)}
-            />
-          </Tooltip>
-          <Tooltip title="Download PDF">
-            <Button
-              type="text" size="small" icon={<DownloadOutlined />}
-              loading={downloading === row.prNo}
-              onClick={() => onDownload(row)}
-            />
-          </Tooltip>
-        </Space>
-      ),
+      headerName: 'Actions',
+      colId:      'actions',
+      width:      100,
+      sortable:   false,
+      filter:     false,
+      pinned:     'right',
+      cellStyle:  { ...CELL_BASE, justifyContent: 'center' },
+      cellRenderer: ({ data }: ICellRendererParams<PRSummaryResponse>) => {
+        if (!data) return null
+        const deletable = canDelete(data)
+        return (
+          <Space size={2}>
+            <Tooltip title="View">
+              <Button
+                type="text" size="small" icon={<EyeOutlined />}
+                onClick={() => onView(data.prNo)}
+              />
+            </Tooltip>
+            <Tooltip title="Edit">
+              <Button
+                type="text" size="small" icon={<EditOutlined />}
+                onClick={() => navigate(`/purchase/requisition/edit/${data.prNo}`)}
+              />
+            </Tooltip>
+            <Tooltip title={deletable ? 'Cancel PR' : 'Already cancelled or converted'}>
+              <Button
+                type="text" size="small" danger icon={<DeleteOutlined />}
+                disabled={!deletable}
+                loading={deletingPrNo === data.prNo}
+                onClick={() => { if (deletable) onDelete(data.prNo) }}
+              />
+            </Tooltip>
+          </Space>
+        )
+      },
     },
-  ], [departments, employees, downloading, navigate, onView, onDownload])
+  ], [departments, deletingPrNo, navigate, onView, onDelete, canDelete])
+
+  const defaultColDef = useMemo<ColDef>(() => ({
+    resizable: true,
+    filter:    true,
+  }), [])
+
+  const onGridReady = useCallback((_: GridReadyEvent) => {
+    gridRef.current?.api?.sizeColumnsToFit()
+  }, [])
+
+  const getRowId = useCallback(
+    ({ data }: { data: PRSummaryResponse }) => `${data.divCode}-${data.prNo}`,
+    [],
+  )
+
+  const getRowClass = useCallback(
+    ({ data }: { data?: PRSummaryResponse }) =>
+      data?.isDeleted || data?.prStatus === 'CANCELLED' ? 'pr-row--muted' : '',
+    [],
+  )
 
   return (
-    <Table<PRSummaryResponse>
-      rowKey={(r) => `${r.divCode}-${r.prNo}`}
-      columns={columns}
-      dataSource={rows}
-      loading={loading}
-      size="small"
-      scroll={{ x: 920 }}
-      onChange={onPageChange}
-      onRow={() => ({
-        style:        { cursor: 'default' },
-        onMouseEnter: (e) => { (e.currentTarget as HTMLElement).style.background = '#fafafa' },
-        onMouseLeave: (e) => { (e.currentTarget as HTMLElement).style.background = '' },
-      })}
-      pagination={{
-        current:         page,
-        pageSize:        PAGE_SIZE,
-        total,
-        showSizeChanger: false,
-        size:            'small',
-        showTotal: (t, [from, to]) => `${from}–${to} of ${t.toLocaleString()}`,
-      }}
-      locale={{
-        emptyText: (
-          <div style={{ padding: '48px 0', textAlign: 'center' }}>
-            <FileTextOutlined style={{ fontSize: 40, color: '#d9d9d9', display: 'block', marginBottom: 12 }} />
-            <Typography.Text type="secondary">No purchase requisitions found</Typography.Text>
-            <div>
-              <Typography.Text type="secondary" style={{ fontSize: 12 }}>
-                Try adjusting your search filters
-              </Typography.Text>
-            </div>
+    <div style={{ height: 'calc(100vh - 320px)', minHeight: 360 }}>
+      <style>{`
+        .pr-ag-grid .ag-header-cell {
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          border-right: 1px solid rgba(255,255,255,0.08) !important;
+        }
+        .pr-ag-grid .ag-header-cell:last-child { border-right: none !important; }
+        .pr-ag-grid .ag-pinned-right-header .ag-header-cell { border-right: none !important; }
+        .pr-ag-grid .pr-row--muted { opacity: 0.45; }
+        .pr-ag-grid .ag-header-center .ag-header-cell-label { justify-content: center; }
+      `}</style>
+      <AgGridReact<PRSummaryResponse>
+        ref={gridRef}
+        className="pr-ag-grid"
+        theme={prTheme}
+        rowData={rows}
+        columnDefs={colDefs}
+        defaultColDef={defaultColDef}
+        getRowId={getRowId}
+        getRowClass={getRowClass}
+        loading={loading}
+        suppressRowClickSelection
+        rowSelection={{ mode: 'singleRow' }}
+        enableCellTextSelection
+        onGridReady={onGridReady}
+        noRowsOverlayComponent={() => (
+          <div style={{ textAlign: 'center', padding: '64px 0' }}>
+            <FileTextOutlined style={{ fontSize: 40, color: '#d1d5db', display: 'block', marginBottom: 12 }} />
+            <Typography.Text type="secondary" style={{ fontSize: 13, display: 'block' }}>
+              No purchase requisitions found
+            </Typography.Text>
+            <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+              Try adjusting your filters
+            </Typography.Text>
           </div>
-        ),
-      }}
-    />
+        )}
+        domLayout="normal"
+        suppressScrollOnNewData
+      />
+    </div>
   )
 }

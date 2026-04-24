@@ -1,0 +1,1785 @@
+X-UIDL: UID50-1774868925
+X-Mozilla-Status: 0000
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <mariyaiya.m@kalsofte.com>
+Received: from murphy.nocdirect.com
+	by murphy.nocdirect.com with LMTP
+	id EDOUFQGo12mqxw4Aet6MXA
+	(envelope-from <mariyaiya.m@kalsofte.com>); Thu, 09 Apr 2026 08:22:09 -0500
+Return-path: <mariyaiya.m@kalsofte.com>
+Envelope-to: palanivel@kalsofte.com,
+ ceo@kalsofte.com,
+ muthuvel.m@kalsofte.com,
+ pbsaravanan@kalsofte.com,
+ seenivasan.v@kalsofte.com,
+ mariyaiya.m@kalsofte.com,
+ sasikumar.r@kalsofte.com,
+ implementation@kalsofte.com,
+ abinandan.n@kalsofte.com,
+ qa@kalsofte.com,
+ support@kalsofte.com
+Delivery-date: Thu, 09 Apr 2026 08:22:09 -0500
+Received: from [49.204.235.253] (port=6885 helo=[172.16.16.19])
+	by murphy.nocdirect.com with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+	(Exim 4.99.1)
+	(envelope-from <mariyaiya.m@kalsofte.com>)
+	id 1wApKf-000000043t3-3eTZ;
+	Thu, 09 Apr 2026 08:22:09 -0500
+Content-Type: multipart/alternative;
+ boundary="------------CYiacY0KXko6fsfBYtXBbHjy"
+Message-ID: <9ac5cb17-9795-4df5-85fb-b9e520d8353d@kalsofte.com>
+Date: Thu, 9 Apr 2026 18:52:00 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: =?UTF-8?Q?Re=3A_SPINRISE_PO_=E2=80=94_Critical_Analysis_Document_fo?=
+ =?UTF-8?Q?r_Purchase_Requisition_Form_=28tmpPoindent=2Efrm=29_=7C_CEO_Obser?=
+ =?UTF-8?Q?vations?=
+To: CEO <ceo@kalsofte.com>, Palanivel <palanivel@kalsofte.com>,
+ muthuvel.m@kalsofte.com, Pbsaravanan <pbsaravanan@kalsofte.com>,
+ Seenivasan V <seenivasan.v@kalsofte.com>
+Cc: MariyaiyaM <mariyaiya.m@kalsofte.com>,
+ 'Sasikumar R' <sasikumar.r@kalsofte.com>, implementation@kalsofte.com,
+ abinandan.n@kalsofte.com, Quality Assurance <qa@kalsofte.com>,
+ Support <support@kalsofte.com>
+References: <1216e878-93e0-493e-b325-49df3142ffe5@kalsofte.com>
+ <a89dfd20-3681-4f78-961c-f89bd71f6d1e@kalsofte.com>
+ <4cdeaa24-1d9c-4191-866c-bf5a79d1b526@kalsofte.com>
+ <54e7c45da3dd629cf6e1d56461cbd369@kalsofte.com>
+ <2bd7a650-04de-4740-b231-a6d6aa043f7a@kalsofte.com>
+ <32971bd5-3666-4649-99ff-0137b9c18363@kalsofte.com>
+Content-Language: en-US
+From: MariyaiyaM <mariyaiya.m@kalsofte.com>
+In-Reply-To: <32971bd5-3666-4649-99ff-0137b9c18363@kalsofte.com>
+
+This is a multi-part message in MIME format.
+--------------CYiacY0KXko6fsfBYtXBbHjy
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+Dear Sir,
+
+As per your query regarding *EmpCommon = True*, I have analyzed the 
+application flow and would like to provide the confirmed details below:
+
+ 1.
+
+    *Origin of EmpCommon Flag*
+    The |EmpCommon| flag is being *set during the login process*.
+    In the login module, the system executes the following logic:
+
+      *
+
+        It reads the value from the |PO_Para| table based on the
+        selected *DivCode*
+
+      *
+
+        Field used: |EmpMasterComm|
+
+      *
+
+        Logic:
+
+          o
+
+            If |EmpMasterComm = 'Y'| → |EmpCommon = True|
+
+          o
+
+            Otherwise → |EmpCommon = False|
+
+    Hence, the flag is *database-driven* and controlled through the
+    |PO_Para| configuration.
+
+ 2.
+
+    *Customers Using EmpCommon = True*
+    Based on current data, the following customers/divisions have
+    |EmpMasterComm = 'Y'|, and therefore |EmpCommon = True|:
+
+      *
+
+        Saranya
+
+      *
+
+        Armstrong
+
+      *
+
+        Cheran
+
+      *
+
+        Skaat
+
+      *
+
+        VTS
+
+ 3.
+
+    *Report Template Selection Logic*
+    The report selection is directly dependent on the |EmpCommon| flag:
+
+      *
+
+        If |EmpCommon = True| → *Cry_Purchase_Req* is used
+
+      *
+
+        If |EmpCommon = False| → *Cry_PR_KSL* is used
+
+    This confirms that the report behavior is *fully controlled by the
+    parameter value in |PO_Para|* and set during login.
+
+ 4.
+
+    *Conclusion*
+
+      *
+
+        |EmpCommon| is not hardcoded; it is *derived dynamically at login*
+
+      *
+
+        The controlling factor is the |EmpMasterComm| field in |PO_Para|
+
+      *
+
+        Report template usage is *automatically driven based on this flag*
+
+Please let me know if any further analysis or validation is required.
+
+Regards,
+Mariyaiya.M
+
+
+On 09/04/2026 06:09 pm, CEO wrote:
+>
+> Dear Palanivel,
+>
+> Thank you for reviewing Muthuvel's IST responses and sharing your 
+> suggestions promptly. I have also noted from PULSE 360 that PM 
+> Saravanan is actively reviewing this thread.
+>
+> *I have gone through both sets of responses carefully against the 11 
+> questions raised in my earlier review. Out of the 11, six are now 
+> resolved with clear answers from both of you. This is good progress 
+> and I want to acknowledge it before addressing what remains open.*
+>
+>
+> *What is resolved*
+>
+> The following decisions are confirmed and must be documented in the 
+> FSD immediately:
+>
+> *ksp_PendPR:* Full removal in SPINRISE. Used only for SUBAM, and SUBAM 
+> itself has requested its removal. This check will not be implemented 
+> in SPINRISE in any form. Document in Section 12 as a removed feature 
+> and in the Customer Variation Register as resolved.
+>
+> *blcode (Oracle field): *Not required. Excluded from SPINRISE.
+>
+> *Uniqueness rule for PR line items: *Palanivel has given a clear 
+> ruling — Item Code plus Machine Code. This resolves the three 
+> inconsistent duplicate check implementations in the VB6 code. The FSD 
+> must now document a single authoritative rule: a PR line item is 
+> unique by the combination of Item Code and Machine Code. This applies 
+> to both Add and Modify modes without exception.
+>
+> *po_para.PRapprovalstatus: *Display only. To be implemented in 
+> SPINRISE as a visible status indicator on the PR form, showing the 
+> current approval level without requiring the user to run a separate query.
+>
+> *Manual PR numbering (Manual_IndNo):* Not required in SPINRISE. 
+> Auto-sequential numbering via po_doc_para only.
+>
+> *ksp_PendPR customer site history (IST-B)*: Confirmed as SUBAM only, 
+> with SUBAM requesting removal. Fully documented.
+>
+>
+> *What still needs to be resolved before the FSD can be completed*
+>
+> I am asking for specific responses to the following four items. These 
+> are the only remaining gaps standing between this IST review and a 
+> complete FSD ready for my approval.
+>
+> *1.  EmpCommon = True — origin not yet confirmed.*
+> Both responses explain what EmpCommon controls (division-wise employee 
+> display and print template selection) but neither confirms where it is 
+> set. The form reads it but does not set it. It must be set somewhere 
+> in the application login or startup module. Which module sets it, and 
+> based on which table or configuration value? Additionally, which 
+> specific customer divisions currently use Cry_Purchase_Req and which 
+> use Cry_PR_KSL? *Mariyaiya to check the login module code and confirm.
+> *
+> *2.  PurOrd.UserFooter OCX — contradiction to be resolved.*
+> Muthuvel correctly states that the OCX control itself cannot be used 
+> in a web application. Palanivel states that the functionality is 
+> required in SPINRISE. Both are right about different things and I want 
+> to clarify this for the team. The OCX mechanism — the Windows ActiveX 
+> control — will not exist in SPINRISE. That is technically 
+> non-negotiable. But the functionality it provides — the ability to 
+> select a custom footer for the PR print — may still be a business 
+> requirement. My question for Palanivel: is the custom footer selector 
+> actively used by customers when printing PRs? If yes, SPINRISE must 
+> implement this as a server-side configurable setting, replacing the 
+> OCX with a dropdown selector in the print preferences. Please confirm 
+> whether the custom footer selection is a real business need or a 
+> legacy feature that is rarely used in practice.
+>
+> *3.  po_para flags — the actual list is still missing.*
+> Both responses confirm that unused flags need to be removed. But what 
+> I asked for, and what the FSD requires, is the complete list of all 
+> po_para flags with their current usage status and the recommended 
+> default value for each in a standard SPINRISE installation. Agreeing 
+> that cleanup is needed is not the same as providing the list. 
+> Muthuvel, please run the following against the SQL Server database and 
+> share the result: select all column names from po_para with at least 
+> one example value. Then mark each flag as: Used in active code, Used 
+> in specific customer only, or Unused. *This list must be in FSD 
+> Section 8 before the document can be approved.*
+>
+> *4.  PR approval workflow (IST-A) — the four sub-questions are still 
+> unanswered.*
+> Both responses say approvals are handled in the PO module and Web 
+> Approvals. That tells me the location but not the workflow. I need all 
+> four of the following answered specifically:
+> (a) Which form or screen handles the actual approval action? Is it a 
+> separate approval form or part of the PR form itself?
+> (b) How many approval levels are standard across a typical SPINRISE 
+> installation? Is it one level, two, three, or variable?
+> (c) Are the number of approval levels customer-configurable, or is it 
+> a fixed system-wide setting?
+> (d) When a PR reaches Final Level Approved, does it automatically 
+> create a PO, or does a separate PO creation step follow?
+> *This workflow is the core of the PR transaction lifecycle in 
+> SPINRISE.* Without these answers, the PR form FSD is describing an 
+> entry point without documenting where that entry leads.
+>
+>
+> *A new question for Mariyaiya to verify*
+>
+> Muthuvel and Palanivel have confirmed that TC (Transaction Code) is 
+> not used in the PO module — it belongs to the Store module. This is an 
+> important clarification and it correctly means Section 6 (TC 
+> Framework) of the FSD should state: 'This form does not carry a TC 
+> value. Stock and accounting movements are triggered downstream when 
+> goods are received against the resulting PO.'
+>
+> However, the corrected critical analysis document (Section 5.2) shows 
+> that the PR form's Rate field override logic reads from IN_TRNHEAD and 
+> IN_TRNTAIL with TC=1. If TC is not used in the PO module, this query 
+> either never executes or reads cross-module data from the Store 
+> module.*Mariyaiya, please verify:* is this rate override query live 
+> and active in practice, or is it dead code? Check whether the Rate 
+> field in the PR form actually gets populated from IN_TRNHEAD in any 
+> live customer scenario. The answer determines whether this logic is 
+> replicated in SPINRISE or excluded as dead code.
+>
+>
+> *On the overall progress*
+>
+> I am pleased that the IST review has produced clear, actionable 
+> answers on the majority of questions, and that Palanivel's suggestions 
+> are aligned with Muthuvel's responses in most areas. The collaboration 
+> between the two IST levels is exactly how this review chain is 
+> supposed to work.
+>
+> The four remaining items above are not complex — they require one 
+> targeted SQL query, one business confirmation from Palanivel, one 
+> developer code check from Mariyaiya, and four specific workflow 
+> answers. *These can and should be completed before Saturday's review 
+> meeting.*
+>
+> *Mariyaiya:* please update the FSD document with all resolved items 
+> from this thread, mark the four open items as [PENDING IST RESPONSE] 
+> and share the updated document with Muthuvel and Palanivel by tomorrow.
+>
+> Regards,
+> T. Mani
+>
+> cc:  Mariyaiya, TL-Dev Sasi
+>
+> On 09/04/2026 10:46 am, Palanivel wrote:
+>>
+>> Dear Mr.Muthuvel,
+>>
+>>       Please find the below the Suggestions for the Purchase 
+>> Requisition Form,
+>>
+>> •Confirm: What does EmpCommon = True represent? Which divisions use 
+>> which Crystal report template?
+>>
+>> Ans:- For multiple divisions, the employee list should be displayed 
+>> based on division. We can continue using parameterized logic to 
+>> support both division-wise and combined unit views.
+>>
+>> *Suggestions : In Tranaction print There is no change, *
+>>
+>> •Confirm: Should ksp_PendPR be hard-blocking or a soft warning? 
+>> Should it be configurable per division?
+>>
+>> Ans:- The hard block needs to be removed, as certain critical 
+>> materials may require immediate purchase at any time. At present, if 
+>> a PR has already been raised, the system displays a validation 
+>> stating that the PR is pending for PO creation.
+>>
+>> *Suggestions : It need to be removed, *
+>>
+>>
+>> •Confirm: Is blcode (Oracle field) required in SPINRISE?
+>>
+>> Ans:- As per CEO Connfirmation, not required.
+>>
+>> *Suggestions : It need to be removed.*
+>>
+>>
+>> •Confirm: Uniqueness rule for PR line items — item code only, or item 
+>> code + machine?
+>>
+>> Ans:- In the PR form, certain customers associate a machine with the 
+>> selected item for procurement purposes. This information is displayed 
+>> based on the applicable department and is currently available only in 
+>> the transaction print, not in other reports. This feature helps 
+>> customers track item selection within their workflow.
+>>
+>> *Suggestions : PR Line Items needed Item code + Machine. *
+>>
+>>
+>> •Confirm: Is po_para.PRapprovalstatus display-only, or does it gate 
+>> any operation?
+>>
+>> Ans:- One of the ease of use point, it display in the Transactions 
+>> Form Side up window to know current status of the PR, otherwise every 
+>> time qureies PR Status to know the status.
+>>
+>> *Suggestions : In PO_Para.PRapproval status display only, *
+>>
+>>
+>> •Confirm: Is Manual PR numbering (Manual_IndNo) required in SPINRISE?
+>>
+>> Ans:- For the controlled structure manual numbering is not required.
+>>
+>> *Suggestions : Manual numbering not adviceable. and It is no needed. *
+>>
+>>
+>> •Confirm: Is PurOrd.UserFooter OCX footer selector functionality 
+>> required in SPINRISE?
+>>
+>> Ans:- OCX (ActiveX) is Windows desktop–only. Not supported in web 
+>> apps (browser security + architecture)
+>>
+>> *Suggestions : It is required in SPINRISE.*
+>>
+>>
+>> •Document: Complete list of po_para flags and their expected default 
+>> values in SPINRISE
+>>
+>> Ans:- Some flags are not used anywhere need to be remove from the table.
+>>
+>> *Suggestions : Un used Flag in PO_Para Table need to be removed.*
+>>
+>>
+>> IST-A:  For the PR approval workflow — which form handles the actual 
+>> approval action? How many approval levels are standard? Are approval 
+>> levels customer-configurable? What happens to a PR that reaches Final 
+>> Level Approved — does it auto-convert to a PO or does a separate PO 
+>> creation step follow?
+>>
+>> Ans:- The approvals are handles in the PO module also Web Approvals 
+>> itself,
+>>
+>> *Suggestions : The approvals are handles in the Web Approvals.*
+>>
+>>
+>> IST-B:  For the ksp_PendPR hard block — at which customer sites has 
+>> this check caused legitimate procurement to be blocked incorrectly? 
+>> Has IST ever had to manually bypass this check at a customer site? 
+>> The answer determines whether it should be a configurable soft 
+>> warning in SPINRISE rather than an unconditional hard block.
+>>
+>> Ans:- It needs to be removed and its used in Subam only forsome 
+>> control purpose, recently request to remove the control from the 
+>> Subam Side.
+>>
+>>
+>> IST-C:  For the Rate override from TC=1 receipts — is this the 
+>> intended behaviour or a historical workaround? Should SPINRISE 
+>> pre-fill the Rate from the item master (clean, predictable) or from 
+>> the last receipt (current practice, but supplier-linked)?  This 
+>> decision affects how the API populates the Rate field on item selection.
+>>
+>> Ans:- TC is no where used in the PO Module, used in the Store Module 
+>> only.
+>>
+>> Thanks & Regards,
+>>
+>> V. Palanivel
+>>
+>> On 08/04/2026 01:07 pm, muthuvel.m@kalsofte.com wrote:
+>>> Dear Sir,
+>>>
+>>> Please find below the feedback for the Purchase Requisition Form. 
+>>> Kindly review and share your suggestions, if any, for the CEO’s review.
+>>>
+>>> IST Review Checklist Before FSD Generation
+>>>
+>>> •Confirm: What does EmpCommon = True represent? Which divisions use 
+>>> which Crystal report template?
+>>> Ans:- For multiple divisions, the employee list should be displayed 
+>>> based on division. We can continue using parameterized logic to 
+>>> support both division-wise and combined unit views.
+>>>
+>>> •Confirm: Should ksp_PendPR be hard-blocking or a soft warning? 
+>>> Should it be configurable per division?
+>>> Ans:- The hard block needs to be removed, as certain critical 
+>>> materials may require immediate purchase at any time. At present, if 
+>>> a PR has already been raised, the system displays a validation 
+>>> stating that the PR is pending for PO creation.
+>>>
+>>> •Confirm: Is blcode (Oracle field) required in SPINRISE?
+>>> Ans:- As per CEO Connfirmation, not required.
+>>>
+>>> •Confirm: Uniqueness rule for PR line items — item code only, or 
+>>> item code + machine?
+>>> Ans:- In the PR form, certain customers associate a machine with the 
+>>> selected item for procurement purposes. This information is 
+>>> displayed based on the applicable department and is currently 
+>>> available only in the transaction print, not in other reports. This 
+>>> feature helps customers track item selection within their workflow.
+>>>
+>>> •Confirm: Is po_para.PRapprovalstatus display-only, or does it gate 
+>>> any operation?
+>>> Ans:- One of the ease of use point, it display in the Transactions 
+>>> Form Side up window to know current status of the PR, otherwise 
+>>> every time qureies PR Status to know the status.
+>>>
+>>> •Confirm: Is Manual PR numbering (Manual_IndNo) required in SPINRISE?
+>>> Ans:- For the controlled structure manual numbering is not required.
+>>>
+>>> •Confirm: Is PurOrd.UserFooter OCX footer selector functionality 
+>>> required in SPINRISE?
+>>> Ans:- OCX (ActiveX) is Windows desktop–only. Not supported in web 
+>>> apps (browser security + architecture)
+>>>
+>>> •Document: Complete list of po_para flags and their expected default 
+>>> values in SPINRISE
+>>> Ans:- Some flags are not used anywhere need to be remove from the 
+>>> table.
+>>>
+>>> IST-A:  For the PR approval workflow — which form handles the actual 
+>>> approval action? How many approval levels are standard? Are approval 
+>>> levels customer-configurable? What happens to a PR that reaches 
+>>> Final Level Approved — does it auto-convert to a PO or does a 
+>>> separate PO creation step follow?
+>>>
+>>> Ans:- The approvals are handles in the PO module also Web Approvla 
+>>> itself,
+>>>
+>>>
+>>> IST-B:  For the ksp_PendPR hard block — at which customer sites has 
+>>> this check caused legitimate procurement to be blocked incorrectly? 
+>>> Has IST ever had to manually bypass this check at a customer site? 
+>>> The answer determines whether it should be a configurable soft 
+>>> warning in SPINRISE rather than an unconditional hard block.
+>>>
+>>> Ans:- It needs to be removed and its used in Subam only forsome 
+>>> control purpose, recently request to remove the control from the 
+>>> Subam Side.
+>>>
+>>>
+>>> IST-C:  For the Rate override from TC=1 receipts — is this the 
+>>> intended behaviour or a historical workaround? Should SPINRISE 
+>>> pre-fill the Rate from the item master (clean, predictable) or from 
+>>> the last receipt (current practice, but supplier-linked)?  This 
+>>> decision affects how the API populates the Rate field on item 
+>>> selection.
+>>>
+>>> Ans:- TC is no where used in the PO Module, used in the Store Module 
+>>> only.
+>>>
+>>> Thanks & Regards
+>>> M MuthuVel
+>>>
+>>> On 2026-04-03 02:35, CEO wrote:
+>>>> Dear Mariyaiya,
+>>>>
+>>>> I have gone through your Corrected Critical Analysis document for
+>>>> tmpPoindent.frm carefully. I am also sharing this review with Muthuvel
+>>>> before he begins the IST review, and with the full team, as several
+>>>> observations here have implications beyond the PO module.
+>>>>
+>>>> This is a substantially improved document from the first version. Let
+>>>> me give you both a clear picture of what has improved and what still
+>>>> needs to be completed before Muthuvel can begin his IST review.
+>>>>
+>>>> What you have done significantly better in this version
+>>>>
+>>>> The most important improvement is the complete removal of all
+>>>> hardcoded customer ID checks. Your first version documented 13
+>>>> separate CustID blocks embedded in the form logic. This corrected
+>>>> version shows none — all conditional behaviour is now driven by
+>>>> po_para parameter flags. This is not a minor cleanup. This is a
+>>>> fundamental structural change to the form that directly improves
+>>>> SPINRISE migration readiness. The Summary Scorecard correctly shows
+>>>> 'Parameter-Driven Configuration: Good' where the previous version
+>>>> showed 'Customer Configurability: Poor'. This change alone justifies
+>>>> the time spent on stabilisation.
+>>>>
+>>>> The dead code separation is correct and properly executed. You have
+>>>> reduced from 9,108 total lines to approximately 7,467 active code
+>>>> lines, with 27 commented blocks identified and excluded. This is
+>>>> exactly what Stage 0 required and what the v2 guide specified must
+>>>> happen before Claude submission. The analysis is now based on what the
+>>>> screen actually does, not on what it once considered doing.
+>>>>
+>>>> The new Section 9 on External Files, Classes, and Modules is the most
+>>>> significant structural addition. You have listed 9 OCX controls with
+>>>> their GUIDs, the .frx binary resource, two class modules (clsCrystal
+>>>> and Report.ReportView), 14 global variables declared outside the form,
+>>>> five external forms and objects called, and four utility functions
+>>>> from the global module. This directly addresses the feedback raised in
+>>>> our first VB developer's mail about Common and Class module
+>>>> dependencies. This section did not exist at all in the first version.
+>>>>
+>>>> The new Print and Report Architecture section (Section 7) documents
+>>>> both Crystal report branches controlled by the EmpCommon flag. The
+>>>> first version only noted Crystal Reports as a medium-severity issue.
+>>>> This version documents the complete branching logic, the formula
+>>>> injection for requester name, and both report objects. This is the
+>>>> level of detail the SPINRISE web API will need to generate the PDF
+>>>> equivalent correctly.
+>>>>
+>>>> The new Critical finding on dual Oracle and SQL Server database paths
+>>>> is significant. The first version did not identify this at all. This
+>>>> corrected version shows that Oracle-specific SQL (to_char, decode,
+>>>> outer join syntax, and the blcode field) coexists in the same form
+>>>> alongside SQL Server SQL. This is a migration complexity that the team
+>>>> could not have discovered without the thorough active code analysis
+>>>> you have now done.
+>>>>
+>>>> The validation rules are now split into six categories rather than
+>>>> four, adding Delete Validations and Print Validation as separate
+>>>> sections. The error message catalogue has grown from 17 to 25
+>>>> messages, with the additional entries being real messages that were
+>>>> missed in the first pass. The table inventory has grown from 19 to 24
+>>>> tables, all with clear purpose descriptions. The PR status lifecycle
+>>>> with all 10 states is fully documented for the first time, and the
+>>>> audit logging to LogDet_PO with all 18 fields is now on record. None
+>>>> of this was in version one.
+>>>>
+>>>> What still needs to be completed before IST review begins
+>>>>
+>>>> I am asking you to address the following before handing this to
+>>>> Muthuvel. Some of these are additions to the document. Some are
+>>>> process steps from the v2 guide that need to be confirmed.
+>>>>
+>>>> 1.  Stage 0 sign-off not confirmed.  The document header says
+>>>> 'code-cleaned' which indicates Stage 0 was done. But the Screen
+>>>> Readiness Checklist (R1 through R8 from the v2 guide Section 3.2) is
+>>>> not present in the document and TL-Dev sign-off is not recorded.
+>>>> Before any FSD is submitted for IST review, the checklist must be
+>>>> completed and TL-Dev must confirm the code version is the approved
+>>>> stable version. Please add a Stage 0 sign-off block to the document
+>>>> header.
+>>>>
+>>>> 2.  Section 6: TC Framework is missing.  The v2 FSD template requires
+>>>> this section for all transaction forms. For the PR form, the question
+>>>> is specific: does a Purchase Requisition carry a TC code? A PR
+>>>> authorises a future purchase but does not directly move stock or post
+>>>> accounting entries. If the answer is that the PR form is not a
+>>>> TC-bearing transaction, the section should be present and should state
+>>>> that explicitly — 'This form does not carry a TC value. Stock and
+>>>> accounting movements are triggered by the GRN (TC 01) when goods are
+>>>> received against the resulting PO.' This one sentence protects the
+>>>> SPINRISE developer from a wrong assumption. Do not leave the section
+>>>> absent.
+>>>>
+>>>> 3.  Customer Variation Register is absent.  Your first document had 13
+>>>> hardcoded customer IDs. Your corrected document has removed all of
+>>>> them and replaced the behaviour with po_para flags — which is the
+>>>> correct architectural decision. But the v2 template requires a
+>>>> Customer Variation Register documenting what each former CustID
+>>>> variation was, which po_para flag now controls it, and what the
+>>>> recommended default value should be in SPINRISE. This register is the
+>>>> bridge between what the code used to do for specific customers and
+>>>> what the configuration model will do for all customers. Please create
+>>>> this register as a table in the document. It protects the IST team
+>>>> from missing a variation that a specific customer still relies on.
+>>>>
+>>>> 4.  Stored procedure code not submitted to Claude.  Section 9.4
+>>>> correctly lists SP_GetStock, KSP_INDEDNT_CHECK, and ksp_PendPR by
+>>>> name. But the v2 guide (Step 1 and Follow-up Prompt B) requires that
+>>>> the actual SQL code of each stored procedure be submitted to Claude
+>>>> for business rule analysis. The current document documents these SPs
+>>>> only from their calling signatures — we know when they are called
+>>>> and broadly what they return, but we do not know what business rules
+>>>> are embedded inside them. For ksp_PendPR in particular, which is a
+>>>> hard-blocking unconditional check, the logic inside the SP is
+>>>> migration-critical. Please obtain the SP code from SQL Server
+>>>> Management Studio and run Follow-up Prompt B against each one. The SP
+>>>> business rules must be in Section 8.
+>>>>
+>>>> 5.  Common module analysis is partial.  Section 9.6 lists four utility
+>>>> functions: Record_Exists, Padl, Padr, and fnmfdate. This tells us the
+>>>> function names but not what Record_Exists does internally, whether it
+>>>> handles any business logic beyond existence checking, or whether Padl
+>>>> and Padr have any edge cases. The full modCommon.bas code should be
+>>>> submitted to Claude using Follow-up Prompt A. The output belongs in
+>>>> Section 7 of the v2 FSD template.
+>>>>
+>>>> 6.  EmpCommon = True origin must be resolved in the document.  This is
+>>>> not only an IST question — it is a developer question. The form
+>>>> reads EmpCommon but does not set it. It is set somewhere in the
+>>>> application startup or login module. The developer who understands the
+>>>> login flow must be asked: what determines EmpCommon's value at login?
+>>>> Which divisions or configurations result in True vs False? This answer
+>>>> belongs in Section 5 (Business Logic) or Section 7 (External
+>>>> Dependencies), not just as an open IST question.
+>>>>
+>>>> 7.  Delete guard is incomplete.  V28 correctly documents that a PR
+>>>> linked to an Enquiry cannot be deleted. But what happens when a PR
+>>>> line has been partially converted to a PO? Can the PR header be
+>>>> deleted while a PO is in draft state? Can it be deleted if the PO is
+>>>> approved? These are the most common scenarios where customers attempt
+>>>> to delete a PR and get unexpected results. Muthuvel will know these
+>>>> scenarios from customer site experience. Please add this as a specific
+>>>> question in the IST section.
+>>>>
+>>>> 8.  Approval workflow must be cross-referenced.  Section 5.7 confirms
+>>>> that PRapprovalstatus is display-only on this form and Section 5.8
+>>>> documents all 10 PR status states. But the approval process itself —
+>>>> which form handles it, how many levels, who approves — is not
+>>>> documented or even cross-referenced. In SPINRISE, the PR approval
+>>>> workflow is a separate feature that must be designed alongside this
+>>>> form. The FSD should note: 'PR approval is handled by [form name]. See
+>>>> [form name] FSD for the complete approval workflow.' This
+>>>> cross-reference is the IST team's responsibility to provide.
+>>>>
+>>>> 9.  Rate override logic needs a plain-English statement. Section 5.2
+>>>> notes that the Rate field is overridden by the last receipt from
+>>>> IN_TRNHEAD and IN_TRNTAIL where TC=1 and SLCODE IS NOT NULL. This is a
+>>>> business rule embedded in a SQL query. It should be stated plainly in
+>>>> Section 5: 'If a supplier-linked receipt transaction (TC 01) exists
+>>>> for this item, the Rate field is pre-filled with the last receipt rate
+>>>> rather than the item master rate.' IST must confirm: is this the
+>>>> correct intended behaviour, or is it a workaround that should not be
+>>>> carried into SPINRISE?
+>>>>
+>>>> 10.  po_para flags — defaults required.  Your IST question 8 asks
+>>>> for the complete po_para flag list and default values. From the
+>>>> corrected document analysis, six flags are identified: BudgetQty,
+>>>> Manual_IndNo, PRapprovalstatus, Penpodetails, PendingOrderPara, and
+>>>> InditemGrp. Muthuvel must provide the answer to this directly in the
+>>>> document — not in a separate mail. The recommended default for each
+>>>> flag in a standard SPINRISE installation (new customer, no special
+>>>> requirements) must be recorded before the FSD is used for code
+>>>> generation.
+>>>>
+>>>> A specific observation for the CEO's attention on the Oracle finding
+>>>>
+>>>> I am flagging this separately because it is a product strategy
+>>>> question, not just a technical one. The corrected document identifies
+>>>> that Oracle-specific SQL paths exist alongside SQL Server paths in the
+>>>> same form. This was previously invisible in the codebase. If any
+>>>> current Kalpatharu customers are on the Oracle backend, that means
+>>>> their data model includes the blcode field and the Oracle-specific
+>>>> query patterns. The question of whether SPINRISE supports Oracle, or
+>>>> whether those customers will be migrated to SQL Server as part of the
+>>>> SPINRISE onboarding, needs a CEO-level decision before the canonical
+>>>> SPINRISE data model is locked. This affects not just the PR form but
+>>>> potentially every module that has similar Oracle/SQL Server branching.
+>>>>
+>>>> For Muthuvel — three additional IST questions to add to your review
+>>>>
+>>>> Beyond the eight questions Mariyaiya has listed, please also address:
+>>>>
+>>>> IST-A:  For the PR approval workflow — which form handles the actual
+>>>> approval action? How many approval levels are standard? Are approval
+>>>> levels customer-configurable? What happens to a PR that reaches Final
+>>>> Level Approved — does it auto-convert to a PO or does a separate PO
+>>>> creation step follow?
+>>>>
+>>>> IST-B:  For the ksp_PendPR hard block — at which customer sites has
+>>>> this check caused legitimate procurement to be blocked incorrectly?
+>>>> Has IST ever had to manually bypass this check at a customer site? The
+>>>> answer determines whether it should be a configurable soft warning in
+>>>> SPINRISE rather than an unconditional hard block.
+>>>>
+>>>> IST-C:  For the Rate override from TC=1 receipts — is this the
+>>>> intended behaviour or a historical workaround? Should SPINRISE
+>>>> pre-fill the Rate from the item master (clean, predictable) or from
+>>>> the last receipt (current practice, but supplier-linked)? This
+>>>> decision affects how the API populates the Rate field on item
+>>>> selection.
+>>>>
+>>>> Overall assessment
+>>>>
+>>>> This corrected version is meaningfully better than the first — not
+>>>> incrementally, but structurally. The removal of all CustID hardcoding,
+>>>> the dead code separation, the new External Dependencies section, the
+>>>> Oracle/SQL Server finding, and the expanded validation categories
+>>>> together represent exactly the kind of improvement the v2 guide was
+>>>> designed to produce. You have done the right analytical work.
+>>>>
+>>>> The ten items above are not criticisms of the work done. They are the
+>>>> gaps that remain between where this document is now and where it needs
+>>>> to be before it can be approved and handed to the code conversion
+>>>> team. Most of them are additions, not corrections.
+>>>>
+>>>> Complete the ten items above. Get Muthuvel's/ TL- IST review with all
+>>>> seven standard questions plus the three additional ones answered
+>>>> directly in the document. Then bring both to Saturday's session.
+>>>>
+>>>> This remains on the critical path for the first APPROVED FSD
+>>>> milestone.
+>>>>
+>>>> Warm regards,
+>>>> T Mani
+>>>>
+>>>> cc: TL-Dev, Project Manager, Muthuvel (Module Sr IST), Full SPINRISE
+>>>> Team
+>>>>
+>>>> On 03/04/2026 11:58 am, MariyaiyaM wrote:
+>>>>
+>>>>> Dear Team,
+>>>>>
+>>>>> Kindly disregard my previous email. Please refer only to this mail
+>>>>> and the attached revised document.
+>>>>>
+>>>>> Please find attached the Critical Analysis document for the Purchase
+>>>>> Requisition code-cleaned form (tmpPoindent.frm), which I have
+>>>>> prepared as part of the SPINRISE FSD documentation process.
+>>>>>
+>>>>> This document covers a detailed review of the VB6 form code across
+>>>>> 13 sections:
+>>>>>
+>>>>> —  Form Overview and Screen Layout
+>>>>> —  All Header and Item Entry fields with mandatory flags
+>>>>> —  Toolbar Buttons and their behaviour
+>>>>> —  Complete Validation Rules (Pre-Add, Header, Item Line, and
+>>>>> Pending Order checks)
+>>>>> —  Business Logic and Auto-Fill Rules
+>>>>> —  Database Tables and Stored Procedures
+>>>>> —  Print / Report Architecture
+>>>>> —  Error Messages Catalogue
+>>>>> —  External Files, Classes & Modules Referenced
+>>>>> —  Related Screens and Navigation
+>>>>> —  Critical Findings and Defects (3 Critical, 3 High, 3 Medium,
+>>>>> 2 Low issues identified)
+>>>>> —  Summary Scorecard
+>>>>> —  SPINRISE Migration Recommendations
+>>>>>
+>>>>> Kindly verify all domain-level details, including validation rules,
+>>>>> business logic, po_para parameter flags, and the list of IST review
+>>>>> questions in Section 13. Your sign-off on this document is required
+>>>>> before the FSD draft is prepared.
+>>>>>
+>>>>> Please pay particular attention to the following open items that
+>>>>> require your confirmation:
+>>>>>
+>>>>> 1.  What does EmpCommon = True represent? Which divisions use the
+>>>>> Cry_Purchase_Req report template and which use Cry_PR_KSL?
+>>>>> 2.  Should ksp_PendPR be hard-blocking or a soft warning? Should
+>>>>> it be made configurable via a po_para flag per division?
+>>>>> 3.  Is the blcode (Oracle) field required in SPINRISE?
+>>>>> 4.  Uniqueness rule for PR line items — Item Code only, or Item
+>>>>> Code + Machine Code?
+>>>>> 5.  Is po_para.PRapprovalstatus display-only, or does it gate any
+>>>>> operation?
+>>>>> 6.  Is Manual PR numbering (Manual_IndNo) required in SPINRISE?
+>>>>> 7.  Is the PurOrd.UserFooter OCX footer selector functionality
+>>>>> required in SPINRISE?
+>>>>> 8.  Complete list of po_para flags and their expected default
+>>>>> values in SPINRISE.
+>>>>>
+>>>>> The document is attached in both Word (.docx) and Markdown (.md)
+>>>>> formats for your convenience.
+>>>>>
+>>>>> Kindly share your review comments and approval at the earliest so we
+>>>>> can proceed with the FSD draft without further delay.
+>>>>>
+>>>>> Regards,
+>>>>> Mariyaiya
+--------------CYiacY0KXko6fsfBYtXBbHjy
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <p>Dear Sir,</p>
+    <p>As per your query regarding <strong>EmpCommon = True</strong>, I
+      have analyzed the application flow and would like to provide the
+      confirmed details below:</p>
+    <ol>
+      <li>
+        <p><strong>Origin of EmpCommon Flag</strong><br>
+          The <code>EmpCommon</code> flag is being <strong>set during
+            the login process</strong>.<br>
+          In the login module, the system executes the following logic:</p>
+        <ul>
+          <li>
+            <p>It reads the value from the <code>PO_Para</code> table
+              based on the selected <strong>DivCode</strong></p>
+          </li>
+          <li>
+            <p>Field used: <code>EmpMasterComm</code></p>
+          </li>
+          <li>
+            <p>Logic:</p>
+            <ul>
+              <li>
+                <p>If <code>EmpMasterComm = 'Y'</code> → <code>EmpCommon
+                    = True</code></p>
+              </li>
+              <li>
+                <p>Otherwise → <code>EmpCommon = False</code></p>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <p>Hence, the flag is <strong>database-driven</strong> and
+          controlled through the <code>PO_Para</code> configuration.</p>
+      </li>
+      <li>
+        <p><strong>Customers Using EmpCommon = True</strong><br>
+          Based on current data, the following customers/divisions have
+          <code>EmpMasterComm = 'Y'</code>, and therefore <code>EmpCommon
+            = True</code>:</p>
+        <ul>
+          <li>
+            <p>Saranya</p>
+          </li>
+          <li>
+            <p>Armstrong</p>
+          </li>
+          <li>
+            <p>Cheran</p>
+          </li>
+          <li>
+            <p>Skaat</p>
+          </li>
+          <li>
+            <p>VTS</p>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p><strong>Report Template Selection Logic</strong><br>
+          The report selection is directly dependent on the <code>EmpCommon</code>
+          flag:</p>
+        <ul>
+          <li>
+            <p>If <code>EmpCommon = True</code> → <strong>Cry_Purchase_Req</strong>
+              is used</p>
+          </li>
+          <li>
+            <p>If <code>EmpCommon = False</code> → <strong>Cry_PR_KSL</strong>
+              is used</p>
+          </li>
+        </ul>
+        <p>This confirms that the report behavior is <strong>fully
+            controlled by the parameter value in <code>PO_Para</code></strong>
+          and set during login.</p>
+      </li>
+      <li>
+        <p><strong>Conclusion</strong></p>
+        <ul>
+          <li>
+            <p><code>EmpCommon</code> is not hardcoded; it is <strong>derived
+                dynamically at login</strong></p>
+          </li>
+          <li>
+            <p>The controlling factor is the <code>EmpMasterComm</code>
+              field in <code>PO_Para</code></p>
+          </li>
+          <li>
+            <p>Report template usage is <strong>automatically driven
+                based on this flag</strong></p>
+          </li>
+        </ul>
+      </li>
+    </ol>
+    <p>Please let me know if any further analysis or validation is
+      required.</p>
+    <p>Regards,<br>
+      Mariyaiya.M</p>
+    <p><br>
+    </p>
+    <div class="moz-cite-prefix">On 09/04/2026 06:09 pm, CEO wrote:<br>
+    </div>
+    <blockquote type="cite"
+      cite="mid:32971bd5-3666-4649-99ff-0137b9c18363@kalsofte.com">
+      <p>Dear Palanivel,<br>
+        <br>
+        Thank you for reviewing Muthuvel's IST responses and sharing
+        your suggestions promptly. I have also noted from PULSE 360 that
+        PM Saravanan is actively reviewing this thread.<br>
+        <br>
+        <b>I have gone through both sets of responses carefully against
+          the 11 questions raised in my earlier review. Out of the 11,
+          six are now resolved with clear answers from both of you. This
+          is good progress and I want to acknowledge it before
+          addressing what remains open.</b><br>
+        <br>
+        <br>
+        <b>What is resolved</b><br>
+        <br>
+        The following decisions are confirmed and must be documented in
+        the FSD immediately:<br>
+        <br>
+        <b>ksp_PendPR:</b> Full removal in SPINRISE. Used only for
+        SUBAM, and SUBAM itself has requested its removal. This check
+        will not be implemented in SPINRISE in any form. Document in
+        Section 12 as a removed feature and in the Customer Variation
+        Register as resolved.<br>
+        <br>
+        <b>blcode (Oracle field): </b>Not required. Excluded from
+        SPINRISE.<br>
+        <br>
+        <b>Uniqueness rule for PR line items: </b>Palanivel has given a
+        clear ruling — Item Code plus Machine Code. This resolves the
+        three inconsistent duplicate check implementations in the VB6
+        code. The FSD must now document a single authoritative rule: a
+        PR line item is unique by the combination of Item Code and
+        Machine Code. This applies to both Add and Modify modes without
+        exception.<br>
+        <br>
+        <b>po_para.PRapprovalstatus: </b>Display only. To be
+        implemented in SPINRISE as a visible status indicator on the PR
+        form, showing the current approval level without requiring the
+        user to run a separate query.<br>
+        <br>
+        <b>Manual PR numbering (Manual_IndNo):</b> Not required in
+        SPINRISE. Auto-sequential numbering via po_doc_para only.<br>
+        <br>
+        <b>ksp_PendPR customer site history (IST-B)</b>: Confirmed as
+        SUBAM only, with SUBAM requesting removal. Fully documented.<br>
+        <br>
+        <br>
+        <b>What still needs to be resolved before the FSD can be
+          completed</b><br>
+        <br>
+        I am asking for specific responses to the following four items.
+        These are the only remaining gaps standing between this IST
+        review and a complete FSD ready for my approval.<br>
+        <br>
+        <b>1.  EmpCommon = True — origin not yet confirmed.</b><br>
+        Both responses explain what EmpCommon controls (division-wise
+        employee display and print template selection) but neither
+        confirms where it is set. The form reads it but does not set it.
+        It must be set somewhere in the application login or startup
+        module. Which module sets it, and based on which table or
+        configuration value? Additionally, which specific customer
+        divisions currently use Cry_Purchase_Req and which use
+        Cry_PR_KSL? <b>Mariyaiya to check the login module code and
+          confirm.<br>
+        </b><br>
+        <b>2.  PurOrd.UserFooter OCX — contradiction to be resolved.</b><br>
+        Muthuvel correctly states that the OCX control itself cannot be
+        used in a web application. Palanivel states that the
+        functionality is required in SPINRISE. Both are right about
+        different things and I want to clarify this for the team. The
+        OCX mechanism — the Windows ActiveX control — will not exist in
+        SPINRISE. That is technically non-negotiable. But the
+        functionality it provides — the ability to select a custom
+        footer for the PR print — may still be a business requirement.
+        My question for Palanivel: is the custom footer selector
+        actively used by customers when printing PRs? If yes, SPINRISE
+        must implement this as a server-side configurable setting,
+        replacing the OCX with a dropdown selector in the print
+        preferences. Please confirm whether the custom footer selection
+        is a real business need or a legacy feature that is rarely used
+        in practice.<br>
+        <br>
+        <b>3.  po_para flags — the actual list is still missing.</b><br>
+        Both responses confirm that unused flags need to be removed. But
+        what I asked for, and what the FSD requires, is the complete
+        list of all po_para flags with their current usage status and
+        the recommended default value for each in a standard SPINRISE
+        installation. Agreeing that cleanup is needed is not the same as
+        providing the list. Muthuvel, please run the following against
+        the SQL Server database and share the result: select all column
+        names from po_para with at least one example value. Then mark
+        each flag as: Used in active code, Used in specific customer
+        only, or Unused. <b>This list must be in FSD Section 8 before
+          the document can be approved.</b><br>
+        <br>
+        <b>4.  PR approval workflow (IST-A) — the four sub-questions are
+          still unanswered.</b><br>
+        Both responses say approvals are handled in the PO module and
+        Web Approvals. That tells me the location but not the workflow.
+        I need all four of the following answered specifically:<br>
+        (a) Which form or screen handles the actual approval action? Is
+        it a separate approval form or part of the PR form itself?<br>
+        (b) How many approval levels are standard across a typical
+        SPINRISE installation? Is it one level, two, three, or variable?<br>
+        (c) Are the number of approval levels customer-configurable, or
+        is it a fixed system-wide setting?<br>
+        (d) When a PR reaches Final Level Approved, does it
+        automatically create a PO, or does a separate PO creation step
+        follow?<br>
+        <b>This workflow is the core of the PR transaction lifecycle in
+          SPINRISE.</b> Without these answers, the PR form FSD is
+        describing an entry point without documenting where that entry
+        leads.<br>
+        <br>
+        <br>
+        <b>A new question for Mariyaiya to verify</b><br>
+        <br>
+        Muthuvel and Palanivel have confirmed that TC (Transaction Code)
+        is not used in the PO module — it belongs to the Store module.
+        This is an important clarification and it correctly means
+        Section 6 (TC Framework) of the FSD should state: 'This form
+        does not carry a TC value. Stock and accounting movements are
+        triggered downstream when goods are received against the
+        resulting PO.'<br>
+        <br>
+        However, the corrected critical analysis document (Section 5.2)
+        shows that the PR form's Rate field override logic reads from
+        IN_TRNHEAD and IN_TRNTAIL with TC=1. If TC is not used in the PO
+        module, this query either never executes or reads cross-module
+        data from the Store module.<b> Mariyaiya, please verify:</b> is
+        this rate override query live and active in practice, or is it
+        dead code? Check whether the Rate field in the PR form actually
+        gets populated from IN_TRNHEAD in any live customer scenario.
+        The answer determines whether this logic is replicated in
+        SPINRISE or excluded as dead code.<br>
+        <br>
+        <br>
+        <b>On the overall progress</b><br>
+        <br>
+        I am pleased that the IST review has produced clear, actionable
+        answers on the majority of questions, and that Palanivel's
+        suggestions are aligned with Muthuvel's responses in most areas.
+        The collaboration between the two IST levels is exactly how this
+        review chain is supposed to work.<br>
+        <br>
+        The four remaining items above are not complex — they require
+        one targeted SQL query, one business confirmation from
+        Palanivel, one developer code check from Mariyaiya, and four
+        specific workflow answers. <b>These can and should be completed
+          before Saturday's review meeting.</b><br>
+        <br>
+        <b>Mariyaiya:</b> please update the FSD document with all
+        resolved items from this thread, mark the four open items as
+        [PENDING IST RESPONSE] and share the updated document with
+        Muthuvel and Palanivel by tomorrow.<br>
+        <br>
+        Regards,<br>
+        T. Mani<br>
+        <br>
+        cc:  Mariyaiya, TL-Dev Sasi</p>
+      <div class="moz-cite-prefix">On 09/04/2026 10:46 am, Palanivel
+        wrote:<br>
+      </div>
+      <blockquote type="cite"
+        cite="mid:2bd7a650-04de-4740-b231-a6d6aa043f7a@kalsofte.com">
+        <p>Dear Mr.Muthuvel,</p>
+        <p>      Please find the below the Suggestions for the Purchase
+          Requisition Form,</p>
+        <p>•Confirm: What does EmpCommon = True represent? Which
+          divisions use which Crystal report template? </p>
+        <p>Ans:- For multiple divisions, the employee list should be
+          displayed based on division. We can continue using
+          parameterized logic to support both division-wise and combined
+          unit views.</p>
+        <p><b>Suggestions : In Tranaction print There is no change, </b><br>
+          <br>
+          •Confirm: Should ksp_PendPR be hard-blocking or a soft
+          warning? Should it be configurable per division? </p>
+        <p>Ans:- The hard block needs to be removed, as certain critical
+          materials may require immediate purchase at any time. At
+          present, if a PR has already been raised, the system displays
+          a validation stating that the PR is pending for PO creation. </p>
+        <p><b>Suggestions : It need to be removed,  </b></p>
+        <p><br>
+          •Confirm: Is blcode (Oracle field) required in SPINRISE? </p>
+        <p>Ans:- As per CEO Connfirmation, not required. </p>
+        <p><b>Suggestions : It need to be removed.</b></p>
+        <p><br>
+          •Confirm: Uniqueness rule for PR line items — item code only,
+          or item code + machine? </p>
+        <p>Ans:- In the PR form, certain customers associate a machine
+          with the selected item for procurement purposes. This
+          information is displayed based on the applicable department
+          and is currently available only in the transaction print, not
+          in other reports. This feature helps customers track item
+          selection within their workflow. </p>
+        <p><b>Suggestions : PR Line Items needed Item code + Machine. </b></p>
+        <p><br>
+          •Confirm: Is po_para.PRapprovalstatus display-only, or does it
+          gate any operation? </p>
+        <p>Ans:- One of the ease of use point, it display in the
+          Transactions Form Side up window to know current status of the
+          PR, otherwise every time qureies PR Status to know the
+          status. </p>
+        <p><b>Suggestions : In PO_Para.PRapproval status display only, </b></p>
+        <p><br>
+          •Confirm: Is Manual PR numbering (Manual_IndNo) required in
+          SPINRISE? </p>
+        <p>Ans:- For the controlled structure manual numbering is not
+          required. </p>
+        <p><b>Suggestions : Manual numbering not adviceable. and It is
+            no needed. </b></p>
+        <p><br>
+          •Confirm: Is PurOrd.UserFooter OCX footer selector
+          functionality required in SPINRISE? </p>
+        <p>Ans:- OCX (ActiveX) is Windows desktop–only. Not supported in
+          web apps (browser security + architecture) <br>
+        </p>
+        <p><b>Suggestions : It is required in SPINRISE.</b></p>
+        <p><br>
+          •Document: Complete list of po_para flags and their expected
+          default values in SPINRISE </p>
+        <p>Ans:- Some flags are not used anywhere need to be remove from
+          the table. </p>
+        <p><b>Suggestions : Un used Flag in PO_Para Table need to be
+            removed.</b></p>
+        <p><br>
+          IST-A:  For the PR approval workflow — which form handles the
+          actual approval action? How many approval levels are standard?
+          Are approval levels customer-configurable? What happens to a
+          PR that reaches Final Level Approved — does it auto-convert to
+          a PO or does a separate PO creation step follow? <br>
+          <br>
+          Ans:- The approvals are handles in the PO module also Web
+          Approvals itself, </p>
+        <p><b>Suggestions : The approvals are handles in the Web
+            Approvals.</b></p>
+        <p><br>
+          IST-B:  For the ksp_PendPR hard block — at which customer
+          sites has this check caused legitimate procurement to be
+          blocked incorrectly? Has IST ever had to manually bypass this
+          check at a customer site? The answer determines whether it
+          should be a configurable soft warning in SPINRISE rather than
+          an unconditional hard block. <br>
+          <br>
+          Ans:- It needs to be removed and its used in Subam only
+          forsome control purpose, recently request to remove the
+          control from the Subam Side. <br>
+          <br>
+          <br>
+          IST-C:  For the Rate override from TC=1 receipts — is this the
+          intended behaviour or a historical workaround? Should SPINRISE
+          pre-fill the Rate from the item master (clean, predictable) or
+          from the last receipt (current practice, but
+          supplier-linked)?  This decision affects how the API populates
+          the Rate field on item selection. <br>
+          <br>
+          Ans:- TC is no where used in the PO Module, used in the Store
+          Module only. <br>
+          <br>
+        </p>
+        <p>Thanks &amp; Regards,</p>
+        <p>V. Palanivel</p>
+        <div class="moz-cite-prefix">On 08/04/2026 01:07 pm, <a
+            class="moz-txt-link-abbreviated moz-txt-link-freetext"
+            href="mailto:muthuvel.m@kalsofte.com" moz-do-not-send="true">muthuvel.m@kalsofte.com</a>
+          wrote:<br>
+        </div>
+        <blockquote type="cite"
+          cite="mid:54e7c45da3dd629cf6e1d56461cbd369@kalsofte.com">Dear
+          Sir, <br>
+          <br>
+          Please find below the feedback for the Purchase Requisition
+          Form. Kindly review and share your suggestions, if any, for
+          the CEO’s review. <br>
+          <br>
+          IST Review Checklist Before FSD Generation <br>
+          <br>
+          •Confirm: What does EmpCommon = True represent? Which
+          divisions use which Crystal report template? <br>
+          Ans:- For multiple divisions, the employee list should be
+          displayed based on division. We can continue using
+          parameterized logic to support both division-wise and combined
+          unit views. <br>
+          <br>
+          •Confirm: Should ksp_PendPR be hard-blocking or a soft
+          warning? Should it be configurable per division? <br>
+          Ans:- The hard block needs to be removed, as certain critical
+          materials may require immediate purchase at any time. At
+          present, if a PR has already been raised, the system displays
+          a validation stating that the PR is pending for PO creation. <br>
+          <br>
+          •Confirm: Is blcode (Oracle field) required in SPINRISE? <br>
+          Ans:- As per CEO Connfirmation, not required. <br>
+          <br>
+          •Confirm: Uniqueness rule for PR line items — item code only,
+          or item code + machine? <br>
+          Ans:- In the PR form, certain customers associate a machine
+          with the selected item for procurement purposes. This
+          information is displayed based on the applicable department
+          and is currently available only in the transaction print, not
+          in other reports. This feature helps customers track item
+          selection within their workflow. <br>
+          <br>
+          •Confirm: Is po_para.PRapprovalstatus display-only, or does it
+          gate any operation? <br>
+          Ans:- One of the ease of use point, it display in the
+          Transactions Form Side up window to know current status of the
+          PR, otherwise every time qureies PR Status to know the status.
+          <br>
+          <br>
+          •Confirm: Is Manual PR numbering (Manual_IndNo) required in
+          SPINRISE? <br>
+          Ans:- For the controlled structure manual numbering is not
+          required. <br>
+          <br>
+          •Confirm: Is PurOrd.UserFooter OCX footer selector
+          functionality required in SPINRISE? <br>
+          Ans:- OCX (ActiveX) is Windows desktop–only. Not supported in
+          web apps (browser security + architecture) <br>
+          <br>
+          •Document: Complete list of po_para flags and their expected
+          default values in SPINRISE <br>
+          Ans:- Some flags are not used anywhere need to be remove from
+          the table. <br>
+          <br>
+          IST-A:  For the PR approval workflow — which form handles the
+          actual approval action? How many approval levels are standard?
+          Are approval levels customer-configurable? What happens to a
+          PR that reaches Final Level Approved — does it auto-convert to
+          a PO or does a separate PO creation step follow? <br>
+          <br>
+          Ans:- The approvals are handles in the PO module also Web
+          Approvla itself, <br>
+          <br>
+          <br>
+          IST-B:  For the ksp_PendPR hard block — at which customer
+          sites has this check caused legitimate procurement to be
+          blocked incorrectly? Has IST ever had to manually bypass this
+          check at a customer site? The answer determines whether it
+          should be a configurable soft warning in SPINRISE rather than
+          an unconditional hard block. <br>
+          <br>
+          Ans:- It needs to be removed and its used in Subam only
+          forsome control purpose, recently request to remove the
+          control from the Subam Side. <br>
+          <br>
+          <br>
+          IST-C:  For the Rate override from TC=1 receipts — is this the
+          intended behaviour or a historical workaround? Should SPINRISE
+          pre-fill the Rate from the item master (clean, predictable) or
+          from the last receipt (current practice, but
+          supplier-linked)?  This decision affects how the API populates
+          the Rate field on item selection. <br>
+          <br>
+          Ans:- TC is no where used in the PO Module, used in the Store
+          Module only. <br>
+          <br>
+          Thanks &amp; Regards <br>
+          M MuthuVel <br>
+          <br>
+          On 2026-04-03 02:35, CEO wrote: <br>
+          <blockquote type="cite">Dear Mariyaiya, <br>
+            <br>
+            I have gone through your Corrected Critical Analysis
+            document for <br>
+            tmpPoindent.frm carefully. I am also sharing this review
+            with Muthuvel <br>
+            before he begins the IST review, and with the full team, as
+            several <br>
+            observations here have implications beyond the PO module. <br>
+            <br>
+            This is a substantially improved document from the first
+            version. Let <br>
+            me give you both a clear picture of what has improved and
+            what still <br>
+            needs to be completed before Muthuvel can begin his IST
+            review. <br>
+            <br>
+            What you have done significantly better in this version <br>
+            <br>
+            The most important improvement is the complete removal of
+            all <br>
+            hardcoded customer ID checks. Your first version documented
+            13 <br>
+            separate CustID blocks embedded in the form logic. This
+            corrected <br>
+            version shows none — all conditional behaviour is now driven
+            by <br>
+            po_para parameter flags. This is not a minor cleanup. This
+            is a <br>
+            fundamental structural change to the form that directly
+            improves <br>
+            SPINRISE migration readiness. The Summary Scorecard
+            correctly shows <br>
+            'Parameter-Driven Configuration: Good' where the previous
+            version <br>
+            showed 'Customer Configurability: Poor'. This change alone
+            justifies <br>
+            the time spent on stabilisation. <br>
+            <br>
+            The dead code separation is correct and properly executed.
+            You have <br>
+            reduced from 9,108 total lines to approximately 7,467 active
+            code <br>
+            lines, with 27 commented blocks identified and excluded.
+            This is <br>
+            exactly what Stage 0 required and what the v2 guide
+            specified must <br>
+            happen before Claude submission. The analysis is now based
+            on what the <br>
+            screen actually does, not on what it once considered doing.
+            <br>
+            <br>
+            The new Section 9 on External Files, Classes, and Modules is
+            the most <br>
+            significant structural addition. You have listed 9 OCX
+            controls with <br>
+            their GUIDs, the .frx binary resource, two class modules
+            (clsCrystal <br>
+            and Report.ReportView), 14 global variables declared outside
+            the form, <br>
+            five external forms and objects called, and four utility
+            functions <br>
+            from the global module. This directly addresses the feedback
+            raised in <br>
+            our first VB developer's mail about Common and Class module
+            <br>
+            dependencies. This section did not exist at all in the first
+            version. <br>
+            <br>
+            The new Print and Report Architecture section (Section 7)
+            documents <br>
+            both Crystal report branches controlled by the EmpCommon
+            flag. The <br>
+            first version only noted Crystal Reports as a
+            medium-severity issue. <br>
+            This version documents the complete branching logic, the
+            formula <br>
+            injection for requester name, and both report objects. This
+            is the <br>
+            level of detail the SPINRISE web API will need to generate
+            the PDF <br>
+            equivalent correctly. <br>
+            <br>
+            The new Critical finding on dual Oracle and SQL Server
+            database paths <br>
+            is significant. The first version did not identify this at
+            all. This <br>
+            corrected version shows that Oracle-specific SQL (to_char,
+            decode, <br>
+            outer join syntax, and the blcode field) coexists in the
+            same form <br>
+            alongside SQL Server SQL. This is a migration complexity
+            that the team <br>
+            could not have discovered without the thorough active code
+            analysis <br>
+            you have now done. <br>
+            <br>
+            The validation rules are now split into six categories
+            rather than <br>
+            four, adding Delete Validations and Print Validation as
+            separate <br>
+            sections. The error message catalogue has grown from 17 to
+            25 <br>
+            messages, with the additional entries being real messages
+            that were <br>
+            missed in the first pass. The table inventory has grown from
+            19 to 24 <br>
+            tables, all with clear purpose descriptions. The PR status
+            lifecycle <br>
+            with all 10 states is fully documented for the first time,
+            and the <br>
+            audit logging to LogDet_PO with all 18 fields is now on
+            record. None <br>
+            of this was in version one. <br>
+            <br>
+            What still needs to be completed before IST review begins <br>
+            <br>
+            I am asking you to address the following before handing this
+            to <br>
+            Muthuvel. Some of these are additions to the document. Some
+            are <br>
+            process steps from the v2 guide that need to be confirmed. <br>
+            <br>
+            1.  Stage 0 sign-off not confirmed.  The document header
+            says <br>
+            'code-cleaned' which indicates Stage 0 was done. But the
+            Screen <br>
+            Readiness Checklist (R1 through R8 from the v2 guide Section
+            3.2) is <br>
+            not present in the document and TL-Dev sign-off is not
+            recorded. <br>
+            Before any FSD is submitted for IST review, the checklist
+            must be <br>
+            completed and TL-Dev must confirm the code version is the
+            approved <br>
+            stable version. Please add a Stage 0 sign-off block to the
+            document <br>
+            header. <br>
+            <br>
+            2.  Section 6: TC Framework is missing.  The v2 FSD template
+            requires <br>
+            this section for all transaction forms. For the PR form, the
+            question <br>
+            is specific: does a Purchase Requisition carry a TC code? A
+            PR <br>
+            authorises a future purchase but does not directly move
+            stock or post <br>
+            accounting entries. If the answer is that the PR form is not
+            a <br>
+            TC-bearing transaction, the section should be present and
+            should state <br>
+            that explicitly — 'This form does not carry a TC value.
+            Stock and <br>
+            accounting movements are triggered by the GRN (TC 01) when
+            goods are <br>
+            received against the resulting PO.' This one sentence
+            protects the <br>
+            SPINRISE developer from a wrong assumption. Do not leave the
+            section <br>
+            absent. <br>
+            <br>
+            3.  Customer Variation Register is absent.  Your first
+            document had 13 <br>
+            hardcoded customer IDs. Your corrected document has removed
+            all of <br>
+            them and replaced the behaviour with po_para flags — which
+            is the <br>
+            correct architectural decision. But the v2 template requires
+            a <br>
+            Customer Variation Register documenting what each former
+            CustID <br>
+            variation was, which po_para flag now controls it, and what
+            the <br>
+            recommended default value should be in SPINRISE. This
+            register is the <br>
+            bridge between what the code used to do for specific
+            customers and <br>
+            what the configuration model will do for all customers.
+            Please create <br>
+            this register as a table in the document. It protects the
+            IST team <br>
+            from missing a variation that a specific customer still
+            relies on. <br>
+            <br>
+            4.  Stored procedure code not submitted to Claude.  Section
+            9.4 <br>
+            correctly lists SP_GetStock, KSP_INDEDNT_CHECK, and
+            ksp_PendPR by <br>
+            name. But the v2 guide (Step 1 and Follow-up Prompt B)
+            requires that <br>
+            the actual SQL code of each stored procedure be submitted to
+            Claude <br>
+            for business rule analysis. The current document documents
+            these SPs <br>
+            only from their calling signatures — we know when they are
+            called <br>
+            and broadly what they return, but we do not know what
+            business rules <br>
+            are embedded inside them. For ksp_PendPR in particular,
+            which is a <br>
+            hard-blocking unconditional check, the logic inside the SP
+            is <br>
+            migration-critical. Please obtain the SP code from SQL
+            Server <br>
+            Management Studio and run Follow-up Prompt B against each
+            one. The SP <br>
+            business rules must be in Section 8. <br>
+            <br>
+            5.  Common module analysis is partial.  Section 9.6 lists
+            four utility <br>
+            functions: Record_Exists, Padl, Padr, and fnmfdate. This
+            tells us the <br>
+            function names but not what Record_Exists does internally,
+            whether it <br>
+            handles any business logic beyond existence checking, or
+            whether Padl <br>
+            and Padr have any edge cases. The full modCommon.bas code
+            should be <br>
+            submitted to Claude using Follow-up Prompt A. The output
+            belongs in <br>
+            Section 7 of the v2 FSD template. <br>
+            <br>
+            6.  EmpCommon = True origin must be resolved in the
+            document.  This is <br>
+            not only an IST question — it is a developer question. The
+            form <br>
+            reads EmpCommon but does not set it. It is set somewhere in
+            the <br>
+            application startup or login module. The developer who
+            understands the <br>
+            login flow must be asked: what determines EmpCommon's value
+            at login? <br>
+            Which divisions or configurations result in True vs False?
+            This answer <br>
+            belongs in Section 5 (Business Logic) or Section 7 (External
+            <br>
+            Dependencies), not just as an open IST question. <br>
+            <br>
+            7.  Delete guard is incomplete.  V28 correctly documents
+            that a PR <br>
+            linked to an Enquiry cannot be deleted. But what happens
+            when a PR <br>
+            line has been partially converted to a PO? Can the PR header
+            be <br>
+            deleted while a PO is in draft state? Can it be deleted if
+            the PO is <br>
+            approved? These are the most common scenarios where
+            customers attempt <br>
+            to delete a PR and get unexpected results. Muthuvel will
+            know these <br>
+            scenarios from customer site experience. Please add this as
+            a specific <br>
+            question in the IST section. <br>
+            <br>
+            8.  Approval workflow must be cross-referenced.  Section 5.7
+            confirms <br>
+            that PRapprovalstatus is display-only on this form and
+            Section 5.8 <br>
+            documents all 10 PR status states. But the approval process
+            itself — <br>
+            which form handles it, how many levels, who approves — is
+            not <br>
+            documented or even cross-referenced. In SPINRISE, the PR
+            approval <br>
+            workflow is a separate feature that must be designed
+            alongside this <br>
+            form. The FSD should note: 'PR approval is handled by [form
+            name]. See <br>
+            [form name] FSD for the complete approval workflow.' This <br>
+            cross-reference is the IST team's responsibility to provide.
+            <br>
+            <br>
+            9.  Rate override logic needs a plain-English statement. 
+            Section 5.2 <br>
+            notes that the Rate field is overridden by the last receipt
+            from <br>
+            IN_TRNHEAD and IN_TRNTAIL where TC=1 and SLCODE IS NOT NULL.
+            This is a <br>
+            business rule embedded in a SQL query. It should be stated
+            plainly in <br>
+            Section 5: 'If a supplier-linked receipt transaction (TC 01)
+            exists <br>
+            for this item, the Rate field is pre-filled with the last
+            receipt rate <br>
+            rather than the item master rate.' IST must confirm: is this
+            the <br>
+            correct intended behaviour, or is it a workaround that
+            should not be <br>
+            carried into SPINRISE? <br>
+            <br>
+            10.  po_para flags — defaults required.  Your IST question 8
+            asks <br>
+            for the complete po_para flag list and default values. From
+            the <br>
+            corrected document analysis, six flags are identified:
+            BudgetQty, <br>
+            Manual_IndNo, PRapprovalstatus, Penpodetails,
+            PendingOrderPara, and <br>
+            InditemGrp. Muthuvel must provide the answer to this
+            directly in the <br>
+            document — not in a separate mail. The recommended default
+            for each <br>
+            flag in a standard SPINRISE installation (new customer, no
+            special <br>
+            requirements) must be recorded before the FSD is used for
+            code <br>
+            generation. <br>
+            <br>
+            A specific observation for the CEO's attention on the Oracle
+            finding <br>
+            <br>
+            I am flagging this separately because it is a product
+            strategy <br>
+            question, not just a technical one. The corrected document
+            identifies <br>
+            that Oracle-specific SQL paths exist alongside SQL Server
+            paths in the <br>
+            same form. This was previously invisible in the codebase. If
+            any <br>
+            current Kalpatharu customers are on the Oracle backend, that
+            means <br>
+            their data model includes the blcode field and the
+            Oracle-specific <br>
+            query patterns. The question of whether SPINRISE supports
+            Oracle, or <br>
+            whether those customers will be migrated to SQL Server as
+            part of the <br>
+            SPINRISE onboarding, needs a CEO-level decision before the
+            canonical <br>
+            SPINRISE data model is locked. This affects not just the PR
+            form but <br>
+            potentially every module that has similar Oracle/SQL Server
+            branching. <br>
+            <br>
+            For Muthuvel — three additional IST questions to add to your
+            review <br>
+            <br>
+            Beyond the eight questions Mariyaiya has listed, please also
+            address: <br>
+            <br>
+            IST-A:  For the PR approval workflow — which form handles
+            the actual <br>
+            approval action? How many approval levels are standard? Are
+            approval <br>
+            levels customer-configurable? What happens to a PR that
+            reaches Final <br>
+            Level Approved — does it auto-convert to a PO or does a
+            separate PO <br>
+            creation step follow? <br>
+            <br>
+            IST-B:  For the ksp_PendPR hard block — at which customer
+            sites has <br>
+            this check caused legitimate procurement to be blocked
+            incorrectly? <br>
+            Has IST ever had to manually bypass this check at a customer
+            site? The <br>
+            answer determines whether it should be a configurable soft
+            warning in <br>
+            SPINRISE rather than an unconditional hard block. <br>
+            <br>
+            IST-C:  For the Rate override from TC=1 receipts — is this
+            the <br>
+            intended behaviour or a historical workaround? Should
+            SPINRISE <br>
+            pre-fill the Rate from the item master (clean, predictable)
+            or from <br>
+            the last receipt (current practice, but supplier-linked)? 
+            This <br>
+            decision affects how the API populates the Rate field on
+            item <br>
+            selection. <br>
+            <br>
+            Overall assessment <br>
+            <br>
+            This corrected version is meaningfully better than the first
+            — not <br>
+            incrementally, but structurally. The removal of all CustID
+            hardcoding, <br>
+            the dead code separation, the new External Dependencies
+            section, the <br>
+            Oracle/SQL Server finding, and the expanded validation
+            categories <br>
+            together represent exactly the kind of improvement the v2
+            guide was <br>
+            designed to produce. You have done the right analytical
+            work. <br>
+            <br>
+            The ten items above are not criticisms of the work done.
+            They are the <br>
+            gaps that remain between where this document is now and
+            where it needs <br>
+            to be before it can be approved and handed to the code
+            conversion <br>
+            team. Most of them are additions, not corrections. <br>
+            <br>
+            Complete the ten items above. Get Muthuvel's/ TL- IST review
+            with all <br>
+            seven standard questions plus the three additional ones
+            answered <br>
+            directly in the document. Then bring both to Saturday's
+            session. <br>
+            <br>
+            This remains on the critical path for the first APPROVED FSD
+            <br>
+            milestone. <br>
+            <br>
+            Warm regards, <br>
+            T Mani <br>
+            <br>
+            cc: TL-Dev, Project Manager, Muthuvel (Module Sr IST), Full
+            SPINRISE <br>
+            Team <br>
+            <br>
+            On 03/04/2026 11:58 am, MariyaiyaM wrote: <br>
+            <br>
+            <blockquote type="cite">Dear Team, <br>
+              <br>
+              Kindly disregard my previous email. Please refer only to
+              this mail <br>
+              and the attached revised document. <br>
+              <br>
+              Please find attached the Critical Analysis document for
+              the Purchase <br>
+              Requisition code-cleaned form (tmpPoindent.frm), which I
+              have <br>
+              prepared as part of the SPINRISE FSD documentation
+              process. <br>
+              <br>
+              This document covers a detailed review of the VB6 form
+              code across <br>
+              13 sections: <br>
+              <br>
+              —  Form Overview and Screen Layout <br>
+              —  All Header and Item Entry fields with mandatory flags <br>
+              —  Toolbar Buttons and their behaviour <br>
+              —  Complete Validation Rules (Pre-Add, Header, Item Line,
+              and <br>
+              Pending Order checks) <br>
+              —  Business Logic and Auto-Fill Rules <br>
+              —  Database Tables and Stored Procedures <br>
+              —  Print / Report Architecture <br>
+              —  Error Messages Catalogue <br>
+              —  External Files, Classes &amp; Modules Referenced <br>
+              —  Related Screens and Navigation <br>
+              —  Critical Findings and Defects (3 Critical, 3 High, 3
+              Medium, <br>
+              2 Low issues identified) <br>
+              —  Summary Scorecard <br>
+              —  SPINRISE Migration Recommendations <br>
+              <br>
+              Kindly verify all domain-level details, including
+              validation rules, <br>
+              business logic, po_para parameter flags, and the list of
+              IST review <br>
+              questions in Section 13. Your sign-off on this document is
+              required <br>
+              before the FSD draft is prepared. <br>
+              <br>
+              Please pay particular attention to the following open
+              items that <br>
+              require your confirmation: <br>
+              <br>
+              1.  What does EmpCommon = True represent? Which divisions
+              use the <br>
+              Cry_Purchase_Req report template and which use Cry_PR_KSL?
+              <br>
+              2.  Should ksp_PendPR be hard-blocking or a soft warning?
+              Should <br>
+              it be made configurable via a po_para flag per division? <br>
+              3.  Is the blcode (Oracle) field required in SPINRISE? <br>
+              4.  Uniqueness rule for PR line items — Item Code only, or
+              Item <br>
+              Code + Machine Code? <br>
+              5.  Is po_para.PRapprovalstatus display-only, or does it
+              gate any <br>
+              operation? <br>
+              6.  Is Manual PR numbering (Manual_IndNo) required in
+              SPINRISE? <br>
+              7.  Is the PurOrd.UserFooter OCX footer selector
+              functionality <br>
+              required in SPINRISE? <br>
+              8.  Complete list of po_para flags and their expected
+              default <br>
+              values in SPINRISE. <br>
+              <br>
+              The document is attached in both Word (.docx) and Markdown
+              (.md) <br>
+              formats for your convenience. <br>
+              <br>
+              Kindly share your review comments and approval at the
+              earliest so we <br>
+              can proceed with the FSD draft without further delay. <br>
+              <br>
+              Regards, <br>
+              Mariyaiya <br>
+            </blockquote>
+          </blockquote>
+        </blockquote>
+      </blockquote>
+    </blockquote>
+  </body>
+</html>
+
+--------------CYiacY0KXko6fsfBYtXBbHjy--

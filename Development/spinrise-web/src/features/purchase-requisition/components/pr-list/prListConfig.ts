@@ -24,11 +24,11 @@ export const STATUS_OPTIONS = [
 ]
 
 export const STATUS_TAG: Record<string, { color: string; label: string }> = {
-  OPEN:      { color: 'blue',   label: 'Open'      },
-  APPROVED:  { color: 'purple', label: 'Approved'  },
-  RECEIVED:  { color: 'cyan',   label: 'Received'  },
-  CONVERTED: { color: 'green',  label: 'Converted' },
-  CANCELLED: { color: 'red',    label: 'Cancelled' },
+  OPEN:      { color: '#1d4ed8', label: 'Open'      },
+  APPROVED:  { color: '#7c3aed', label: 'Approved'  },
+  RECEIVED:  { color: '#0284c7', label: 'Received'  },
+  CONVERTED: { color: '#16a34a', label: 'Converted' },
+  CANCELLED: { color: '#dc2626', label: 'Cancelled' },
 }
 
 // ── Shared styles ──────────────────────────────────────────────────────────────
@@ -42,9 +42,10 @@ export const CARD_STYLE: CSSProperties = {
 // ── Search form types ──────────────────────────────────────────────────────────
 
 export interface SearchFormValues {
-  prNo?:      number
-  dateRange?: [dayjs.Dayjs, dayjs.Dayjs]
-  depCode?:   string
-  reqName?:   string
-  status?:    string
+  searchText?: string
+  prNo?:       number
+  dateRange?:  [dayjs.Dayjs, dayjs.Dayjs]
+  depCode?:    string
+  reqName?:    string
+  status?:     string
 }

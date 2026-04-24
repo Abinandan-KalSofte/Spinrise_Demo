@@ -1,4 +1,4 @@
-import { Button, Card, Descriptions, Modal, Skeleton, Space, Table, Tag, Typography } from 'antd'
+import { Button, Card, Descriptions, Modal, Skeleton, Space, Table, Tag, Tooltip, Typography } from 'antd'
 import dayjs from 'dayjs'
 import type { PRHeaderResponse } from '../../types'
 import { STATUS_TAG } from './prListConfig'
@@ -107,7 +107,9 @@ function PRViewContent({ pr }: { pr: PRHeaderResponse }) {
             },
             {
               title: 'Description', dataIndex: 'itemName', key: 'itemName', ellipsis: true,
-              render: (v: string | undefined) => v || '—',
+              render: (v: string | undefined) => v
+                ? <Tooltip title={v}><span style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{v}</span></Tooltip>
+                : '—',
             },
             {
               title: 'UOM', dataIndex: 'uom', key: 'uom', width: 60, align: 'center',
@@ -135,8 +137,19 @@ function PRViewContent({ pr }: { pr: PRHeaderResponse }) {
                 v ? dayjs(v).format('DD/MM/YYYY') : <Typography.Text type="secondary">—</Typography.Text>,
             },
             {
+              title: 'Approx. Cost', dataIndex: 'approxCost', key: 'approxCost', width: 110, align: 'right' as const,
+              render: (val: number | undefined, row: { lastPoRate?: number; qtyRequired: number }) => {
+                const v = val && val > 0 ? val : (row.lastPoRate ?? 0) * (row.qtyRequired ?? 0)
+                return v > 0
+                  ? `₹ ${v.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
+                  : <Typography.Text type="secondary">—</Typography.Text>
+              },
+            },
+            {
               title: 'Remarks', dataIndex: 'remarks', key: 'remarks', ellipsis: true,
-              render: (v: string | undefined) => v || <Typography.Text type="secondary">—</Typography.Text>,
+              render: (v: string | undefined) => v
+                ? <Tooltip title={v}><span style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{v}</span></Tooltip>
+                : <Typography.Text type="secondary">—</Typography.Text>,
             },
             {
               title: 'Machine', dataIndex: 'machineNo', key: 'machineNo', width: 90,
@@ -146,6 +159,10 @@ function PRViewContent({ pr }: { pr: PRHeaderResponse }) {
               title: 'Sub-Cost', dataIndex: 'subCostCode', key: 'subCostCode', width: 80, align: 'right' as const,
               render: (v: number | undefined) =>
                 v != null ? v : <Typography.Text type="secondary">—</Typography.Text>,
+            },
+            {
+              title: 'Draw No', dataIndex: 'drawNo', key: 'drawNo', width: 90,
+              render: (v: string | undefined) => v || <Typography.Text type="secondary">—</Typography.Text>,
             },
             {
               title: 'Cat', dataIndex: 'categoryCode', key: 'categoryCode', width: 56, align: 'center' as const,

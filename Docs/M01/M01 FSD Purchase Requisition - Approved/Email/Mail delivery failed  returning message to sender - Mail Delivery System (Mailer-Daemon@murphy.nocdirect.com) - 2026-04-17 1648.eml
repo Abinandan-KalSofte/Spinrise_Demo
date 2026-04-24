@@ -1,0 +1,82 @@
+X-UIDL: UID105-1774868925
+X-Mozilla-Status: 0000
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <>
+Delivered-To: abinandan.n@kalsofte.com
+Received: from murphy.nocdirect.com
+	by murphy.nocdirect.com with LMTP
+	id pCPkDCIX4mnF0SYAet6MXA
+	(envelope-from <>)
+	for <abinandan.n@kalsofte.com>; Fri, 17 Apr 2026 06:18:58 -0500
+Return-path: <>
+Envelope-to: abinandan.n@kalsofte.com
+Delivery-date: Fri, 17 Apr 2026 06:18:58 -0500
+Received: from mailnull by murphy.nocdirect.com with local (Exim 4.99.1)
+	id 1wDhDu-0000000AfpA-068Q
+	for abinandan.n@kalsofte.com;
+	Fri, 17 Apr 2026 06:18:58 -0500
+X-Failed-Recipients: palanivel@kalsofte.com
+Auto-Submitted: auto-replied
+From: Mail Delivery System <Mailer-Daemon@murphy.nocdirect.com>
+To: abinandan.n@kalsofte.com
+References: <a07a019d-9390-43d2-9f5d-c2a2d1906f36@kalsofte.com> <4f8c35b5-5dba-4e41-9d01-d6e5d9823c6d@kalsofte.com> <b374e54c-5a80-4dc4-97f7-4842c42864f7@kalsofte.com> <07953c11-bc9d-405f-b848-777109b06403@kalsofte.com>
+Content-Type: multipart/report; report-type=delivery-status; boundary=1776424738-eximdsn-1957381743
+MIME-Version: 1.0
+Subject: Mail delivery failed: returning message to sender
+Message-Id: <E1wDhDu-0000000AfpA-068Q@murphy.nocdirect.com>
+Date: Fri, 17 Apr 2026 06:18:58 -0500
+
+--1776424738-eximdsn-1957381743
+Content-type: text/plain; charset=us-ascii
+
+This message was created automatically by mail delivery software.
+
+A message that you sent could not be delivered to one or more of its
+recipients. This is a permanent error. The following address(es) failed:
+
+  palanivel@kalsofte.com
+    LMTP error after RCPT TO:<palanivel@kalsofte.com>:
+    552 5.2.2 <palanivel@kalsofte.com> Mailbox is full / Blocks limit exceeded / Inode limit exceeded
+
+--1776424738-eximdsn-1957381743
+Content-type: message/delivery-status
+
+Reporting-MTA: dns; murphy.nocdirect.com
+
+Action: failed
+Final-Recipient: rfc822;palanivel@kalsofte.com
+Status: 5.0.0
+
+--1776424738-eximdsn-1957381743
+Content-type: text/rfc822-headers
+
+Return-path: <abinandan.n@kalsofte.com>
+Received: from [49.204.235.253] (port=40865 helo=[172.16.16.22])
+	by murphy.nocdirect.com with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+	(Exim 4.99.1)
+	(envelope-from <abinandan.n@kalsofte.com>)
+	id 1wDhDr-0000000Afmb-0zCG;
+	Fri, 17 Apr 2026 06:18:57 -0500
+Content-Type: multipart/mixed; boundary="------------L8QBVcZmHEUaacIQW8tgMBGE"
+Message-ID: <07953c11-bc9d-405f-b848-777109b06403@kalsofte.com>
+Date: Fri, 17 Apr 2026 16:48:50 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: SpinRise PurchaseOrder Requisition QuestPDF Sample Output | CEO
+ Review | Four Corrections + RAM Upgrade Approved
+To: CEO <ceo@kalsofte.com>
+Cc: Sasi <sasikumar.r@kalsofte.com>, pbsaravanan <pbsaravanan@kalsofte.com>,
+ Kalsoft Palanivel <palanivel@kalsofte.com>, support <support@kalsofte.com>,
+ development@kalsofte.com, Quality Assurance <qa@kalsofte.com>,
+ Muthuvel Mani <muthuvel.m@kalsofte.com>, Mariyaiya <mariyaiya.m@kalsofte.com>
+References: <a07a019d-9390-43d2-9f5d-c2a2d1906f36@kalsofte.com>
+ <4f8c35b5-5dba-4e41-9d01-d6e5d9823c6d@kalsofte.com>
+ <b374e54c-5a80-4dc4-97f7-4842c42864f7@kalsofte.com>
+Content-Language: en-GB
+From: Abinandhan <abinandan.n@kalsofte.com>
+In-Reply-To: <b374e54c-5a80-4dc4-97f7-4842c42864f7@kalsofte.com>
+X-Exim-DSN-Information: Due to administrative limits only headers are returned
+
+
+--1776424738-eximdsn-1957381743--

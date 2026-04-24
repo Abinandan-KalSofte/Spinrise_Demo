@@ -87,7 +87,8 @@ public static class PRMappings
             ScopeCode = dto.ScopeCode?.Trim(),
             SaleOrderNo = dto.SaleOrderNo?.Trim(),
             SaleOrderDate = dto.SaleOrderDate,
-            PrStatus = "DRAFT",
+            // G19: Set status based on submitForApproval flag
+            PrStatus = dto.SubmitForApproval ? "PENDING" : "OPEN",
             CreatedBy = createdBy.Trim()
         };
     }

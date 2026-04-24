@@ -55,8 +55,6 @@ api.interceptors.response.use(
       status: error.response?.status,
     }
 
-    console.error(`[${correlationId}] API Error:`, apiError.message, apiError.errors)
-
     return Promise.reject(handleApiError(error))
   },
 )

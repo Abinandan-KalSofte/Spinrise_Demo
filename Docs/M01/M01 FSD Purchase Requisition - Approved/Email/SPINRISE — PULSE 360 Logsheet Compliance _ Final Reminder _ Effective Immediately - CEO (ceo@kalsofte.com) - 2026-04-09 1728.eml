@@ -1,0 +1,1399 @@
+X-UIDL: UID48-1774868925
+X-Mozilla-Status: 0000
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <ceo@kalsofte.com>
+Received: from murphy.nocdirect.com
+	by murphy.nocdirect.com with LMTP
+	id gL3cA32U12kivAwAet6MXA
+	(envelope-from <ceo@kalsofte.com>); Thu, 09 Apr 2026 06:58:53 -0500
+Return-path: <ceo@kalsofte.com>
+Envelope-to: palanivel@kalsofte.com,
+ pbsaravanan@kalsofte.com,
+ mariyaiya.m@kalsofte.com,
+ annamalai.s@kalsofte.com,
+ sathishkumar.m@kalsofte.com,
+ muthuvel.m@kalsofte.com,
+ seenivasan.v@kalsofte.com,
+ vignesh.vp@kalsofte.com,
+ mohanbabuvn@kalsofte.com,
+ hariharan.j@kalsofte.com,
+ abinandan.n@kalsofte.com,
+ sasikumar.r@kalsofte.com,
+ support@kalsofte.com,
+ improvement@kalsofte.com,
+ qa@kalsofte.com
+Delivery-date: Thu, 09 Apr 2026 06:58:53 -0500
+Received: from [49.204.234.113] (port=55599 helo=[192.168.68.102])
+	by murphy.nocdirect.com with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+	(Exim 4.99.1)
+	(envelope-from <ceo@kalsofte.com>)
+	id 1wAo25-00000003V4W-3h7l;
+	Thu, 09 Apr 2026 06:58:52 -0500
+Content-Type: multipart/alternative;
+ boundary="------------1eC8y5xgYni42H2o9XoZa9gz"
+Message-ID: <f25daf65-bbb2-45e7-8f95-969366f6d7a6@kalsofte.com>
+Date: Thu, 9 Apr 2026 17:28:59 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: =?UTF-8?Q?SPINRISE_=E2=80=94_PULSE_360_Logsheet_Compliance_=7C_Fina?=
+ =?UTF-8?Q?l_Reminder_=7C_Effective_Immediately?=
+To: pbsaravanan <pbsaravanan@kalsofte.com>,
+ Kalsoft Palanivel <palanivel@kalsofte.com>,
+ Mariyaiya <mariyaiya.m@kalsofte.com>, Annamalai s
+ <annamalai.s@kalsofte.com>, SathishkumarM <sathishkumar.m@kalsofte.com>,
+ Muthuvel Mani <muthuvel.m@kalsofte.com>, Seeni <seenivasan.v@kalsofte.com>,
+ VigneshVP <vignesh.vp@kalsofte.com>, MohanBabu <mohanbabuvn@kalsofte.com>,
+ HariharanJ <hariharan.j@kalsofte.com>, abinandan.n@kalsofte.com,
+ Sasi <sasikumar.r@kalsofte.com>
+Cc: Support <support@kalsofte.com>, improvement@kalsofte.com,
+ Quality Assurance <qa@kalsofte.com>
+References: <036f0737-960e-488e-b84c-8142e9220927@kalsofte.com>
+ <1b4ba4f5-9b74-4078-a3d3-648ece98648d@kalsofte.com>
+ <e7913554-b231-4457-a4c2-4b5d8823e29f@kalsofte.com>
+ <4aa90e83-031d-4508-875f-29cff40d6292@kalsofte.com>
+Content-Language: en-US
+From: CEO <ceo@kalsofte.com>
+In-Reply-To: <4aa90e83-031d-4508-875f-29cff40d6292@kalsofte.com>
+
+This is a multi-part message in MIME format.
+--------------1eC8y5xgYni42H2o9XoZa9gz
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+Dear Team,
+
+*This has reference to the instruction given at our Saturday, 4 April 
+2026 review meeting regarding PULSE 360 logsheet entries.
+*
+
+*The Instruction*
+
+Every task entry in PULSE 360 must not exceed 1 hour 30 minutes in a 
+single log. If the same task continues beyond 1 hour 30 minutes, a 
+separate entry must be created for the continuation. *This rule exists 
+for a specific reason:* it keeps each of you time-conscious, prompts you 
+to assess whether a task is taking longer than it should, and builds the 
+habit of breaking work into focused, measurable sub-tasks. In the age of 
+AI-assisted development, *time awareness is not optional — it is a 
+professional discipline.*
+
+
+*What I am seeing
+*
+Despite this clear instruction, I am finding logsheet entries of 3 hours 
+and 4 hours against single tasks in some members' PULSE 360 logs. This 
+is a direct violation of the guidance given. It tells me one of two 
+things: either the member is not paying attention to the instruction, or 
+the habit of time-conscious working has not yet been built.*Neither is 
+acceptable at this stage of SPINRISE.*
+
+*
+What is required — effective immediately*
+
+*First: *no single task entry to exceed 1 hour 30 minutes. Split longer 
+sessions into separate entries.
+
+*Second: *task descriptions must be specific and sub-task oriented. A 
+description like 'FSD preparation' or 'Stage 0 work' is not acceptable. 
+The description must tell anyone reading it exactly what was done — for 
+example: 'Stage 0 — Removed dead code from frmPurchaseOrder.frm, 
+identified 3 commented blocks for review' or 'FSD Section 4 — Documented 
+Pre-Add validations V1 to V4 from active code'. If the description does 
+not answer the question*'what specifically was done in this session?', 
+rewrite it.*
+
+*This is a final reminder*
+
+I will be reviewing PULSE 360 logsheets directly going forward. Any 
+member who is unclear about how to structure their entries, or who has a 
+genuine constraint they have not raised, is welcome to meet me in person 
+for a discussion. The door is open.
+
+*What is not open is continued non-compliance after a direct instruction 
+at a team meeting followed by this written reminder.*
+
+PULSE 360 is not a formality.*It is our project's daily heartbeat.* Its 
+accuracy directly determines how well we can plan, course-correct, and 
+deliver SPINRISE on time.
+
+Regards,
+T. Mani
+
+
+On 06/04/2026 01:20 pm, CEO wrote:
+>
+> Dear SPINRISE Team,
+>
+> Please find below the *Minutes of Meeting for the SPINRISE* Project 
+> Progress Review held Saturday.
+>
+>   Date    :  Saturday, 4 April 2026
+>   Time    :  5:00 PM — 7:00 PM
+>   Venue   :  Meeting Room
+>   Chaired :  T. Mani, Founder & CEO
+>   Attendees: Full SPINRISE Team
+> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+> *AGENDA 1  |  INFRASTRUCTURE — Laptops & Internet*
+> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+> Muthuvel presented quotes from two laptop vendors and two internet 
+> service providers.
+>
+> *DECISION: *Procurement deferred. As the team is currently in Stage 0 
+> readiness mode, the existing hardware and internet capacity are 
+> sufficient for this phase. Once the team moves into serious code 
+> conversion work, the Claude-recommended development environment (i7, 
+> 32 GB RAM, 512 GB NVMe, 100 Mbps fibre) will be procured and set up to 
+> ensure optimal productivity.*Muthuvel to keep quotes on file.*
+> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+> *AGENDA 2  |  STAGE 0 READINESS — Module-Wise Status*
+> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+> *CEO instruction:* All IST team members to cross-check their module 
+> scope against the Excel-based menu charts and revert to the*PM by 
+> Monday 6 April, End of Day.*
+>
+>   M01 — Purchase Order (PO) | Developer: Mariyaiya | IST: Muthuvel
+>   PR form critical analysis completed and submitted (v2 FSD template — 
+> corrected version reviewed by CEO today). Three remaining PO 
+> transactions to be completed during this week.
+>
+>   M02 — Raw Material Inventory (RMI) | Developer: TL-Dev Sasi | IST: 
+> PM Saravanan
+>   Stage 0 readiness initiated by TL-Dev Sasi today as confirmed in 
+> PULSE 360. To be progressed actively this week.
+>
+>   M03 — Domestic Sales | Developer: Annamalai | IST: Seenivasan
+>   FSD preparation started on the Sales Order transaction. Stage 0 
+> readiness is not yet complete as per v2 guide requirements. To be 
+> completed with balance transactions by this Saturday, 12 April 2026.
+>
+>   M04 — HR & Payroll | Developer: Sathiskumar | IST: TL-IST Palanivel
+>   Employee Master form feedback submitted. CEO instruction: Focus on 
+> Payroll module transactions first, then move to master forms. Stage 0 
+> readiness for payroll transactions started today.
+>
+> *ACTION — IST Team: *Verify each developer's module scope reply, 
+> confirm corrections, and update PULSE 360 on priority. This is to be 
+> done alongside regular ERP customer support responsibilities.
+>
+> *IMPORTANT ADDITION (CEO): *SQL Server stored procedures must be 
+> identified and included as part of Stage 0 readiness for each module. 
+> The complete business logic and validations embedded inside stored 
+> procedures are a mandatory input for FSD preparation, as established 
+> in the v2 guide.
+>
+> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+> *AGENDA 3  |  PO MODULE — PR FORM IST REVIEW*
+> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+> Mariyaiya presented the updated corrected critical analysis document.
+>
+> Muthuvel's IST review of the PR form using the IST-1 to IST-7 
+> questionnaire is awaited. Muthuvel is also currently assigned the 
+> Functional Gap Analysis document for the Vamshadhara Paper Mills 
+> prospect, given his specialization in paper mill module implementation 
+> and support.
+>
+> *ACTION — Muthuvel: *Complete the PR form IST review and revert at the 
+> earliest, managing both the SPINRISE IST review and the Vamshadhara 
+> gap document in parallel.
+>
+> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+> *AGENDA 4  |  ACTIVE FSD WORK UPDATE*
+> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+> Covered under Agenda 2. Status of Annamalai (M03) and Sathiskumar 
+> (M04) updated above.
+>
+> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+> *AGENDA 5  |  VB FSD CLAUDE GUIDE v2 — CONFIRMATION*
+> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>
+> Feedback discussed. Team expressed that the guide is detailed and 
+> comprehensive. Members look forward to the final version enriched with 
+> inputs from actual transactions across M01 to M04.
+>
+> *CEO confirmed:* Claude will progressively refine the guide based on 
+> real transaction feedback as the team works through each module's 
+> screens. *This is a living document that improves with every FSD cycle.
+> *
+> *CEO reminder:* SQL Server stored procedures must be included in Stage 
+> 0 readiness submissions — the guide's Section 3 requirement on SP code 
+> collection applies to all modules without exception.
+>
+> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+> *AGENDA 6  |  PULSE 360 — STAGE 0 TRACKING*
+> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>
+> *ACTION — PM Saravanan:* Actively coordinate with all module 
+> developers on Stage 0 progress. Compile and present a comprehensive 
+> Stage 0 readiness *update at next Saturday's review meeting (12 April 
+> 2026).*
+>
+> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+> *AGENDA 7  |  SPRINT 0 ACTIVATION*
+> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>
+> Sprint 0 activation is deferred pending Stage 0 completion.
+>
+> *CEO advice: *Take enough care in ensuring Stage 0 completeness this 
+> week. The schedule may flex, but the quality of Stage 0 directly 
+> determines the accuracy of SPINRISE code generation — minimal rework 
+> in ASP.NET Core code is the goal. A weak Stage 0 means expensive 
+> corrections after code is written. Do not rush it.
+>
+> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+> *AGENDA 8 & ADDITIONAL POINTS DISCUSSED*
+> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>
+> *8a.  Abinandan — Trial Conversion & FastReports*
+> Abinandan shared his progress on the PR form trial conversion in 
+> ASP.NET Core, and highlighted the usefulness of the Claude Pro 
+> subscription in accelerating this work. He is also exploring options 
+> for migrating Crystal Reports to FastReports, and will revert with 
+> findings. This will inform the SPINRISE reporting architecture 
+> decision across all modules.
+>
+> *8b.  Hariharan — React UI Assignment*
+> Hariharan (Jr Web Dev2) has been assigned to work on React UI 
+> development for the transaction forms that are currently in progress 
+> by the VB developers. He is to align closely with the approved FSD 
+> outputs as they become available.
+>
+> *8c.  Claude Pro Subscriptions*
+> Claude Pro is currently active for TL-Dev Sasi, Mariyaiya, and 
+> Abinandan. Subscriptions for Annamalai and Sathiskumar will be 
+> provided this week to remove the daily chat duration constraint and 
+> accelerate their FSD preparation work.
+>
+> *8d.  Claude AI vs Claude Code*
+> CEO observation: All team members are currently using Claude AI 
+> (browser-based chat). This is appropriate and sufficient for Stage 0 
+> readiness and FSD preparation. However, all developers are advised to 
+> get familiar with Claude Code, which will be the primary tool for the 
+> actual code migration work that follows. Begin exploring Claude Code 
+> this week alongside your Stage 0 tasks.
+>
+> *8e.  Minimum Daily Commitment — SPINRISE Work*
+> CEO instruction: All SPINRISE team members are to dedicate a minimum 
+> of 4 hours per day to SPINRISE tasks, in addition to their assigned 
+> ERP customer support responsibilities. This commitment is essential to 
+> meet the 31 March 2027 go-live target.
+>
+> *8f.  PULSE 360 Logsheet Accuracy*
+> CEO  stressed: PULSE 360 daily logsheets must be filled accurately and 
+> on time. The logsheets are the primary tool for tracking individual 
+> progress and the basis for the weekly review meeting. Incomplete or 
+> inaccurate entries affect the team's collective visibility of where 
+> the project stands.
+>
+> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+> *SUMMARY — THIS WEEK'S PRIORITY TASKS BY ROLE*
+> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>
+> *Mariyaiya (M01 PO)*
+>   ▸ Complete Stage 0 + critical analysis for 3 remaining PO transactions
+>   ▸ Address the 10 open items in CEO's review of the corrected PR form 
+> document
+>
+> *TL-Dev Sasi (M02 RMI)*
+>   ▸ Progress Stage 0 readiness for RMI module this week
+>   ▸ Include stored procedure identification in Stage 0 scope
+>
+> *Annamalai (M03 Domestic Sales)*
+>   ▸ Complete Stage 0 readiness for all Domestic Sales transactions
+>   ▸ Continue Sales Order FSD preparation
+>   ▸ Target: full update by Saturday 12 April
+>
+> *Sathiskumar (M04 HR & Payroll)*
+>   ▸ Focus on Payroll transactions first — not master forms
+>   ▸ Progress Stage 0 readiness for payroll transactions
+>   ▸ Continue FSD preparation
+>
+> *Muthuvel (IST — M01 PO + Vamshadhara)*
+>   ▸ Complete PR form IST review (IST-1 to IST-7) at the earliest
+>   ▸ Cross-check M01 PO module scope vs Excel menu chart — revert to PM 
+> by Monday 6 Apr EoD
+>   ▸ Continue Vamshadhara Paper Mills gap document
+>
+> *PM Saravanan (IST — M02 RMI + Overall Coordination)*
+>   ▸ Cross-check M02 RMI module scope vs Excel menu chart — Monday 6 
+> Apr EoD
+>   ▸ Coordinate Stage 0 progress across all modules
+>   ▸ Prepare Stage 0 readiness summary for Saturday 12 April review meeting
+>   ▸ Ensure PULSE 360 Stage 0 tracking is active and accurate
+>
+> *Seenivasan (IST — M03 Domestic Sales)*
+>   ▸ Cross-check M03 Sales module scope vs Excel menu chart — Monday 6 
+> Apr EoD
+>   ▸ Support Annamalai's Stage 0 readiness verification
+>
+> *TL-IST Palanivel (IST — M04 HR & Payroll)*
+>   ▸ Cross-check M04 Payroll module scope vs Excel menu chart — Monday 
+> 6 Apr EoD
+>   ▸ Support Sathiskumar's Stage 0 readiness for payroll transactions
+>
+> *Abinandan (Full Stack Dev)*
+>   ▸ Continue PR form trial conversion in ASP.NET Core
+>   ▸ Complete FastReports vs Crystal Reports evaluation and report findings
+>   ▸ Begin familiarizing with Claude Code
+>
+> *Hariharan (Jr Web Dev2)*
+>   ▸ Begin React UI development for transaction forms in progress
+>   ▸ Align with FSD outputs as approved FSDs become available
+>
+> *All Team Members*
+>   ▸ Minimum 4 hours per day on SPINRISE tasks
+>   ▸ PULSE 360 logsheets to be filled daily and accurately
+>   ▸ Begin familiarising with Claude Code
+>   ▸ Claude Pro subscriptions to be utilised fully — no chat duration 
+> constraints
+>
+> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+> *NEXT REVIEW MEETING*
+> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>
+>   Date    :  Saturday, 11 April 2026
+>   Time    :  To be confirmed
+>   Agenda  :  Stage 0 readiness update (all modules) | Sprint 0 
+> activation decision
+>               Infrastructure procurement review | Abinandan's 
+> FastReports findings
+>
+> *Let us make this week count.*
+>
+> With confidence in the team,
+> T. Mani
+>
+> cc: Project Manager, TL-Dev, Full SPINRISE Team
+>
+> On 04/04/2026 04:42 pm, CEO wrote:
+>>
+>> Dear Team,
+>>
+>> This is to inform that a SPINRISE Project Progress Review meeting is 
+>> scheduled as below:
+>>
+>>   Date    :  Today, Saturday, 5 April 2026
+>>   Time    :  5:00 PM
+>>   Venue   :  Meeting Room
+>>
+>> All SPINRISE team members are requested to attend without fail.
+>>
+>> *Agenda*
+>>
+>> 1.  Infrastructure update — Muthuvel to present quotes for i7 laptops 
+>> and internet upgrade. Decision to be taken today.
+>>
+>> 2.  Stage 0 readiness — Each VB Developer to present their module’s 
+>> stabilisation status: screens that are stable and ready for FSD, and 
+>> screens with pending customisations or open corrections.
+>>
+>> 3.  PO Module — PR Form review — Mariyaiya to present the updated 
+>> Critical Analysis document (v2 FSD template). Muthuvel to present IST 
+>> review status using IST-1 to IST-7 questionnaire.
+>>
+>> 4.  Active FSD work update — Annamalai (M03 Domestic Sales) and 
+>> Sathiskumar (M04 HR & Payroll) to give a brief status on their FSD 
+>> preparation progress.
+>>
+>> 5.  v2 Guide confirmation — Confirm that all team members have read 
+>> the VB FSD Claude Guide v2 in full. Open the floor for any questions 
+>> or observations.
+>>
+>> 6.  PM to confirm Stage 0 pre-sprint tracking activation status for 
+>> all Phase 1 modules.
+>>
+>> 7.  Sprint 0 activation — Lock the process and confirm start.
+>>
+>> 8.  Any other points for discussion.
+>>
+>> *Please come prepared with your respective updates. Time is short — 
+>> let us make this session focused and decisive.*
+>>
+>> Regards,
+>> T Mani
+>>
+>> On 31/03/2026 01:27 pm, CEO wrote:
+>>>
+>>> Dear SPINRISE Team,
+>>>
+>>> *I am sharing with you today the updated VB FSD Claude Guide — 
+>>> Version 2.
+>>> *
+>>> Attached: SPINRISE_VB_FSD_Claude_Guide_v2.docx
+>>>
+>>> Please read it fully before our Saturday session. *From the date of 
+>>> this mail, v2 is the operative guide for all FSD documentation work 
+>>> in SPINRISE. *V1 is superseded.
+>>>
+>>> *Why v2 exists
+>>> *
+>>> Version 2 was built entirely from what you told me.
+>>>
+>>> Three of you responded to my v1 circulation mail with observations 
+>>> that were technically sharp and practically important. I want to 
+>>> acknowledge each contribution by name, because the team should know 
+>>> where v2 came from.
+>>>
+>>> *Sathishkumar *pointed out that the Kalsofte ERP distributes 
+>>> business logic across Common modules, Class modules, and stored 
+>>> procedures — not just the .frm file. He also highlighted that the TC 
+>>> (Transaction Code) framework, which drives stock direction and 
+>>> accounting entries across most of our modules, is largely 
+>>> implemented inside stored procedures and would be missed entirely if 
+>>> only the form code was submitted to Claude.
+>>>
+>>> *Mariyaiya *raised a more fundamental concern: that several PR, PO, 
+>>> and Service PO screens have pending customer customisations in 
+>>> various stages of stability. Submitting unstabilised code to Claude 
+>>> would produce an FSD that documents an incomplete version of the 
+>>> screen — and that instability would be permanently carried into 
+>>> SPINRISE.
+>>>
+>>> *Mariyaiya then went further.* Before I could even respond, he 
+>>> produced a detailed critical analysis of the Purchase Requisition 
+>>> form (tmpPoindent.frm) — a 9,108-line VB6 form — and shared it with 
+>>> Muthuvel for IST review. That document, which I have gone through in 
+>>> detail, identified 3 Critical defects, 3 High issues, 4 Medium 
+>>> issues, and 2 Low issues in the form code. It also proposed the 
+>>> four-category validation structure, the error message catalogue, the 
+>>> summary scorecard, and the customer variation register — all of 
+>>> which are now standard sections in the v2 FSD template.
+>>>
+>>> This is what good teamwork looks like. You were given a guide, you 
+>>> used it on a real form, you found its limits, and you reported back 
+>>> with precision. V2 is the direct result.
+>>>
+>>> *What is new in v2
+>>> *
+>>> For those who have read v1, here is what changed:
+>>>
+>>> Stage 0 is an entirely new mandatory phase that must be completed 
+>>> before any FSD documentation begins. It covers code stabilisation 
+>>> review, the screen readiness checklist, what to collect before 
+>>> opening Claude (no longer just the .frm file — now includes Common 
+>>> modules, Class modules, and all stored procedures), the TC framework 
+>>> reference table, the customer variation register, and the dead code 
+>>> identification step. Stage 0 is not optional. No FSD work begins on 
+>>> any screen until Stage 0 is complete and TL-Dev has signed off.
+>>>
+>>> The follow-up prompts grew from three to six. Three new prompts were 
+>>> added: one for Common and Class module logic, one for stored 
+>>> procedure business rules, and one specifically for TC framework 
+>>> documentation. These address the gap our first VB developer identified.
+>>>
+>>> The FSD template expanded from 8 sections to 14 sections. The six 
+>>> new sections are the TC Framework, Common and Class Module 
+>>> Dependencies, Error Message Catalogue, Customer Variation Register, 
+>>> SPINRISE Migration Recommendations, and the Summary Scorecard. All 
+>>> six are mandatory for transaction screens.
+>>>
+>>> The review chain is updated to four levels with the full IST 
+>>> structured questionnaire (IST-1 to IST-7) that every Module Sr IST 
+>>> Member must answer for each form they review.
+>>>
+>>> A new Section 8 documents eight known defect patterns to actively 
+>>> search for in every VB6 form before submitting to Claude: 
+>>> application-terminating End statements, hardcoded customer IDs, SQL 
+>>> string concatenation, dead code blocks, inconsistent duplicate 
+>>> logic, hardcoded file paths, missing transaction rollback, and typos 
+>>> in error messages. Each pattern has the code signature to search for 
+>>> and the action to take.
+>>>
+>>> Three quick reference cards are now at the back: the Developer Daily 
+>>> Card, the four-column Reviewer Checklist, and the new Defect 
+>>> Patterns Card. Print all three and keep them at your desk.
+>>>
+>>> *How I need each of you to use this guide
+>>> *
+>>> *Module VB Developers:*
+>>> Section 3 (Stage 0) and Section 4 (the six steps and six prompts) 
+>>> are your primary reference. Read them in full. Before you begin any 
+>>> FSD, complete Stage 0 for that screen. Do not skip the Customer 
+>>> Variation Register. Do not submit dead code. Run all six follow-up 
+>>> prompts, not just the ones you feel are relevant.
+>>>
+>>> *Module Sr IST Members:*
+>>> Section 6, Level 1 and the IST Structured Questionnaire (questions 
+>>> IST-1 to IST-7) are your reference. For every FSD you review, answer 
+>>> all seven questions. Section 8 (the defect patterns) is also 
+>>> important for you — you are the person most likely to know from site 
+>>> experience whether an application-terminating behaviour or a 
+>>> hardcoded customer variation has caused problems in practice.
+>>>
+>>> *TL-IST:*
+>>> Section 6, Level 2. Your role is cross-module consistency. Pay 
+>>> particular attention to whether TC framework values and stored 
+>>> procedure business rules are consistent with how the same logic is 
+>>> handled in other modules you have implemented.
+>>>
+>>> *Project Manager:*
+>>> Section 6, Level 3. Before any FSD reaches the CEO, confirm that all 
+>>> 14 sections are complete, all IST questions are answered, the 
+>>> customer variation register is filled, and the summary scorecard is 
+>>> present. An incomplete FSD must be returned to the developer, not 
+>>> passed forward.
+>>>
+>>> *New Developer (Abinandan):*
+>>> Welcome again. This guide is your primary reference for how SPINRISE 
+>>> development works. Start by reading Section 3 (Stage 0) and Section 
+>>> 4. The defect patterns in Section 8 will be particularly useful as 
+>>> you begin reading Kalsofte VB6 code for the first time — you will 
+>>> encounter all of these patterns. Now you know what to do with each one.
+>>>
+>>> *Jr Web Dev team:*
+>>> Section 4, Step 6 and Section 7 are your references. The approved 
+>>> FSD is your specification for React UI generation. Read Section 7 
+>>> carefully — it shows you exactly what prompt to use when an FSD is 
+>>> handed to you for code conversion.
+>>>
+>>> *A word on how we got here*
+>>>
+>>> When I shared v1, I said: this is version 1, your feedback will 
+>>> shape version 2. You delivered. In less than a week, the team 
+>>> produced two substantive pieces of written feedback and one detailed 
+>>> 12-section critical analysis of a real form. That is not normal. 
+>>> Most teams wait to be asked.
+>>>
+>>> *The quality of SPINRISE depends on the quality of our FSDs.* The 
+>>> quality of our FSDs depends on the rigour of our process. The rigour 
+>>> of our process depends on each of you taking ownership of the part 
+>>> only you can contribute — your domain knowledge, your site 
+>>> experience, your module expertise.
+>>>
+>>> V2 reflects all of that. Bring the same energy to v2 that produced it.
+>>>
+>>> *What I need from you *
+>>>
+>>> Every developer and IST member: have read v2 in full.
+>>>
+>>> Module VB Developers: bring your Stage 0 readiness assessment for 
+>>> your assigned module — identify which screens are stable and which 
+>>> carry pending customisations.
+>>>
+>>> Mariyaiya: bring the updated PR form critical analysis with the v2 
+>>> FSD template applied (14 sections). Muthuvel’s IST review of that 
+>>> document, using the IST-1 to IST-7 questionnaire, should be underway.
+>>>
+>>> TL-Dev: bring the list of screens across all Phase 1 modules that 
+>>> have pending customisations or open corrections. This becomes the 
+>>> Stage 0 stabilisation backlog.
+>>>
+>>> PM: activate the Stage 0 pre-sprint tracking in PULSE 360 for all 
+>>> Phase 1 modules.
+>>>
+>>> *Saturday is when we lock the v2 process and start.*
+>>>
+>>> With appreciation for what this team has already contributed, and 
+>>> confidence in what it will deliver,
+>>> T Mani
+>>>
+>>> Attachment: SPINRISE_VB_FSD_Claude_Guide_v2.docx
+>>>
+>>> cc: Project Manager, TL-Dev, Full SPINRISE Team
+>>>
+>>> On 29/03/2026 08:48 pm, CEO wrote:
+>>>>
+>>>> Dear SPINRISE Team,
+>>>>
+>>>> I am sharing with you today a guide that I have personally put 
+>>>> together with the assistance of Claude.
+>>>>
+>>>> The document is attached: SPINRISE VB FSD Claude Guide v1.docx
+>>>>
+>>>> *Please read it fully at your own pace and share your feedback, at 
+>>>> the earliest.*
+>>>>
+>>>> *What this guide is*
+>>>>
+>>>> This guide explains, in plain English, how each of us uses Claude 
+>>>> to convert a VB6 screen into a Form Specification Document (FSD) — 
+>>>> and how that FSD then travels through our four-level review chain 
+>>>> before it is used to generate the new SPINRISE web screen.
+>>>>
+>>>> It covers:
+>>>>   • What an FSD is and why we need one for every VB6 screen
+>>>>   • The complete five-step process for the Module VB Developer
+>>>>   • The exact Claude prompt to use — ready to copy and paste
+>>>>   • The three follow-up questions to always ask Claude after the 
+>>>> first output
+>>>>   • The four-level review chain: Module Sr IST → TL-IST → PM → CEO
+>>>>   • What each reviewer specifically checks and signs off
+>>>>   • Quick reference cards you can print and keep at your desk
+>>>>
+>>>> *Who should read which sections
+>>>> *
+>>>> *Module VB Developers:*
+>>>> Section 3 is your primary reference. It walks you through all five 
+>>>> steps with the exact prompt, the before-and-after example showing 
+>>>> VB6 code versus Claude’s plain-English output, and the three 
+>>>> follow-up questions. Read this section carefully before you begin 
+>>>> your first FSD. The quick reference card in Section 7 is your daily 
+>>>> desk guide.
+>>>>
+>>>> *Module Sr IST Members:*
+>>>> Section 4, Level 1 is written for you. It explains exactly what 
+>>>> your review covers, how to write your annotations in the Word 
+>>>> document using the [IST ADD] and [IST CONFIRMED] tags, and what you 
+>>>> must sign off before the FSD moves to TL-IST.
+>>>>
+>>>> *TL-IST:*
+>>>> Section 4, Level 2 is your reference. You are the second domain 
+>>>> gate — the overall domain validation after the Module Sr IST has 
+>>>> done the first check. Your experience across all modules and all 
+>>>> customer sites is what this level brings to the FSD.
+>>>>
+>>>> *Project Manager:*
+>>>> Section 4, Level 3. Your role is completeness — not domain 
+>>>> accuracy. By the time the FSD reaches you, the domain has been 
+>>>> validated by two levels. Your question is: is this document 
+>>>> thorough enough for a developer to build the screen from scratch 
+>>>> without any ambiguity?
+>>>>
+>>>> *CEO:*
+>>>> Section 4, Level 4 and Section 6. The CEO review is the final 
+>>>> domain authority gate. No technical skill is needed. Only the 
+>>>> question: does this FSD accurately reflect how the business process 
+>>>> was designed to work, and does it carry forward the knowledge that 
+>>>> has been built over decades of spinning ERP implementation?
+>>>>
+>>>> *A personal note*
+>>>>
+>>>> This process — Document, Validate, Convert — is the quality 
+>>>> backbone of SPINRISE. Every web screen we build is only as good as 
+>>>> the FSD behind it.
+>>>>
+>>>> I have been saying this since we began: we are not just migrating a 
+>>>> software platform. We are converting decades of accumulated 
+>>>> spinning ERP knowledge into a permanent, structured form that will 
+>>>> outlast the technology it runs on. Each FSD that is reviewed and 
+>>>> approved is a piece of that knowledge preserved correctly.
+>>>>
+>>>> I want every one of you to understand the process fully — not just 
+>>>> the step that applies to your role, but the complete journey from 
+>>>> VB6 code to live SPINRISE web screen. When everyone understands the 
+>>>> full chain, every handover between roles becomes cleaner, faster, 
+>>>> and more accurate.
+>>>>
+>>>> *What I need from you*
+>>>>
+>>>> Read the guide before this Saturday’s session.
+>>>>
+>>>> If any step is unclear, any instruction is ambiguous, or any 
+>>>> section does not match what you experience in practice — write it 
+>>>> down. *Share your feedback as reply to this mail.*
+>>>>
+>>>> This is version 1. Your feedback will shape version 2.
+>>>>
+>>>> With confidence in the team,
+>>>> T Mani
+>>>>
+>>>> Attachment: SPINRISE_VB_FSD_Claude_Guide_v1.docx
+>>>>
+--------------1eC8y5xgYni42H2o9XoZa9gz
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <p>Dear Team,<br>
+      <br>
+      <b>This has reference to the instruction given at our Saturday, 4
+        April 2026 review meeting regarding PULSE 360 logsheet entries.<br>
+      </b><br>
+      <br>
+      <b><font size="4">The Instruction</font></b><br>
+      <br>
+      Every task entry in PULSE 360 must not exceed 1 hour 30 minutes in
+      a single log. If the same task continues beyond 1 hour 30 minutes,
+      a separate entry must be created for the continuation. <b>This
+        rule exists for a specific reason:</b> it keeps each of you
+      time-conscious, prompts you to assess whether a task is taking
+      longer than it should, and builds the habit of breaking work into
+      focused, measurable sub-tasks. In the age of AI-assisted
+      development, <b>time awareness is not optional — it is a
+        professional discipline.</b><br>
+      <br>
+      <br>
+      <font size="4"><b>What I am seeing<br>
+        </b></font><br>
+      Despite this clear instruction, I am finding logsheet entries of 3
+      hours and 4 hours against single tasks in some members' PULSE 360
+      logs. This is a direct violation of the guidance given. It tells
+      me one of two things: either the member is not paying attention to
+      the instruction, or the habit of time-conscious working has not
+      yet been built.<b> Neither is acceptable at this stage of
+        SPINRISE.</b><br>
+      <br>
+      <b><font size="4"><br>
+          What is required — effective immediately</font></b><br>
+      <br>
+      <b>First: </b>no single task entry to exceed 1 hour 30 minutes.
+      Split longer sessions into separate entries.<br>
+      <br>
+      <b>Second: </b>task descriptions must be specific and sub-task
+      oriented. A description like 'FSD preparation' or 'Stage 0 work'
+      is not acceptable. The description must tell anyone reading it
+      exactly what was done — for example: 'Stage 0 — Removed dead code
+      from frmPurchaseOrder.frm, identified 3 commented blocks for
+      review' or 'FSD Section 4 — Documented Pre-Add validations V1 to
+      V4 from active code'. If the description does not answer the
+      question<b> 'what specifically was done in this session?', rewrite
+        it.</b><br>
+      <br>
+      <font size="4" color="#ff0000"><b>This is a final reminder</b></font><br>
+      <br>
+      I will be reviewing PULSE 360 logsheets directly going forward.
+      Any member who is unclear about how to structure their entries, or
+      who has a genuine constraint they have not raised, is welcome to
+      meet me in person for a discussion. The door is open.<br>
+      <br>
+      <b>What is not open is continued non-compliance after a direct
+        instruction at a team meeting followed by this written reminder.</b><br>
+      <br>
+      PULSE 360 is not a formality.<b> It is our project's daily
+        heartbeat.</b> Its accuracy directly determines how well we can
+      plan, course-correct, and deliver SPINRISE on time.<br>
+      <br>
+      Regards,<br>
+      T. Mani<br>
+      <br>
+      <br>
+    </p>
+    <div class="moz-cite-prefix">On 06/04/2026 01:20 pm, CEO wrote:<br>
+    </div>
+    <blockquote type="cite"
+      cite="mid:4aa90e83-031d-4508-875f-29cff40d6292@kalsofte.com">
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <p>Dear SPINRISE Team,<br>
+        <br>
+        Please find below the <b>Minutes of Meeting for the SPINRISE</b>
+        Project Progress Review held Saturday.<br>
+        <br>
+          Date    :  Saturday, 4 April 2026<br>
+          Time    :  5:00 PM — 7:00 PM<br>
+          Venue   :  Meeting Room<br>
+          Chaired :  T. Mani, Founder &amp; CEO<br>
+          Attendees: Full SPINRISE Team<br>
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+        <b>AGENDA 1  |  INFRASTRUCTURE — Laptops &amp; Internet</b><br>
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+        Muthuvel presented quotes from two laptop vendors and two
+        internet service providers.<br>
+        <br>
+        <b>DECISION: </b>Procurement deferred. As the team is currently
+        in Stage 0 readiness mode, the existing hardware and internet
+        capacity are sufficient for this phase. Once the team moves into
+        serious code conversion work, the Claude-recommended development
+        environment (i7, 32 GB RAM, 512 GB NVMe, 100 Mbps fibre) will be
+        procured and set up to ensure optimal productivity.<b> Muthuvel
+          to keep quotes on file.</b><br>
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+        <b>AGENDA 2  |  STAGE 0 READINESS — Module-Wise Status</b><br>
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+        <b>CEO instruction:</b> All IST team members to cross-check
+        their module scope against the Excel-based menu charts and
+        revert to the<b> PM by Monday 6 April, End of Day.</b><br>
+        <br>
+          M01 — Purchase Order (PO) | Developer: Mariyaiya | IST:
+        Muthuvel<br>
+          PR form critical analysis completed and submitted (v2 FSD
+        template — corrected version reviewed by CEO today). Three
+        remaining PO transactions to be completed during this week.<br>
+        <br>
+          M02 — Raw Material Inventory (RMI) | Developer: TL-Dev Sasi |
+        IST: PM Saravanan<br>
+          Stage 0 readiness initiated by TL-Dev Sasi today as confirmed
+        in PULSE 360. To be progressed actively this week.<br>
+        <br>
+          M03 — Domestic Sales | Developer: Annamalai | IST: Seenivasan<br>
+          FSD preparation started on the Sales Order transaction. Stage
+        0 readiness is not yet complete as per v2 guide requirements. To
+        be completed with balance transactions by this Saturday, 12
+        April 2026.<br>
+        <br>
+          M04 — HR &amp; Payroll | Developer: Sathiskumar | IST: TL-IST
+        Palanivel<br>
+          Employee Master form feedback submitted. CEO instruction:
+        Focus on Payroll module transactions first, then move to master
+        forms. Stage 0 readiness for payroll transactions started today.<br>
+        <br>
+        <b>ACTION — IST Team: </b>Verify each developer's module scope
+        reply, confirm corrections, and update PULSE 360 on priority.
+        This is to be done alongside regular ERP customer support
+        responsibilities.<br>
+        <br>
+        <b>IMPORTANT ADDITION (CEO): </b>SQL Server stored procedures
+        must be identified and included as part of Stage 0 readiness for
+        each module. The complete business logic and validations
+        embedded inside stored procedures are a mandatory input for FSD
+        preparation, as established in the v2 guide.<br>
+      </p>
+      <p>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+        <b>AGENDA 3  |  PO MODULE — PR FORM IST REVIEW</b><br>
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+        Mariyaiya presented the updated corrected critical analysis
+        document.<br>
+        <br>
+        Muthuvel's IST review of the PR form using the IST-1 to IST-7
+        questionnaire is awaited. Muthuvel is also currently assigned
+        the Functional Gap Analysis document for the Vamshadhara Paper
+        Mills prospect, given his specialization in paper mill module
+        implementation and support.<br>
+        <br>
+        <b>ACTION — Muthuvel: </b>Complete the PR form IST review and
+        revert at the earliest, managing both the SPINRISE IST review
+        and the Vamshadhara gap document in parallel.<br>
+        <br>
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+        <b>AGENDA 4  |  ACTIVE FSD WORK UPDATE</b><br>
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+        Covered under Agenda 2. Status of Annamalai (M03) and
+        Sathiskumar (M04) updated above.<br>
+        <br>
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+        <b>AGENDA 5  |  VB FSD CLAUDE GUIDE v2 — CONFIRMATION</b><br>
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+        <br>
+        Feedback discussed. Team expressed that the guide is detailed
+        and comprehensive. Members look forward to the final version
+        enriched with inputs from actual transactions across M01 to M04.<br>
+        <br>
+        <b>CEO confirmed:</b> Claude will progressively refine the guide
+        based on real transaction feedback as the team works through
+        each module's screens. <b>This is a living document that
+          improves with every FSD cycle.<br>
+        </b><br>
+        <b>CEO reminder:</b> SQL Server stored procedures must be
+        included in Stage 0 readiness submissions — the guide's Section
+        3 requirement on SP code collection applies to all modules
+        without exception.<br>
+        <br>
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+        <b>AGENDA 6  |  PULSE 360 — STAGE 0 TRACKING</b><br>
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+        <br>
+        <b>ACTION — PM Saravanan:</b> Actively coordinate with all
+        module developers on Stage 0 progress. Compile and present a
+        comprehensive Stage 0 readiness <b>update at next Saturday's
+          review meeting (12 April 2026).</b><br>
+        <br>
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+        <b>AGENDA 7  |  SPRINT 0 ACTIVATION</b><br>
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+        <br>
+        Sprint 0 activation is deferred pending Stage 0 completion.<br>
+        <br>
+        <b>CEO advice: </b>Take enough care in ensuring Stage 0
+        completeness this week. The schedule may flex, but the quality
+        of Stage 0 directly determines the accuracy of SPINRISE code
+        generation — minimal rework in ASP.NET Core code is the goal. A
+        weak Stage 0 means expensive corrections after code is written.
+        Do not rush it.<br>
+        <br>
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+        <b>AGENDA 8 &amp; ADDITIONAL POINTS DISCUSSED</b><br>
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+        <br>
+        <b>8a.  Abinandan — Trial Conversion &amp; FastReports</b><br>
+        Abinandan shared his progress on the PR form trial conversion in
+        ASP.NET Core, and highlighted the usefulness of the Claude Pro
+        subscription in accelerating this work. He is also exploring
+        options for migrating Crystal Reports to FastReports, and will
+        revert with findings. This will inform the SPINRISE reporting
+        architecture decision across all modules.<br>
+        <br>
+        <b>8b.  Hariharan — React UI Assignment</b><br>
+        Hariharan (Jr Web Dev2) has been assigned to work on React UI
+        development for the transaction forms that are currently in
+        progress by the VB developers. He is to align closely with the
+        approved FSD outputs as they become available.<br>
+        <br>
+        <b>8c.  Claude Pro Subscriptions</b><br>
+        Claude Pro is currently active for TL-Dev Sasi, Mariyaiya, and
+        Abinandan. Subscriptions for Annamalai and Sathiskumar will be
+        provided this week to remove the daily chat duration constraint
+        and accelerate their FSD preparation work.<br>
+        <br>
+        <b>8d.  Claude AI vs Claude Code</b><br>
+        CEO observation: All team members are currently using Claude AI
+        (browser-based chat). This is appropriate and sufficient for
+        Stage 0 readiness and FSD preparation. However, all developers
+        are advised to get familiar with Claude Code, which will be the
+        primary tool for the actual code migration work that follows.
+        Begin exploring Claude Code this week alongside your Stage 0
+        tasks.<br>
+        <br>
+        <b>8e.  Minimum Daily Commitment — SPINRISE Work</b><br>
+        CEO instruction: All SPINRISE team members are to dedicate a
+        minimum of 4 hours per day to SPINRISE tasks, in addition to
+        their assigned ERP customer support responsibilities. This
+        commitment is essential to meet the 31 March 2027 go-live
+        target.<br>
+        <br>
+        <b>8f.  PULSE 360 Logsheet Accuracy</b><br>
+        CEO  stressed: PULSE 360 daily logsheets must be filled
+        accurately and on time. The logsheets are the primary tool for
+        tracking individual progress and the basis for the weekly review
+        meeting. Incomplete or inaccurate entries affect the team's
+        collective visibility of where the project stands.<br>
+      </p>
+      <p>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+        <b>SUMMARY — THIS WEEK'S PRIORITY TASKS BY ROLE</b><br>
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+        <br>
+        <b>Mariyaiya (M01 PO)</b><br>
+          ▸ Complete Stage 0 + critical analysis for 3 remaining PO
+        transactions<br>
+          ▸ Address the 10 open items in CEO's review of the corrected
+        PR form document<br>
+        <br>
+        <b>TL-Dev Sasi (M02 RMI)</b><br>
+          ▸ Progress Stage 0 readiness for RMI module this week<br>
+          ▸ Include stored procedure identification in Stage 0 scope<br>
+        <br>
+        <b>Annamalai (M03 Domestic Sales)</b><br>
+          ▸ Complete Stage 0 readiness for all Domestic Sales
+        transactions<br>
+          ▸ Continue Sales Order FSD preparation<br>
+          ▸ Target: full update by Saturday 12 April<br>
+        <br>
+        <b>Sathiskumar (M04 HR &amp; Payroll)</b><br>
+          ▸ Focus on Payroll transactions first — not master forms<br>
+          ▸ Progress Stage 0 readiness for payroll transactions<br>
+          ▸ Continue FSD preparation<br>
+        <br>
+        <b>Muthuvel (IST — M01 PO + Vamshadhara)</b><br>
+          ▸ Complete PR form IST review (IST-1 to IST-7) at the earliest<br>
+          ▸ Cross-check M01 PO module scope vs Excel menu chart — revert
+        to PM by Monday 6 Apr EoD<br>
+          ▸ Continue Vamshadhara Paper Mills gap document<br>
+        <br>
+        <b>PM Saravanan (IST — M02 RMI + Overall Coordination)</b><br>
+          ▸ Cross-check M02 RMI module scope vs Excel menu chart —
+        Monday 6 Apr EoD<br>
+          ▸ Coordinate Stage 0 progress across all modules<br>
+          ▸ Prepare Stage 0 readiness summary for Saturday 12 April
+        review meeting<br>
+          ▸ Ensure PULSE 360 Stage 0 tracking is active and accurate<br>
+        <br>
+        <b>Seenivasan (IST — M03 Domestic Sales)</b><br>
+          ▸ Cross-check M03 Sales module scope vs Excel menu chart —
+        Monday 6 Apr EoD<br>
+          ▸ Support Annamalai's Stage 0 readiness verification<br>
+        <br>
+        <b>TL-IST Palanivel (IST — M04 HR &amp; Payroll)</b><br>
+          ▸ Cross-check M04 Payroll module scope vs Excel menu chart —
+        Monday 6 Apr EoD<br>
+          ▸ Support Sathiskumar's Stage 0 readiness for payroll
+        transactions<br>
+        <br>
+        <b>Abinandan (Full Stack Dev)</b><br>
+          ▸ Continue PR form trial conversion in ASP.NET Core<br>
+          ▸ Complete FastReports vs Crystal Reports evaluation and
+        report findings<br>
+          ▸ Begin familiarizing with Claude Code<br>
+        <br>
+        <b>Hariharan (Jr Web Dev2)</b><br>
+          ▸ Begin React UI development for transaction forms in progress<br>
+          ▸ Align with FSD outputs as approved FSDs become available<br>
+        <br>
+        <b><font size="4">All Team Members</font></b><br>
+          ▸ Minimum 4 hours per day on SPINRISE tasks<br>
+          ▸ PULSE 360 logsheets to be filled daily and accurately<br>
+          ▸ Begin familiarising with Claude Code<br>
+          ▸ Claude Pro subscriptions to be utilised fully — no chat
+        duration constraints<br>
+        <br>
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+        <b>NEXT REVIEW MEETING</b><br>
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+        <br>
+          Date    :  Saturday, 11 April 2026<br>
+          Time    :  To be confirmed<br>
+          Agenda  :  Stage 0 readiness update (all modules) | Sprint 0
+        activation decision<br>
+                      Infrastructure procurement review | Abinandan's
+        FastReports findings<br>
+        <br>
+        <b>Let us make this week count.</b><br>
+        <br>
+        With confidence in the team,<br>
+        T. Mani<br>
+        <br>
+        cc: Project Manager, TL-Dev, Full SPINRISE Team</p>
+      <div class="moz-cite-prefix">On 04/04/2026 04:42 pm, CEO wrote:<br>
+      </div>
+      <blockquote type="cite"
+        cite="mid:e7913554-b231-4457-a4c2-4b5d8823e29f@kalsofte.com">
+        <meta http-equiv="Content-Type"
+          content="text/html; charset=UTF-8">
+        <p>Dear Team,<br>
+          <br>
+          This is to inform that a SPINRISE Project Progress Review
+          meeting is scheduled as below:<br>
+          <br>
+            Date    :  Today, Saturday, 5 April 2026<br>
+            Time    :  5:00 PM<br>
+            Venue   :  Meeting Room<br>
+          <br>
+          All SPINRISE team members are requested to attend without
+          fail.<br>
+          <br>
+          <b><font size="5">Agenda</font></b><br>
+          <br>
+          1.  Infrastructure update — Muthuvel to present quotes for i7
+          laptops and internet upgrade. Decision to be taken today.<br>
+          <br>
+          2.  Stage 0 readiness — Each VB Developer to present their
+          module’s stabilisation status: screens that are stable and
+          ready for FSD, and screens with pending customisations or open
+          corrections.<br>
+          <br>
+          3.  PO Module — PR Form review — Mariyaiya to present the
+          updated Critical Analysis document (v2 FSD template). Muthuvel
+          to present IST review status using IST-1 to IST-7
+          questionnaire.<br>
+          <br>
+          4.  Active FSD work update — Annamalai (M03 Domestic Sales)
+          and Sathiskumar (M04 HR &amp; Payroll) to give a brief status
+          on their FSD preparation progress.<br>
+          <br>
+          5.  v2 Guide confirmation — Confirm that all team members have
+          read the VB FSD Claude Guide v2 in full. Open the floor for
+          any questions or observations.<br>
+          <br>
+          6.  PM to confirm Stage 0 pre-sprint tracking activation
+          status for all Phase 1 modules.<br>
+          <br>
+          7.  Sprint 0 activation — Lock the process and confirm start.<br>
+          <br>
+          8.  Any other points for discussion.<br>
+          <br>
+          <b>Please come prepared with your respective updates. Time is
+            short — let us make this session focused and decisive.</b><br>
+          <br>
+          Regards,<br>
+          T Mani</p>
+        <div class="moz-cite-prefix">On 31/03/2026 01:27 pm, CEO wrote:<br>
+        </div>
+        <blockquote type="cite"
+          cite="mid:1b4ba4f5-9b74-4078-a3d3-648ece98648d@kalsofte.com">
+          <meta http-equiv="Content-Type"
+            content="text/html; charset=UTF-8">
+          <p>Dear SPINRISE Team,<br>
+            <br>
+            <b>I am sharing with you today the updated VB FSD Claude
+              Guide — Version 2.<br>
+            </b><br>
+            Attached: SPINRISE_VB_FSD_Claude_Guide_v2.docx<br>
+            <br>
+            Please read it fully before our Saturday session. <b>From
+              the date of this mail, v2 is the operative guide for all
+              FSD documentation work in SPINRISE. </b>V1 is superseded.<br>
+            <br>
+            <b><font size="4">Why v2 exists<br>
+              </font></b><br>
+            Version 2 was built entirely from what you told me.<br>
+            <br>
+            Three of you responded to my v1 circulation mail with
+            observations that were technically sharp and practically
+            important. I want to acknowledge each contribution by name,
+            because the team should know where v2 came from.<br>
+            <br>
+            <b>Sathishkumar </b>pointed out that the Kalsofte ERP
+            distributes business logic across Common modules, Class
+            modules, and stored procedures — not just the .frm file. He
+            also highlighted that the TC (Transaction Code) framework,
+            which drives stock direction and accounting entries across
+            most of our modules, is largely implemented inside stored
+            procedures and would be missed entirely if only the form
+            code was submitted to Claude.<br>
+            <br>
+            <b>Mariyaiya </b>raised a more fundamental concern: that
+            several PR, PO, and Service PO screens have pending customer
+            customisations in various stages of stability. Submitting
+            unstabilised code to Claude would produce an FSD that
+            documents an incomplete version of the screen — and that
+            instability would be permanently carried into SPINRISE.<br>
+            <br>
+            <b>Mariyaiya then went further.</b> Before I could even
+            respond, he produced a detailed critical analysis of the
+            Purchase Requisition form (tmpPoindent.frm) — a 9,108-line
+            VB6 form — and shared it with Muthuvel for IST review. That
+            document, which I have gone through in detail, identified 3
+            Critical defects, 3 High issues, 4 Medium issues, and 2 Low
+            issues in the form code. It also proposed the four-category
+            validation structure, the error message catalogue, the
+            summary scorecard, and the customer variation register — all
+            of which are now standard sections in the v2 FSD template.<br>
+            <br>
+            This is what good teamwork looks like. You were given a
+            guide, you used it on a real form, you found its limits, and
+            you reported back with precision. V2 is the direct result.<br>
+            <br>
+            <b><font size="4">What is new in v2<br>
+              </font></b><br>
+            For those who have read v1, here is what changed:<br>
+            <br>
+            Stage 0 is an entirely new mandatory phase that must be
+            completed before any FSD documentation begins. It covers
+            code stabilisation review, the screen readiness checklist,
+            what to collect before opening Claude (no longer just the
+            .frm file — now includes Common modules, Class modules, and
+            all stored procedures), the TC framework reference table,
+            the customer variation register, and the dead code
+            identification step. Stage 0 is not optional. No FSD work
+            begins on any screen until Stage 0 is complete and TL-Dev
+            has signed off.<br>
+            <br>
+            The follow-up prompts grew from three to six. Three new
+            prompts were added: one for Common and Class module logic,
+            one for stored procedure business rules, and one
+            specifically for TC framework documentation. These address
+            the gap our first VB developer identified.<br>
+            <br>
+            The FSD template expanded from 8 sections to 14 sections.
+            The six new sections are the TC Framework, Common and Class
+            Module Dependencies, Error Message Catalogue, Customer
+            Variation Register, SPINRISE Migration Recommendations, and
+            the Summary Scorecard. All six are mandatory for transaction
+            screens.<br>
+            <br>
+            The review chain is updated to four levels with the full IST
+            structured questionnaire (IST-1 to IST-7) that every Module
+            Sr IST Member must answer for each form they review.<br>
+            <br>
+            A new Section 8 documents eight known defect patterns to
+            actively search for in every VB6 form before submitting to
+            Claude: application-terminating End statements, hardcoded
+            customer IDs, SQL string concatenation, dead code blocks,
+            inconsistent duplicate logic, hardcoded file paths, missing
+            transaction rollback, and typos in error messages. Each
+            pattern has the code signature to search for and the action
+            to take.<br>
+            <br>
+            Three quick reference cards are now at the back: the
+            Developer Daily Card, the four-column Reviewer Checklist,
+            and the new Defect Patterns Card. Print all three and keep
+            them at your desk.<br>
+            <br>
+            <b>How I need each of you to use this guide<br>
+            </b><br>
+            <b>Module VB Developers:</b><br>
+            Section 3 (Stage 0) and Section 4 (the six steps and six
+            prompts) are your primary reference. Read them in full.
+            Before you begin any FSD, complete Stage 0 for that screen.
+            Do not skip the Customer Variation Register. Do not submit
+            dead code. Run all six follow-up prompts, not just the ones
+            you feel are relevant.<br>
+            <br>
+            <b>Module Sr IST Members:</b><br>
+            Section 6, Level 1 and the IST Structured Questionnaire
+            (questions IST-1 to IST-7) are your reference. For every FSD
+            you review, answer all seven questions. Section 8 (the
+            defect patterns) is also important for you — you are the
+            person most likely to know from site experience whether an
+            application-terminating behaviour or a hardcoded customer
+            variation has caused problems in practice.<br>
+            <br>
+            <b>TL-IST:</b><br>
+            Section 6, Level 2. Your role is cross-module consistency.
+            Pay particular attention to whether TC framework values and
+            stored procedure business rules are consistent with how the
+            same logic is handled in other modules you have implemented.<br>
+            <br>
+            <b>Project Manager:</b><br>
+            Section 6, Level 3. Before any FSD reaches the CEO, confirm
+            that all 14 sections are complete, all IST questions are
+            answered, the customer variation register is filled, and the
+            summary scorecard is present. An incomplete FSD must be
+            returned to the developer, not passed forward.<br>
+            <br>
+            <b>New Developer (Abinandan):</b><br>
+            Welcome again. This guide is your primary reference for how
+            SPINRISE development works. Start by reading Section 3
+            (Stage 0) and Section 4. The defect patterns in Section 8
+            will be particularly useful as you begin reading Kalsofte
+            VB6 code for the first time — you will encounter all of
+            these patterns. Now you know what to do with each one.<br>
+            <br>
+            <b>Jr Web Dev team:</b><br>
+            Section 4, Step 6 and Section 7 are your references. The
+            approved FSD is your specification for React UI generation.
+            Read Section 7 carefully — it shows you exactly what prompt
+            to use when an FSD is handed to you for code conversion.<br>
+            <br>
+            <b><font size="4">A word on how we got here</font></b><br>
+            <br>
+            When I shared v1, I said: this is version 1, your feedback
+            will shape version 2. You delivered. In less than a week,
+            the team produced two substantive pieces of written feedback
+            and one detailed 12-section critical analysis of a real
+            form. That is not normal. Most teams wait to be asked.<br>
+            <br>
+            <b>The quality of SPINRISE depends on the quality of our
+              FSDs.</b> The quality of our FSDs depends on the rigour of
+            our process. The rigour of our process depends on each of
+            you taking ownership of the part only you can contribute —
+            your domain knowledge, your site experience, your module
+            expertise.<br>
+            <br>
+            V2 reflects all of that. Bring the same energy to v2 that
+            produced it.<br>
+            <br>
+            <b><font size="4">What I need from you </font></b><br>
+            <br>
+            Every developer and IST member: have read v2 in full.<br>
+            <br>
+            Module VB Developers: bring your Stage 0 readiness
+            assessment for your assigned module — identify which screens
+            are stable and which carry pending customisations.<br>
+            <br>
+            Mariyaiya: bring the updated PR form critical analysis with
+            the v2 FSD template applied (14 sections). Muthuvel’s IST
+            review of that document, using the IST-1 to IST-7
+            questionnaire, should be underway.<br>
+            <br>
+            TL-Dev: bring the list of screens across all Phase 1 modules
+            that have pending customisations or open corrections. This
+            becomes the Stage 0 stabilisation backlog.<br>
+            <br>
+            PM: activate the Stage 0 pre-sprint tracking in PULSE 360
+            for all Phase 1 modules.<br>
+            <br>
+            <b>Saturday is when we lock the v2 process and start.</b><br>
+            <br>
+            With appreciation for what this team has already
+            contributed, and confidence in what it will deliver,<br>
+            T Mani<br>
+            <br>
+            Attachment: SPINRISE_VB_FSD_Claude_Guide_v2.docx<br>
+            <br>
+            cc: Project Manager, TL-Dev, Full SPINRISE Team</p>
+          <div class="moz-cite-prefix">On 29/03/2026 08:48 pm, CEO
+            wrote:<br>
+          </div>
+          <blockquote type="cite"
+            cite="mid:036f0737-960e-488e-b84c-8142e9220927@kalsofte.com">
+            <meta http-equiv="content-type"
+              content="text/html; charset=UTF-8">
+            <p>Dear SPINRISE Team,<br>
+              <br>
+              I am sharing with you today a guide that I have personally
+              put together with the assistance of Claude.<br>
+              <br>
+              The document is attached: SPINRISE VB FSD Claude Guide
+              v1.docx<br>
+              <br>
+              <b>Please read it fully at your own pace and share your
+                feedback, at the earliest.</b></p>
+            <p><font size="4"><b>What this guide is</b></font><br>
+              <br>
+              This guide explains, in plain English, how each of us uses
+              Claude to convert a VB6 screen into a Form Specification
+              Document (FSD) — and how that FSD then travels through our
+              four-level review chain before it is used to generate the
+              new SPINRISE web screen.<br>
+              <br>
+              It covers:<br>
+                • What an FSD is and why we need one for every VB6
+              screen<br>
+                • The complete five-step process for the Module VB
+              Developer<br>
+                • The exact Claude prompt to use — ready to copy and
+              paste<br>
+                • The three follow-up questions to always ask Claude
+              after the first output<br>
+                • The four-level review chain: Module Sr IST → TL-IST →
+              PM → CEO<br>
+                • What each reviewer specifically checks and signs off<br>
+                • Quick reference cards you can print and keep at your
+              desk<br>
+              <br>
+              <font size="4"><b>Who should read which sections<br>
+                </b></font><br>
+              <b>Module VB Developers:</b><br>
+              Section 3 is your primary reference. It walks you through
+              all five steps with the exact prompt, the before-and-after
+              example showing VB6 code versus Claude’s plain-English
+              output, and the three follow-up questions. Read this
+              section carefully before you begin your first FSD. The
+              quick reference card in Section 7 is your daily desk
+              guide.<br>
+              <br>
+              <b>Module Sr IST Members:</b><br>
+              Section 4, Level 1 is written for you. It explains exactly
+              what your review covers, how to write your annotations in
+              the Word document using the [IST ADD] and [IST CONFIRMED]
+              tags, and what you must sign off before the FSD moves to
+              TL-IST.<br>
+              <br>
+              <b>TL-IST:</b><br>
+              Section 4, Level 2 is your reference. You are the second
+              domain gate — the overall domain validation after the
+              Module Sr IST has done the first check. Your experience
+              across all modules and all customer sites is what this
+              level brings to the FSD.<br>
+              <br>
+              <b>Project Manager:</b><br>
+              Section 4, Level 3. Your role is completeness — not domain
+              accuracy. By the time the FSD reaches you, the domain has
+              been validated by two levels. Your question is: is this
+              document thorough enough for a developer to build the
+              screen from scratch without any ambiguity?<br>
+              <br>
+              <b>CEO:</b><br>
+              Section 4, Level 4 and Section 6. The CEO review is the
+              final domain authority gate. No technical skill is needed.
+              Only the question: does this FSD accurately reflect how
+              the business process was designed to work, and does it
+              carry forward the knowledge that has been built over
+              decades of spinning ERP implementation?<br>
+              <br>
+              <font size="4"><b>A personal note</b></font><br>
+              <br>
+              This process — Document, Validate, Convert — is the
+              quality backbone of SPINRISE. Every web screen we build is
+              only as good as the FSD behind it.<br>
+              <br>
+              I have been saying this since we began: we are not just
+              migrating a software platform. We are converting decades
+              of accumulated spinning ERP knowledge into a permanent,
+              structured form that will outlast the technology it runs
+              on. Each FSD that is reviewed and approved is a piece of
+              that knowledge preserved correctly.<br>
+              <br>
+              I want every one of you to understand the process fully —
+              not just the step that applies to your role, but the
+              complete journey from VB6 code to live SPINRISE web
+              screen. When everyone understands the full chain, every
+              handover between roles becomes cleaner, faster, and more
+              accurate.<br>
+              <br>
+              <b><font size="4">What I need from you</font></b><br>
+              <br>
+              Read the guide before this Saturday’s session.<br>
+              <br>
+              If any step is unclear, any instruction is ambiguous, or
+              any section does not match what you experience in practice
+              — write it down. <b>Share your feedback as reply to this
+                mail.</b><br>
+              <br>
+              This is version 1. Your feedback will shape version 2.<br>
+              <br>
+              With confidence in the team,<br>
+              T Mani<br>
+              <br>
+              Attachment: SPINRISE_VB_FSD_Claude_Guide_v1.docx</p>
+          </blockquote>
+        </blockquote>
+      </blockquote>
+    </blockquote>
+  </body>
+</html>
+
+--------------1eC8y5xgYni42H2o9XoZa9gz--

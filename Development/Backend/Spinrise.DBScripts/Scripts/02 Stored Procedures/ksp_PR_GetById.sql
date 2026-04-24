@@ -22,7 +22,7 @@ BEGIN
         h.SECTION                           AS Section,
         CONVERT(VARCHAR(10), h.SubCost)     AS SubCost,
         h.ITYPE                             AS IType,
-        e.ename                             AS ReqName,
+        ISNULL(e.ename, h.REQNAME)          AS ReqName,
         h.refno                             AS RefNo,
         h.PO_GRP                            AS PoGroupCode,
         h.scopecode                         AS ScopeCode,
@@ -78,10 +78,10 @@ BEGIN
         h.APP3                              AS FinalAppUser,
         h.APP3DATE                          AS APP3DATE
     FROM dbo.po_prh h
-    INNER JOIN pr_emp e
+    LEFT JOIN pr_emp e
         ON h.REQNAME = e.empno
        AND e.divcode = h.divcode
-    INNER JOIN in_dep d
+    LEFT JOIN in_dep d
         ON h.depcode = d.DEPCODE
        AND d.divcode = h.divcode
     WHERE h.divcode = @DivCode

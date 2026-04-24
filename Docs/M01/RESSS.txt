@@ -1,0 +1,38 @@
+
+  ---
+  Codebase Cleanup — Complete
+
+  Backend — 5 files deleted, Constants.cs trimmed
+
+  ┌───────────────────────────────────────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │                    Deleted                    │                                              Reason                                              │
+  ├───────────────────────────────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ Class1.cs ×3 (Domain, Shared, Infrastructure) │ Empty auto-generated placeholders                                                                │
+  ├───────────────────────────────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ FastReportService.cs                          │ Not registered in DI; throws NotSupportedException; QuestPdfPurchaseRequisitionService is active │
+  ├───────────────────────────────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ AuthUserStore.cs                              │ In-memory auth store, never registered; DbAuthUserStore is active                                │
+  └───────────────────────────────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+  Constants.cs — removed ApiRoutes.Items, ApiRoutes.Inventory, ApiRoutes.PurchaseRequisitions (hardcoded in controllers), StoredProcedures.Item (never
+  called), and the stale GetRequisitionReportRows FastReport entry.
+
+  Frontend — 15 files deleted, 5 files edited
+
+  ┌─────────────────────────────────────────────────────────────────────────┬───────────────────────────────────────────────────────────────────────────┐
+  │                                 Deleted                                 │                                  Reason                                   │
+  ├─────────────────────────────────────────────────────────────────────────┼───────────────────────────────────────────────────────────────────────────┤
+  │ PurchaseRequisitionPage.tsx + PRActionBar, PRHeader, PRItemGrid,        │ Entire V1 form flow — route existed but nothing navigated to it; V2 is    │
+  │ PRItemModal                                                             │ the active path                                                           │
+  ├─────────────────────────────────────────────────────────────────────────┼───────────────────────────────────────────────────────────────────────────┤
+  │ PRHeaderCompact, PRItemGridV2, PRItemInlineGrid, PRItemWizardModal,     │ Defined but never imported anywhere                                       │
+  │ PRSearchForm                                                            │                                                                           │
+  ├─────────────────────────────────────────────────────────────────────────┼───────────────────────────────────────────────────────────────────────────┤
+  │ shared/ui/ directory (6 files)                                          │ Trivial pass-throughs (return <AntButton {...props} />) with zero added   │
+  │                                                                         │ value                                                                     │
+  └─────────────────────────────────────────────────────────────────────────┴───────────────────────────────────────────────────────────────────────────┘
+
+  Edited: removed dead route from dashboard.routes.tsx, replaced 3 @/shared/ui Button imports with direct antd imports, removed console.error from the API
+  interceptor.
+
+  Build result: Backend 0 errors · TypeScript 0 errors

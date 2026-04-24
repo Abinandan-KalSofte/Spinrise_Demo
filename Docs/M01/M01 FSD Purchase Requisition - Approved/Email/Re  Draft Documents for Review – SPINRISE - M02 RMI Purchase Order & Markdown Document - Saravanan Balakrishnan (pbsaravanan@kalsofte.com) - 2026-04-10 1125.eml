@@ -1,0 +1,529 @@
+X-UIDL: UID54-1774868925
+X-Mozilla-Status: 0000
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <pbsaravanan@kalsofte.com>
+Received: from murphy.nocdirect.com
+	by murphy.nocdirect.com with LMTP
+	id NfsBItyQ2GmiGSgAet6MXA
+	(envelope-from <pbsaravanan@kalsofte.com>); Fri, 10 Apr 2026 00:55:40 -0500
+Return-path: <pbsaravanan@kalsofte.com>
+Envelope-to: sasikumar.r@kalsofte.com,
+ implementation@kalsofte.com,
+ support@kalsofte.com,
+ qa@kalsofte.com,
+ abinandan.n@kalsofte.com
+Delivery-date: Fri, 10 Apr 2026 00:55:40 -0500
+Received: from [49.204.235.253] (port=51107 helo=[172.16.16.20])
+	by murphy.nocdirect.com with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+	(Exim 4.99.1)
+	(envelope-from <pbsaravanan@kalsofte.com>)
+	id 1wB4qC-0000000B1d5-0Jip;
+	Fri, 10 Apr 2026 00:55:40 -0500
+Content-Type: multipart/alternative;
+ boundary="------------slZuQeegjySbm3q43NpKk2Bu"
+Message-ID: <64af0edb-c4b1-4b3e-8b93-92e0fe4e58d5@kalsofte.com>
+Date: Fri, 10 Apr 2026 11:25:34 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: =?UTF-8?Q?Re=3A_Draft_Documents_for_Review_=E2=80=93_SPINRISE_-_M02?=
+ =?UTF-8?Q?_RMI_Purchase_Order_=26_Markdown_Document?=
+To: Sasikumar <sasikumar.r@kalsofte.com>,
+ "implementation@kalsofte.com" <implementation@kalsofte.com>
+Cc: support <support@kalsofte.com>, Quality Assurance <qa@kalsofte.com>,
+ abinandan.n@kalsofte.com
+References: <1bbaa68b-3202-4768-9cfa-bc120249f5e7@kalsofte.com>
+Content-Language: en-US
+From: Saravanan Balakrishnan <pbsaravanan@kalsofte.com>
+In-Reply-To: <1bbaa68b-3202-4768-9cfa-bc120249f5e7@kalsofte.com>
+
+This is a multi-part message in MIME format.
+--------------slZuQeegjySbm3q43NpKk2Bu
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+Dear Sasi,
+
+Please find below the ChatGPT feedback for your review and necessary 
+corrections.
+
+
+  🔴 MUST FIX (Before Approval)
+
+
+ 1.
+
+    *Close all “PENDING” in Section 13 (IST Review)*
+
+      *
+
+        Especially:
+
+          o
+
+            IST-8 (Delete Reason storage)
+
+          o
+
+            IST-9 (Crystal Report changes)
+
+ 2.
+
+    *Fix PO Number Generation Risk*
+
+      *
+
+        Replace MAX+1 with *sequence-based numbering + DB lock*
+
+ 3.
+
+    *Delete Reason Storage*
+
+      *
+
+        Confirm and document:
+
+          o
+
+            Where it is saved (RM_Trans_Log or other table)
+
+      *
+
+        Make it *mandatory in DB*
+
+ 4.
+
+    *Crystal Report Validation*
+
+      *
+
+        Confirm:
+
+          o
+
+            Layout changes
+
+          o
+
+            Data correctness
+
+      *
+
+        Add note: “Report must be signed off before UAT”
+
+------------------------------------------------------------------------
+
+
+  🟠 IMPORTANT IMPROVEMENTS
+
+ 5.
+
+    *Add PR-Based vs Direct PO Flow (clarity)*
+
+      *
+
+        Briefly differentiate both flows
+
+ 6.
+
+    *Clarify With-Sample Mode (business meaning)*
+
+      *
+
+        Add 1 line explaining when it is used
+
+ 7.
+
+    *Simplify Season Field Logic*
+
+      *
+
+        Mention:
+
+          o
+
+            “Will be unified in SPINRISE”
+
+------------------------------------------------------------------------
+
+
+  🟡 VALIDATION FIXES
+
+ 8.
+
+    *Standardize Error Messages*
+
+      *
+
+        Avoid ALL CAPS and typos in SPINRISE
+
+ 9.
+
+    *Fix Typo*
+
+      *
+
+        “Cannnot” → “Cannot”
+
+10.
+
+    *Merge Duplicate Validation*
+
+  *
+
+    Lot From/To rules (HV-17 & HV-18)
+
+------------------------------------------------------------------------
+
+
+  🟢 TECHNICAL ADDITIONS
+
+11.
+
+    *Add API Mapping (brief)*
+
+  *
+
+    Create / Update / Delete / List PO
+
+12.
+
+    *Define Transaction Scope*
+
+  *
+
+    All saves must be *single DB transaction*
+
+13.
+
+    *Add Concurrency Handling Note*
+
+  *
+
+    For:
+
+      o
+
+        PO number
+
+      o
+
+        PR balance
+
+------------------------------------------------------------------------
+
+
+  🔵 DOCUMENT IMPROVEMENTS
+
+14.
+
+    *Add Assumptions Section*
+
+  *
+
+    Example: masters configured, GST valid
+
+15.
+
+    *Add Out of Scope*
+
+  *
+
+    Example: Arrival, Invoice modules
+
+16.
+
+    *Add Version Control Note*
+
+  *
+
+    Based on Stage 0 cleaned form
+
+------------------------------------------------------------------------
+
+
+  🟣 FINAL PM NOTE (Add at End)
+
+    Approval is subject to closure of critical items (IST-8, IST-9), PO
+    numbering fix, and report validation.
+
+------------------------------------------------------------------------
+
+
+  ✅ FINAL STATUS
+
+👉 *Do NOT approve yet*
+👉 After above fixes → ✅ Ready for approval
+
+------------------------------------------------------------------------
+Regards,
+P.B.Saravanan
+
+
+On 09/04/2026 05:02 pm, Sasikumar wrote:
+>
+> Dear Sir,
+>
+> Please find attached the draft of the SPINRISE - M02 RMI Purchase 
+> Order and the Markdown Document for your review.
+>
+> Kindly review the documents and share your feedback at your earliest 
+> convenience.
+>
+> Thank you.
+>
+> Regards,
+> Sasi
+>
+--------------slZuQeegjySbm3q43NpKk2Bu
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <p>Dear Sasi,</p>
+    <p>Please find below the ChatGPT feedback for your review and
+      necessary corrections.</p>
+    <h1>🔴 MUST FIX (Before Approval)</h1>
+    <br>
+    <ol>
+      <li>
+        <p><strong>Close all “PENDING” in Section 13 (IST Review)</strong></p>
+        <ul>
+          <li>
+            <p>Especially:</p>
+            <ul>
+              <li>
+                <p>IST-8 (Delete Reason storage)</p>
+              </li>
+              <li>
+                <p>IST-9 (Crystal Report changes)</p>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p><strong>Fix PO Number Generation Risk</strong></p>
+        <ul>
+          <li>
+            <p>Replace MAX+1 with <strong>sequence-based numbering + DB
+                lock</strong></p>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p><strong>Delete Reason Storage</strong></p>
+        <ul>
+          <li>
+            <p>Confirm and document:</p>
+            <ul>
+              <li>
+                <p>Where it is saved (RM_Trans_Log or other table)</p>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <p>Make it <strong>mandatory in DB</strong></p>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p><strong>Crystal Report Validation</strong></p>
+        <ul>
+          <li>
+            <p>Confirm:</p>
+            <ul>
+              <li>
+                <p>Layout changes</p>
+              </li>
+              <li>
+                <p>Data correctness</p>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <p>Add note: “Report must be signed off before UAT”</p>
+          </li>
+        </ul>
+      </li>
+    </ol>
+    <hr>
+    <h1>🟠 IMPORTANT IMPROVEMENTS</h1>
+    <ol start="5">
+      <li>
+        <p><strong>Add PR-Based vs Direct PO Flow (clarity)</strong></p>
+        <ul>
+          <li>
+            <p>Briefly differentiate both flows</p>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p><strong>Clarify With-Sample Mode (business meaning)</strong></p>
+        <ul>
+          <li>
+            <p>Add 1 line explaining when it is used</p>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p><strong>Simplify Season Field Logic</strong></p>
+        <ul>
+          <li>
+            <p>Mention:</p>
+            <ul>
+              <li>
+                <p>“Will be unified in SPINRISE”</p>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ol>
+    <hr>
+    <h1>🟡 VALIDATION FIXES</h1>
+    <ol start="8">
+      <li>
+        <p><strong>Standardize Error Messages</strong></p>
+        <ul>
+          <li>
+            <p>Avoid ALL CAPS and typos in SPINRISE</p>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p><strong>Fix Typo</strong></p>
+        <ul>
+          <li>
+            <p>“Cannnot” → “Cannot”</p>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p><strong>Merge Duplicate Validation</strong></p>
+      </li>
+    </ol>
+    <ul>
+      <li>
+        <p>Lot From/To rules (HV-17 &amp; HV-18)</p>
+      </li>
+    </ul>
+    <hr>
+    <h1>🟢 TECHNICAL ADDITIONS</h1>
+    <ol start="11">
+      <li>
+        <p><strong>Add API Mapping (brief)</strong></p>
+      </li>
+    </ol>
+    <ul>
+      <li>
+        <p>Create / Update / Delete / List PO</p>
+      </li>
+    </ul>
+    <ol start="12">
+      <li>
+        <p><strong>Define Transaction Scope</strong></p>
+      </li>
+    </ol>
+    <ul>
+      <li>
+        <p>All saves must be <strong>single DB transaction</strong></p>
+      </li>
+    </ul>
+    <ol start="13">
+      <li>
+        <p><strong>Add Concurrency Handling Note</strong></p>
+      </li>
+    </ol>
+    <ul>
+      <li>
+        <p>For:</p>
+        <ul>
+          <li>
+            <p>PO number</p>
+          </li>
+          <li>
+            <p>PR balance</p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <hr>
+    <h1>🔵 DOCUMENT IMPROVEMENTS</h1>
+    <ol start="14">
+      <li>
+        <p><strong>Add Assumptions Section</strong></p>
+      </li>
+    </ol>
+    <ul>
+      <li>
+        <p>Example: masters configured, GST valid</p>
+      </li>
+    </ul>
+    <ol start="15">
+      <li>
+        <p><strong>Add Out of Scope</strong></p>
+      </li>
+    </ol>
+    <ul>
+      <li>
+        <p>Example: Arrival, Invoice modules</p>
+      </li>
+    </ul>
+    <ol start="16">
+      <li>
+        <p><strong>Add Version Control Note</strong></p>
+      </li>
+    </ol>
+    <ul>
+      <li>
+        <p>Based on Stage 0 cleaned form</p>
+      </li>
+    </ul>
+    <hr>
+    <h1>🟣 FINAL PM NOTE (Add at End)</h1>
+    <blockquote>
+      <p>Approval is subject to closure of critical items (IST-8,
+        IST-9), PO numbering fix, and report validation.</p>
+    </blockquote>
+    <hr>
+    <h1>✅ FINAL STATUS</h1>
+    <p>👉 <strong>Do NOT approve yet</strong><br>
+      👉 After above fixes → ✅ Ready for approval</p>
+    <hr>Regards,<br>
+    P.B.Saravanan
+    <p><br>
+    </p>
+    <div class="moz-cite-prefix">On 09/04/2026 05:02 pm, Sasikumar
+      wrote:<br>
+    </div>
+    <blockquote type="cite"
+      cite="mid:1bbaa68b-3202-4768-9cfa-bc120249f5e7@kalsofte.com">
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+      <p class="ds-markdown-paragraph"
+style="margin: 16px 0px; color: rgb(15, 17, 21); font-family: quote-cjk-patch, Inter, system-ui, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, Cantarell, &quot;Open Sans&quot;, &quot;Helvetica Neue&quot;, sans-serif; font-size: 16px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;"><span>Dear
+          Sir,</span></p>
+      <p class="ds-markdown-paragraph"
+style="margin: 16px 0px; color: rgb(15, 17, 21); font-family: quote-cjk-patch, Inter, system-ui, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, Cantarell, &quot;Open Sans&quot;, &quot;Helvetica Neue&quot;, sans-serif; font-size: 16px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;"><span>Please
+          find attached the draft of the SPINRISE - M02 RMI Purchase
+          Order and the Markdown Document for your review.</span></p>
+      <p class="ds-markdown-paragraph"
+style="margin: 16px 0px; color: rgb(15, 17, 21); font-family: quote-cjk-patch, Inter, system-ui, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, Cantarell, &quot;Open Sans&quot;, &quot;Helvetica Neue&quot;, sans-serif; font-size: 16px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;"><span>Kindly
+          review the documents and share your feedback at your earliest
+          convenience.</span></p>
+      <p class="ds-markdown-paragraph"
+style="margin: 16px 0px; color: rgb(15, 17, 21); font-family: quote-cjk-patch, Inter, system-ui, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, Cantarell, &quot;Open Sans&quot;, &quot;Helvetica Neue&quot;, sans-serif; font-size: 16px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;"><span>Thank
+          you.</span></p>
+      <p class="ds-markdown-paragraph"
+style="margin: 16px 0px; color: rgb(15, 17, 21); font-family: quote-cjk-patch, Inter, system-ui, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, Cantarell, &quot;Open Sans&quot;, &quot;Helvetica Neue&quot;, sans-serif; font-size: 16px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;"><span>Regards,</span><br>
+        <span>Sasi</span></p>
+    </blockquote>
+  </body>
+</html>
+
+--------------slZuQeegjySbm3q43NpKk2Bu--

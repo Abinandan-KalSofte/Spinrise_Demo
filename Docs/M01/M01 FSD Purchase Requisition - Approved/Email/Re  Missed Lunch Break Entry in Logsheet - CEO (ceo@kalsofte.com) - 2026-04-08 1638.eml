@@ -1,0 +1,86 @@
+X-UIDL: UID44-1774868925
+X-Mozilla-Status: 0000
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <ceo@kalsofte.com>
+Delivered-To: abinandan.n@kalsofte.com
+Received: from murphy.nocdirect.com
+	by murphy.nocdirect.com with LMTP
+	id WCZJDT431mnOYScAet6MXA
+	(envelope-from <ceo@kalsofte.com>)
+	for <abinandan.n@kalsofte.com>; Wed, 08 Apr 2026 06:08:46 -0500
+Return-path: <ceo@kalsofte.com>
+Envelope-to: abinandan.n@kalsofte.com
+Delivery-date: Wed, 08 Apr 2026 06:08:46 -0500
+Received: from [49.204.235.253] (port=7295 helo=[172.16.16.101])
+	by murphy.nocdirect.com with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+	(Exim 4.99.1)
+	(envelope-from <ceo@kalsofte.com>)
+	id 1wAQm5-0000000ApOu-3V9f
+	for abinandan.n@kalsofte.com;
+	Wed, 08 Apr 2026 06:08:46 -0500
+Content-Type: multipart/alternative;
+ boundary="------------YJUDRV4vjctv5oHLvCyBLY2G"
+Message-ID: <636cedf4-ed86-46c3-832c-045857e05f47@kalsofte.com>
+Date: Wed, 8 Apr 2026 16:38:58 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Missed Lunch Break Entry in Logsheet
+To: Abinandhan <abinandan.n@kalsofte.com>
+References: <cd3c509a-d8c6-4ee3-a365-fc180fb7ea6d@kalsofte.com>
+Content-Language: en-US
+From: CEO <ceo@kalsofte.com>
+In-Reply-To: <cd3c509a-d8c6-4ee3-a365-fc180fb7ea6d@kalsofte.com>
+
+This is a multi-part message in MIME format.
+--------------YJUDRV4vjctv5oHLvCyBLY2G
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+Noted.
+
+On 08/04/2026 04:12 pm, Abinandhan wrote:
+>
+> Dear Sir,
+>
+> I forgot to close my lunch break in today’s (08-04-2026) logsheet. I 
+> took only 40 minutes, but it is currently reflecting as 2 hours.
+>
+> Kindly consider this update and adjust the time accordingly.
+>
+> Apologies for the oversight.
+>
+> Thanks,
+> Abinandan
+>
+--------------YJUDRV4vjctv5oHLvCyBLY2G
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <p>Noted.</p>
+    <div class="moz-cite-prefix">On 08/04/2026 04:12 pm, Abinandhan
+      wrote:<br>
+    </div>
+    <blockquote type="cite"
+      cite="mid:cd3c509a-d8c6-4ee3-a365-fc180fb7ea6d@kalsofte.com">
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+      <p class="isSelectedEnd"><span>Dear Sir,</span></p>
+      <p class="isSelectedEnd"><span>I forgot to close my lunch break in
+          today’s (08-04-2026) logsheet. I took only 40 minutes, but it
+          is currently reflecting as 2 hours.</span></p>
+      <p class="isSelectedEnd"><span>Kindly consider this update and
+          adjust the time accordingly.</span></p>
+      <p class="isSelectedEnd"><span>Apologies for the oversight.</span></p>
+      <p><span>Thanks,</span><br>
+        <span>Abinandan</span></p>
+    </blockquote>
+  </body>
+</html>
+
+--------------YJUDRV4vjctv5oHLvCyBLY2G--

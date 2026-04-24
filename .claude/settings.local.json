@@ -11,7 +11,15 @@
       "Bash(cmd.exe *)",
       "Bash(npx tsc *)",
       "PowerShell(New-Item *)",
-      "Bash(npx vite *)"
+      "Bash(npx vite *)",
+      "Bash(git *)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(grep -r \"^[[:space:]]*/\\\\*\\\\|^[[:space:]]*\\\\*\\\\|^[[:space:]]*//.*dt\\\\.\" \"D:/Spinrise/Development/Backend/Spinrise.Infrastructure/Areas/Purchase/Reports/FastReportService.cs\")",
+      "Bash(grep -v \"^.*//.*RM\")",
+      "Bash(awk -F: '{print $1}')",
+      "Bash(grep -rn \"en-MY\\\\|'RM'\\\\|\\\\\"RM\\\\\"\\\\|prefix=\\\\\"RM\\\\\"\\\\|prefix='RM'\\\\|\\\\`RM \" D:/Spinrise/Development/spinrise-web/src/ --include=\"*.tsx\" --include=\"*.ts\")",
+      "Bash(grep -v \"//.*any\\\\|keyof any\\\\|Record<string, any>\")"
     ]
   }
 }

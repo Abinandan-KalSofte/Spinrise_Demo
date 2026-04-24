@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Spinrise.Application.DTOs.PurchaseRequisitions;
 
 public class PRLineResponseDto
@@ -7,7 +9,10 @@ public class PRLineResponseDto
     public string ItemCode { get; set; } = string.Empty;
     public string? ItemName { get; set; }
     public string? Uom { get; set; }
+    
+    [Range(0, 99999999.99, ErrorMessage = "Rate must be >= 0")]
     public decimal? Rate { get; set; }
+    
     public decimal? CurrentStock { get; set; }
     public decimal QtyRequired { get; set; }
     public DateTime? RequiredDate { get; set; }
@@ -17,7 +22,10 @@ public class PRLineResponseDto
     public string? MachineNo { get; set; }
     public string? CostCentreCode { get; set; }
     public string? BudgetGroupCode { get; set; }
+    
+    [Range(0, 99999999.99, ErrorMessage = "LastPoRate must be >= 0")]
     public decimal? LastPoRate { get; set; }
+    
     public DateTime? LastPoDate { get; set; }
     public string? LastPoSupplierCode { get; set; }
     public string? LastPoSupplierName { get; set; }
@@ -27,5 +35,7 @@ public class PRLineResponseDto
     public string? DrawNo { get; set; }
     public string? CatNo { get; set; }
     public string? Model { get; set; }
+    
+    [Range(0, 99999999.99, ErrorMessage = "MaxCost must be >= 0")]
     public decimal? MaxCost { get; set; }
 }

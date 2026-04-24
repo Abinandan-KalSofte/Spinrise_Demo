@@ -1,0 +1,2070 @@
+X-UIDL: UID72-1774868925
+X-Mozilla-Status: 0000
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <ceo@kalsofte.com>
+Received: from murphy.nocdirect.com
+	by murphy.nocdirect.com with LMTP
+	id yF1uNOa42Wn/GAgAet6MXA
+	(envelope-from <ceo@kalsofte.com>); Fri, 10 Apr 2026 21:58:46 -0500
+Return-path: <ceo@kalsofte.com>
+Envelope-to: pbsaravanan@kalsofte.com,
+ sasikumar.r@kalsofte.com,
+ support@kalsofte.com,
+ abinandan.n@kalsofte.com,
+ implementation@kalsofte.com,
+ mariyaiya.m@kalsofte.com,
+ annamalai.s@kalsofte.com,
+ sathishkumar.m@kalsofte.com,
+ qa@kalsofte.com
+Delivery-date: Fri, 10 Apr 2026 21:58:47 -0500
+Received: from [49.204.234.113] (port=3124 helo=[192.168.68.100])
+	by murphy.nocdirect.com with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+	(Exim 4.99.1)
+	(envelope-from <ceo@kalsofte.com>)
+	id 1wBOYX-00000002E2H-3bYK;
+	Fri, 10 Apr 2026 21:58:46 -0500
+Content-Type: multipart/alternative;
+ boundary="------------K0kGSN0fwgkyqn3YY8RD8mFF"
+Message-ID: <8c533412-0c4a-40a2-8c28-f4fb9e738fbe@kalsofte.com>
+Date: Sat, 11 Apr 2026 08:28:54 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: =?UTF-8?Q?Re=3A_SPINRISE_M02_RMI_PO_FSD_=E2=80=93_Section_13_IST_Cl?=
+ =?UTF-8?Q?arifications_=7C_CEO_Observations_and_Decisions?=
+To: Saravanan Balakrishnan <pbsaravanan@kalsofte.com>,
+ Sasikumar <sasikumar.r@kalsofte.com>
+Cc: support <support@kalsofte.com>, abinandan.n@kalsofte.com,
+ "implementation@kalsofte.com" <implementation@kalsofte.com>,
+ Mariyaiya <mariyaiya.m@kalsofte.com>, Annamalai s
+ <annamalai.s@kalsofte.com>, SathishkumarM <sathishkumar.m@kalsofte.com>,
+ Quality Assurance <qa@kalsofte.com>
+References: <1bbaa68b-3202-4768-9cfa-bc120249f5e7@kalsofte.com>
+ <64af0edb-c4b1-4b3e-8b93-92e0fe4e58d5@kalsofte.com>
+ <00aba1cd-b382-44f7-97e8-74f99b42f21c@kalsofte.com>
+ <128c5efe-f571-4d9b-bf7a-992a3dc1c060@kalsofte.com>
+ <411734d6-f841-4432-aa49-11bf84ebb2ce@kalsofte.com>
+ <46fd210e-a24f-433e-831d-c7a6cf8247c6@kalsofte.com>
+Content-Language: en-US
+From: CEO <ceo@kalsofte.com>
+In-Reply-To: <46fd210e-a24f-433e-831d-c7a6cf8247c6@kalsofte.com>
+
+This is a multi-part message in MIME format.
+--------------K0kGSN0fwgkyqn3YY8RD8mFF
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+Dear Saravanan,
+
+Thank you. This is a significant improvement over the first round and 
+several long-standing items are now resolved. Let me confirm what is 
+accepted, flag two contradictions that need clarification, and address 
+your closing note directly.
+
+*IST-1 — RM_PARAM flags: Accepted and confirmed*
+
+This is exactly what was needed. All 8 flags now have customer usage 
+context and recommended defaults. *Sasi, please update FSD Section 11 
+with the following confirmed values:*
+
+SuppLotNoReqArrival — used by most customers, mandatory. SPINRISE 
+default: Y.
+CentralizedOrder — Pallavaa only (group import PO, multi-division 
+arrivals). SPINRISE default: N.
+SeasoncalcReq — not used by any major customers. SPINRISE default: N.
+MasterEntryFlg — Pallavaa only (Rate Master entry). SPINRISE default: N.
+PO_Approval — at least 1 level mandatory for all customers. SPINRISE 
+default: Y.
+ADDTAXREQUIRED — not used by any customer. SPINRISE default: N.
+ftamt — not used by any customer. SPINRISE default: N.
+
+One flag requires a CEO decision before Sasi can update the FSD. 
+PRBased: Saravanan says SPINRISE default should be N because only 
+Pallavaa currently uses PR-based entry. However, FSD Section 11 
+currently documents PRBased default as Y. This matters because PRBased=Y 
+makes HSN code and Tax Code mandatory on every variety line. PRBased=N 
+removes those mandatory checks entirely. For a spinning mill ERP with 
+GST compliance built in, PRBased=Y is the safer and more correct default 
+for all new customers. My decision: SPINRISE default for PRBased = Y. 
+Saravanan, please confirm whether Pallavaa's usage is the norm that 
+should be the standard, or the exception, because this default will 
+apply to every new customer we onboard on SPINRISE.
+
+
+*IST-2 — Approval workflow: Substantially resolved, one gap*
+
+The customer breakdown is now clear. Pallavaa is the only customer 
+running 3-level approval. Poongodhai Spinning uses 1 level. SKS uses 1 
+level via EDP. Most others have PO_Approval=N. Sasi, document this in 
+FSD Section 11 as the customer variation for PO_Approval.
+
+The one remaining gap: the web-based approval screen is confirmed to 
+exist but its name or URL has not been provided. Saravanan, please give 
+the URL path or module name of the web approval screen currently used 
+for PO approvals. This goes into FSD Section 10 as a Related Screen. It 
+is the one item standing between this question and full closure.
+
+
+*IST-9 — Crystal report: Decision taken*
+
+PM confirms Cry_RMIPO_JAT_NEW is not identical to Cry_RMI_PO_ALL — the 
+JAT format was customised for that customer. PM recommends adopting the 
+JAT format as the SPINRISE standard because it contains all required 
+data fields.
+
+*My decision:* adopt Cry_RMIPO_JAT_NEW as the SPINRISE standard print 
+template base, subject to one condition — any JAT-specific branding, 
+customer name reference, or header element must be replaced with 
+configurable division-level details from pp_divmas before it is treated 
+as the universal template. Sasi, update FSD Section 7 to record: 
+Cry_RMIPO_JAT_NEW is the SPINRISE print template base. JAT-specific 
+elements to be generalised. FastReports migration to proceed from this 
+template. Cry_RMI_PO_ALL is retired.
+
+
+*IST-10 — With-Sample mode: Default revised*
+
+Nine customer sites confirmed as using wosample=Y: SCM group (5 mills), 
+Skycotex, SLVSM, Poongodhai Spinning, SRG. Given that this is the 
+majority of major sites, the SPINRISE default for wosample should be Y, 
+not N as I stated earlier.*I am revising that decision based on this 
+customer data. *Sasi, update FSD Section 11 accordingly: wosample 
+SPINRISE default = Y.
+
+
+*On your closing note — an important architectural clarification*
+
+You have noted: 'We are using the same customer database; therefore, 
+setting default flag values separately during implementation is not 
+required.'
+
+Saravanan, this note reflects the current VB6 world where existing 
+customers continue using their existing database. SPINRISE is not that. 
+SPINRISE is a new web platform. Here is why default values matter:
+
+First, when we onboard a brand new customer who has never used Kalsofte 
+before, they start with a blank SPINRISE installation. Every RM_PARAM 
+flag must have a sensible default on day one. Without documented 
+defaults, onboarding becomes ad hoc guesswork.
+
+Second, when we run UAT and testing for SPINRISE, the test environment 
+starts from a clean database, not a copy of a customer's live data. The 
+defaults are what the testing team uses to configure the test 
+environment correctly.
+
+Third, when we eventually migrate an existing customer from VB6 to 
+SPINRISE web, there will be a data migration script. That script must 
+know which flags to set and at what values for each customer. The 
+customer-wise breakdown you have provided in IST-1 is exactly the input 
+for that migration script.
+
+The default flag values documentation is not about the current database. 
+It is about SPINRISE as a product that will be deployed fresh for new 
+customers and cleanly for existing ones. Please keep this in mind for 
+all future IST responses across all modules.
+
+
+*For Sasi — summary of FSD updates from this exchange*
+
+Section 11: Update all 8 RM_PARAM flags with confirmed customer usage 
+and SPINRISE defaults as above. Sasi to confirm PRBased decision (Y) is 
+reflected, overriding PM's suggestion of N.
+Section 10: Add web-based PO approval screen once Saravanan provides the 
+name or URL.
+Section 7: Update print architecture — Cry_RMIPO_JAT_NEW is SPINRISE 
+standard base. Cry_RMI_PO_ALL retired. JAT-specific elements to be 
+generalised.
+Section 5.8: Update wosample SPINRISE default to Y with customer list 
+documented.
+
+Once Saravanan provides the approval screen name, IST-2 closes. IST-1, 
+IST-9, and IST-10 are resolved. T*his FSD is very close to being ready 
+for TL-IST sign-off and the formal review chain.*
+
+Regards,
+T. Mani
+
+cc: TL-IST Palanivel, TL-Dev Sasi
+
+On 10/04/2026 06:45 pm, Saravanan Balakrishnan wrote:
+>
+> Dear Sir,
+>
+> Please find below the detailed clarification for the four IST points.
+>
+> *IST-1 (RM_PARAM flags): *Your response is a policy statement, not an 
+> IST answer. What I need is: for each of the 8 RM_PARAM flags 
+> documented in FSD Section 11 (SuppLotNoReqArrival, CentralizedOrder, 
+> SeasoncalcReq, MasterEntryFlg, PRBased, PO_Approval, ADDTAXREQUIRED, 
+> ftamt), what is the current value at your major customer sites? Which 
+> flags are set differently from the documented SPINRISE defaults? 
+> Please provide a customer-wise breakdown or at minimum confirm which 
+> flags are universally set the same way and which ones vary. This is a 
+> one-time query you can run on any live customer database.
+>
+> *IST Reply : *
+>
+>   * *SuppLotNoReqArrival:* Generally mandatory for all customers.
+>     However, a few customers do not enter Supplier Lot No during
+>     arrival entry. PO stage it is not applicable.
+>   * *CentralizedOrder:* Applicable only for group companies.
+>     Typically, import PO is created in one division and arrivals are
+>     recorded across multiple divisions. Currently, only Pallavaa
+>     customer is using this option. Default should be set to *“No.”*
+>   * *SeasoncalcReq:* Not currently used by any major customers.
+>     Default can be set to *“No.”*
+>   * *MasterEntryFlg:* Refers to Rate Master usage. Currently used only
+>     by Pallavaa customer. Default should be set to *“No.”*
+>   * *PRBased:* PR-based entry is used only by Pallavaa customer.
+>     Default should be set to *“No”* for SPINRISE.
+>   * *PO_Approval:* Default for SPINRISE should be *“Yes,”* with at
+>     least one level of approval being mandatory.
+>   * *ADDTAXREQUIRED :* Not applicable for any current customers.
+>     Default should be set to *“No.”*
+>   * *ftamt : *Not applicable for any current customers. Default should
+>     be set to *“No.”*
+>
+> *IST-2 (Approval workflow):* The approver designations (RM Dept Head, 
+> Plant Head, Management) are useful. But three sub-questions remain 
+> unanswered. Which customers currently have PO_Approval = Y and run the 
+> 3-level workflow? Which have 1 or 2 levels only? And which SCREEN or 
+> form handles the approval action itself in the current ERP? The FSD 
+> references POApproval() in RMIMod.bas but the screen where a user logs 
+> in to approve a PO is not documented anywhere.
+>
+> *IST Reply :*
+>
+>  1. 3-level PO approval is currently used only by *Pallavaa customer*.
+>  2. Customers using 1 or 2 levels:
+>       * *Poongodhai Spinning* – 1 level
+>       * *SKS* – Currently approval is handled by EDP (single level)
+>  3. The 3-level approval process is handled through a *web-based
+>     approval screen/form* in the current ERP.
+>
+> *ST-9 (Cry_RMIPO_JAT_NEW):* If the layout and data are identical to 
+> Cry_RMI_PO_ALL, why was the report object renamed? The name suffix 
+> JAT_NEW suggests it was modified for a specific customer (JAT). Please 
+> physically open both RepRMI.rpt files and confirm they are the same 
+> file, or identify what differs. If identical, the FastReports 
+> migration can proceed from a single template inspection.
+>
+> *IST Reply : *We have considered the JAT customer, thats why the 
+> procodure name was mentioned in "*Cry_RMIPO_JAT_NEW". Some variation 
+> will be there for *Cry_RMI_PO_ALL, but we can fix the standard format 
+> JAT because required information are available.
+>
+> *IST-10 (With-Sample mode): *Which customer sites currently use 
+> wosample=Y? The SPINRISE default of N (Rate-Master mode) is confirmed. 
+> But the sites using wosample=Y need to be identified so the SPINRISE 
+> customer onboarding guide can flag this as a setup requirement for 
+> those specific customers.
+>
+> *IST Reply :* SCM group all 5 mills,  Skycotex, SLVSM, Poongodhai 
+> Spinning, SRG using sample transction entry. Defult to set as"yes".
+>
+> Note: We are using the same customer database; therefore, setting 
+> default flag values (Y/N) separately during implementation is not 
+> required.
+>
+> Regards,
+> P.B.Saravanan
+>
+> On 10/04/2026 05:13 pm, CEO wrote:
+>>
+>> Dear Saravanan,
+>>
+>> Thank you for completing the Section 13 IST review. I have gone 
+>> through all ten responses carefully. Before addressing the content, 
+>> two quick points on process.
+>>
+>> First, on the Claude AI limit: I am arranging your Claude Pro 
+>> subscription today. You should not have been running the IST review 
+>> on the free tier. Going forward your session limit issue is resolved. 
+>> Second, your commitment to not use ChatGPT for SPINRISE is noted and 
+>> appreciated. The entire review chain must remain on Claude AI for 
+>> consistency — your confirmation of this is the right professional 
+>> response.
+>>
+>> Now on the IST responses themselves.
+>>
+>> *What is well answered and resolved*
+>>
+>> *IST-5 through IST-8 are all clear and actionable. *Let me confirm 
+>> what each one means for the FSD.
+>>
+>> *IST-5 (Year-end):* No PO can be raised after financial year closure. 
+>> Confirmed. SPINRISE must enforce this at the API layer — the 
+>> ToValidFinYear check in RMIMod.bas becomes a server-side year 
+>> boundary guard on every Create and Modify operation.
+>>
+>> *IST-6 (Deletion guard):* This is a significant new business rule. PO 
+>> cannot be deleted once the first level of approval has been 
+>> completed. The VB6 code currently only blocks deletion when 
+>> RM_Arrival records exist. Your answer adds a second guard that the 
+>> current code does not have. Sasi, please add this as Step 0 in the 
+>> Delete Guard sequence in FSD Section 5.10: check FIRST_APPFLG — if 
+>> 'Y', hard stop with message 'PO cannot be deleted after approval has 
+>> commenced.' This is a SPINRISE improvement over the VB6 behaviour.
+>>
+>> *IST-7 (Backdate): *No backdated PO entry in SPINRISE. Confirmed. The 
+>> backdate flexibility in VB6 controlled by the in_para.backdate flag 
+>> is not carried forward. PO date equals processing date only. Sasi, 
+>> add this as a SPINRISE design decision in Section 12.
+>>
+>> *IST-8 (Delete Reason): *DelReasonCode must be written to 
+>> RM_Trans_Log.DelReason. This resolves Critical Defect CD-7. Sasi, 
+>> update FSD Section 5.10 and Section 8.2 to record that the SPINRISE 
+>> DELETE endpoint must write the selected delete reason to 
+>> RM_Trans_Log.DelReason as part of the delete audit sequence.
+>>
+>>
+>> *IST-4 — your most valuable response*
+>>
+>> The nine support call patterns you have documented are exactly the 
+>> kind of institutional knowledge the FSD process is designed to 
+>> capture. Let me confirm what each one requires in the FSD:
+>>
+>> *Points 1, 2, and 3 on GST: *GST rate percentage must be mandatory 
+>> and must load from the Variety Master. For import transactions, GST 
+>> applicability must be parameter-controlled and GST type must be 
+>> selected manually based on that parameter. Supplier state validation 
+>> must apply differently for Local, Interstate, and Import. These are 
+>> new validations that must be added to FSD Section 4. *Sasi to add.*
+>>
+>> *Points 4 and 8 on Arrival Type and UoM: *This is the most important 
+>> data integrity finding. When a user selects Candy as the Rate Unit 
+>> but the Arrival Type is KGS-wise, incorrect rate calculations result. 
+>> SPINRISE must auto-default the Arrival Type based on the selected 
+>> UoM: UoM = Candy defaults Arrival Type to Pack-wise; UoM = KGS 
+>> defaults Arrival Type to KGS-wise. If the user changes one, the other 
+>> should prompt or auto-correct. This must be in FSD Section 5 as a new 
+>> auto-fill and consistency rule. *Sasi to add.*
+>>
+>> *Points 5, 6, and 7 on UX:* Tab focus sequence, navigation, and 
+>> lookup re-opening are known defects. These belong in the Critical 
+>> Defects section of FSD Section 12. The lookup re-opening issue 
+>> specifically — if a valid code is entered directly without using the 
+>> lookup, the lookup window should not reopen — is a UX rule that must 
+>> be documented in Section 2 for every lookup field.
+>>
+>> *Point 9 on Common tax mode: *When tax calculation is set to 'Common 
+>> for all varieties' and multiple varieties share one tax code, 
+>> calculation errors occur. This must be documented as a validation in 
+>> Section 4: when tax_choice = COMMON, verify that all line item tax 
+>> codes are consistent before saving, and cross-check the calculated 
+>> tax amount against the expected amount from the common tax rate.
+>>
+>>
+>> *IST-3 — the print display rule is noted but the question was not 
+>> answered*
+>>
+>> Your response to IST-3 is valuable — PR Number and PR Date should 
+>> display on the PO print only when the PO was raised against a PR. For 
+>> direct or spot POs with no PR linkage, these fields should not 
+>> appear. Sasi, this must be added to FSD Section 7 as a print business 
+>> rule: the Crystal report must conditionally display PR No and PR Date 
+>> based on whether iprno is populated.
+>>
+>> However, the actual question was about SP_PRToPO_RMI and 
+>> SP_PRToPO_RMIFilter — the stored procedures that handle the PR-to-PO 
+>> conversion logic. *You have answered a print behaviour question, not 
+>> the SP behaviour question.* The SP code has not been provided and the 
+>> SP logic has not been submitted to Claude via Follow-up Prompt 
+>> B.*This is still outstanding.* Please obtain both SP codes from SQL 
+>> Server Management Studio and submit to Claude for Follow-up Prompt B 
+>> analysis. The PR-to-PO conversion is the primary daily workflow for 
+>> this screen and its SP logic must be in FSD Section 8 before the 
+>> document can be approved.
+>>
+>>
+>> *What still needs your clarification*
+>>
+>> Four items from your responses need to be completed.
+>>
+>> *IST-1 (RM_PARAM flags): *Your response is a policy statement, not an 
+>> IST answer. What I need is: for each of the 8 RM_PARAM flags 
+>> documented in FSD Section 11 (SuppLotNoReqArrival, CentralizedOrder, 
+>> SeasoncalcReq, MasterEntryFlg, PRBased, PO_Approval, ADDTAXREQUIRED, 
+>> ftamt), what is the current value at your major customer sites? Which 
+>> flags are set differently from the documented SPINRISE defaults? 
+>> Please provide a customer-wise breakdown or at minimum confirm which 
+>> flags are universally set the same way and which ones vary. This is a 
+>> one-time query you can run on any live customer database.
+>>
+>> *IST-2 (Approval workflow):* The approver designations (RM Dept Head, 
+>> Plant Head, Management) are useful. But three sub-questions remain 
+>> unanswered. Which customers currently have PO_Approval = Y and run 
+>> the 3-level workflow? Which have 1 or 2 levels only? And which SCREEN 
+>> or form handles the approval action itself in the current ERP? The 
+>> FSD references POApproval() in RMIMod.bas but the screen where a user 
+>> logs in to approve a PO is not documented anywhere.
+>>
+>> *IST-9 (Cry_RMIPO_JAT_NEW):* If the layout and data are identical to 
+>> Cry_RMI_PO_ALL, why was the report object renamed? The name suffix 
+>> JAT_NEW suggests it was modified for a specific customer (JAT). 
+>> Please physically open both RepRMI.rpt files and confirm they are the 
+>> same file, or identify what differs. If identical, the FastReports 
+>> migration can proceed from a single template inspection.
+>>
+>> *IST-10 (With-Sample mode): *Which customer sites currently use 
+>> wosample=Y? The SPINRISE default of N (Rate-Master mode) is 
+>> confirmed. But the sites using wosample=Y need to be identified so 
+>> the SPINRISE customer onboarding guide can flag this as a setup 
+>> requirement for those specific customers.
+>>
+>>
+>> *For Sasi — FSD update checklist from this IST review*
+>>
+>> Sasi, please update the FSD with the following additions from this 
+>> IST exchange before Saturday's meeting:
+>>
+>> Section 4 — Add new validations: approval-based deletion block, GST 
+>> mandatory from Variety Master, import GST parameter control, Arrival 
+>> Type vs UoM consistency, Common tax mode cross-validation.
+>>
+>> Section 5 — Add new business rules: UoM-to-ArrivalType auto-default 
+>> (Candy to Pack-wise, KGS to KGS-wise), SPINRISE no-backdate design 
+>> decision.
+>>
+>> Section 5.10 Delete Guard — Add Step 0: FIRST_APPFLG check blocks 
+>> deletion if Y.
+>>
+>> Section 7 Print — Add conditional PR No and PR Date display rule: 
+>> show only when iprno is populated.
+>>
+>> Section 8.2 Delete Sequence — Update to confirm DelReasonCode write 
+>> to RM_Trans_Log.DelReason as an explicit step.
+>>
+>> Section 12 — Add UX defect items (tab focus, navigation, lookup 
+>> re-open) as known defects to resolve in SPINRISE.
+>>
+>> Once the two SPs are submitted to Claude and the SP analysis is in 
+>> Section 8, and once Saravanan provides the four remaining IST 
+>> answers, the FSD will be ready for TL-IST sign-off and the formal 
+>> review chain.
+>>
+>> *Good progress on this thread, Saravanan.* The IST-4 response in 
+>> particular is the kind of knowledge transfer that makes this whole 
+>> process worthwhile.
+>>
+>> Regards,
+>> T. Mani
+>>
+>> cc: TL-IST Palanivel, TL-Dev Sasi (action items above)
+>>
+>> On 10/04/2026 02:05 pm, Saravanan Balakrishnan wrote:
+>>>
+>>> Dear Sir,
+>>>
+>>> Please find below the replies for each point in Section 13.
+>>>
+>>> Kindly note that the Claude AI usage limit has been reached, and I 
+>>> am currently unable to generate my login and development login . 
+>>> Henceforth, I will not be using ChatGPT for the SPINRISE project.
+>>>
+>>> *1. Do any RM_PARAM flags differ across live customers? Any 
+>>> non-standard settings?*
+>>>
+>>> *IST Reply:*
+>>> RM_PARAM flags may vary across customers based on their specific 
+>>> business requirements. Any non-standard settings should be handled 
+>>> through configurable parameters instead of hard-coded changes.
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> *Three-level approval: how many levels active? Who approves? Same 
+>>> across all customers?*
+>>>
+>>> *IST Reply:*
+>>> Three-level approval is not applicable across all customers. It 
+>>> varies from customer to customer and should be configurable through 
+>>> parameters rather than procedure-level changes.
+>>> For corporate customers:
+>>>
+>>>  *
+>>>
+>>>     First level: RM Department Head
+>>>
+>>>  *
+>>>
+>>>     Second level: Plant Head
+>>>
+>>>  *
+>>>
+>>>     Third level: Management
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> *2. SP_PRToPO_RMI/Filter: any known SP behaviour differences or bugs 
+>>> at customer sites?*
+>>>
+>>> *IST Reply:*
+>>> In PO print, PR Number and PR Date should be displayed only when a 
+>>> PR is selected. They should not appear if no PR is selected.
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> *3. Most common support calls for PO screen? Data errors SPINRISE 
+>>> must prevent?*
+>>>
+>>> *IST Reply:*
+>>>
+>>> 1.
+>>>
+>>>     GST rate % sometimes varies from the Variety setup.
+>>>
+>>> 2.
+>>>
+>>>     GST rate % should be mandatory and must be loaded from the
+>>>     Variety Master. For import transactions, GST applicability
+>>>     should be controlled through a parameter, and the GST type
+>>>     should be selected manually based on that.
+>>>
+>>> 3.
+>>>
+>>>     Validation is required for Local, Interstate, and Import types
+>>>     based on the supplier’s state.
+>>>
+>>> 4.
+>>>
+>>>     Based on Arrival Type and UoM, proper Rate/Unit validation is
+>>>     required. For example, users sometimes select “Candy” rate but
+>>>     enter rate per KG, leading to data inconsistencies.
+>>>
+>>> 5.
+>>>
+>>>     Proper tab focus sequence is required.
+>>>
+>>>  6. Navigation not working properly.
+>>> 7.
+>>>
+>>>     In lookup fields, if a correct code is entered, the lookup
+>>>     window should not reopen.
+>>>
+>>> 8.
+>>>
+>>>     If UoM is “Candy,” Arrival Type should default to “Pack-wise.”
+>>>     If UoM is “KGS,” Arrival Type should automatically default to “KGS.”
+>>>
+>>> 9.
+>>>
+>>>     If tax calculation is set as “Individual,” there is no issue.
+>>>     However, when set as “Common for all” across multiple varieties,
+>>>     calculation errors may occur and should be handled.
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> *Year-end: can PO be raised after close? Known year-end issues 
+>>> handled manually?*
+>>>
+>>> *IST Reply:*
+>>> No, PO cannot be raised after year-end closure.
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> *Deletion: cases where VB6 allowed deletion that SPINRISE should not?*
+>>>
+>>> *IST Reply:*
+>>> PO should not be allowed to be deleted once even the first level of 
+>>> approval is completed.
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> *Backdate parameter across live customers? Stricter controls in 
+>>> SPINRISE?*
+>>>
+>>> *IST Reply:*
+>>> Backdated entry provision is not required in SPINRISE.
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> *Delete Reason: is DelReasonCode written to RM_Trans_Log.DelReason 
+>>> or a separate table?*
+>>>
+>>> *IST Reply:*
+>>> Maintaining the delete reason in the log table is sufficient.
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> *Cry_RMIPO_JAT_NEW: what changed vs Cry_RMI_PO_ALL? Any report 
+>>> layout/data differences?*
+>>>
+>>> *IST Reply:*
+>>> No changes. Both reports have the same layout and data.
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> *With-Sample mode (wosample=Y): how often used? Which customers? 
+>>> Default or optional in SPINRISE?*
+>>>
+>>> *IST Reply:*
+>>> This is optional and used only by specific customers as required.
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> Regards,
+>>> P.B. Saravanan
+>>>
+>>>
+>>>
+>>> On 10/04/2026 12:09 pm, CEO wrote:
+>>>>
+>>>> Dear Sasi and Saravanan,
+>>>>
+>>>> I have reviewed the RMI PO FSD v2 Draft in full from the QA mail ID 
+>>>> and want to provide my observations before Sasi acts on the PM's 
+>>>> feedback. *This is important because some of the PM's comments 
+>>>> refer to items that are already in the document, and the real gaps 
+>>>> that need to be addressed are different from what is listed.*
+>>>>
+>>>> *On Sasi's FSD — what is strong*
+>>>>
+>>>> *Sasi, this is the strongest first-draft FSD submission in the 
+>>>> SPINRISE project so far.* Let me be specific about why.
+>>>>
+>>>> Stage 0 is confirmed and the numbers are in the header: 12,198 
+>>>> lines cleaned to 11,066. Zero CustID blocks. The What Changed table 
+>>>> (C1 through C10) is an excellent addition that no other FSD has 
+>>>> included — it documents exactly what changed between the original 
+>>>> and cleaned form, and *this is precisely the kind of traceability 
+>>>> that protects the migration team.
+>>>> *
+>>>> The TC Framework in Section 6 is the most complete of any FSD we 
+>>>> have seen. The full GL journal structure for TC-01 is documented — 
+>>>> Supplier DR, Purchase CR, CGST CR, SGST CR, rounding, and TCS — 
+>>>> with separate tables for intra-state and inter-state paths. *Every 
+>>>> future SPINRISE module developer can use this as the reference 
+>>>> standard for how GL entries are structured.
+>>>> *
+>>>> The error catalogue has 53 messages with exact text, trigger 
+>>>> conditions, and stop types. The E36 typo (three n's in Cannnot) is 
+>>>> correctly preserved as-is for migration reference. The Customer 
+>>>> Variation Register maps all 8 RM_PARAM flags to SPINRISE config 
+>>>> names with recommended defaults — *this is the best parameter 
+>>>> documentation of any module so far and is exactly what the v2 guide 
+>>>> requires.
+>>>> *
+>>>> The 7 critical defects are clearly documented with SPINRISE 
+>>>> actions. CD-2 (MAX+1 race condition), CD-3 (PR balance without 
+>>>> UPDLOCK), and CD-4 (RM_DELSCHED without primary key) are important 
+>>>> architectural defects that the SPINRISE development team must 
+>>>> address. CD-7 (DelReason not written to DB) is correctly flagged as 
+>>>> requiring IST confirmation before the fix can be specified.
+>>>>
+>>>>
+>>>> *On the PM's feedback — what needs correction before Sasi acts*
+>>>>
+>>>> Saravanan, I want to clarify several points in your feedback before 
+>>>> Sasi revises the document.
+>>>>
+>>>> *First, on tooling:* your feedback is marked as ChatGPT feedback. 
+>>>> The SPINRISE FSD review process uses Claude AI throughout — for 
+>>>> documentation, analysis, and review at every level of the review 
+>>>> chain. Please ensure that your IST reviews going forward are 
+>>>> conducted using Claude AI, consistent with the rest of the team. 
+>>>> This applies to the PM level as well.
+>>>>
+>>>> *Second, some of your Must Fix items are already in the document:*
+>>>>
+>>>> The PO number generation race condition is already documented as 
+>>>> CD-2 in Section 5.4 and Section 12.1, with the correct SPINRISE fix 
+>>>> (locked sequence table with UPDLOCK) already specified. *This does 
+>>>> not need to be added — it is there.*
+>>>>
+>>>> The Delete Reason storage question is already in the document as 
+>>>> CD-7 in Section 5.10 and as IST-8 in Section 13, both marked as 
+>>>> pending IST confirmation. The developer has correctly flagged that 
+>>>> the code captures the value but no DB write is observable. IST-8 is 
+>>>> your question to answer as the M02 IST member — not something for 
+>>>> Sasi to add a note about.
+>>>>
+>>>> *Third, two of your Important Improvement items are also already in 
+>>>> the document:
+>>>> *
+>>>> With-Sample mode is fully documented in Section 5.8, including the 
+>>>> wosample flag, both modes (With-Sample vs Rate-Master), and the 
+>>>> difference in GST auto-fill behaviour between the two. Please read 
+>>>> Section 5.8.
+>>>>
+>>>> The Season field difference between Add and Modify is documented in 
+>>>> Section 5.9 and in Section 3's field rules table. This is already done.
+>>>>
+>>>> *Fourth, HV-17 and HV-18 are not duplicate validations. *They are 
+>>>> mirror-image checks — HV-17 fires on LostFocus of the From field 
+>>>> (From must be less than or equal to To), and HV-18 fires on 
+>>>> LostFocus of the To field (To must be greater than or equal to 
+>>>> From). Both are needed at their respective field events and merging 
+>>>> them would reduce validation coverage, not improve it.
+>>>>
+>>>>
+>>>> *What genuinely needs to be done before this FSD can proceed*
+>>>>
+>>>> *For Sasi — two additions required:*
+>>>>
+>>>> *First:* The PR-to-PO conversion workflow is missing from Section 
+>>>> 5. The document references the PR indent grid (FpSpdInd), the 
+>>>> hidden PR linkage fields (iprno, prdate, prsno) in the line items 
+>>>> grid, and the SP_PRToPO_RMI and SP_PRToPO_RMIFilter stored 
+>>>> procedures — but the business workflow itself is not documented. 
+>>>> How does the user load pending PR lines into this screen? What does 
+>>>> the PR indent grid show? How does the system match PRs to the PO 
+>>>> being created? How does the PR balance reduce after PO save? This 
+>>>> is the primary workflow for this screen in daily use and it must be 
+>>>> in Section 5. Please add this as Section 5.11 — PR to PO Conversion 
+>>>> Workflow.
+>>>>
+>>>> *Second:* The CD-1 weignment fix needs to be more specific. Section 
+>>>> 12.1 CD-1 says the SPINRISE fix is 'save Combo4 selected value to 
+>>>> RM_CONT.weignment' — but the form has multiple Combo controls. 
+>>>> Which Combo4 specifically? Please confirm the correct combo control 
+>>>> that drives the weighment selection and update the SPINRISE action 
+>>>> accordingly.
+>>>>
+>>>> *For Sasi — one item requiring SP code submission:*
+>>>>
+>>>> SP_PRToPO_RMI and SP_PRToPO_RMIFilter are listed in the Document 
+>>>> Identity table but their internal logic is not analysed in Section 
+>>>> 8. These two SPs handle the PR-to-PO conversion, which is the most 
+>>>> business-critical workflow in this screen. Please obtain both SP 
+>>>> codes from SQL Server Management Studio and submit them to Claude 
+>>>> using Follow-up Prompt B from the v2 guide. The analysis output 
+>>>> belongs in Section 8.
+>>>>
+>>>> *For Saravanan — your IST responsibilities:*
+>>>>
+>>>> As the IST member for M02, Section 13 is yours to complete. All 10 
+>>>> IST questions are currently showing PENDING. The two critical ones 
+>>>> that must be answered before this FSD can move to TL-IST review are 
+>>>> IST-8 (DelReason: is the DelReasonCode written to 
+>>>> RM_Trans_Log.DelReason or a separate table? — this resolves CD-7) 
+>>>> and IST-9 (Cry_RMIPO_JAT_NEW vs Cry_RMI_PO_ALL: what changed in the 
+>>>> Crystal report layout and data? — this unblocks the FastReports 
+>>>> migration scope for M02). *Please complete your IST review of 
+>>>> Section 13 and respond to Sasi directly so the document can be updated.
+>>>> *
+>>>> *The PM's additions that are genuinely valid and can be included by 
+>>>> Sasi:
+>>>> *
+>>>> A brief PR-based vs Direct PO flow distinction in Section 1 or 5 
+>>>> (which Sasi is already adding in Section 5.11 above). Three 
+>>>> technical additions to Section 12 are reasonable: an API endpoint 
+>>>> list (Create, Update, Delete, List PO), an explicit 
+>>>> single-transaction scope statement for the Save sequence, and a 
+>>>> concurrency handling note covering PO numbering and PR balance. An 
+>>>> Assumptions section and an Out of Scope section can be added as a 
+>>>> Section 0 or appended after Section 14.
+>>>>
+>>>>
+>>>> *Overall*
+>>>>
+>>>> *Sasi, do not act on the PM's full list as written.* The specific 
+>>>> actions for you are: add Section 5.11 for the PR-to-PO conversion 
+>>>> workflow, clarify the Combo4 reference in CD-1, obtain and submit 
+>>>> the two SP codes to Claude, and add the three technical additions 
+>>>> to Section 12 that are genuinely missing. Wait for Saravanan's IST 
+>>>> responses on IST-8 and IST-9 before resubmitting.
+>>>>
+>>>> *Saravanan*, please complete your IST review of Section 13 by 
+>>>> today. IST-8 and IST-9 in particular are blocking items.
+>>>>
+>>>> *This FSD is close to ready. The core work is excellent.*
+>>>>
+>>>> Regards,
+>>>> T. Mani
+>>>>
+>>>> cc: TL-IST Palanivel, TL-Dev Sasi (for reference)
+>>>>
+>>>> On 10/04/2026 11:25 am, Saravanan Balakrishnan wrote:
+>>>>>
+>>>>> Dear Sasi,
+>>>>>
+>>>>> Please find below the ChatGPT feedback for your review and 
+>>>>> necessary corrections.
+>>>>>
+>>>>>
+>>>>>   🔴 MUST FIX (Before Approval)
+>>>>>
+>>>>>
+>>>>> 1.
+>>>>>
+>>>>>     *Close all “PENDING” in Section 13 (IST Review)*
+>>>>>
+>>>>>      *
+>>>>>
+>>>>>         Especially:
+>>>>>
+>>>>>          o
+>>>>>
+>>>>>             IST-8 (Delete Reason storage)
+>>>>>
+>>>>>          o
+>>>>>
+>>>>>             IST-9 (Crystal Report changes)
+>>>>>
+>>>>> 2.
+>>>>>
+>>>>>     *Fix PO Number Generation Risk*
+>>>>>
+>>>>>      *
+>>>>>
+>>>>>         Replace MAX+1 with *sequence-based numbering + DB lock*
+>>>>>
+>>>>> 3.
+>>>>>
+>>>>>     *Delete Reason Storage*
+>>>>>
+>>>>>      *
+>>>>>
+>>>>>         Confirm and document:
+>>>>>
+>>>>>          o
+>>>>>
+>>>>>             Where it is saved (RM_Trans_Log or other table)
+>>>>>
+>>>>>      *
+>>>>>
+>>>>>         Make it *mandatory in DB*
+>>>>>
+>>>>> 4.
+>>>>>
+>>>>>     *Crystal Report Validation*
+>>>>>
+>>>>>      *
+>>>>>
+>>>>>         Confirm:
+>>>>>
+>>>>>          o
+>>>>>
+>>>>>             Layout changes
+>>>>>
+>>>>>          o
+>>>>>
+>>>>>             Data correctness
+>>>>>
+>>>>>      *
+>>>>>
+>>>>>         Add note: “Report must be signed off before UAT”
+>>>>>
+>>>>> ------------------------------------------------------------------------
+>>>>>
+>>>>>
+>>>>>   🟠 IMPORTANT IMPROVEMENTS
+>>>>>
+>>>>> 5.
+>>>>>
+>>>>>     *Add PR-Based vs Direct PO Flow (clarity)*
+>>>>>
+>>>>>      *
+>>>>>
+>>>>>         Briefly differentiate both flows
+>>>>>
+>>>>> 6.
+>>>>>
+>>>>>     *Clarify With-Sample Mode (business meaning)*
+>>>>>
+>>>>>      *
+>>>>>
+>>>>>         Add 1 line explaining when it is used
+>>>>>
+>>>>> 7.
+>>>>>
+>>>>>     *Simplify Season Field Logic*
+>>>>>
+>>>>>      *
+>>>>>
+>>>>>         Mention:
+>>>>>
+>>>>>          o
+>>>>>
+>>>>>             “Will be unified in SPINRISE”
+>>>>>
+>>>>> ------------------------------------------------------------------------
+>>>>>
+>>>>>
+>>>>>   🟡 VALIDATION FIXES
+>>>>>
+>>>>> 8.
+>>>>>
+>>>>>     *Standardize Error Messages*
+>>>>>
+>>>>>      *
+>>>>>
+>>>>>         Avoid ALL CAPS and typos in SPINRISE
+>>>>>
+>>>>> 9.
+>>>>>
+>>>>>     *Fix Typo*
+>>>>>
+>>>>>      *
+>>>>>
+>>>>>         “Cannnot” → “Cannot”
+>>>>>
+>>>>>10.
+>>>>>
+>>>>>     *Merge Duplicate Validation*
+>>>>>
+>>>>>  *
+>>>>>
+>>>>>     Lot From/To rules (HV-17 & HV-18)
+>>>>>
+>>>>> ------------------------------------------------------------------------
+>>>>>
+>>>>>
+>>>>>   🟢 TECHNICAL ADDITIONS
+>>>>>
+>>>>>11.
+>>>>>
+>>>>>     *Add API Mapping (brief)*
+>>>>>
+>>>>>  *
+>>>>>
+>>>>>     Create / Update / Delete / List PO
+>>>>>
+>>>>>12.
+>>>>>
+>>>>>     *Define Transaction Scope*
+>>>>>
+>>>>>  *
+>>>>>
+>>>>>     All saves must be *single DB transaction*
+>>>>>
+>>>>>13.
+>>>>>
+>>>>>     *Add Concurrency Handling Note*
+>>>>>
+>>>>>  *
+>>>>>
+>>>>>     For:
+>>>>>
+>>>>>      o
+>>>>>
+>>>>>         PO number
+>>>>>
+>>>>>      o
+>>>>>
+>>>>>         PR balance
+>>>>>
+>>>>> ------------------------------------------------------------------------
+>>>>>
+>>>>>
+>>>>>   🔵 DOCUMENT IMPROVEMENTS
+>>>>>
+>>>>>14.
+>>>>>
+>>>>>     *Add Assumptions Section*
+>>>>>
+>>>>>  *
+>>>>>
+>>>>>     Example: masters configured, GST valid
+>>>>>
+>>>>>15.
+>>>>>
+>>>>>     *Add Out of Scope*
+>>>>>
+>>>>>  *
+>>>>>
+>>>>>     Example: Arrival, Invoice modules
+>>>>>
+>>>>>16.
+>>>>>
+>>>>>     *Add Version Control Note*
+>>>>>
+>>>>>  *
+>>>>>
+>>>>>     Based on Stage 0 cleaned form
+>>>>>
+>>>>> ------------------------------------------------------------------------
+>>>>>
+>>>>>
+>>>>>   🟣 FINAL PM NOTE (Add at End)
+>>>>>
+>>>>>     Approval is subject to closure of critical items (IST-8,
+>>>>>     IST-9), PO numbering fix, and report validation.
+>>>>>
+>>>>> ------------------------------------------------------------------------
+>>>>>
+>>>>>
+>>>>>   ✅ FINAL STATUS
+>>>>>
+>>>>> 👉 *Do NOT approve yet*
+>>>>> 👉 After above fixes → ✅ Ready for approval
+>>>>>
+>>>>> ------------------------------------------------------------------------
+>>>>> Regards,
+>>>>> P.B.Saravanan
+>>>>>
+>>>>>
+>>>>> On 09/04/2026 05:02 pm, Sasikumar wrote:
+>>>>>>
+>>>>>> Dear Sir,
+>>>>>>
+>>>>>> Please find attached the draft of the SPINRISE - M02 RMI Purchase 
+>>>>>> Order and the Markdown Document for your review.
+>>>>>>
+>>>>>> Kindly review the documents and share your feedback at your 
+>>>>>> earliest convenience.
+>>>>>>
+>>>>>> Thank you.
+>>>>>>
+>>>>>> Regards,
+>>>>>> Sasi
+>>>>>>
+--------------K0kGSN0fwgkyqn3YY8RD8mFF
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <p>Dear Saravanan,<br>
+      <br>
+      Thank you. This is a significant improvement over the first round
+      and several long-standing items are now resolved. Let me confirm
+      what is accepted, flag two contradictions that need clarification,
+      and address your closing note directly.<br>
+      <br>
+      <b>IST-1 — RM_PARAM flags: Accepted and confirmed</b><br>
+      <br>
+      This is exactly what was needed. All 8 flags now have customer
+      usage context and recommended defaults. <b>Sasi, please update
+        FSD Section 11 with the following confirmed values:</b><br>
+      <br>
+      SuppLotNoReqArrival — used by most customers, mandatory. SPINRISE
+      default: Y.<br>
+      CentralizedOrder — Pallavaa only (group import PO, multi-division
+      arrivals). SPINRISE default: N.<br>
+      SeasoncalcReq — not used by any major customers. SPINRISE default:
+      N.<br>
+      MasterEntryFlg — Pallavaa only (Rate Master entry). SPINRISE
+      default: N.<br>
+      PO_Approval — at least 1 level mandatory for all customers.
+      SPINRISE default: Y.<br>
+      ADDTAXREQUIRED — not used by any customer. SPINRISE default: N.<br>
+      ftamt — not used by any customer. SPINRISE default: N.<br>
+      <br>
+      One flag requires a CEO decision before Sasi can update the FSD.
+      PRBased: Saravanan says SPINRISE default should be N because only
+      Pallavaa currently uses PR-based entry. However, FSD Section 11
+      currently documents PRBased default as Y. This matters because
+      PRBased=Y makes HSN code and Tax Code mandatory on every variety
+      line. PRBased=N removes those mandatory checks entirely. For a
+      spinning mill ERP with GST compliance built in, PRBased=Y is the
+      safer and more correct default for all new customers. My decision:
+      SPINRISE default for PRBased = Y. Saravanan, please confirm
+      whether Pallavaa's usage is the norm that should be the standard,
+      or the exception, because this default will apply to every new
+      customer we onboard on SPINRISE.<br>
+      <br>
+      <br>
+      <b>IST-2 — Approval workflow: Substantially resolved, one gap</b><br>
+      <br>
+      The customer breakdown is now clear. Pallavaa is the only customer
+      running 3-level approval. Poongodhai Spinning uses 1 level. SKS
+      uses 1 level via EDP. Most others have PO_Approval=N. Sasi,
+      document this in FSD Section 11 as the customer variation for
+      PO_Approval.<br>
+      <br>
+      The one remaining gap: the web-based approval screen is confirmed
+      to exist but its name or URL has not been provided. Saravanan,
+      please give the URL path or module name of the web approval screen
+      currently used for PO approvals. This goes into FSD Section 10 as
+      a Related Screen. It is the one item standing between this
+      question and full closure.<br>
+      <br>
+      <br>
+      <b>IST-9 — Crystal report: Decision taken</b><br>
+      <br>
+      PM confirms Cry_RMIPO_JAT_NEW is not identical to Cry_RMI_PO_ALL —
+      the JAT format was customised for that customer. PM recommends
+      adopting the JAT format as the SPINRISE standard because it
+      contains all required data fields.<br>
+      <br>
+      <b>My decision:</b> adopt Cry_RMIPO_JAT_NEW as the SPINRISE
+      standard print template base, subject to one condition — any
+      JAT-specific branding, customer name reference, or header element
+      must be replaced with configurable division-level details from
+      pp_divmas before it is treated as the universal template. Sasi,
+      update FSD Section 7 to record: Cry_RMIPO_JAT_NEW is the SPINRISE
+      print template base. JAT-specific elements to be generalised.
+      FastReports migration to proceed from this template.
+      Cry_RMI_PO_ALL is retired.<br>
+      <br>
+      <br>
+      <b>IST-10 — With-Sample mode: Default revised</b><br>
+      <br>
+      Nine customer sites confirmed as using wosample=Y: SCM group (5
+      mills), Skycotex, SLVSM, Poongodhai Spinning, SRG. Given that this
+      is the majority of major sites, the SPINRISE default for wosample
+      should be Y, not N as I stated earlier.<b> I am revising that
+        decision based on this customer data. </b>Sasi, update FSD
+      Section 11 accordingly: wosample SPINRISE default = Y.<br>
+      <br>
+      <br>
+      <b>On your closing note — an important architectural clarification</b><br>
+      <br>
+      You have noted: 'We are using the same customer database;
+      therefore, setting default flag values separately during
+      implementation is not required.'<br>
+      <br>
+      Saravanan, this note reflects the current VB6 world where existing
+      customers continue using their existing database. SPINRISE is not
+      that. SPINRISE is a new web platform. Here is why default values
+      matter:<br>
+      <br>
+      First, when we onboard a brand new customer who has never used
+      Kalsofte before, they start with a blank SPINRISE installation.
+      Every RM_PARAM flag must have a sensible default on day one.
+      Without documented defaults, onboarding becomes ad hoc guesswork.<br>
+      <br>
+      Second, when we run UAT and testing for SPINRISE, the test
+      environment starts from a clean database, not a copy of a
+      customer's live data. The defaults are what the testing team uses
+      to configure the test environment correctly.<br>
+      <br>
+      Third, when we eventually migrate an existing customer from VB6 to
+      SPINRISE web, there will be a data migration script. That script
+      must know which flags to set and at what values for each customer.
+      The customer-wise breakdown you have provided in IST-1 is exactly
+      the input for that migration script.<br>
+      <br>
+      The default flag values documentation is not about the current
+      database. It is about SPINRISE as a product that will be deployed
+      fresh for new customers and cleanly for existing ones. Please keep
+      this in mind for all future IST responses across all modules.<br>
+      <br>
+      <br>
+      <b>For Sasi — summary of FSD updates from this exchange</b><br>
+      <br>
+      Section 11: Update all 8 RM_PARAM flags with confirmed customer
+      usage and SPINRISE defaults as above. Sasi to confirm PRBased
+      decision (Y) is reflected, overriding PM's suggestion of N.<br>
+      Section 10: Add web-based PO approval screen once Saravanan
+      provides the name or URL.<br>
+      Section 7: Update print architecture — Cry_RMIPO_JAT_NEW is
+      SPINRISE standard base. Cry_RMI_PO_ALL retired. JAT-specific
+      elements to be generalised.<br>
+      Section 5.8: Update wosample SPINRISE default to Y with customer
+      list documented.<br>
+      <br>
+      Once Saravanan provides the approval screen name, IST-2 closes.
+      IST-1, IST-9, and IST-10 are resolved. T<b>his FSD is very close
+        to being ready for TL-IST sign-off and the formal review chain.</b><br>
+      <br>
+      Regards,<br>
+      T. Mani<br>
+      <br>
+      cc: TL-IST Palanivel, TL-Dev Sasi</p>
+    <div class="moz-cite-prefix">On 10/04/2026 06:45 pm, Saravanan
+      Balakrishnan wrote:<br>
+    </div>
+    <blockquote type="cite"
+      cite="mid:46fd210e-a24f-433e-831d-c7a6cf8247c6@kalsofte.com">
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <p>Dear Sir,</p>
+      <p>Please find below the detailed clarification for the four IST
+        points.</p>
+      <p><b>IST-1 (RM_PARAM flags): </b>Your response is a policy
+        statement, not an IST answer. What I need is: for each of the 8
+        RM_PARAM flags documented in FSD Section 11
+        (SuppLotNoReqArrival, CentralizedOrder, SeasoncalcReq,
+        MasterEntryFlg, PRBased, PO_Approval, ADDTAXREQUIRED, ftamt),
+        what is the current value at your major customer sites? Which
+        flags are set differently from the documented SPINRISE defaults?
+        Please provide a customer-wise breakdown or at minimum confirm
+        which flags are universally set the same way and which ones
+        vary. This is a one-time query you can run on any live customer
+        database.</p>
+      <p><b>IST Reply : </b><br>
+      </p>
+      <ul data-start="112" data-end="1120">
+        <li data-section-id="8s4htk" data-start="112" data-end="291"><strong
+            data-start="114" data-end="138">SuppLotNoReqArrival:</strong>
+          Generally mandatory for all customers. However, a few
+          customers do not enter Supplier Lot No during arrival entry.
+          PO stage it is not applicable.</li>
+        <li data-section-id="4w2bzb" data-start="293" data-end="547"> <strong
+            data-start="295" data-end="316">CentralizedOrder:</strong>
+          Applicable only for group companies. Typically, import PO is
+          created in one division and arrivals are recorded across
+          multiple divisions. Currently, only Pallavaa customer is using
+          this option. Default should be set to <strong
+            data-start="536" data-end="545">“No.”</strong> </li>
+        <li data-section-id="7s3yp6" data-start="549" data-end="646"> <strong
+            data-start="551" data-end="569">SeasoncalcReq:</strong> Not
+          currently used by any major customers. Default can be set to <strong
+            data-start="635" data-end="644">“No.”</strong> </li>
+        <li data-section-id="8kwuue" data-start="648" data-end="777"> <strong
+            data-start="650" data-end="669">MasterEntryFlg:</strong>
+          Refers to Rate Master usage. Currently used only by Pallavaa
+          customer. Default should be set to <strong data-start="766"
+            data-end="775">“No.”</strong> </li>
+        <li data-section-id="fwmx91" data-start="779" data-end="893"> <strong
+            data-start="781" data-end="793">PRBased:</strong> PR-based
+          entry is used only by Pallavaa customer. Default should be set
+          to <strong data-start="869" data-end="877">“No”</strong> for
+          SPINRISE. </li>
+        <li data-section-id="1bqtapm" data-start="895" data-end="1010">
+          <strong data-start="897" data-end="913">PO_Approval:</strong>
+          Default for SPINRISE should be <strong data-start="945"
+            data-end="955">“Yes,”</strong> with at least one level of
+          approval being mandatory. </li>
+        <li data-section-id="1yq8oqt" data-start="1012" data-end="1120">
+          <strong data-start="1014" data-end="1041">ADDTAXREQUIRED :</strong>
+          Not applicable for any current customers. Default should be
+          set to <strong data-start="1109" data-end="1118">“No.”</strong></li>
+        <li data-section-id="1yq8oqt" data-start="1012" data-end="1120"><strong
+            data-start="1014" data-end="1041">ftamt : </strong>Not
+          applicable for any current customers. Default should be set to
+          <strong data-start="1109" data-end="1118">“No.”</strong></li>
+      </ul>
+      <p><b>IST-2 (Approval workflow):</b> The approver designations (RM
+        Dept Head, Plant Head, Management) are useful. But three
+        sub-questions remain unanswered. Which customers currently have
+        PO_Approval = Y and run the 3-level workflow? Which have 1 or 2
+        levels only? And which SCREEN or form handles the approval
+        action itself in the current ERP? The FSD references
+        POApproval() in RMIMod.bas but the screen where a user logs in
+        to approve a PO is not documented anywhere.</p>
+      <p><b>IST Reply :</b></p>
+      <ol data-start="1171" data-end="1500">
+        <li data-section-id="1vh1h7s" data-start="1171" data-end="1244">3-level
+          PO approval is currently used only by <strong
+            data-start="1220" data-end="1241">Pallavaa customer</strong>.
+        </li>
+        <li data-section-id="1qkpf05" data-start="1246" data-end="1391">
+          Customers using 1 or 2 levels:
+          <ul data-start="1285" data-end="1391">
+            <li data-section-id="1esit50" data-start="1285"
+              data-end="1322"> <strong data-start="1287"
+                data-end="1310">Poongodhai Spinning</strong> – 1 level </li>
+            <li data-section-id="o4ueu0" data-start="1326"
+              data-end="1391"> <strong data-start="1328"
+                data-end="1335">SKS</strong> – Currently approval is
+              handled by EDP (single level) </li>
+          </ul>
+        </li>
+        <li data-section-id="1y88wdn" data-start="1393" data-end="1500">
+          The 3-level approval process is handled through a <strong
+            data-start="1446" data-end="1480">web-based approval
+            screen/form</strong> in the current ERP. </li>
+      </ol>
+      <p><b>ST-9 (Cry_RMIPO_JAT_NEW):</b> If the layout and data are
+        identical to Cry_RMI_PO_ALL, why was the report object renamed?
+        The name suffix JAT_NEW suggests it was modified for a specific
+        customer (JAT). Please physically open both RepRMI.rpt files and
+        confirm they are the same file, or identify what differs. If
+        identical, the FastReports migration can proceed from a single
+        template inspection.</p>
+      <p><b>IST Reply : </b>We have considered the JAT customer, thats
+        why the procodure name was mentioned in "<b>Cry_RMIPO_JAT_NEW".
+          Some variation will be there for </b>Cry_RMI_PO_ALL, but we
+        can fix the standard format JAT because required information are
+        available.</p>
+      <p><b>IST-10 (With-Sample mode): </b>Which customer sites
+        currently use wosample=Y? The SPINRISE default of N (Rate-Master
+        mode) is confirmed. But the sites using wosample=Y need to be
+        identified so the SPINRISE customer onboarding guide can flag
+        this as a setup requirement for those specific customers.</p>
+      <p><b>IST Reply :</b> SCM group all 5 mills,  Skycotex, SLVSM,
+        Poongodhai Spinning, SRG using sample transction entry. Defult
+        to set as"yes".</p>
+      <p>Note: We are using the same customer database; therefore,
+        setting default flag values (Y/N) separately during
+        implementation is not required.</p>
+      <div class="moz-cite-prefix">Regards,</div>
+      <div class="moz-cite-prefix">P.B.Saravanan</div>
+      <div class="moz-cite-prefix"><br>
+      </div>
+      <div class="moz-cite-prefix">On 10/04/2026 05:13 pm, CEO wrote:<br>
+      </div>
+      <blockquote type="cite"
+        cite="mid:411734d6-f841-4432-aa49-11bf84ebb2ce@kalsofte.com">
+        <meta http-equiv="Content-Type"
+          content="text/html; charset=UTF-8">
+        <p>Dear Saravanan,<br>
+          <br>
+          Thank you for completing the Section 13 IST review. I have
+          gone through all ten responses carefully. Before addressing
+          the content, two quick points on process.<br>
+          <br>
+          First, on the Claude AI limit: I am arranging your Claude Pro
+          subscription today. You should not have been running the IST
+          review on the free tier. Going forward your session limit
+          issue is resolved. Second, your commitment to not use ChatGPT
+          for SPINRISE is noted and appreciated. The entire review chain
+          must remain on Claude AI for consistency — your confirmation
+          of this is the right professional response.<br>
+          <br>
+          Now on the IST responses themselves.<br>
+          <br>
+          <font size="4"><b>What is well answered and resolved</b></font><br>
+          <br>
+          <b>IST-5 through IST-8 are all clear and actionable. </b>Let
+          me confirm what each one means for the FSD.<br>
+          <br>
+          <b>IST-5 (Year-end):</b> No PO can be raised after financial
+          year closure. Confirmed. SPINRISE must enforce this at the API
+          layer — the ToValidFinYear check in RMIMod.bas becomes a
+          server-side year boundary guard on every Create and Modify
+          operation.<br>
+          <br>
+          <b>IST-6 (Deletion guard):</b> This is a significant new
+          business rule. PO cannot be deleted once the first level of
+          approval has been completed. The VB6 code currently only
+          blocks deletion when RM_Arrival records exist. Your answer
+          adds a second guard that the current code does not have. Sasi,
+          please add this as Step 0 in the Delete Guard sequence in FSD
+          Section 5.10: check FIRST_APPFLG — if 'Y', hard stop with
+          message 'PO cannot be deleted after approval has commenced.'
+          This is a SPINRISE improvement over the VB6 behaviour.<br>
+          <br>
+          <b>IST-7 (Backdate): </b>No backdated PO entry in SPINRISE.
+          Confirmed. The backdate flexibility in VB6 controlled by the
+          in_para.backdate flag is not carried forward. PO date equals
+          processing date only. Sasi, add this as a SPINRISE design
+          decision in Section 12.<br>
+          <br>
+          <b>IST-8 (Delete Reason): </b>DelReasonCode must be written
+          to RM_Trans_Log.DelReason. This resolves Critical Defect CD-7.
+          Sasi, update FSD Section 5.10 and Section 8.2 to record that
+          the SPINRISE DELETE endpoint must write the selected delete
+          reason to RM_Trans_Log.DelReason as part of the delete audit
+          sequence.<br>
+          <br>
+          <br>
+          <b>IST-4 — your most valuable response</b><br>
+          <br>
+          The nine support call patterns you have documented are exactly
+          the kind of institutional knowledge the FSD process is
+          designed to capture. Let me confirm what each one requires in
+          the FSD:<br>
+          <br>
+          <b>Points 1, 2, and 3 on GST: </b>GST rate percentage must be
+          mandatory and must load from the Variety Master. For import
+          transactions, GST applicability must be parameter-controlled
+          and GST type must be selected manually based on that
+          parameter. Supplier state validation must apply differently
+          for Local, Interstate, and Import. These are new validations
+          that must be added to FSD Section 4. <b>Sasi to add.</b><br>
+          <br>
+          <b>Points 4 and 8 on Arrival Type and UoM: </b>This is the
+          most important data integrity finding. When a user selects
+          Candy as the Rate Unit but the Arrival Type is KGS-wise,
+          incorrect rate calculations result. SPINRISE must auto-default
+          the Arrival Type based on the selected UoM: UoM = Candy
+          defaults Arrival Type to Pack-wise; UoM = KGS defaults Arrival
+          Type to KGS-wise. If the user changes one, the other should
+          prompt or auto-correct. This must be in FSD Section 5 as a new
+          auto-fill and consistency rule. <b>Sasi to add.</b><br>
+          <br>
+          <b>Points 5, 6, and 7 on UX:</b> Tab focus sequence,
+          navigation, and lookup re-opening are known defects. These
+          belong in the Critical Defects section of FSD Section 12. The
+          lookup re-opening issue specifically — if a valid code is
+          entered directly without using the lookup, the lookup window
+          should not reopen — is a UX rule that must be documented in
+          Section 2 for every lookup field.<br>
+          <br>
+          <b>Point 9 on Common tax mode: </b>When tax calculation is
+          set to 'Common for all varieties' and multiple varieties share
+          one tax code, calculation errors occur. This must be
+          documented as a validation in Section 4: when tax_choice =
+          COMMON, verify that all line item tax codes are consistent
+          before saving, and cross-check the calculated tax amount
+          against the expected amount from the common tax rate.<br>
+          <br>
+          <br>
+          <b>IST-3 — the print display rule is noted but the question
+            was not answered</b><br>
+          <br>
+          Your response to IST-3 is valuable — PR Number and PR Date
+          should display on the PO print only when the PO was raised
+          against a PR. For direct or spot POs with no PR linkage, these
+          fields should not appear. Sasi, this must be added to FSD
+          Section 7 as a print business rule: the Crystal report must
+          conditionally display PR No and PR Date based on whether iprno
+          is populated.<br>
+          <br>
+          However, the actual question was about SP_PRToPO_RMI and
+          SP_PRToPO_RMIFilter — the stored procedures that handle the
+          PR-to-PO conversion logic. <b>You have answered a print
+            behaviour question, not the SP behaviour question.</b> The
+          SP code has not been provided and the SP logic has not been
+          submitted to Claude via Follow-up Prompt B.<b> This is still
+            outstanding.</b> Please obtain both SP codes from SQL Server
+          Management Studio and submit to Claude for Follow-up Prompt B
+          analysis. The PR-to-PO conversion is the primary daily
+          workflow for this screen and its SP logic must be in FSD
+          Section 8 before the document can be approved.<br>
+          <br>
+          <br>
+          <font size="4"><b>What still needs your clarification</b></font><br>
+          <br>
+          Four items from your responses need to be completed.<br>
+          <br>
+          <b>IST-1 (RM_PARAM flags): </b>Your response is a policy
+          statement, not an IST answer. What I need is: for each of the
+          8 RM_PARAM flags documented in FSD Section 11
+          (SuppLotNoReqArrival, CentralizedOrder, SeasoncalcReq,
+          MasterEntryFlg, PRBased, PO_Approval, ADDTAXREQUIRED, ftamt),
+          what is the current value at your major customer sites? Which
+          flags are set differently from the documented SPINRISE
+          defaults? Please provide a customer-wise breakdown or at
+          minimum confirm which flags are universally set the same way
+          and which ones vary. This is a one-time query you can run on
+          any live customer database.<br>
+          <br>
+          <b>IST-2 (Approval workflow):</b> The approver designations
+          (RM Dept Head, Plant Head, Management) are useful. But three
+          sub-questions remain unanswered. Which customers currently
+          have PO_Approval = Y and run the 3-level workflow? Which have
+          1 or 2 levels only? And which SCREEN or form handles the
+          approval action itself in the current ERP? The FSD references
+          POApproval() in RMIMod.bas but the screen where a user logs in
+          to approve a PO is not documented anywhere.<br>
+          <br>
+          <b>IST-9 (Cry_RMIPO_JAT_NEW):</b> If the layout and data are
+          identical to Cry_RMI_PO_ALL, why was the report object
+          renamed? The name suffix JAT_NEW suggests it was modified for
+          a specific customer (JAT). Please physically open both
+          RepRMI.rpt files and confirm they are the same file, or
+          identify what differs. If identical, the FastReports migration
+          can proceed from a single template inspection.<br>
+          <br>
+          <b>IST-10 (With-Sample mode): </b>Which customer sites
+          currently use wosample=Y? The SPINRISE default of N
+          (Rate-Master mode) is confirmed. But the sites using
+          wosample=Y need to be identified so the SPINRISE customer
+          onboarding guide can flag this as a setup requirement for
+          those specific customers.<br>
+          <br>
+          <br>
+          <b>For Sasi — FSD update checklist from this IST review</b><br>
+          <br>
+          Sasi, please update the FSD with the following additions from
+          this IST exchange before Saturday's meeting:<br>
+          <br>
+          Section 4 — Add new validations: approval-based deletion
+          block, GST mandatory from Variety Master, import GST parameter
+          control, Arrival Type vs UoM consistency, Common tax mode
+          cross-validation.<br>
+          <br>
+          Section 5 — Add new business rules: UoM-to-ArrivalType
+          auto-default (Candy to Pack-wise, KGS to KGS-wise), SPINRISE
+          no-backdate design decision.<br>
+          <br>
+          Section 5.10 Delete Guard — Add Step 0: FIRST_APPFLG check
+          blocks deletion if Y.<br>
+          <br>
+          Section 7 Print — Add conditional PR No and PR Date display
+          rule: show only when iprno is populated.<br>
+          <br>
+          Section 8.2 Delete Sequence — Update to confirm DelReasonCode
+          write to RM_Trans_Log.DelReason as an explicit step.<br>
+          <br>
+          Section 12 — Add UX defect items (tab focus, navigation,
+          lookup re-open) as known defects to resolve in SPINRISE.<br>
+          <br>
+          Once the two SPs are submitted to Claude and the SP analysis
+          is in Section 8, and once Saravanan provides the four
+          remaining IST answers, the FSD will be ready for TL-IST
+          sign-off and the formal review chain.<br>
+          <br>
+          <b>Good progress on this thread, Saravanan.</b> The IST-4
+          response in particular is the kind of knowledge transfer that
+          makes this whole process worthwhile.<br>
+          <br>
+          Regards,<br>
+          T. Mani<br>
+          <br>
+          cc: TL-IST Palanivel, TL-Dev Sasi (action items above)</p>
+        <div class="moz-cite-prefix">On 10/04/2026 02:05 pm, Saravanan
+          Balakrishnan wrote:<br>
+        </div>
+        <blockquote type="cite"
+          cite="mid:128c5efe-f571-4d9b-bf7a-992a3dc1c060@kalsofte.com">
+          <meta http-equiv="Content-Type"
+            content="text/html; charset=UTF-8">
+          <p>Dear Sir,</p>
+          <p data-start="82" data-end="143">Please find below the
+            replies for each point in Section 13.</p>
+          <p data-start="145" data-end="342">Kindly note that the Claude
+            AI usage limit has been reached, and I am currently unable
+            to generate my login and development login . Henceforth, I
+            will not be using ChatGPT for the SPINRISE project.</p>
+          <p><strong>1. Do any RM_PARAM flags differ across live
+              customers? Any non-standard settings?</strong></p>
+          <p><strong>IST Reply:</strong><br>
+            RM_PARAM flags may vary across customers based on their
+            specific business requirements. Any non-standard settings
+            should be handled through configurable parameters instead of
+            hard-coded changes.</p>
+          <hr>
+          <p><strong>Three-level approval: how many levels active? Who
+              approves? Same across all customers?</strong></p>
+          <p><strong>IST Reply:</strong><br>
+            Three-level approval is not applicable across all customers.
+            It varies from customer to customer and should be
+            configurable through parameters rather than procedure-level
+            changes.<br>
+            For corporate customers:</p>
+          <ul>
+            <li>
+              <p>First level: RM Department Head</p>
+            </li>
+            <li>
+              <p>Second level: Plant Head</p>
+            </li>
+            <li>
+              <p>Third level: Management</p>
+            </li>
+          </ul>
+          <hr>
+          <p><strong>2. SP_PRToPO_RMI/Filter: any known SP behaviour
+              differences or bugs at customer sites?</strong></p>
+          <p><strong>IST Reply:</strong><br>
+            In PO print, PR Number and PR Date should be displayed only
+            when a PR is selected. They should not appear if no PR is
+            selected.</p>
+          <hr>
+          <p><strong>3. Most common support calls for PO screen? Data
+              errors SPINRISE must prevent?</strong></p>
+          <p><strong>IST Reply:</strong></p>
+          <ol>
+            <li>
+              <p>GST rate % sometimes varies from the Variety setup.</p>
+            </li>
+            <li>
+              <p>GST rate % should be mandatory and must be loaded from
+                the Variety Master. For import transactions, GST
+                applicability should be controlled through a parameter,
+                and the GST type should be selected manually based on
+                that.</p>
+            </li>
+            <li>
+              <p>Validation is required for Local, Interstate, and
+                Import types based on the supplier’s state.</p>
+            </li>
+            <li>
+              <p>Based on Arrival Type and UoM, proper Rate/Unit
+                validation is required. For example, users sometimes
+                select “Candy” rate but enter rate per KG, leading to
+                data inconsistencies.</p>
+            </li>
+            <li>
+              <p>Proper tab focus sequence is required.</p>
+            </li>
+            <li>Navigation not working properly.</li>
+            <li>
+              <p>In lookup fields, if a correct code is entered, the
+                lookup window should not reopen.</p>
+            </li>
+            <li>
+              <p>If UoM is “Candy,” Arrival Type should default to
+                “Pack-wise.” If UoM is “KGS,” Arrival Type should
+                automatically default to “KGS.”</p>
+            </li>
+            <li>
+              <p>If tax calculation is set as “Individual,” there is no
+                issue. However, when set as “Common for all” across
+                multiple varieties, calculation errors may occur and
+                should be handled.</p>
+            </li>
+          </ol>
+          <hr>
+          <p><strong>Year-end: can PO be raised after close? Known
+              year-end issues handled manually?</strong></p>
+          <p><strong>IST Reply:</strong><br>
+            No, PO cannot be raised after year-end closure.</p>
+          <hr>
+          <p><strong>Deletion: cases where VB6 allowed deletion that
+              SPINRISE should not?</strong></p>
+          <p><strong>IST Reply:</strong><br>
+            PO should not be allowed to be deleted once even the first
+            level of approval is completed.</p>
+          <hr>
+          <p><strong>Backdate parameter across live customers? Stricter
+              controls in SPINRISE?</strong></p>
+          <p><strong>IST Reply:</strong><br>
+            Backdated entry provision is not required in SPINRISE.</p>
+          <hr>
+          <p><strong>Delete Reason: is DelReasonCode written to
+              RM_Trans_Log.DelReason or a separate table?</strong></p>
+          <p><strong>IST Reply:</strong><br>
+            Maintaining the delete reason in the log table is
+            sufficient.</p>
+          <hr>
+          <p><strong>Cry_RMIPO_JAT_NEW: what changed vs Cry_RMI_PO_ALL?
+              Any report layout/data differences?</strong></p>
+          <p><strong>IST Reply:</strong><br>
+            No changes. Both reports have the same layout and data.</p>
+          <hr>
+          <p><strong>With-Sample mode (wosample=Y): how often used?
+              Which customers? Default or optional in SPINRISE?</strong></p>
+          <p><strong>IST Reply:</strong><br>
+            This is optional and used only by specific customers as
+            required.</p>
+          <hr>
+          <p>Regards,<br>
+            P.B. Saravanan</p>
+          <div class="moz-cite-prefix"><br>
+          </div>
+          <p><br>
+          </p>
+          <div class="moz-cite-prefix">On 10/04/2026 12:09 pm, CEO
+            wrote:<br>
+          </div>
+          <blockquote type="cite"
+            cite="mid:00aba1cd-b382-44f7-97e8-74f99b42f21c@kalsofte.com">
+            <meta http-equiv="Content-Type"
+              content="text/html; charset=UTF-8">
+            <p>Dear Sasi and Saravanan,<br>
+              <br>
+              I have reviewed the RMI PO FSD v2 Draft in full from the
+              QA mail ID and want to provide my observations before Sasi
+              acts on the PM's feedback. <b>This is important because
+                some of the PM's comments refer to items that are
+                already in the document, and the real gaps that need to
+                be addressed are different from what is listed.</b><br>
+              <br>
+              <font size="4"><b>On Sasi's FSD — what is strong</b></font><br>
+              <br>
+              <b>Sasi, this is the strongest first-draft FSD submission
+                in the SPINRISE project so far.</b> Let me be specific
+              about why.<br>
+              <br>
+              Stage 0 is confirmed and the numbers are in the header:
+              12,198 lines cleaned to 11,066. Zero CustID blocks. The
+              What Changed table (C1 through C10) is an excellent
+              addition that no other FSD has included — it documents
+              exactly what changed between the original and cleaned
+              form, and <b>this is precisely the kind of traceability
+                that protects the migration team.<br>
+              </b><br>
+              The TC Framework in Section 6 is the most complete of any
+              FSD we have seen. The full GL journal structure for TC-01
+              is documented — Supplier DR, Purchase CR, CGST CR, SGST
+              CR, rounding, and TCS — with separate tables for
+              intra-state and inter-state paths. <b>Every future
+                SPINRISE module developer can use this as the reference
+                standard for how GL entries are structured.<br>
+              </b><br>
+              The error catalogue has 53 messages with exact text,
+              trigger conditions, and stop types. The E36 typo (three
+              n's in Cannnot) is correctly preserved as-is for migration
+              reference. The Customer Variation Register maps all 8
+              RM_PARAM flags to SPINRISE config names with recommended
+              defaults — <b>this is the best parameter documentation of
+                any module so far and is exactly what the v2 guide
+                requires.<br>
+              </b><br>
+              The 7 critical defects are clearly documented with
+              SPINRISE actions. CD-2 (MAX+1 race condition), CD-3 (PR
+              balance without UPDLOCK), and CD-4 (RM_DELSCHED without
+              primary key) are important architectural defects that the
+              SPINRISE development team must address. CD-7 (DelReason
+              not written to DB) is correctly flagged as requiring IST
+              confirmation before the fix can be specified.<br>
+              <br>
+              <br>
+              <font size="4"><b>On the PM's feedback — what needs
+                  correction before Sasi acts</b></font><br>
+              <br>
+              Saravanan, I want to clarify several points in your
+              feedback before Sasi revises the document.<br>
+              <br>
+              <b>First, on tooling:</b> your feedback is marked as
+              ChatGPT feedback. The SPINRISE FSD review process uses
+              Claude AI throughout — for documentation, analysis, and
+              review at every level of the review chain. Please ensure
+              that your IST reviews going forward are conducted using
+              Claude AI, consistent with the rest of the team. This
+              applies to the PM level as well.<br>
+              <br>
+              <b>Second, some of your Must Fix items are already in the
+                document:</b><br>
+              <br>
+              The PO number generation race condition is already
+              documented as CD-2 in Section 5.4 and Section 12.1, with
+              the correct SPINRISE fix (locked sequence table with
+              UPDLOCK) already specified. <b>This does not need to be
+                added — it is there.</b><br>
+              <br>
+              The Delete Reason storage question is already in the
+              document as CD-7 in Section 5.10 and as IST-8 in Section
+              13, both marked as pending IST confirmation. The developer
+              has correctly flagged that the code captures the value but
+              no DB write is observable. IST-8 is your question to
+              answer as the M02 IST member — not something for Sasi to
+              add a note about.<br>
+              <br>
+              <b>Third, two of your Important Improvement items are also
+                already in the document:<br>
+              </b><br>
+              With-Sample mode is fully documented in Section 5.8,
+              including the wosample flag, both modes (With-Sample vs
+              Rate-Master), and the difference in GST auto-fill
+              behaviour between the two. Please read Section 5.8.<br>
+              <br>
+              The Season field difference between Add and Modify is
+              documented in Section 5.9 and in Section 3's field rules
+              table. This is already done.<br>
+              <br>
+              <b>Fourth, HV-17 and HV-18 are not duplicate validations.
+              </b>They are mirror-image checks — HV-17 fires on
+              LostFocus of the From field (From must be less than or
+              equal to To), and HV-18 fires on LostFocus of the To field
+              (To must be greater than or equal to From). Both are
+              needed at their respective field events and merging them
+              would reduce validation coverage, not improve it.<br>
+              <br>
+              <br>
+              <font size="4"><b>What genuinely needs to be done before
+                  this FSD can proceed</b></font><br>
+              <br>
+              <b>For Sasi — two additions required:</b><br>
+              <br>
+              <b>First:</b> The PR-to-PO conversion workflow is missing
+              from Section 5. The document references the PR indent grid
+              (FpSpdInd), the hidden PR linkage fields (iprno, prdate,
+              prsno) in the line items grid, and the SP_PRToPO_RMI and
+              SP_PRToPO_RMIFilter stored procedures — but the business
+              workflow itself is not documented. How does the user load
+              pending PR lines into this screen? What does the PR indent
+              grid show? How does the system match PRs to the PO being
+              created? How does the PR balance reduce after PO save?
+              This is the primary workflow for this screen in daily use
+              and it must be in Section 5. Please add this as Section
+              5.11 — PR to PO Conversion Workflow.<br>
+              <br>
+              <b>Second:</b> The CD-1 weignment fix needs to be more
+              specific. Section 12.1 CD-1 says the SPINRISE fix is 'save
+              Combo4 selected value to RM_CONT.weignment' — but the form
+              has multiple Combo controls. Which Combo4 specifically?
+              Please confirm the correct combo control that drives the
+              weighment selection and update the SPINRISE action
+              accordingly.<br>
+              <br>
+              <b>For Sasi — one item requiring SP code submission:</b><br>
+              <br>
+              SP_PRToPO_RMI and SP_PRToPO_RMIFilter are listed in the
+              Document Identity table but their internal logic is not
+              analysed in Section 8. These two SPs handle the PR-to-PO
+              conversion, which is the most business-critical workflow
+              in this screen. Please obtain both SP codes from SQL
+              Server Management Studio and submit them to Claude using
+              Follow-up Prompt B from the v2 guide. The analysis output
+              belongs in Section 8.<br>
+              <br>
+              <b>For Saravanan — your IST responsibilities:</b><br>
+              <br>
+              As the IST member for M02, Section 13 is yours to
+              complete. All 10 IST questions are currently showing
+              PENDING. The two critical ones that must be answered
+              before this FSD can move to TL-IST review are IST-8
+              (DelReason: is the DelReasonCode written to
+              RM_Trans_Log.DelReason or a separate table? — this
+              resolves CD-7) and IST-9 (Cry_RMIPO_JAT_NEW vs
+              Cry_RMI_PO_ALL: what changed in the Crystal report layout
+              and data? — this unblocks the FastReports migration scope
+              for M02). <b>Please complete your IST review of Section
+                13 and respond to Sasi directly so the document can be
+                updated.<br>
+              </b><br>
+              <b>The PM's additions that are genuinely valid and can be
+                included by Sasi:<br>
+              </b><br>
+              A brief PR-based vs Direct PO flow distinction in Section
+              1 or 5 (which Sasi is already adding in Section 5.11
+              above). Three technical additions to Section 12 are
+              reasonable: an API endpoint list (Create, Update, Delete,
+              List PO), an explicit single-transaction scope statement
+              for the Save sequence, and a concurrency handling note
+              covering PO numbering and PR balance. An Assumptions
+              section and an Out of Scope section can be added as a
+              Section 0 or appended after Section 14.<br>
+              <br>
+              <br>
+              <font size="4"><b>Overall</b></font><br>
+              <br>
+              <b>Sasi, do not act on the PM's full list as written.</b>
+              The specific actions for you are: add Section 5.11 for the
+              PR-to-PO conversion workflow, clarify the Combo4 reference
+              in CD-1, obtain and submit the two SP codes to Claude, and
+              add the three technical additions to Section 12 that are
+              genuinely missing. Wait for Saravanan's IST responses on
+              IST-8 and IST-9 before resubmitting.<br>
+              <br>
+              <b>Saravanan</b>, please complete your IST review of
+              Section 13 by today. IST-8 and IST-9 in particular are
+              blocking items.<br>
+              <br>
+              <b>This FSD is close to ready. The core work is excellent.</b><br>
+              <br>
+              Regards,<br>
+              T. Mani<br>
+              <br>
+              cc: TL-IST Palanivel, TL-Dev Sasi (for reference)</p>
+            <div class="moz-cite-prefix">On 10/04/2026 11:25 am,
+              Saravanan Balakrishnan wrote:<br>
+            </div>
+            <blockquote type="cite"
+cite="mid:64af0edb-c4b1-4b3e-8b93-92e0fe4e58d5@kalsofte.com">
+              <meta http-equiv="Content-Type"
+                content="text/html; charset=UTF-8">
+              <p>Dear Sasi,</p>
+              <p>Please find below the ChatGPT feedback for your review
+                and necessary corrections.</p>
+              <h1>🔴 MUST FIX (Before Approval)</h1>
+              <br>
+              <ol>
+                <li>
+                  <p><strong>Close all “PENDING” in Section 13 (IST
+                      Review)</strong></p>
+                  <ul>
+                    <li>
+                      <p>Especially:</p>
+                      <ul>
+                        <li>
+                          <p>IST-8 (Delete Reason storage)</p>
+                        </li>
+                        <li>
+                          <p>IST-9 (Crystal Report changes)</p>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <p><strong>Fix PO Number Generation Risk</strong></p>
+                  <ul>
+                    <li>
+                      <p>Replace MAX+1 with <strong>sequence-based
+                          numbering + DB lock</strong></p>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <p><strong>Delete Reason Storage</strong></p>
+                  <ul>
+                    <li>
+                      <p>Confirm and document:</p>
+                      <ul>
+                        <li>
+                          <p>Where it is saved (RM_Trans_Log or other
+                            table)</p>
+                        </li>
+                      </ul>
+                    </li>
+                    <li>
+                      <p>Make it <strong>mandatory in DB</strong></p>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <p><strong>Crystal Report Validation</strong></p>
+                  <ul>
+                    <li>
+                      <p>Confirm:</p>
+                      <ul>
+                        <li>
+                          <p>Layout changes</p>
+                        </li>
+                        <li>
+                          <p>Data correctness</p>
+                        </li>
+                      </ul>
+                    </li>
+                    <li>
+                      <p>Add note: “Report must be signed off before
+                        UAT”</p>
+                    </li>
+                  </ul>
+                </li>
+              </ol>
+              <hr>
+              <h1>🟠 IMPORTANT IMPROVEMENTS</h1>
+              <ol start="5">
+                <li>
+                  <p><strong>Add PR-Based vs Direct PO Flow (clarity)</strong></p>
+                  <ul>
+                    <li>
+                      <p>Briefly differentiate both flows</p>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <p><strong>Clarify With-Sample Mode (business meaning)</strong></p>
+                  <ul>
+                    <li>
+                      <p>Add 1 line explaining when it is used</p>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <p><strong>Simplify Season Field Logic</strong></p>
+                  <ul>
+                    <li>
+                      <p>Mention:</p>
+                      <ul>
+                        <li>
+                          <p>“Will be unified in SPINRISE”</p>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ol>
+              <hr>
+              <h1>🟡 VALIDATION FIXES</h1>
+              <ol start="8">
+                <li>
+                  <p><strong>Standardize Error Messages</strong></p>
+                  <ul>
+                    <li>
+                      <p>Avoid ALL CAPS and typos in SPINRISE</p>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <p><strong>Fix Typo</strong></p>
+                  <ul>
+                    <li>
+                      <p>“Cannnot” → “Cannot”</p>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <p><strong>Merge Duplicate Validation</strong></p>
+                </li>
+              </ol>
+              <ul>
+                <li>
+                  <p>Lot From/To rules (HV-17 &amp; HV-18)</p>
+                </li>
+              </ul>
+              <hr>
+              <h1>🟢 TECHNICAL ADDITIONS</h1>
+              <ol start="11">
+                <li>
+                  <p><strong>Add API Mapping (brief)</strong></p>
+                </li>
+              </ol>
+              <ul>
+                <li>
+                  <p>Create / Update / Delete / List PO</p>
+                </li>
+              </ul>
+              <ol start="12">
+                <li>
+                  <p><strong>Define Transaction Scope</strong></p>
+                </li>
+              </ol>
+              <ul>
+                <li>
+                  <p>All saves must be <strong>single DB transaction</strong></p>
+                </li>
+              </ul>
+              <ol start="13">
+                <li>
+                  <p><strong>Add Concurrency Handling Note</strong></p>
+                </li>
+              </ol>
+              <ul>
+                <li>
+                  <p>For:</p>
+                  <ul>
+                    <li>
+                      <p>PO number</p>
+                    </li>
+                    <li>
+                      <p>PR balance</p>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+              <hr>
+              <h1>🔵 DOCUMENT IMPROVEMENTS</h1>
+              <ol start="14">
+                <li>
+                  <p><strong>Add Assumptions Section</strong></p>
+                </li>
+              </ol>
+              <ul>
+                <li>
+                  <p>Example: masters configured, GST valid</p>
+                </li>
+              </ul>
+              <ol start="15">
+                <li>
+                  <p><strong>Add Out of Scope</strong></p>
+                </li>
+              </ol>
+              <ul>
+                <li>
+                  <p>Example: Arrival, Invoice modules</p>
+                </li>
+              </ul>
+              <ol start="16">
+                <li>
+                  <p><strong>Add Version Control Note</strong></p>
+                </li>
+              </ol>
+              <ul>
+                <li>
+                  <p>Based on Stage 0 cleaned form</p>
+                </li>
+              </ul>
+              <hr>
+              <h1>🟣 FINAL PM NOTE (Add at End)</h1>
+              <blockquote>
+                <p>Approval is subject to closure of critical items
+                  (IST-8, IST-9), PO numbering fix, and report
+                  validation.</p>
+              </blockquote>
+              <hr>
+              <h1>✅ FINAL STATUS</h1>
+              <p>👉 <strong>Do NOT approve yet</strong><br>
+                👉 After above fixes → ✅ Ready for approval</p>
+              <hr>Regards,<br>
+              P.B.Saravanan
+              <p><br>
+              </p>
+              <div class="moz-cite-prefix">On 09/04/2026 05:02 pm,
+                Sasikumar wrote:<br>
+              </div>
+              <blockquote type="cite"
+cite="mid:1bbaa68b-3202-4768-9cfa-bc120249f5e7@kalsofte.com">
+                <meta http-equiv="content-type"
+                  content="text/html; charset=UTF-8">
+                <p class="ds-markdown-paragraph"
+style="margin: 16px 0px; color: rgb(15, 17, 21); font-family: quote-cjk-patch, Inter, system-ui, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, Cantarell, &quot;Open Sans&quot;, &quot;Helvetica Neue&quot;, sans-serif; font-size: 16px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;"><span>Dear
+                    Sir,</span></p>
+                <p class="ds-markdown-paragraph"
+style="margin: 16px 0px; color: rgb(15, 17, 21); font-family: quote-cjk-patch, Inter, system-ui, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, Cantarell, &quot;Open Sans&quot;, &quot;Helvetica Neue&quot;, sans-serif; font-size: 16px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;"><span>Please
+                    find attached the draft of the SPINRISE - M02 RMI
+                    Purchase Order and the Markdown Document for your
+                    review.</span></p>
+                <p class="ds-markdown-paragraph"
+style="margin: 16px 0px; color: rgb(15, 17, 21); font-family: quote-cjk-patch, Inter, system-ui, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, Cantarell, &quot;Open Sans&quot;, &quot;Helvetica Neue&quot;, sans-serif; font-size: 16px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;"><span>Kindly
+                    review the documents and share your feedback at your
+                    earliest convenience.</span></p>
+                <p class="ds-markdown-paragraph"
+style="margin: 16px 0px; color: rgb(15, 17, 21); font-family: quote-cjk-patch, Inter, system-ui, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, Cantarell, &quot;Open Sans&quot;, &quot;Helvetica Neue&quot;, sans-serif; font-size: 16px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;"><span>Thank
+                    you.</span></p>
+                <p class="ds-markdown-paragraph"
+style="margin: 16px 0px; color: rgb(15, 17, 21); font-family: quote-cjk-patch, Inter, system-ui, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, Cantarell, &quot;Open Sans&quot;, &quot;Helvetica Neue&quot;, sans-serif; font-size: 16px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;"><span>Regards,</span><br>
+                  <span>Sasi</span></p>
+              </blockquote>
+            </blockquote>
+          </blockquote>
+        </blockquote>
+      </blockquote>
+    </blockquote>
+  </body>
+</html>
+
+--------------K0kGSN0fwgkyqn3YY8RD8mFF--

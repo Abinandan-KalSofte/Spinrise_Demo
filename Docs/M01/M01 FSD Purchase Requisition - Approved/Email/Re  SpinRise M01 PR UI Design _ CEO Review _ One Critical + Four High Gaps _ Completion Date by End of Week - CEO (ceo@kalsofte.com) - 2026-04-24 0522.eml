@@ -1,0 +1,305 @@
+X-UIDL: UID118-1774868925
+X-Mozilla-Status: 0011
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <ceo@kalsofte.com>
+Received: from murphy.nocdirect.com
+	by murphy.nocdirect.com with LMTP
+	id jJHxDMyw6mko9BcAet6MXA
+	(envelope-from <ceo@kalsofte.com>); Thu, 23 Apr 2026 18:52:44 -0500
+Return-path: <ceo@kalsofte.com>
+Envelope-to: palanivel@kalsofte.com,
+ abinandan.n@kalsofte.com,
+ sasikumar.r@kalsofte.com,
+ pbsaravanan@kalsofte.com,
+ support@kalsofte.com,
+ development@kalsofte.com,
+ qa@kalsofte.com,
+ muthuvel.m@kalsofte.com,
+ mariyaiya.m@kalsofte.com
+Delivery-date: Thu, 23 Apr 2026 18:52:44 -0500
+Received: from [175.139.206.104] (port=49333 helo=[10.100.251.36])
+	by murphy.nocdirect.com with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+	(Exim 4.99.1)
+	(envelope-from <ceo@kalsofte.com>)
+	id 1wG3qd-00000006aMM-1LHH;
+	Thu, 23 Apr 2026 18:52:44 -0500
+Content-Type: multipart/alternative;
+ boundary="------------0eb6DmNB0Ksz80DmrUuksg29"
+Message-ID: <0c1971dd-b4ec-48c4-82c6-ab7f61110632@kalsofte.com>
+Date: Fri, 24 Apr 2026 05:22:39 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: SpinRise M01 PR UI Design | CEO Review | One Critical + Four High
+ Gaps | Completion Date by End of Week
+To: Abinandan <abinandan.n@kalsofte.com>
+Cc: Sasi <sasikumar.r@kalsofte.com>, pbsaravanan <pbsaravanan@kalsofte.com>,
+ Kalsoft Palanivel <palanivel@kalsofte.com>, support <support@kalsofte.com>,
+ development@kalsofte.com, Quality Assurance <qa@kalsofte.com>,
+ Muthuvel Mani <muthuvel.m@kalsofte.com>, Mariyaiya <mariyaiya.m@kalsofte.com>
+References: <851a2f26-bd6c-4bcc-bc76-a6d2b2b5a405@kalsofte.com>
+Content-Language: en-US
+From: CEO <ceo@kalsofte.com>
+In-Reply-To: <851a2f26-bd6c-4bcc-bc76-a6d2b2b5a405@kalsofte.com>
+
+This is a multi-part message in MIME format.
+--------------0eb6DmNB0Ksz80DmrUuksg29
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+Dear Abinandan,
+
+I have reviewed all three screenshots carefully against the approved M01 
+FSD. The UI structure is strong and this is a significant milestone — a 
+working SPINRISE transaction screen with a live list, a functional New 
+PR form, and a View modal, all rendering real data. The effort is 
+acknowledged.
+
+However, before I go through the gaps, I want to name one thing 
+specifically. The four-stage workflow bar at the top of the New PR form 
+— Draft, Submitted, Approved, PO Created — is exactly the kind of 
+SPINRISE-native UX thinking this project needs. The VB6 form had no 
+visual workflow indicator. *This addition reflects good product design 
+instinct.
+*
+Now the issues, in priority order.
+
+*Critical — fix before any further testing*
+
+Currency is showing RM throughout — Unit Price, Grand Total, Order 
+Summary. RM is Malaysian Ringgit. SPINRISE is for Indian spinning mills. 
+Every rupee value in the system must show ₹ (INR). Change this globally 
+across all forms, grids, modals, and print templates. This is not a 
+cosmetic issue — if this screen were shown to Ashok Textile Mills or any 
+customer today, it would raise an immediate question about product 
+quality. Fix this first.
+
+*High priority — required per approved FSD*
+
+*Four items are missing from the New PR Item Entry section *that the 
+approved FSD explicitly requires.
+
+*Drawing No and Catalogue No are required per line item in the form* — 
+FSD Section 12 Rec 28. These fields are in the View modal grid (CAT 
+column visible) and in the PR print, but they are absent from the Item 
+Entry section of the New PR form. A user cannot enter Drawing No or 
+Catalogue No when raising a new PR. Both fields must be added to the 
+Item Entry section alongside the existing Item Code, Description, UOM, 
+Qty fields.
+
+*Machine No is required per line item*. It appears in the View modal 
+grid and in the PR print, but is not in the Item Entry section. Add it.
+
+*Current Stock Quantity must display when an item is selected.* The FSD 
+Section 5 requires that on item selection, the system queries current 
+stock and shows it against the line item so the requester can see 
+whether stock is available before requesting. This is a key business 
+rule — the View modal shows STOCK correctly per item, but the entry form 
+has no such display on selection.
+
+*Previous Purchase details — Rate, Value, and Date — must auto-populate 
+when an item is selected, sourced from the SP*. Again, these display 
+correctly in the View modal (LAST RATE column) and in the print, but do 
+not appear during entry. The requester needs this information at the 
+point of raising the PR, not just in the view.
+
+*Medium priority*
+
+The list view column header shows IT... which is truncated. Expand this 
+column to show the full label — Item Count or Items. A truncated column 
+header in a production UI is not acceptable.
+
+In the View modal, the CAT column (Catalogue No) is present but the 
+Drawing No (DRAWNO) column is missing. Both Rec 28 fields should appear 
+together in the modal grid as they do in the print.
+
+The Step 4 label in the workflow bar says PO Created. The VB6 system 
+uses Converted as the status. Align this label with the established 
+system terminology — change to Converted.
+
+All SUB-COST values in the View modal show 0. Confirm whether this is 
+test data or whether the ApproxCost fallback logic implemented in the PR 
+print is not yet wired to the modal view. If real PRs, the fallback 
+logic (Previous Purchase Rate multiplied by Required Quantity when 
+ApproxCost is null) must apply here too.
+
+*Minor*
+
+Cost Centre shows 'sad' as a test value — that is test data and not a 
+defect. Clear before any demo.
+
+Item descriptions in the modal show truncated text with ellipsis. Add a 
+tooltip on hover to show the full description.
+
+*On overall progress*
+
+*The form is approximately 65 to 70 percent complete a*gainst FSD 
+requirements. The architecture, the list-form-modal pattern, the 
+workflow bar, and the summary panel are all the right foundation. The 
+five gaps above are what separate a working prototype from a 
+product-ready screen.
+
+Sasi, please review these gaps with Abinandan today and confirm a 
+revised completion date for the fully FSD-compliant M01 PR form. *I need 
+that date by end of the day.
+*
+Regards,
+T. Mani
+cc: TL-Dev Sasi (review gaps with Abinandan, confirm completion date), 
+Mariyaiya (Drawing No / Catalogue No / Machine No field specs from FSD 
+Section 4 to be shared with Abinandan).
+
+On 22/04/2026 08:04 pm, Abinandan wrote:
+>
+> Dear Sir,
+>
+> I have completed the initial UI design for the PO Requisition module 
+> based on the approved FSD as part of the migration project. This 
+> includes both the request listing view and the create new purchase flow.
+>
+> The implementation is currently in progress, and a few issues are 
+> being addressed.
+>
+> I have attached screenshots for your review. Please share your 
+> feedback and any suggestions for improvement.
+>
+> Regards,
+> Abinandan N
+> Fullstack Developer
+>
+--------------0eb6DmNB0Ksz80DmrUuksg29
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <p>Dear Abinandan,<br>
+      <br>
+      I have reviewed all three screenshots carefully against the
+      approved M01 FSD. The UI structure is strong and this is a
+      significant milestone — a working SPINRISE transaction screen with
+      a live list, a functional New PR form, and a View modal, all
+      rendering real data. The effort is acknowledged.<br>
+      <br>
+      However, before I go through the gaps, I want to name one thing
+      specifically. The four-stage workflow bar at the top of the New PR
+      form — Draft, Submitted, Approved, PO Created — is exactly the
+      kind of SPINRISE-native UX thinking this project needs. The VB6
+      form had no visual workflow indicator. <b>This addition reflects
+        good product design instinct.<br>
+      </b><br>
+      Now the issues, in priority order.<br>
+      <br>
+      <b>Critical — fix before any further testing</b><br>
+      <br>
+      Currency is showing RM throughout — Unit Price, Grand Total, Order
+      Summary. RM is Malaysian Ringgit. SPINRISE is for Indian spinning
+      mills. Every rupee value in the system must show ₹ (INR). Change
+      this globally across all forms, grids, modals, and print
+      templates. This is not a cosmetic issue — if this screen were
+      shown to Ashok Textile Mills or any customer today, it would raise
+      an immediate question about product quality. Fix this first.<br>
+      <br>
+      <b>High priority — required per approved FSD</b><br>
+      <br>
+      <b>Four items are missing from the New PR Item Entry section </b>that
+      the approved FSD explicitly requires.<br>
+      <br>
+      <b>Drawing No and Catalogue No are required per line item in the
+        form</b> — FSD Section 12 Rec 28. These fields are in the View
+      modal grid (CAT column visible) and in the PR print, but they are
+      absent from the Item Entry section of the New PR form. A user
+      cannot enter Drawing No or Catalogue No when raising a new PR.
+      Both fields must be added to the Item Entry section alongside the
+      existing Item Code, Description, UOM, Qty fields.<br>
+      <br>
+      <b>Machine No is required per line item</b>. It appears in the
+      View modal grid and in the PR print, but is not in the Item Entry
+      section. Add it.<br>
+      <br>
+      <b>Current Stock Quantity must display when an item is selected.</b>
+      The FSD Section 5 requires that on item selection, the system
+      queries current stock and shows it against the line item so the
+      requester can see whether stock is available before requesting.
+      This is a key business rule — the View modal shows STOCK correctly
+      per item, but the entry form has no such display on selection.<br>
+      <br>
+      <b>Previous Purchase details — Rate, Value, and Date — must
+        auto-populate when an item is selected, sourced from the SP</b>.
+      Again, these display correctly in the View modal (LAST RATE
+      column) and in the print, but do not appear during entry. The
+      requester needs this information at the point of raising the PR,
+      not just in the view.<br>
+      <br>
+      <font size="4"><b>Medium priority</b></font><br>
+      <br>
+      The list view column header shows IT... which is truncated. Expand
+      this column to show the full label — Item Count or Items. A
+      truncated column header in a production UI is not acceptable.<br>
+      <br>
+      In the View modal, the CAT column (Catalogue No) is present but
+      the Drawing No (DRAWNO) column is missing. Both Rec 28 fields
+      should appear together in the modal grid as they do in the print.<br>
+      <br>
+      The Step 4 label in the workflow bar says PO Created. The VB6
+      system uses Converted as the status. Align this label with the
+      established system terminology — change to Converted.<br>
+      <br>
+      All SUB-COST values in the View modal show 0. Confirm whether this
+      is test data or whether the ApproxCost fallback logic implemented
+      in the PR print is not yet wired to the modal view. If real PRs,
+      the fallback logic (Previous Purchase Rate multiplied by Required
+      Quantity when ApproxCost is null) must apply here too.<br>
+      <br>
+      <b>Minor</b><br>
+      <br>
+      Cost Centre shows 'sad' as a test value — that is test data and
+      not a defect. Clear before any demo.<br>
+      <br>
+      Item descriptions in the modal show truncated text with ellipsis.
+      Add a tooltip on hover to show the full description.<br>
+      <br>
+      <font size="4"><b>On overall progress</b></font><br>
+      <br>
+      <b>The form is approximately 65 to 70 percent complete a</b>gainst
+      FSD requirements. The architecture, the list-form-modal pattern,
+      the workflow bar, and the summary panel are all the right
+      foundation. The five gaps above are what separate a working
+      prototype from a product-ready screen.<br>
+      <br>
+      Sasi, please review these gaps with Abinandan today and confirm a
+      revised completion date for the fully FSD-compliant M01 PR form. <b>I
+        need that date by end of the day.<br>
+      </b><br>
+      Regards,<br>
+      T. Mani<br>
+      cc: TL-Dev Sasi (review gaps with Abinandan, confirm completion
+      date), Mariyaiya (Drawing No / Catalogue No / Machine No field
+      specs from FSD Section 4 to be shared with Abinandan).</p>
+    <div class="moz-cite-prefix">On 22/04/2026 08:04 pm, Abinandan
+      wrote:<br>
+    </div>
+    <blockquote type="cite"
+      cite="mid:851a2f26-bd6c-4bcc-bc76-a6d2b2b5a405@kalsofte.com">
+      <p>Dear Sir,</p>
+      <p class="isSelectedEnd"><span>I have completed the initial UI
+          design for the PO Requisition module based on the approved FSD
+          as part of the migration project. This includes both the
+          request listing view and the create new purchase flow.</span></p>
+      <p class="isSelectedEnd"><span>The implementation is currently in
+          progress, and a few issues are being addressed.</span></p>
+      <p class="isSelectedEnd"><span>I have attached screenshots for
+          your review. Please share your feedback and any suggestions
+          for improvement.</span></p>
+      <p><span>Regards,<br>
+        </span>Abinandan N<br>
+        Fullstack Developer</p>
+    </blockquote>
+  </body>
+</html>
+
+--------------0eb6DmNB0Ksz80DmrUuksg29--

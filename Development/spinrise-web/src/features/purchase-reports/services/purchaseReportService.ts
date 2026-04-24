@@ -16,8 +16,8 @@ export const purchaseReportService = {
    *
    * Route: GET /purchase/reports/pr/{id}/pdf/quest?startDate=yyyy-MM-dd&endDate=yyyy-MM-dd
    */
-  async downloadPurchaseRequisitionQuestPdf(id: number, startDate: string, endDate: string) {
-    const response = await api.get(`purchase/reports/pr/${id}/pdf/quest`, {
+  async downloadPurchaseRequisitionQuestPdf(prNo: number, startDate: string, endDate: string) {
+    const response = await api.get(`purchase/reports/pr/${prNo}/pdf/quest`, {
       params: { startDate, endDate },
       responseType: 'blob',
     })
@@ -27,7 +27,7 @@ export const purchaseReportService = {
 
     return {
       blob:     response.data as Blob,
-      fileName: fileNameMatch?.[1] ?? `PurchaseRequisition-${id}.pdf`,
+      fileName: fileNameMatch?.[1] ?? `PurchaseRequisition-${prNo}.pdf`,
     }
   },
 

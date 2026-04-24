@@ -1,0 +1,2196 @@
+X-UIDL: UID45-1774868925
+X-Mozilla-Status: 0000
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <ceo@kalsofte.com>
+Received: from murphy.nocdirect.com
+	by murphy.nocdirect.com with LMTP
+	id ukgCNfwr12nnsQEAet6MXA
+	(envelope-from <ceo@kalsofte.com>); Wed, 08 Apr 2026 23:33:00 -0500
+Return-path: <ceo@kalsofte.com>
+Envelope-to: palanivel@kalsofte.com,
+ pbsaravanan@kalsofte.com,
+ sasikumar.r@kalsofte.com,
+ mariyaiya.m@kalsofte.com,
+ annamalai.s@kalsofte.com,
+ sathishkumar.m@kalsofte.com,
+ abinandan.n@kalsofte.com,
+ muthuvel.m@kalsofte.com,
+ seenivasan.v@kalsofte.com,
+ hariharan.j@kalsofte.com,
+ support@kalsofte.com,
+ qa@kalsofte.com
+Delivery-date: Wed, 08 Apr 2026 23:33:01 -0500
+Received: from [49.204.234.113] (port=30298 helo=[192.168.68.102])
+	by murphy.nocdirect.com with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+	(Exim 4.99.1)
+	(envelope-from <ceo@kalsofte.com>)
+	id 1wAh4b-00000000Smb-0KDz;
+	Wed, 08 Apr 2026 23:33:00 -0500
+Content-Type: multipart/mixed; boundary="------------Z8ONE70VpQBLwI0fbYPHOfcn"
+Message-ID: <fb627c49-b62a-414d-9b19-1de229223a63@kalsofte.com>
+Date: Thu, 9 Apr 2026 10:03:03 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: =?UTF-8?Q?Re=3A_SPINRISE_Activity_Status_08/04/2026_=E2=80=94_Track?=
+ =?UTF-8?Q?er_Review_=26_Immediate_Actions_Required?=
+Content-Language: en-US
+References: <bb92f59d-44be-4e39-9d53-dd338d2baa76@kalsofte.com>
+To: pbsaravanan <pbsaravanan@kalsofte.com>
+Cc: Sasi <sasikumar.r@kalsofte.com>, Mariyaiya <mariyaiya.m@kalsofte.com>,
+ Annamalai s <annamalai.s@kalsofte.com>,
+ SathishkumarM <sathishkumar.m@kalsofte.com>,
+ Abinandhan <abinandan.n@kalsofte.com>,
+ Muthuvel Mani <muthuvel.m@kalsofte.com>, Seeni <seenivasan.v@kalsofte.com>,
+ Kalsoft Palanivel <palanivel@kalsofte.com>,
+ HariharanJ <hariharan.j@kalsofte.com>, Support <support@kalsofte.com>,
+ Quality Assurance <qa@kalsofte.com>
+From: CEO <ceo@kalsofte.com>
+In-Reply-To: <bb92f59d-44be-4e39-9d53-dd338d2baa76@kalsofte.com>
+X-Forwarded-Message-Id: <bb92f59d-44be-4e39-9d53-dd338d2baa76@kalsofte.com>
+
+This is a multi-part message in MIME format.
+--------------Z8ONE70VpQBLwI0fbYPHOfcn
+Content-Type: multipart/alternative;
+ boundary="------------zs0aCKZflKXUrcMYuRcKBxi4"
+
+--------------zs0aCKZflKXUrcMYuRcKBxi4
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+Dear Saravanan and Team,
+
+Thank you for the 08 April tracker. The revised format with daily 
+progress entries, the PULSE 360 column, Stage 0 sub-status, and Target 
+by 11 April columns is good — all seven corrections from my earlier 
+review have been applied.
+
+*The developer side of the tracker looks encouraging.* Mariyaiya has the 
+PR form FSD in progress with a target of 9 April for PO form Stage 0 
+corrections. TL-Dev Sasi has cleaned the RMI contract form dead code, 
+generated a draft FSD, and prepared the SPs — all due to the IST team 
+today. Annamalai has removed dead code and prepared table, view, and SP 
+scripts for four Domestic Sales transactions. Sathiskumar has correctly 
+shifted to Daily Attendance transactions as directed and has shared that 
+FSD with the IST team. This is solid progress from all four developers.
+
+*However the IST side of this tracker is a serious concern and I need to 
+address it directly.
+*
+*Overdue — Action Items 1, 2, 3, 4*
+
+All four IST members were asked to cross-check their module scope 
+against the Excel menu charts and revert to the PM by Monday 6 April 
+EoD. Today is Thursday 9 April. All four items are still showing Open 
+with no daily progress entry and PULSE 360 = N.
+
+This applies to Muthuvel (M01), PM Saravanan himself (M02), Seenivasan 
+(M03), and TL-IST Palanivel (M04). I want to note specifically that PM 
+Saravanan's own IST task for M02 is also overdue. The PM asking the team 
+to fill PULSE 360 accurately while his own rows show N for three of four 
+entries is not acceptable. *Lead by example or the instruction will not 
+be followed.
+*
+*All four scope cross-checks must be completed and submitted to PM 
+Saravanan by today, 9 April EoD without fail.*
+
+*Muthuvel — PR Form IST Review*
+
+Action Item 5 — the PR form IST review using the IST-1 to IST-7 
+questionnaire — shows no daily progress entry and PULSE 360 = N as of 
+today. The Vamshadhara gap document shows progress, which I note. But 
+the SPINRISE IST review is the single most critical blocker for the 
+first APPROVED FSD milestone. Without Muthuvel's IST sign-off, the PR 
+form cannot move to TL-IST, PM, and CEO review. Without those, no 
+approved FSD exists. Without an approved FSD, Claude Code cannot begin 
+production conversion.
+
+*Muthuvel, I need a clear commitment from you: when will the PR form IST 
+review (IST-1 to IST-7) be submitted? Please reply to this mail with a 
+specific date.*
+
+*Seenivasan and TL-IST Palanivel
+*
+Both rows show zero activity, zero PULSE 360 entries, and no daily 
+progress across all tasks. The developers you are supporting — Annamalai 
+and Sathiskumar — are actively submitting FSD work to the IST team. That 
+work is sitting in a queue with no one reviewing it. Please begin your 
+IST reviews immediately and update the tracker and PULSE 360 today.
+
+*Abinandan and Hariharan — clarification needed
+*
+Abinandan is using the PR form corrected critical analysis document as a 
+reference for ASP.NET Core development. This is acceptable as a practice 
+and trial exercise, consistent with Mariyaiya's clarification earlier 
+this week. Please confirm explicitly in your next tracker update that 
+this is practice work and not production development against an approved 
+FSD.
+
+Hariharan's row shows 'In Progress' in the daily remarks but PULSE 360 = 
+N. PM to clarify in the next update: what specifically is Hariharan 
+working on, and is it exploratory React familiarisation or production 
+development? No approved FSD exists yet for any SPINRISE screen.
+
+*Action Item 6 and Action Item 14*
+
+Action Item 6 (SP identification for all modules) still shows Open even 
+though TL-Dev Sasi and Annamalai's daily progress entries confirm SPs 
+have been prepared for their modules. PM to update the action item 
+status to reflect the actual developer progress.
+
+Action Item 14 (Claude Pro subscriptions for Annamalai and Sathiskumar) 
+remains Open. This was due this week. PM Saravanan is the owner. Please 
+confirm activation status today.
+
+
+*Module Summary header*
+
+The Module Summary sheet still shows *'As of 4 April 2026'.* Please 
+update to the correct date when submitting the next tracker.
+
+
+*For Saturday 11 April*
+
+The picture heading into Saturday is this: all four developers are 
+active and progressing on Stage 0. The IST side is stalled on scope 
+verification and FSD reviews. If this gap is not closed in the next two 
+days, developers will arrive at Saturday's meeting with completed Stage 
+0 work that has no IST verification against it, and Sprint 0 activation 
+will have to be deferred again.
+
+Saravanan, please personally follow up with Muthuvel, Seenivasan, and 
+TL-IST Palanivel today and confirm their overdue items are completed by 
+EoD 9 April, without deviation.
+
+Regards,
+T. Mani
+
+cc: TL-Dev Sasi, Mariyaiya, Annamalai, Sathiskumar, Muthuvel, 
+Seenivasan, TL-IST Palanivel, Abinandan, Hariharan
+
+
+-------- Forwarded Message --------
+Subject: 	Re: SPINRISE — Minutes of Meeting | Progress Review | 4 April 
+2026 | PM Daily Tracker Status as 08/04/2026
+Date: 	Thu, 9 Apr 2026 08:45:03 +0530
+From: 	Saravanan Balakrishnan <pbsaravanan@kalsofte.com>
+To: 	CEO <ceo@kalsofte.com>
+CC: 	Support <support@kalsofte.com>, Quality Assurance <qa@kalsofte.com>
+
+
+
+Dear Sir,
+
+Please find attached the SPINRISE activity status as of 08/04/2026 for 
+your reference.
+
+Regards,
+P.B.Saravanan
+
+On 06/04/2026 05:59 pm, CEO wrote:
+>
+> Dear Saravanan,
+>
+> Thank you for turning around the PM Daily Tracker so promptly after 
+> Saturday's meeting. I have reviewed all three sheets — the PM Daily 
+> Tracker, the Module Summary, and the Action Items Log.
+>
+> The structure and thinking behind the tracker are right. The 
+> three-sheet format — task-level detail, module-level visibility, and a 
+> numbered action items log — is exactly the right approach for a 
+> project of this complexity.
+>
+> *However, before I approve this for circulation, please address the 
+> following.*
+>
+> *CORRECTIONS AND ADDITIONS REQUIRED*
+>
+> *1.  Daily update mechanism is missing.*
+> The tracker is titled 'PM Daily Tracker' but currently has no column 
+> for recording daily progress. As it stands, it captures the initial 
+> status from the MoM but provides no mechanism to update progress day 
+> by day between now and Saturday. Please add a 'Last Updated' date 
+> column and a 'Daily Progress / Remarks' column to the PM Daily Tracker 
+> sheet. The PM should update these every working day. Without daily 
+> entries, this remains a point-in-time MoM snapshot rather than a 
+> living tracker.
+>
+> *2.  PULSE 360 reference column is missing.*
+> The MoM stressed PULSE 360 logsheet accuracy as the primary daily 
+> tracking tool. The tracker should have a 'PULSE 360 Updated' column (Y 
+> / N / Partial) that you verify each day against the team's logsheet 
+> entries. This column is the bridge between the tracker and PULSE 360 — 
+> without it, the two systems operate independently with no daily 
+> cross-check.
+>
+> *3.  Infrastructure quotes deferral is not captured.*
+> Muthuvel presented the laptop and internet quotes on Saturday. The 
+> decision was to defer procurement until the team moves into code 
+> conversion. This decision must appear in the Action Items Log: 'Retain 
+> hardware and internet quotes on file. Review procurement decision when 
+> team transitions from Stage 0 to code conversion.' Owner: PM 
+> Saravanan. This ensures the decision is on record and the quotes are 
+> not misplaced.
+>
+> *4.  Claude Pro subscriptions — reassign owner.*
+> Action Item #14 shows 'CEO / Admin' as owner for procuring Claude Pro 
+> subscriptions for Annamalai and Sathiskumar. Please change the owner 
+> to yourself. You are to confirm with me once the subscriptions are 
+> activated this week. If the PM is tracking an action, the PM owns the 
+> follow-up.
+>
+> *5.  Vamshadhara gap document — add specific deliverable.*
+> Muthuvel's Vamshadhara work is listed as a task row but the Action 
+> Items Log only says 'Continue Vamshadhara gap doc'. Please add the 
+> specific deliverable: 'Prepare Functional Gap Analysis v1.2 and 
+> confirm demo environment readiness for Vamshadhara Paper 
+> Mills.'*Owner: Yourself. Deadline: Wednesday, 8th April 26'.
+> *
+> *6.  Stage 0 sub-status granularity in Module Summary.*
+> M02 and M04 currently show as 'Initiated' with no further detail. For 
+> a daily tracker to be useful, each module's Stage 0 status should 
+> reflect sub-steps: scope list confirmed, SPs identified, dead code 
+> removed, screen readiness checklist complete, TL-Dev sign-off done. 
+> Please add a 'Stage 0 Sub-Status' column or brief notes field that you 
+> update daily as each sub-step is completed. A single word gives no 
+> visibility between now and Saturday.
+>
+> *7.  Add a 'Target by 11 April' column to Module Summary.*
+> Each module should have an explicit column stating what must be 
+> completed before the Saturday 11 April review meeting. For example — 
+> M01: 3 remaining PO transactions + 10 CEO review items addressed. M02: 
+> Scope list confirmed + SPs identified. M03: Full Stage 0 checklist 
+> complete. M04: Payroll transactions Stage 0 complete. This gives the 
+> review meeting a clear pass/fail baseline for each module.
+>
+> *WHAT IS ALREADY CORRECT — RETAIN AS IS*
+>
+> The meeting date (Saturday, 4 April 2026) and next review date 
+> (Saturday, 11 April 2026) are both correct. The 16-item Action Items 
+> Log with owners and deadlines fully matches the MoM. The All Team 
+> Commitments section correctly captures all five CEO directives 
+> including the SP stored procedures requirement. Hariharan's 'Waiting' 
+> status correctly reflects his dependency on approved FSD outputs. 
+> Abinandan's FastReports item is correctly tagged 'In Progress'. *All 
+> 13 member task rows are captured with the right priorities. Do not 
+> change any of these.
+> *
+> *Please revise the tracker with the above seven points and resubmit 
+> for approval by today. *Once approved, circulate to the full SPINRISE 
+> team. The tracker should then be updated by you every working day and 
+> a daily status update shared with me each morning until Saturday's 
+> review meeting.
+>
+> *Good initiative in getting this out. *
+>
+> Regards,
+> T. Mani
+>
+> On 06/04/2026 05:31 pm, Saravanan Balakrishnan wrote:
+>>
+>> Dear Sir,
+>>
+>> As per the SPINRISE MoM, please find attached the Daily PM Tracker 
+>> report format for your review and approval.
+>>
+>> Regards,
+>> P.B.Saravanan
+>>
+>> On 06/04/2026 01:20 pm, CEO wrote:
+>>>
+>>> Dear SPINRISE Team,
+>>>
+>>> Please find below the *Minutes of Meeting for the SPINRISE* Project 
+>>> Progress Review held Saturday.
+>>>
+>>>   Date    :  Saturday, 4 April 2026
+>>>   Time    :  5:00 PM — 7:00 PM
+>>>   Venue   :  Meeting Room
+>>>   Chaired :  T. Mani, Founder & CEO
+>>>   Attendees: Full SPINRISE Team
+>>> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>>> *AGENDA 1  |  INFRASTRUCTURE — Laptops & Internet*
+>>> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>>> Muthuvel presented quotes from two laptop vendors and two internet 
+>>> service providers.
+>>>
+>>> *DECISION: *Procurement deferred. As the team is currently in Stage 
+>>> 0 readiness mode, the existing hardware and internet capacity are 
+>>> sufficient for this phase. Once the team moves into serious code 
+>>> conversion work, the Claude-recommended development environment (i7, 
+>>> 32 GB RAM, 512 GB NVMe, 100 Mbps fibre) will be procured and set up 
+>>> to ensure optimal productivity.*Muthuvel to keep quotes on file.*
+>>> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>>> *AGENDA 2  |  STAGE 0 READINESS — Module-Wise Status*
+>>> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>>> *CEO instruction:* All IST team members to cross-check their module 
+>>> scope against the Excel-based menu charts and revert to the*PM by 
+>>> Monday 6 April, End of Day.*
+>>>
+>>>   M01 — Purchase Order (PO) | Developer: Mariyaiya | IST: Muthuvel
+>>>   PR form critical analysis completed and submitted (v2 FSD template 
+>>> — corrected version reviewed by CEO today). Three remaining PO 
+>>> transactions to be completed during this week.
+>>>
+>>>   M02 — Raw Material Inventory (RMI) | Developer: TL-Dev Sasi | IST: 
+>>> PM Saravanan
+>>>   Stage 0 readiness initiated by TL-Dev Sasi today as confirmed in 
+>>> PULSE 360. To be progressed actively this week.
+>>>
+>>>   M03 — Domestic Sales | Developer: Annamalai | IST: Seenivasan
+>>>   FSD preparation started on the Sales Order transaction. Stage 0 
+>>> readiness is not yet complete as per v2 guide requirements. To be 
+>>> completed with balance transactions by this Saturday, 12 April 2026.
+>>>
+>>>   M04 — HR & Payroll | Developer: Sathiskumar | IST: TL-IST Palanivel
+>>>   Employee Master form feedback submitted. CEO instruction: Focus on 
+>>> Payroll module transactions first, then move to master forms. Stage 
+>>> 0 readiness for payroll transactions started today.
+>>>
+>>> *ACTION — IST Team: *Verify each developer's module scope reply, 
+>>> confirm corrections, and update PULSE 360 on priority. This is to be 
+>>> done alongside regular ERP customer support responsibilities.
+>>>
+>>> *IMPORTANT ADDITION (CEO): *SQL Server stored procedures must be 
+>>> identified and included as part of Stage 0 readiness for each 
+>>> module. The complete business logic and validations embedded inside 
+>>> stored procedures are a mandatory input for FSD preparation, as 
+>>> established in the v2 guide.
+>>>
+>>> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>>> *AGENDA 3  |  PO MODULE — PR FORM IST REVIEW*
+>>> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>>> Mariyaiya presented the updated corrected critical analysis document.
+>>>
+>>> Muthuvel's IST review of the PR form using the IST-1 to IST-7 
+>>> questionnaire is awaited. Muthuvel is also currently assigned the 
+>>> Functional Gap Analysis document for the Vamshadhara Paper Mills 
+>>> prospect, given his specialization in paper mill module 
+>>> implementation and support.
+>>>
+>>> *ACTION — Muthuvel: *Complete the PR form IST review and revert at 
+>>> the earliest, managing both the SPINRISE IST review and the 
+>>> Vamshadhara gap document in parallel.
+>>>
+>>> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>>> *AGENDA 4  |  ACTIVE FSD WORK UPDATE*
+>>> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>>> Covered under Agenda 2. Status of Annamalai (M03) and Sathiskumar 
+>>> (M04) updated above.
+>>>
+>>> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>>> *AGENDA 5  |  VB FSD CLAUDE GUIDE v2 — CONFIRMATION*
+>>> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>>>
+>>> Feedback discussed. Team expressed that the guide is detailed and 
+>>> comprehensive. Members look forward to the final version enriched 
+>>> with inputs from actual transactions across M01 to M04.
+>>>
+>>> *CEO confirmed:* Claude will progressively refine the guide based on 
+>>> real transaction feedback as the team works through each module's 
+>>> screens. *This is a living document that improves with every FSD cycle.
+>>> *
+>>> *CEO reminder:* SQL Server stored procedures must be included in 
+>>> Stage 0 readiness submissions — the guide's Section 3 requirement on 
+>>> SP code collection applies to all modules without exception.
+>>>
+>>> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>>> *AGENDA 6  |  PULSE 360 — STAGE 0 TRACKING*
+>>> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>>>
+>>> *ACTION — PM Saravanan:* Actively coordinate with all module 
+>>> developers on Stage 0 progress. Compile and present a comprehensive 
+>>> Stage 0 readiness *update at next Saturday's review meeting (12 
+>>> April 2026).*
+>>>
+>>> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>>> *AGENDA 7  |  SPRINT 0 ACTIVATION*
+>>> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>>>
+>>> Sprint 0 activation is deferred pending Stage 0 completion.
+>>>
+>>> *CEO advice: *Take enough care in ensuring Stage 0 completeness this 
+>>> week. The schedule may flex, but the quality of Stage 0 directly 
+>>> determines the accuracy of SPINRISE code generation — minimal rework 
+>>> in ASP.NET Core code is the goal. A weak Stage 0 means expensive 
+>>> corrections after code is written. Do not rush it.
+>>>
+>>> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>>> *AGENDA 8 & ADDITIONAL POINTS DISCUSSED*
+>>> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>>>
+>>> *8a.  Abinandan — Trial Conversion & FastReports*
+>>> Abinandan shared his progress on the PR form trial conversion in 
+>>> ASP.NET Core, and highlighted the usefulness of the Claude Pro 
+>>> subscription in accelerating this work. He is also exploring options 
+>>> for migrating Crystal Reports to FastReports, and will revert with 
+>>> findings. This will inform the SPINRISE reporting architecture 
+>>> decision across all modules.
+>>>
+>>> *8b.  Hariharan — React UI Assignment*
+>>> Hariharan (Jr Web Dev2) has been assigned to work on React UI 
+>>> development for the transaction forms that are currently in progress 
+>>> by the VB developers. He is to align closely with the approved FSD 
+>>> outputs as they become available.
+>>>
+>>> *8c.  Claude Pro Subscriptions*
+>>> Claude Pro is currently active for TL-Dev Sasi, Mariyaiya, and 
+>>> Abinandan. Subscriptions for Annamalai and Sathiskumar will be 
+>>> provided this week to remove the daily chat duration constraint and 
+>>> accelerate their FSD preparation work.
+>>>
+>>> *8d.  Claude AI vs Claude Code*
+>>> CEO observation: All team members are currently using Claude AI 
+>>> (browser-based chat). This is appropriate and sufficient for Stage 0 
+>>> readiness and FSD preparation. However, all developers are advised 
+>>> to get familiar with Claude Code, which will be the primary tool for 
+>>> the actual code migration work that follows. Begin exploring Claude 
+>>> Code this week alongside your Stage 0 tasks.
+>>>
+>>> *8e.  Minimum Daily Commitment — SPINRISE Work*
+>>> CEO instruction: All SPINRISE team members are to dedicate a minimum 
+>>> of 4 hours per day to SPINRISE tasks, in addition to their assigned 
+>>> ERP customer support responsibilities. This commitment is essential 
+>>> to meet the 31 March 2027 go-live target.
+>>>
+>>> *8f.  PULSE 360 Logsheet Accuracy*
+>>> CEO  stressed: PULSE 360 daily logsheets must be filled accurately 
+>>> and on time. The logsheets are the primary tool for tracking 
+>>> individual progress and the basis for the weekly review meeting. 
+>>> Incomplete or inaccurate entries affect the team's collective 
+>>> visibility of where the project stands.
+>>>
+>>> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>>> *SUMMARY — THIS WEEK'S PRIORITY TASKS BY ROLE*
+>>> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>>>
+>>> *Mariyaiya (M01 PO)*
+>>>   ▸ Complete Stage 0 + critical analysis for 3 remaining PO transactions
+>>>   ▸ Address the 10 open items in CEO's review of the corrected PR 
+>>> form document
+>>>
+>>> *TL-Dev Sasi (M02 RMI)*
+>>>   ▸ Progress Stage 0 readiness for RMI module this week
+>>>   ▸ Include stored procedure identification in Stage 0 scope
+>>>
+>>> *Annamalai (M03 Domestic Sales)*
+>>>   ▸ Complete Stage 0 readiness for all Domestic Sales transactions
+>>>   ▸ Continue Sales Order FSD preparation
+>>>   ▸ Target: full update by Saturday 12 April
+>>>
+>>> *Sathiskumar (M04 HR & Payroll)*
+>>>   ▸ Focus on Payroll transactions first — not master forms
+>>>   ▸ Progress Stage 0 readiness for payroll transactions
+>>>   ▸ Continue FSD preparation
+>>>
+>>> *Muthuvel (IST — M01 PO + Vamshadhara)*
+>>>   ▸ Complete PR form IST review (IST-1 to IST-7) at the earliest
+>>>   ▸ Cross-check M01 PO module scope vs Excel menu chart — revert to 
+>>> PM by Monday 6 Apr EoD
+>>>   ▸ Continue Vamshadhara Paper Mills gap document
+>>>
+>>> *PM Saravanan (IST — M02 RMI + Overall Coordination)*
+>>>   ▸ Cross-check M02 RMI module scope vs Excel menu chart — Monday 6 
+>>> Apr EoD
+>>>   ▸ Coordinate Stage 0 progress across all modules
+>>>   ▸ Prepare Stage 0 readiness summary for Saturday 12 April review 
+>>> meeting
+>>>   ▸ Ensure PULSE 360 Stage 0 tracking is active and accurate
+>>>
+>>> *Seenivasan (IST — M03 Domestic Sales)*
+>>>   ▸ Cross-check M03 Sales module scope vs Excel menu chart — Monday 
+>>> 6 Apr EoD
+>>>   ▸ Support Annamalai's Stage 0 readiness verification
+>>>
+>>> *TL-IST Palanivel (IST — M04 HR & Payroll)*
+>>>   ▸ Cross-check M04 Payroll module scope vs Excel menu chart — 
+>>> Monday 6 Apr EoD
+>>>   ▸ Support Sathiskumar's Stage 0 readiness for payroll transactions
+>>>
+>>> *Abinandan (Full Stack Dev)*
+>>>   ▸ Continue PR form trial conversion in ASP.NET Core
+>>>   ▸ Complete FastReports vs Crystal Reports evaluation and report 
+>>> findings
+>>>   ▸ Begin familiarizing with Claude Code
+>>>
+>>> *Hariharan (Jr Web Dev2)*
+>>>   ▸ Begin React UI development for transaction forms in progress
+>>>   ▸ Align with FSD outputs as approved FSDs become available
+>>>
+>>> *All Team Members*
+>>>   ▸ Minimum 4 hours per day on SPINRISE tasks
+>>>   ▸ PULSE 360 logsheets to be filled daily and accurately
+>>>   ▸ Begin familiarising with Claude Code
+>>>   ▸ Claude Pro subscriptions to be utilised fully — no chat duration 
+>>> constraints
+>>>
+>>> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>>> *NEXT REVIEW MEETING*
+>>> ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+>>>
+>>>   Date    :  Saturday, 11 April 2026
+>>>   Time    :  To be confirmed
+>>>   Agenda  :  Stage 0 readiness update (all modules) | Sprint 0 
+>>> activation decision
+>>>               Infrastructure procurement review | Abinandan's 
+>>> FastReports findings
+>>>
+>>> *Let us make this week count.*
+>>>
+>>> With confidence in the team,
+>>> T. Mani
+>>>
+>>> cc: Project Manager, TL-Dev, Full SPINRISE Team
+>>>
+>>> On 04/04/2026 04:42 pm, CEO wrote:
+>>>>
+>>>> Dear Team,
+>>>>
+>>>> This is to inform that a SPINRISE Project Progress Review meeting 
+>>>> is scheduled as below:
+>>>>
+>>>>   Date    :  Today, Saturday, 5 April 2026
+>>>>   Time    :  5:00 PM
+>>>>   Venue   :  Meeting Room
+>>>>
+>>>> All SPINRISE team members are requested to attend without fail.
+>>>>
+>>>> *Agenda*
+>>>>
+>>>> 1.  Infrastructure update — Muthuvel to present quotes for i7 
+>>>> laptops and internet upgrade. Decision to be taken today.
+>>>>
+>>>> 2.  Stage 0 readiness — Each VB Developer to present their module’s 
+>>>> stabilisation status: screens that are stable and ready for FSD, 
+>>>> and screens with pending customisations or open corrections.
+>>>>
+>>>> 3.  PO Module — PR Form review — Mariyaiya to present the updated 
+>>>> Critical Analysis document (v2 FSD template). Muthuvel to present 
+>>>> IST review status using IST-1 to IST-7 questionnaire.
+>>>>
+>>>> 4.  Active FSD work update — Annamalai (M03 Domestic Sales) and 
+>>>> Sathiskumar (M04 HR & Payroll) to give a brief status on their FSD 
+>>>> preparation progress.
+>>>>
+>>>> 5.  v2 Guide confirmation — Confirm that all team members have read 
+>>>> the VB FSD Claude Guide v2 in full. Open the floor for any 
+>>>> questions or observations.
+>>>>
+>>>> 6.  PM to confirm Stage 0 pre-sprint tracking activation status for 
+>>>> all Phase 1 modules.
+>>>>
+>>>> 7.  Sprint 0 activation — Lock the process and confirm start.
+>>>>
+>>>> 8.  Any other points for discussion.
+>>>>
+>>>> *Please come prepared with your respective updates. Time is short — 
+>>>> let us make this session focused and decisive.*
+>>>>
+>>>> Regards,
+>>>> T Mani
+>>>>
+>>>> On 31/03/2026 01:27 pm, CEO wrote:
+>>>>>
+>>>>> Dear SPINRISE Team,
+>>>>>
+>>>>> *I am sharing with you today the updated VB FSD Claude Guide — 
+>>>>> Version 2.
+>>>>> *
+>>>>> Attached: SPINRISE_VB_FSD_Claude_Guide_v2.docx
+>>>>>
+>>>>> Please read it fully before our Saturday session. *From the date 
+>>>>> of this mail, v2 is the operative guide for all FSD documentation 
+>>>>> work in SPINRISE. *V1 is superseded.
+>>>>>
+>>>>> *Why v2 exists
+>>>>> *
+>>>>> Version 2 was built entirely from what you told me.
+>>>>>
+>>>>> Three of you responded to my v1 circulation mail with observations 
+>>>>> that were technically sharp and practically important. I want to 
+>>>>> acknowledge each contribution by name, because the team should 
+>>>>> know where v2 came from.
+>>>>>
+>>>>> *Sathishkumar *pointed out that the Kalsofte ERP distributes 
+>>>>> business logic across Common modules, Class modules, and stored 
+>>>>> procedures — not just the .frm file. He also highlighted that the 
+>>>>> TC (Transaction Code) framework, which drives stock direction and 
+>>>>> accounting entries across most of our modules, is largely 
+>>>>> implemented inside stored procedures and would be missed entirely 
+>>>>> if only the form code was submitted to Claude.
+>>>>>
+>>>>> *Mariyaiya *raised a more fundamental concern: that several PR, 
+>>>>> PO, and Service PO screens have pending customer customisations in 
+>>>>> various stages of stability. Submitting unstabilised code to 
+>>>>> Claude would produce an FSD that documents an incomplete version 
+>>>>> of the screen — and that instability would be permanently carried 
+>>>>> into SPINRISE.
+>>>>>
+>>>>> *Mariyaiya then went further.* Before I could even respond, he 
+>>>>> produced a detailed critical analysis of the Purchase Requisition 
+>>>>> form (tmpPoindent.frm) — a 9,108-line VB6 form — and shared it 
+>>>>> with Muthuvel for IST review. That document, which I have gone 
+>>>>> through in detail, identified 3 Critical defects, 3 High issues, 4 
+>>>>> Medium issues, and 2 Low issues in the form code. It also proposed 
+>>>>> the four-category validation structure, the error message 
+>>>>> catalogue, the summary scorecard, and the customer variation 
+>>>>> register — all of which are now standard sections in the v2 FSD 
+>>>>> template.
+>>>>>
+>>>>> This is what good teamwork looks like. You were given a guide, you 
+>>>>> used it on a real form, you found its limits, and you reported 
+>>>>> back with precision. V2 is the direct result.
+>>>>>
+>>>>> *What is new in v2
+>>>>> *
+>>>>> For those who have read v1, here is what changed:
+>>>>>
+>>>>> Stage 0 is an entirely new mandatory phase that must be completed 
+>>>>> before any FSD documentation begins. It covers code stabilisation 
+>>>>> review, the screen readiness checklist, what to collect before 
+>>>>> opening Claude (no longer just the .frm file — now includes Common 
+>>>>> modules, Class modules, and all stored procedures), the TC 
+>>>>> framework reference table, the customer variation register, and 
+>>>>> the dead code identification step. Stage 0 is not optional. No FSD 
+>>>>> work begins on any screen until Stage 0 is complete and TL-Dev has 
+>>>>> signed off.
+>>>>>
+>>>>> The follow-up prompts grew from three to six. Three new prompts 
+>>>>> were added: one for Common and Class module logic, one for stored 
+>>>>> procedure business rules, and one specifically for TC framework 
+>>>>> documentation. These address the gap our first VB developer 
+>>>>> identified.
+>>>>>
+>>>>> The FSD template expanded from 8 sections to 14 sections. The six 
+>>>>> new sections are the TC Framework, Common and Class Module 
+>>>>> Dependencies, Error Message Catalogue, Customer Variation 
+>>>>> Register, SPINRISE Migration Recommendations, and the Summary 
+>>>>> Scorecard. All six are mandatory for transaction screens.
+>>>>>
+>>>>> The review chain is updated to four levels with the full IST 
+>>>>> structured questionnaire (IST-1 to IST-7) that every Module Sr IST 
+>>>>> Member must answer for each form they review.
+>>>>>
+>>>>> A new Section 8 documents eight known defect patterns to actively 
+>>>>> search for in every VB6 form before submitting to Claude: 
+>>>>> application-terminating End statements, hardcoded customer IDs, 
+>>>>> SQL string concatenation, dead code blocks, inconsistent duplicate 
+>>>>> logic, hardcoded file paths, missing transaction rollback, and 
+>>>>> typos in error messages. Each pattern has the code signature to 
+>>>>> search for and the action to take.
+>>>>>
+>>>>> Three quick reference cards are now at the back: the Developer 
+>>>>> Daily Card, the four-column Reviewer Checklist, and the new Defect 
+>>>>> Patterns Card. Print all three and keep them at your desk.
+>>>>>
+>>>>> *How I need each of you to use this guide
+>>>>> *
+>>>>> *Module VB Developers:*
+>>>>> Section 3 (Stage 0) and Section 4 (the six steps and six prompts) 
+>>>>> are your primary reference. Read them in full. Before you begin 
+>>>>> any FSD, complete Stage 0 for that screen. Do not skip the 
+>>>>> Customer Variation Register. Do not submit dead code. Run all six 
+>>>>> follow-up prompts, not just the ones you feel are relevant.
+>>>>>
+>>>>> *Module Sr IST Members:*
+>>>>> Section 6, Level 1 and the IST Structured Questionnaire (questions 
+>>>>> IST-1 to IST-7) are your reference. For every FSD you review, 
+>>>>> answer all seven questions. Section 8 (the defect patterns) is 
+>>>>> also important for you — you are the person most likely to know 
+>>>>> from site experience whether an application-terminating behaviour 
+>>>>> or a hardcoded customer variation has caused problems in practice.
+>>>>>
+>>>>> *TL-IST:*
+>>>>> Section 6, Level 2. Your role is cross-module consistency. Pay 
+>>>>> particular attention to whether TC framework values and stored 
+>>>>> procedure business rules are consistent with how the same logic is 
+>>>>> handled in other modules you have implemented.
+>>>>>
+>>>>> *Project Manager:*
+>>>>> Section 6, Level 3. Before any FSD reaches the CEO, confirm that 
+>>>>> all 14 sections are complete, all IST questions are answered, the 
+>>>>> customer variation register is filled, and the summary scorecard 
+>>>>> is present. An incomplete FSD must be returned to the developer, 
+>>>>> not passed forward.
+>>>>>
+>>>>> *New Developer (Abinandan):*
+>>>>> Welcome again. This guide is your primary reference for how 
+>>>>> SPINRISE development works. Start by reading Section 3 (Stage 0) 
+>>>>> and Section 4. The defect patterns in Section 8 will be 
+>>>>> particularly useful as you begin reading Kalsofte VB6 code for the 
+>>>>> first time — you will encounter all of these patterns. Now you 
+>>>>> know what to do with each one.
+>>>>>
+>>>>> *Jr Web Dev team:*
+>>>>> Section 4, Step 6 and Section 7 are your references. The approved 
+>>>>> FSD is your specification for React UI generation. Read Section 7 
+>>>>> carefully — it shows you exactly what prompt to use when an FSD is 
+>>>>> handed to you for code conversion.
+>>>>>
+>>>>> *A word on how we got here*
+>>>>>
+>>>>> When I shared v1, I said: this is version 1, your feedback will 
+>>>>> shape version 2. You delivered. In less than a week, the team 
+>>>>> produced two substantive pieces of written feedback and one 
+>>>>> detailed 12-section critical analysis of a real form. That is not 
+>>>>> normal. Most teams wait to be asked.
+>>>>>
+>>>>> *The quality of SPINRISE depends on the quality of our FSDs.* The 
+>>>>> quality of our FSDs depends on the rigour of our process. The 
+>>>>> rigour of our process depends on each of you taking ownership of 
+>>>>> the part only you can contribute — your domain knowledge, your 
+>>>>> site experience, your module expertise.
+>>>>>
+>>>>> V2 reflects all of that. Bring the same energy to v2 that produced it.
+>>>>>
+>>>>> *What I need from you *
+>>>>>
+>>>>> Every developer and IST member: have read v2 in full.
+>>>>>
+>>>>> Module VB Developers: bring your Stage 0 readiness assessment for 
+>>>>> your assigned module — identify which screens are stable and which 
+>>>>> carry pending customisations.
+>>>>>
+>>>>> Mariyaiya: bring the updated PR form critical analysis with the v2 
+>>>>> FSD template applied (14 sections). Muthuvel’s IST review of that 
+>>>>> document, using the IST-1 to IST-7 questionnaire, should be underway.
+>>>>>
+>>>>> TL-Dev: bring the list of screens across all Phase 1 modules that 
+>>>>> have pending customisations or open corrections. This becomes the 
+>>>>> Stage 0 stabilisation backlog.
+>>>>>
+>>>>> PM: activate the Stage 0 pre-sprint tracking in PULSE 360 for all 
+>>>>> Phase 1 modules.
+>>>>>
+>>>>> *Saturday is when we lock the v2 process and start.*
+>>>>>
+>>>>> With appreciation for what this team has already contributed, and 
+>>>>> confidence in what it will deliver,
+>>>>> T Mani
+>>>>>
+>>>>> Attachment: SPINRISE_VB_FSD_Claude_Guide_v2.docx
+>>>>>
+>>>>> cc: Project Manager, TL-Dev, Full SPINRISE Team
+>>>>>
+>>>>> On 29/03/2026 08:48 pm, CEO wrote:
+>>>>>>
+>>>>>> Dear SPINRISE Team,
+>>>>>>
+>>>>>> I am sharing with you today a guide that I have personally put 
+>>>>>> together with the assistance of Claude.
+>>>>>>
+>>>>>> The document is attached: SPINRISE VB FSD Claude Guide v1.docx
+>>>>>>
+>>>>>> *Please read it fully at your own pace and share your feedback, 
+>>>>>> at the earliest.*
+>>>>>>
+>>>>>> *What this guide is*
+>>>>>>
+>>>>>> This guide explains, in plain English, how each of us uses Claude 
+>>>>>> to convert a VB6 screen into a Form Specification Document (FSD) 
+>>>>>> — and how that FSD then travels through our four-level review 
+>>>>>> chain before it is used to generate the new SPINRISE web screen.
+>>>>>>
+>>>>>> It covers:
+>>>>>>   • What an FSD is and why we need one for every VB6 screen
+>>>>>>   • The complete five-step process for the Module VB Developer
+>>>>>>   • The exact Claude prompt to use — ready to copy and paste
+>>>>>>   • The three follow-up questions to always ask Claude after the 
+>>>>>> first output
+>>>>>>   • The four-level review chain: Module Sr IST → TL-IST → PM → CEO
+>>>>>>   • What each reviewer specifically checks and signs off
+>>>>>>   • Quick reference cards you can print and keep at your desk
+>>>>>>
+>>>>>> *Who should read which sections
+>>>>>> *
+>>>>>> *Module VB Developers:*
+>>>>>> Section 3 is your primary reference. It walks you through all 
+>>>>>> five steps with the exact prompt, the before-and-after example 
+>>>>>> showing VB6 code versus Claude’s plain-English output, and the 
+>>>>>> three follow-up questions. Read this section carefully before you 
+>>>>>> begin your first FSD. The quick reference card in Section 7 is 
+>>>>>> your daily desk guide.
+>>>>>>
+>>>>>> *Module Sr IST Members:*
+>>>>>> Section 4, Level 1 is written for you. It explains exactly what 
+>>>>>> your review covers, how to write your annotations in the Word 
+>>>>>> document using the [IST ADD] and [IST CONFIRMED] tags, and what 
+>>>>>> you must sign off before the FSD moves to TL-IST.
+>>>>>>
+>>>>>> *TL-IST:*
+>>>>>> Section 4, Level 2 is your reference. You are the second domain 
+>>>>>> gate — the overall domain validation after the Module Sr IST has 
+>>>>>> done the first check. Your experience across all modules and all 
+>>>>>> customer sites is what this level brings to the FSD.
+>>>>>>
+>>>>>> *Project Manager:*
+>>>>>> Section 4, Level 3. Your role is completeness — not domain 
+>>>>>> accuracy. By the time the FSD reaches you, the domain has been 
+>>>>>> validated by two levels. Your question is: is this document 
+>>>>>> thorough enough for a developer to build the screen from scratch 
+>>>>>> without any ambiguity?
+>>>>>>
+>>>>>> *CEO:*
+>>>>>> Section 4, Level 4 and Section 6. The CEO review is the final 
+>>>>>> domain authority gate. No technical skill is needed. Only the 
+>>>>>> question: does this FSD accurately reflect how the business 
+>>>>>> process was designed to work, and does it carry forward the 
+>>>>>> knowledge that has been built over decades of spinning ERP 
+>>>>>> implementation?
+>>>>>>
+>>>>>> *A personal note*
+>>>>>>
+>>>>>> This process — Document, Validate, Convert — is the quality 
+>>>>>> backbone of SPINRISE. Every web screen we build is only as good 
+>>>>>> as the FSD behind it.
+>>>>>>
+>>>>>> I have been saying this since we began: we are not just migrating 
+>>>>>> a software platform. We are converting decades of accumulated 
+>>>>>> spinning ERP knowledge into a permanent, structured form that 
+>>>>>> will outlast the technology it runs on. Each FSD that is reviewed 
+>>>>>> and approved is a piece of that knowledge preserved correctly.
+>>>>>>
+>>>>>> I want every one of you to understand the process fully — not 
+>>>>>> just the step that applies to your role, but the complete journey 
+>>>>>> from VB6 code to live SPINRISE web screen. When everyone 
+>>>>>> understands the full chain, every handover between roles becomes 
+>>>>>> cleaner, faster, and more accurate.
+>>>>>>
+>>>>>> *What I need from you*
+>>>>>>
+>>>>>> Read the guide before this Saturday’s session.
+>>>>>>
+>>>>>> If any step is unclear, any instruction is ambiguous, or any 
+>>>>>> section does not match what you experience in practice — write it 
+>>>>>> down. *Share your feedback as reply to this mail.*
+>>>>>>
+>>>>>> This is version 1. Your feedback will shape version 2.
+>>>>>>
+>>>>>> With confidence in the team,
+>>>>>> T Mani
+>>>>>>
+>>>>>> Attachment: SPINRISE_VB_FSD_Claude_Guide_v1.docx
+>>>>>>
+--------------zs0aCKZflKXUrcMYuRcKBxi4
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <p>Dear Saravanan and Team,<br>
+      <br>
+      Thank you for the 08 April tracker. The revised format with daily
+      progress entries, the PULSE 360 column, Stage 0 sub-status, and
+      Target by 11 April columns is good — all seven corrections from my
+      earlier review have been applied.<br>
+      <br>
+      <b>The developer side of the tracker looks encouraging.</b>
+      Mariyaiya has the PR form FSD in progress with a target of 9 April
+      for PO form Stage 0 corrections. TL-Dev Sasi has cleaned the RMI
+      contract form dead code, generated a draft FSD, and prepared the
+      SPs — all due to the IST team today. Annamalai has removed dead
+      code and prepared table, view, and SP scripts for four Domestic
+      Sales transactions. Sathiskumar has correctly shifted to Daily
+      Attendance transactions as directed and has shared that FSD with
+      the IST team. This is solid progress from all four developers.<br>
+      <br>
+      <b>However the IST side of this tracker is a serious concern and I
+        need to address it directly.<br>
+      </b><br>
+      <b>Overdue — Action Items 1, 2, 3, 4</b><br>
+      <br>
+      All four IST members were asked to cross-check their module scope
+      against the Excel menu charts and revert to the PM by Monday 6
+      April EoD. Today is Thursday 9 April. All four items are still
+      showing Open with no daily progress entry and PULSE 360 = N.<br>
+      <br>
+      This applies to Muthuvel (M01), PM Saravanan himself (M02),
+      Seenivasan (M03), and TL-IST Palanivel (M04). I want to note
+      specifically that PM Saravanan's own IST task for M02 is also
+      overdue. The PM asking the team to fill PULSE 360 accurately while
+      his own rows show N for three of four entries is not acceptable. <b>Lead
+        by example or the instruction will not be followed.<br>
+      </b><br>
+      <b>All four scope cross-checks must be completed and submitted to
+        PM Saravanan by today, 9 April EoD without fail.</b><br>
+      <br>
+      <b>Muthuvel — PR Form IST Review</b><br>
+      <br>
+      Action Item 5 — the PR form IST review using the IST-1 to IST-7
+      questionnaire — shows no daily progress entry and PULSE 360 = N as
+      of today. The Vamshadhara gap document shows progress, which I
+      note. But the SPINRISE IST review is the single most critical
+      blocker for the first APPROVED FSD milestone. Without Muthuvel's
+      IST sign-off, the PR form cannot move to TL-IST, PM, and CEO
+      review. Without those, no approved FSD exists. Without an approved
+      FSD, Claude Code cannot begin production conversion.<br>
+      <br>
+      <b>Muthuvel, I need a clear commitment from you: when will the PR
+        form IST review (IST-1 to IST-7) be submitted? Please reply to
+        this mail with a specific date.</b><br>
+      <br>
+      <b>Seenivasan and TL-IST Palanivel<br>
+      </b><br>
+      Both rows show zero activity, zero PULSE 360 entries, and no daily
+      progress across all tasks. The developers you are supporting —
+      Annamalai and Sathiskumar — are actively submitting FSD work to
+      the IST team. That work is sitting in a queue with no one
+      reviewing it. Please begin your IST reviews immediately and update
+      the tracker and PULSE 360 today.<br>
+      <br>
+      <b>Abinandan and Hariharan — clarification needed<br>
+      </b><br>
+      Abinandan is using the PR form corrected critical analysis
+      document as a reference for ASP.NET Core development. This is
+      acceptable as a practice and trial exercise, consistent with
+      Mariyaiya's clarification earlier this week. Please confirm
+      explicitly in your next tracker update that this is practice work
+      and not production development against an approved FSD.<br>
+      <br>
+      Hariharan's row shows 'In Progress' in the daily remarks but PULSE
+      360 = N. PM to clarify in the next update: what specifically is
+      Hariharan working on, and is it exploratory React familiarisation
+      or production development? No approved FSD exists yet for any
+      SPINRISE screen.<br>
+      <br>
+      <b>Action Item 6 and Action Item 14</b><br>
+      <br>
+      Action Item 6 (SP identification for all modules) still shows Open
+      even though TL-Dev Sasi and Annamalai's daily progress entries
+      confirm SPs have been prepared for their modules. PM to update the
+      action item status to reflect the actual developer progress.<br>
+      <br>
+      Action Item 14 (Claude Pro subscriptions for Annamalai and
+      Sathiskumar) remains Open. This was due this week. PM Saravanan is
+      the owner. Please confirm activation status today.<br>
+      <br>
+      <br>
+      <b>Module Summary header</b><br>
+      <br>
+      The Module Summary sheet still shows <b>'As of 4 April 2026'.</b>
+      Please update to the correct date when submitting the next
+      tracker.<br>
+      <br>
+      <br>
+      <b><font size="4">For Saturday 11 April</font></b><br>
+      <br>
+      The picture heading into Saturday is this: all four developers are
+      active and progressing on Stage 0. The IST side is stalled on
+      scope verification and FSD reviews. If this gap is not closed in
+      the next two days, developers will arrive at Saturday's meeting
+      with completed Stage 0 work that has no IST verification against
+      it, and Sprint 0 activation will have to be deferred again.<br>
+      <br>
+      Saravanan, please personally follow up with Muthuvel, Seenivasan,
+      and TL-IST Palanivel today and confirm their overdue items are
+      completed by EoD 9 April, without deviation.<br>
+      <br>
+      Regards,<br>
+      T. Mani<br>
+      <br>
+      cc: TL-Dev Sasi, Mariyaiya, Annamalai, Sathiskumar, Muthuvel,
+      Seenivasan, TL-IST Palanivel, Abinandan, Hariharan</p>
+    <div class="moz-forward-container"><br>
+      -------- Forwarded Message --------
+      <table cellpadding="0" cellspacing="0" border="0"
+        class="moz-email-headers-table">
+        <tbody>
+          <tr>
+            <th valign="BASELINE" align="RIGHT" nowrap="nowrap">Subject:
+            </th>
+            <td>Re: SPINRISE — Minutes of Meeting | Progress Review | 4
+              April 2026 | PM Daily Tracker Status as 08/04/2026</td>
+          </tr>
+          <tr>
+            <th valign="BASELINE" align="RIGHT" nowrap="nowrap">Date: </th>
+            <td>Thu, 9 Apr 2026 08:45:03 +0530</td>
+          </tr>
+          <tr>
+            <th valign="BASELINE" align="RIGHT" nowrap="nowrap">From: </th>
+            <td>Saravanan Balakrishnan <a class="moz-txt-link-rfc2396E" href="mailto:pbsaravanan@kalsofte.com">&lt;pbsaravanan@kalsofte.com&gt;</a></td>
+          </tr>
+          <tr>
+            <th valign="BASELINE" align="RIGHT" nowrap="nowrap">To: </th>
+            <td>CEO <a class="moz-txt-link-rfc2396E" href="mailto:ceo@kalsofte.com">&lt;ceo@kalsofte.com&gt;</a></td>
+          </tr>
+          <tr>
+            <th valign="BASELINE" align="RIGHT" nowrap="nowrap">CC: </th>
+            <td>Support <a class="moz-txt-link-rfc2396E" href="mailto:support@kalsofte.com">&lt;support@kalsofte.com&gt;</a>, Quality Assurance
+              <a class="moz-txt-link-rfc2396E" href="mailto:qa@kalsofte.com">&lt;qa@kalsofte.com&gt;</a></td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      <br>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <p>Dear Sir,</p>
+      <p>Please find attached the SPINRISE activity status as of
+        08/04/2026 for your reference.</p>
+      Regards,<br>
+      P.B.Saravanan
+      <div class="moz-cite-prefix"><br>
+      </div>
+      <div class="moz-cite-prefix">On 06/04/2026 05:59 pm, CEO wrote:<br>
+      </div>
+      <blockquote type="cite"
+        cite="mid:d605c70a-4acc-4e37-b9a3-a4393c15c742@kalsofte.com">
+        <meta http-equiv="Content-Type"
+          content="text/html; charset=UTF-8">
+        <p>Dear Saravanan,<br>
+          <br>
+          Thank you for turning around the PM Daily Tracker so promptly
+          after Saturday's meeting. I have reviewed all three sheets —
+          the PM Daily Tracker, the Module Summary, and the Action Items
+          Log. <br>
+          <br>
+          The structure and thinking behind the tracker are right. The
+          three-sheet format — task-level detail, module-level
+          visibility, and a numbered action items log — is exactly the
+          right approach for a project of this complexity.<br>
+          <br>
+          <b>However, before I approve this for circulation, please
+            address the following.</b><br>
+          <br>
+          <b>CORRECTIONS AND ADDITIONS REQUIRED</b><br>
+          <br>
+          <b>1.  Daily update mechanism is missing.</b><br>
+          The tracker is titled 'PM Daily Tracker' but currently has no
+          column for recording daily progress. As it stands, it captures
+          the initial status from the MoM but provides no mechanism to
+          update progress day by day between now and Saturday. Please
+          add a 'Last Updated' date column and a 'Daily Progress /
+          Remarks' column to the PM Daily Tracker sheet. The PM should
+          update these every working day. Without daily entries, this
+          remains a point-in-time MoM snapshot rather than a living
+          tracker.<br>
+          <br>
+          <b>2.  PULSE 360 reference column is missing.</b><br>
+          The MoM stressed PULSE 360 logsheet accuracy as the primary
+          daily tracking tool. The tracker should have a 'PULSE 360
+          Updated' column (Y / N / Partial) that you verify each day
+          against the team's logsheet entries. This column is the bridge
+          between the tracker and PULSE 360 — without it, the two
+          systems operate independently with no daily cross-check.<br>
+          <br>
+          <b>3.  Infrastructure quotes deferral is not captured.</b><br>
+          Muthuvel presented the laptop and internet quotes on Saturday.
+          The decision was to defer procurement until the team moves
+          into code conversion. This decision must appear in the Action
+          Items Log: 'Retain hardware and internet quotes on file.
+          Review procurement decision when team transitions from Stage 0
+          to code conversion.' Owner: PM Saravanan. This ensures the
+          decision is on record and the quotes are not misplaced.<br>
+          <br>
+          <b>4.  Claude Pro subscriptions — reassign owner.</b><br>
+          Action Item #14 shows 'CEO / Admin' as owner for procuring
+          Claude Pro subscriptions for Annamalai and Sathiskumar. Please
+          change the owner to yourself. You are to confirm with me once
+          the subscriptions are activated this week. If the PM is
+          tracking an action, the PM owns the follow-up.<br>
+          <br>
+          <b>5.  Vamshadhara gap document — add specific deliverable.</b><br>
+          Muthuvel's Vamshadhara work is listed as a task row but the
+          Action Items Log only says 'Continue Vamshadhara gap doc'.
+          Please add the specific deliverable: 'Prepare Functional Gap
+          Analysis v1.2 and confirm demo environment readiness for
+          Vamshadhara Paper Mills.'<b> Owner: Yourself. Deadline:
+            Wednesday, 8th April 26'.<br>
+          </b><br>
+          <b>6.  Stage 0 sub-status granularity in Module Summary.</b><br>
+          M02 and M04 currently show as 'Initiated' with no further
+          detail. For a daily tracker to be useful, each module's Stage
+          0 status should reflect sub-steps: scope list confirmed, SPs
+          identified, dead code removed, screen readiness checklist
+          complete, TL-Dev sign-off done. Please add a 'Stage 0
+          Sub-Status' column or brief notes field that you update daily
+          as each sub-step is completed. A single word gives no
+          visibility between now and Saturday.<br>
+          <br>
+          <b>7.  Add a 'Target by 11 April' column to Module Summary.</b><br>
+          Each module should have an explicit column stating what must
+          be completed before the Saturday 11 April review meeting. For
+          example — M01: 3 remaining PO transactions + 10 CEO review
+          items addressed. M02: Scope list confirmed + SPs identified.
+          M03: Full Stage 0 checklist complete. M04: Payroll
+          transactions Stage 0 complete. This gives the review meeting a
+          clear pass/fail baseline for each module.<br>
+          <br>
+          <b>WHAT IS ALREADY CORRECT — RETAIN AS IS</b><br>
+          <br>
+          The meeting date (Saturday, 4 April 2026) and next review date
+          (Saturday, 11 April 2026) are both correct. The 16-item Action
+          Items Log with owners and deadlines fully matches the MoM. The
+          All Team Commitments section correctly captures all five CEO
+          directives including the SP stored procedures requirement.
+          Hariharan's 'Waiting' status correctly reflects his dependency
+          on approved FSD outputs. Abinandan's FastReports item is
+          correctly tagged 'In Progress'. <b>All 13 member task rows
+            are captured with the right priorities. Do not change any of
+            these.<br>
+          </b><br>
+          <b>Please revise the tracker with the above seven points and
+            resubmit for approval by today. </b>Once approved,
+          circulate to the full SPINRISE team. The tracker should then
+          be updated by you every working day and a daily status update
+          shared with me each morning until Saturday's review meeting.<br>
+          <br>
+          <b>Good initiative in getting this out. </b><br>
+          <br>
+          Regards,<br>
+          T. Mani<br>
+          <br>
+        </p>
+        <div class="moz-cite-prefix">On 06/04/2026 05:31 pm, Saravanan
+          Balakrishnan wrote:<br>
+        </div>
+        <blockquote type="cite"
+          cite="mid:0a1243aa-d0da-43c2-8a22-a53834f01943@kalsofte.com">
+          <meta http-equiv="Content-Type"
+            content="text/html; charset=UTF-8">
+          <p>Dear Sir,</p>
+          <p>As per the SPINRISE MoM, please find attached the Daily PM
+            Tracker report format for your review and approval.</p>
+          Regards,<br>
+          P.B.Saravanan
+          <div class="moz-cite-prefix"><br>
+          </div>
+          <div class="moz-cite-prefix">On 06/04/2026 01:20 pm, CEO
+            wrote:<br>
+          </div>
+          <blockquote type="cite"
+            cite="mid:4aa90e83-031d-4508-875f-29cff40d6292@kalsofte.com">
+            <meta http-equiv="Content-Type"
+              content="text/html; charset=UTF-8">
+            <p>Dear SPINRISE Team,<br>
+              <br>
+              Please find below the <b>Minutes of Meeting for the
+                SPINRISE</b> Project Progress Review held Saturday.<br>
+              <br>
+                Date    :  Saturday, 4 April 2026<br>
+                Time    :  5:00 PM — 7:00 PM<br>
+                Venue   :  Meeting Room<br>
+                Chaired :  T. Mani, Founder &amp; CEO<br>
+                Attendees: Full SPINRISE Team<br>
+              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+              <b>AGENDA 1  |  INFRASTRUCTURE — Laptops &amp; Internet</b><br>
+              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+              Muthuvel presented quotes from two laptop vendors and two
+              internet service providers.<br>
+              <br>
+              <b>DECISION: </b>Procurement deferred. As the team is
+              currently in Stage 0 readiness mode, the existing hardware
+              and internet capacity are sufficient for this phase. Once
+              the team moves into serious code conversion work, the
+              Claude-recommended development environment (i7, 32 GB RAM,
+              512 GB NVMe, 100 Mbps fibre) will be procured and set up
+              to ensure optimal productivity.<b> Muthuvel to keep quotes
+                on file.</b><br>
+              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+              <b>AGENDA 2  |  STAGE 0 READINESS — Module-Wise Status</b><br>
+              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+              <b>CEO instruction:</b> All IST team members to
+              cross-check their module scope against the Excel-based
+              menu charts and revert to the<b> PM by Monday 6 April, End
+                of Day.</b><br>
+              <br>
+                M01 — Purchase Order (PO) | Developer: Mariyaiya | IST:
+              Muthuvel<br>
+                PR form critical analysis completed and submitted (v2
+              FSD template — corrected version reviewed by CEO today).
+              Three remaining PO transactions to be completed during
+              this week.<br>
+              <br>
+                M02 — Raw Material Inventory (RMI) | Developer: TL-Dev
+              Sasi | IST: PM Saravanan<br>
+                Stage 0 readiness initiated by TL-Dev Sasi today as
+              confirmed in PULSE 360. To be progressed actively this
+              week.<br>
+              <br>
+                M03 — Domestic Sales | Developer: Annamalai | IST:
+              Seenivasan<br>
+                FSD preparation started on the Sales Order transaction.
+              Stage 0 readiness is not yet complete as per v2 guide
+              requirements. To be completed with balance transactions by
+              this Saturday, 12 April 2026.<br>
+              <br>
+                M04 — HR &amp; Payroll | Developer: Sathiskumar | IST:
+              TL-IST Palanivel<br>
+                Employee Master form feedback submitted. CEO
+              instruction: Focus on Payroll module transactions first,
+              then move to master forms. Stage 0 readiness for payroll
+              transactions started today.<br>
+              <br>
+              <b>ACTION — IST Team: </b>Verify each developer's module
+              scope reply, confirm corrections, and update PULSE 360 on
+              priority. This is to be done alongside regular ERP
+              customer support responsibilities.<br>
+              <br>
+              <b>IMPORTANT ADDITION (CEO): </b>SQL Server stored
+              procedures must be identified and included as part of
+              Stage 0 readiness for each module. The complete business
+              logic and validations embedded inside stored procedures
+              are a mandatory input for FSD preparation, as established
+              in the v2 guide.<br>
+            </p>
+            <p>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+              <b>AGENDA 3  |  PO MODULE — PR FORM IST REVIEW</b><br>
+              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+              Mariyaiya presented the updated corrected critical
+              analysis document.<br>
+              <br>
+              Muthuvel's IST review of the PR form using the IST-1 to
+              IST-7 questionnaire is awaited. Muthuvel is also currently
+              assigned the Functional Gap Analysis document for the
+              Vamshadhara Paper Mills prospect, given his specialization
+              in paper mill module implementation and support.<br>
+              <br>
+              <b>ACTION — Muthuvel: </b>Complete the PR form IST review
+              and revert at the earliest, managing both the SPINRISE IST
+              review and the Vamshadhara gap document in parallel.<br>
+              <br>
+              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+              <b>AGENDA 4  |  ACTIVE FSD WORK UPDATE</b><br>
+              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+              Covered under Agenda 2. Status of Annamalai (M03) and
+              Sathiskumar (M04) updated above.<br>
+              <br>
+              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+              <b>AGENDA 5  |  VB FSD CLAUDE GUIDE v2 — CONFIRMATION</b><br>
+              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+              <br>
+              Feedback discussed. Team expressed that the guide is
+              detailed and comprehensive. Members look forward to the
+              final version enriched with inputs from actual
+              transactions across M01 to M04.<br>
+              <br>
+              <b>CEO confirmed:</b> Claude will progressively refine the
+              guide based on real transaction feedback as the team works
+              through each module's screens. <b>This is a living
+                document that improves with every FSD cycle.<br>
+              </b><br>
+              <b>CEO reminder:</b> SQL Server stored procedures must be
+              included in Stage 0 readiness submissions — the guide's
+              Section 3 requirement on SP code collection applies to all
+              modules without exception.<br>
+              <br>
+              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+              <b>AGENDA 6  |  PULSE 360 — STAGE 0 TRACKING</b><br>
+              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+              <br>
+              <b>ACTION — PM Saravanan:</b> Actively coordinate with all
+              module developers on Stage 0 progress. Compile and present
+              a comprehensive Stage 0 readiness <b>update at next
+                Saturday's review meeting (12 April 2026).</b><br>
+              <br>
+              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+              <b>AGENDA 7  |  SPRINT 0 ACTIVATION</b><br>
+              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+              <br>
+              Sprint 0 activation is deferred pending Stage 0
+              completion.<br>
+              <br>
+              <b>CEO advice: </b>Take enough care in ensuring Stage 0
+              completeness this week. The schedule may flex, but the
+              quality of Stage 0 directly determines the accuracy of
+              SPINRISE code generation — minimal rework in ASP.NET Core
+              code is the goal. A weak Stage 0 means expensive
+              corrections after code is written. Do not rush it.<br>
+              <br>
+              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+              <b>AGENDA 8 &amp; ADDITIONAL POINTS DISCUSSED</b><br>
+              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+              <br>
+              <b>8a.  Abinandan — Trial Conversion &amp; FastReports</b><br>
+              Abinandan shared his progress on the PR form trial
+              conversion in ASP.NET Core, and highlighted the usefulness
+              of the Claude Pro subscription in accelerating this work.
+              He is also exploring options for migrating Crystal Reports
+              to FastReports, and will revert with findings. This will
+              inform the SPINRISE reporting architecture decision across
+              all modules.<br>
+              <br>
+              <b>8b.  Hariharan — React UI Assignment</b><br>
+              Hariharan (Jr Web Dev2) has been assigned to work on React
+              UI development for the transaction forms that are
+              currently in progress by the VB developers. He is to align
+              closely with the approved FSD outputs as they become
+              available.<br>
+              <br>
+              <b>8c.  Claude Pro Subscriptions</b><br>
+              Claude Pro is currently active for TL-Dev Sasi, Mariyaiya,
+              and Abinandan. Subscriptions for Annamalai and Sathiskumar
+              will be provided this week to remove the daily chat
+              duration constraint and accelerate their FSD preparation
+              work.<br>
+              <br>
+              <b>8d.  Claude AI vs Claude Code</b><br>
+              CEO observation: All team members are currently using
+              Claude AI (browser-based chat). This is appropriate and
+              sufficient for Stage 0 readiness and FSD preparation.
+              However, all developers are advised to get familiar with
+              Claude Code, which will be the primary tool for the actual
+              code migration work that follows. Begin exploring Claude
+              Code this week alongside your Stage 0 tasks.<br>
+              <br>
+              <b>8e.  Minimum Daily Commitment — SPINRISE Work</b><br>
+              CEO instruction: All SPINRISE team members are to dedicate
+              a minimum of 4 hours per day to SPINRISE tasks, in
+              addition to their assigned ERP customer support
+              responsibilities. This commitment is essential to meet the
+              31 March 2027 go-live target.<br>
+              <br>
+              <b>8f.  PULSE 360 Logsheet Accuracy</b><br>
+              CEO  stressed: PULSE 360 daily logsheets must be filled
+              accurately and on time. The logsheets are the primary tool
+              for tracking individual progress and the basis for the
+              weekly review meeting. Incomplete or inaccurate entries
+              affect the team's collective visibility of where the
+              project stands.<br>
+            </p>
+            <p>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+              <b>SUMMARY — THIS WEEK'S PRIORITY TASKS BY ROLE</b><br>
+              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+              <br>
+              <b>Mariyaiya (M01 PO)</b><br>
+                ▸ Complete Stage 0 + critical analysis for 3 remaining
+              PO transactions<br>
+                ▸ Address the 10 open items in CEO's review of the
+              corrected PR form document<br>
+              <br>
+              <b>TL-Dev Sasi (M02 RMI)</b><br>
+                ▸ Progress Stage 0 readiness for RMI module this week<br>
+                ▸ Include stored procedure identification in Stage 0
+              scope<br>
+              <br>
+              <b>Annamalai (M03 Domestic Sales)</b><br>
+                ▸ Complete Stage 0 readiness for all Domestic Sales
+              transactions<br>
+                ▸ Continue Sales Order FSD preparation<br>
+                ▸ Target: full update by Saturday 12 April<br>
+              <br>
+              <b>Sathiskumar (M04 HR &amp; Payroll)</b><br>
+                ▸ Focus on Payroll transactions first — not master forms<br>
+                ▸ Progress Stage 0 readiness for payroll transactions<br>
+                ▸ Continue FSD preparation<br>
+              <br>
+              <b>Muthuvel (IST — M01 PO + Vamshadhara)</b><br>
+                ▸ Complete PR form IST review (IST-1 to IST-7) at the
+              earliest<br>
+                ▸ Cross-check M01 PO module scope vs Excel menu chart —
+              revert to PM by Monday 6 Apr EoD<br>
+                ▸ Continue Vamshadhara Paper Mills gap document<br>
+              <br>
+              <b>PM Saravanan (IST — M02 RMI + Overall Coordination)</b><br>
+                ▸ Cross-check M02 RMI module scope vs Excel menu chart —
+              Monday 6 Apr EoD<br>
+                ▸ Coordinate Stage 0 progress across all modules<br>
+                ▸ Prepare Stage 0 readiness summary for Saturday 12
+              April review meeting<br>
+                ▸ Ensure PULSE 360 Stage 0 tracking is active and
+              accurate<br>
+              <br>
+              <b>Seenivasan (IST — M03 Domestic Sales)</b><br>
+                ▸ Cross-check M03 Sales module scope vs Excel menu chart
+              — Monday 6 Apr EoD<br>
+                ▸ Support Annamalai's Stage 0 readiness verification<br>
+              <br>
+              <b>TL-IST Palanivel (IST — M04 HR &amp; Payroll)</b><br>
+                ▸ Cross-check M04 Payroll module scope vs Excel menu
+              chart — Monday 6 Apr EoD<br>
+                ▸ Support Sathiskumar's Stage 0 readiness for payroll
+              transactions<br>
+              <br>
+              <b>Abinandan (Full Stack Dev)</b><br>
+                ▸ Continue PR form trial conversion in ASP.NET Core<br>
+                ▸ Complete FastReports vs Crystal Reports evaluation and
+              report findings<br>
+                ▸ Begin familiarizing with Claude Code<br>
+              <br>
+              <b>Hariharan (Jr Web Dev2)</b><br>
+                ▸ Begin React UI development for transaction forms in
+              progress<br>
+                ▸ Align with FSD outputs as approved FSDs become
+              available<br>
+              <br>
+              <b><font size="4">All Team Members</font></b><br>
+                ▸ Minimum 4 hours per day on SPINRISE tasks<br>
+                ▸ PULSE 360 logsheets to be filled daily and accurately<br>
+                ▸ Begin familiarising with Claude Code<br>
+                ▸ Claude Pro subscriptions to be utilised fully — no
+              chat duration constraints<br>
+              <br>
+              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+              <b>NEXT REVIEW MEETING</b><br>
+              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br>
+              <br>
+                Date    :  Saturday, 11 April 2026<br>
+                Time    :  To be confirmed<br>
+                Agenda  :  Stage 0 readiness update (all modules) |
+              Sprint 0 activation decision<br>
+                            Infrastructure procurement review |
+              Abinandan's FastReports findings<br>
+              <br>
+              <b>Let us make this week count.</b><br>
+              <br>
+              With confidence in the team,<br>
+              T. Mani<br>
+              <br>
+              cc: Project Manager, TL-Dev, Full SPINRISE Team</p>
+            <div class="moz-cite-prefix">On 04/04/2026 04:42 pm, CEO
+              wrote:<br>
+            </div>
+            <blockquote type="cite"
+cite="mid:e7913554-b231-4457-a4c2-4b5d8823e29f@kalsofte.com">
+              <meta http-equiv="Content-Type"
+                content="text/html; charset=UTF-8">
+              <p>Dear Team,<br>
+                <br>
+                This is to inform that a SPINRISE Project Progress
+                Review meeting is scheduled as below:<br>
+                <br>
+                  Date    :  Today, Saturday, 5 April 2026<br>
+                  Time    :  5:00 PM<br>
+                  Venue   :  Meeting Room<br>
+                <br>
+                All SPINRISE team members are requested to attend
+                without fail.<br>
+                <br>
+                <b><font size="5">Agenda</font></b><br>
+                <br>
+                1.  Infrastructure update — Muthuvel to present quotes
+                for i7 laptops and internet upgrade. Decision to be
+                taken today.<br>
+                <br>
+                2.  Stage 0 readiness — Each VB Developer to present
+                their module’s stabilisation status: screens that are
+                stable and ready for FSD, and screens with pending
+                customisations or open corrections.<br>
+                <br>
+                3.  PO Module — PR Form review — Mariyaiya to present
+                the updated Critical Analysis document (v2 FSD
+                template). Muthuvel to present IST review status using
+                IST-1 to IST-7 questionnaire.<br>
+                <br>
+                4.  Active FSD work update — Annamalai (M03 Domestic
+                Sales) and Sathiskumar (M04 HR &amp; Payroll) to give a
+                brief status on their FSD preparation progress.<br>
+                <br>
+                5.  v2 Guide confirmation — Confirm that all team
+                members have read the VB FSD Claude Guide v2 in full.
+                Open the floor for any questions or observations.<br>
+                <br>
+                6.  PM to confirm Stage 0 pre-sprint tracking activation
+                status for all Phase 1 modules.<br>
+                <br>
+                7.  Sprint 0 activation — Lock the process and confirm
+                start.<br>
+                <br>
+                8.  Any other points for discussion.<br>
+                <br>
+                <b>Please come prepared with your respective updates.
+                  Time is short — let us make this session focused and
+                  decisive.</b><br>
+                <br>
+                Regards,<br>
+                T Mani</p>
+              <div class="moz-cite-prefix">On 31/03/2026 01:27 pm, CEO
+                wrote:<br>
+              </div>
+              <blockquote type="cite"
+cite="mid:1b4ba4f5-9b74-4078-a3d3-648ece98648d@kalsofte.com">
+                <meta http-equiv="Content-Type"
+                  content="text/html; charset=UTF-8">
+                <p>Dear SPINRISE Team,<br>
+                  <br>
+                  <b>I am sharing with you today the updated VB FSD
+                    Claude Guide — Version 2.<br>
+                  </b><br>
+                  Attached: SPINRISE_VB_FSD_Claude_Guide_v2.docx<br>
+                  <br>
+                  Please read it fully before our Saturday session. <b>From
+                    the date of this mail, v2 is the operative guide for
+                    all FSD documentation work in SPINRISE. </b>V1 is
+                  superseded.<br>
+                  <br>
+                  <b><font size="4">Why v2 exists<br>
+                    </font></b><br>
+                  Version 2 was built entirely from what you told me.<br>
+                  <br>
+                  Three of you responded to my v1 circulation mail with
+                  observations that were technically sharp and
+                  practically important. I want to acknowledge each
+                  contribution by name, because the team should know
+                  where v2 came from.<br>
+                  <br>
+                  <b>Sathishkumar </b>pointed out that the Kalsofte ERP
+                  distributes business logic across Common modules,
+                  Class modules, and stored procedures — not just the
+                  .frm file. He also highlighted that the TC
+                  (Transaction Code) framework, which drives stock
+                  direction and accounting entries across most of our
+                  modules, is largely implemented inside stored
+                  procedures and would be missed entirely if only the
+                  form code was submitted to Claude.<br>
+                  <br>
+                  <b>Mariyaiya </b>raised a more fundamental concern:
+                  that several PR, PO, and Service PO screens have
+                  pending customer customisations in various stages of
+                  stability. Submitting unstabilised code to Claude
+                  would produce an FSD that documents an incomplete
+                  version of the screen — and that instability would be
+                  permanently carried into SPINRISE.<br>
+                  <br>
+                  <b>Mariyaiya then went further.</b> Before I could
+                  even respond, he produced a detailed critical analysis
+                  of the Purchase Requisition form (tmpPoindent.frm) — a
+                  9,108-line VB6 form — and shared it with Muthuvel for
+                  IST review. That document, which I have gone through
+                  in detail, identified 3 Critical defects, 3 High
+                  issues, 4 Medium issues, and 2 Low issues in the form
+                  code. It also proposed the four-category validation
+                  structure, the error message catalogue, the summary
+                  scorecard, and the customer variation register — all
+                  of which are now standard sections in the v2 FSD
+                  template.<br>
+                  <br>
+                  This is what good teamwork looks like. You were given
+                  a guide, you used it on a real form, you found its
+                  limits, and you reported back with precision. V2 is
+                  the direct result.<br>
+                  <br>
+                  <b><font size="4">What is new in v2<br>
+                    </font></b><br>
+                  For those who have read v1, here is what changed:<br>
+                  <br>
+                  Stage 0 is an entirely new mandatory phase that must
+                  be completed before any FSD documentation begins. It
+                  covers code stabilisation review, the screen readiness
+                  checklist, what to collect before opening Claude (no
+                  longer just the .frm file — now includes Common
+                  modules, Class modules, and all stored procedures),
+                  the TC framework reference table, the customer
+                  variation register, and the dead code identification
+                  step. Stage 0 is not optional. No FSD work begins on
+                  any screen until Stage 0 is complete and TL-Dev has
+                  signed off.<br>
+                  <br>
+                  The follow-up prompts grew from three to six. Three
+                  new prompts were added: one for Common and Class
+                  module logic, one for stored procedure business rules,
+                  and one specifically for TC framework documentation.
+                  These address the gap our first VB developer
+                  identified.<br>
+                  <br>
+                  The FSD template expanded from 8 sections to 14
+                  sections. The six new sections are the TC Framework,
+                  Common and Class Module Dependencies, Error Message
+                  Catalogue, Customer Variation Register, SPINRISE
+                  Migration Recommendations, and the Summary Scorecard.
+                  All six are mandatory for transaction screens.<br>
+                  <br>
+                  The review chain is updated to four levels with the
+                  full IST structured questionnaire (IST-1 to IST-7)
+                  that every Module Sr IST Member must answer for each
+                  form they review.<br>
+                  <br>
+                  A new Section 8 documents eight known defect patterns
+                  to actively search for in every VB6 form before
+                  submitting to Claude: application-terminating End
+                  statements, hardcoded customer IDs, SQL string
+                  concatenation, dead code blocks, inconsistent
+                  duplicate logic, hardcoded file paths, missing
+                  transaction rollback, and typos in error messages.
+                  Each pattern has the code signature to search for and
+                  the action to take.<br>
+                  <br>
+                  Three quick reference cards are now at the back: the
+                  Developer Daily Card, the four-column Reviewer
+                  Checklist, and the new Defect Patterns Card. Print all
+                  three and keep them at your desk.<br>
+                  <br>
+                  <b>How I need each of you to use this guide<br>
+                  </b><br>
+                  <b>Module VB Developers:</b><br>
+                  Section 3 (Stage 0) and Section 4 (the six steps and
+                  six prompts) are your primary reference. Read them in
+                  full. Before you begin any FSD, complete Stage 0 for
+                  that screen. Do not skip the Customer Variation
+                  Register. Do not submit dead code. Run all six
+                  follow-up prompts, not just the ones you feel are
+                  relevant.<br>
+                  <br>
+                  <b>Module Sr IST Members:</b><br>
+                  Section 6, Level 1 and the IST Structured
+                  Questionnaire (questions IST-1 to IST-7) are your
+                  reference. For every FSD you review, answer all seven
+                  questions. Section 8 (the defect patterns) is also
+                  important for you — you are the person most likely to
+                  know from site experience whether an
+                  application-terminating behaviour or a hardcoded
+                  customer variation has caused problems in practice.<br>
+                  <br>
+                  <b>TL-IST:</b><br>
+                  Section 6, Level 2. Your role is cross-module
+                  consistency. Pay particular attention to whether TC
+                  framework values and stored procedure business rules
+                  are consistent with how the same logic is handled in
+                  other modules you have implemented.<br>
+                  <br>
+                  <b>Project Manager:</b><br>
+                  Section 6, Level 3. Before any FSD reaches the CEO,
+                  confirm that all 14 sections are complete, all IST
+                  questions are answered, the customer variation
+                  register is filled, and the summary scorecard is
+                  present. An incomplete FSD must be returned to the
+                  developer, not passed forward.<br>
+                  <br>
+                  <b>New Developer (Abinandan):</b><br>
+                  Welcome again. This guide is your primary reference
+                  for how SPINRISE development works. Start by reading
+                  Section 3 (Stage 0) and Section 4. The defect patterns
+                  in Section 8 will be particularly useful as you begin
+                  reading Kalsofte VB6 code for the first time — you
+                  will encounter all of these patterns. Now you know
+                  what to do with each one.<br>
+                  <br>
+                  <b>Jr Web Dev team:</b><br>
+                  Section 4, Step 6 and Section 7 are your references.
+                  The approved FSD is your specification for React UI
+                  generation. Read Section 7 carefully — it shows you
+                  exactly what prompt to use when an FSD is handed to
+                  you for code conversion.<br>
+                  <br>
+                  <b><font size="4">A word on how we got here</font></b><br>
+                  <br>
+                  When I shared v1, I said: this is version 1, your
+                  feedback will shape version 2. You delivered. In less
+                  than a week, the team produced two substantive pieces
+                  of written feedback and one detailed 12-section
+                  critical analysis of a real form. That is not normal.
+                  Most teams wait to be asked.<br>
+                  <br>
+                  <b>The quality of SPINRISE depends on the quality of
+                    our FSDs.</b> The quality of our FSDs depends on the
+                  rigour of our process. The rigour of our process
+                  depends on each of you taking ownership of the part
+                  only you can contribute — your domain knowledge, your
+                  site experience, your module expertise.<br>
+                  <br>
+                  V2 reflects all of that. Bring the same energy to v2
+                  that produced it.<br>
+                  <br>
+                  <b><font size="4">What I need from you </font></b><br>
+                  <br>
+                  Every developer and IST member: have read v2 in full.<br>
+                  <br>
+                  Module VB Developers: bring your Stage 0 readiness
+                  assessment for your assigned module — identify which
+                  screens are stable and which carry pending
+                  customisations.<br>
+                  <br>
+                  Mariyaiya: bring the updated PR form critical analysis
+                  with the v2 FSD template applied (14 sections).
+                  Muthuvel’s IST review of that document, using the
+                  IST-1 to IST-7 questionnaire, should be underway.<br>
+                  <br>
+                  TL-Dev: bring the list of screens across all Phase 1
+                  modules that have pending customisations or open
+                  corrections. This becomes the Stage 0 stabilisation
+                  backlog.<br>
+                  <br>
+                  PM: activate the Stage 0 pre-sprint tracking in PULSE
+                  360 for all Phase 1 modules.<br>
+                  <br>
+                  <b>Saturday is when we lock the v2 process and start.</b><br>
+                  <br>
+                  With appreciation for what this team has already
+                  contributed, and confidence in what it will deliver,<br>
+                  T Mani<br>
+                  <br>
+                  Attachment: SPINRISE_VB_FSD_Claude_Guide_v2.docx<br>
+                  <br>
+                  cc: Project Manager, TL-Dev, Full SPINRISE Team</p>
+                <div class="moz-cite-prefix">On 29/03/2026 08:48 pm, CEO
+                  wrote:<br>
+                </div>
+                <blockquote type="cite"
+cite="mid:036f0737-960e-488e-b84c-8142e9220927@kalsofte.com">
+                  <meta http-equiv="content-type"
+                    content="text/html; charset=UTF-8">
+                  <p>Dear SPINRISE Team,<br>
+                    <br>
+                    I am sharing with you today a guide that I have
+                    personally put together with the assistance of
+                    Claude.<br>
+                    <br>
+                    The document is attached: SPINRISE VB FSD Claude
+                    Guide v1.docx<br>
+                    <br>
+                    <b>Please read it fully at your own pace and share
+                      your feedback, at the earliest.</b></p>
+                  <p><font size="4"><b>What this guide is</b></font><br>
+                    <br>
+                    This guide explains, in plain English, how each of
+                    us uses Claude to convert a VB6 screen into a Form
+                    Specification Document (FSD) — and how that FSD then
+                    travels through our four-level review chain before
+                    it is used to generate the new SPINRISE web screen.<br>
+                    <br>
+                    It covers:<br>
+                      • What an FSD is and why we need one for every VB6
+                    screen<br>
+                      • The complete five-step process for the Module VB
+                    Developer<br>
+                      • The exact Claude prompt to use — ready to copy
+                    and paste<br>
+                      • The three follow-up questions to always ask
+                    Claude after the first output<br>
+                      • The four-level review chain: Module Sr IST →
+                    TL-IST → PM → CEO<br>
+                      • What each reviewer specifically checks and signs
+                    off<br>
+                      • Quick reference cards you can print and keep at
+                    your desk<br>
+                    <br>
+                    <font size="4"><b>Who should read which sections<br>
+                      </b></font><br>
+                    <b>Module VB Developers:</b><br>
+                    Section 3 is your primary reference. It walks you
+                    through all five steps with the exact prompt, the
+                    before-and-after example showing VB6 code versus
+                    Claude’s plain-English output, and the three
+                    follow-up questions. Read this section carefully
+                    before you begin your first FSD. The quick reference
+                    card in Section 7 is your daily desk guide.<br>
+                    <br>
+                    <b>Module Sr IST Members:</b><br>
+                    Section 4, Level 1 is written for you. It explains
+                    exactly what your review covers, how to write your
+                    annotations in the Word document using the [IST ADD]
+                    and [IST CONFIRMED] tags, and what you must sign off
+                    before the FSD moves to TL-IST.<br>
+                    <br>
+                    <b>TL-IST:</b><br>
+                    Section 4, Level 2 is your reference. You are the
+                    second domain gate — the overall domain validation
+                    after the Module Sr IST has done the first check.
+                    Your experience across all modules and all customer
+                    sites is what this level brings to the FSD.<br>
+                    <br>
+                    <b>Project Manager:</b><br>
+                    Section 4, Level 3. Your role is completeness — not
+                    domain accuracy. By the time the FSD reaches you,
+                    the domain has been validated by two levels. Your
+                    question is: is this document thorough enough for a
+                    developer to build the screen from scratch without
+                    any ambiguity?<br>
+                    <br>
+                    <b>CEO:</b><br>
+                    Section 4, Level 4 and Section 6. The CEO review is
+                    the final domain authority gate. No technical skill
+                    is needed. Only the question: does this FSD
+                    accurately reflect how the business process was
+                    designed to work, and does it carry forward the
+                    knowledge that has been built over decades of
+                    spinning ERP implementation?<br>
+                    <br>
+                    <font size="4"><b>A personal note</b></font><br>
+                    <br>
+                    This process — Document, Validate, Convert — is the
+                    quality backbone of SPINRISE. Every web screen we
+                    build is only as good as the FSD behind it.<br>
+                    <br>
+                    I have been saying this since we began: we are not
+                    just migrating a software platform. We are
+                    converting decades of accumulated spinning ERP
+                    knowledge into a permanent, structured form that
+                    will outlast the technology it runs on. Each FSD
+                    that is reviewed and approved is a piece of that
+                    knowledge preserved correctly.<br>
+                    <br>
+                    I want every one of you to understand the process
+                    fully — not just the step that applies to your role,
+                    but the complete journey from VB6 code to live
+                    SPINRISE web screen. When everyone understands the
+                    full chain, every handover between roles becomes
+                    cleaner, faster, and more accurate.<br>
+                    <br>
+                    <b><font size="4">What I need from you</font></b><br>
+                    <br>
+                    Read the guide before this Saturday’s session.<br>
+                    <br>
+                    If any step is unclear, any instruction is
+                    ambiguous, or any section does not match what you
+                    experience in practice — write it down. <b>Share
+                      your feedback as reply to this mail.</b><br>
+                    <br>
+                    This is version 1. Your feedback will shape version
+                    2.<br>
+                    <br>
+                    With confidence in the team,<br>
+                    T Mani<br>
+                    <br>
+                    Attachment: SPINRISE_VB_FSD_Claude_Guide_v1.docx</p>
+                </blockquote>
+              </blockquote>
+            </blockquote>
+          </blockquote>
+        </blockquote>
+      </blockquote>
+    </div>
+  </body>
+</html>
+
+--------------zs0aCKZflKXUrcMYuRcKBxi4--
+--------------Z8ONE70VpQBLwI0fbYPHOfcn
+Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;
+ name="Copy of SPINRISE_PM_Tracker_08.04.26.xlsx"
+Content-Disposition: attachment; filename="Copy of
+ SPINRISE_PM_Tracker_08.04.26.xlsx"
+Content-Transfer-Encoding: base64
+
+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
+
+--------------Z8ONE70VpQBLwI0fbYPHOfcn--

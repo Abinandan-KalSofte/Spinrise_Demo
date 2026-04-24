@@ -1,0 +1,944 @@
+X-UIDL: UID52-1774868925
+X-Mozilla-Status: 0000
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <qa@kalsofte.com>
+Received: from murphy.nocdirect.com
+	by murphy.nocdirect.com with LMTP
+	id rb++IjqE2Gk6nyYAet6MXA
+	(envelope-from <qa@kalsofte.com>); Fri, 10 Apr 2026 00:01:46 -0500
+Return-path: <qa@kalsofte.com>
+Envelope-to: palanivel@kalsofte.com,
+ sathishkumar.m@kalsofte.com,
+ sasikumar.r@kalsofte.com,
+ pbsaravanan@kalsofte.com,
+ muthuvel.m@kalsofte.com,
+ support@kalsofte.com,
+ mariyaiya.m@kalsofte.com,
+ annamalai.s@kalsofte.com,
+ abinandan.n@kalsofte.com
+Delivery-date: Fri, 10 Apr 2026 00:01:46 -0500
+Received: from [49.204.235.253] (port=25379 helo=[172.16.16.101])
+	by murphy.nocdirect.com with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+	(Exim 4.99.1)
+	(envelope-from <qa@kalsofte.com>)
+	id 1wB400-0000000AcQI-1cka;
+	Fri, 10 Apr 2026 00:01:46 -0500
+Content-Type: multipart/alternative;
+ boundary="------------qZhJPet0ENW4RBJZQvl0ORtV"
+Message-ID: <2d830664-f15a-43ca-9aa0-0a1d21884211@kalsofte.com>
+Date: Fri, 10 Apr 2026 10:31:55 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: =?UTF-8?Q?Re=3A_SPINRISE_FSD_=E2=80=93_Daily_Attendance_Download_?=
+ =?UTF-8?Q?=7C_CEO/QA_Review_of_Clarification_Exchange?=
+To: Palanivel <palanivel@kalsofte.com>,
+ SathishKumarM <sathishkumar.m@kalsofte.com>
+Cc: Sasikumar R <sasikumar.r@kalsofte.com>,
+ pbsaravanan <pbsaravanan@kalsofte.com>, Muthuvel <muthuvel.m@kalsofte.com>,
+ 'Kalpatharu' <support@kalsofte.com>, Mariyaiya <mariyaiya.m@kalsofte.com>,
+ Annamalai s <annamalai.s@kalsofte.com>, Abinandhan <abinandan.n@kalsofte.com>
+References: <4da23ce5-2bb1-4d9d-9a32-7d55ef5bf5ee@kalsofte.com>
+ <b2dbb363-5aad-4f6c-a113-d1654a4bef7a@kalsofte.com>
+ <85a51777-387a-4feb-93e5-be3573c2f515@kalsofte.com>
+ <2e28b1c4-08ff-4a0e-b68e-bab624219989@kalsofte.com>
+ <083268ea-d2bf-4cc6-afa3-2abdcb48db4b@kalsofte.com>
+ <c0ef4649-781c-4ec1-9015-8689c8805a47@kalsofte.com>
+Content-Language: en-US
+From: Quality Assurance <qa@kalsofte.com>
+In-Reply-To: <c0ef4649-781c-4ec1-9015-8689c8805a47@kalsofte.com>
+
+This is a multi-part message in MIME format.
+--------------qZhJPet0ENW4RBJZQvl0ORtV
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+Dear Sathiskumar and Palanivel,
+
+Thank you both for this exchange. The clarification thread has added 
+meaningful value to the FSD in three specific areas, and I want to 
+acknowledge that before addressing what still needs to be completed.
+
+*What this exchange has confirmed and added*
+
+*Sathiskumar's Point 4 on Pr_DattExcept is an important correction to 
+the earlier IST response. *Palanivel's original answer described this 
+table as handling weekly-off attendance. Sathiskumar correctly expands 
+this: Pr_DattExcept is a general attendance exception holding table, 
+covering missing or incomplete punch data and irregular punch scenarios 
+in addition to weekly-off processing. This broader scope must be 
+reflected in the FSD. *In SPINRISE, this table's design must accommodate 
+all three categories of exception, not just weekly-off cases.
+*
+*Sathiskumar's Point 10 is a technically more precise statement than 
+what was provided earlier.* The write-protection is controlled by the 
+modifiedon field specifically — records where modifiedon is not null are 
+protected from overwrite during reprocessing, while system-generated 
+records where modifiedon is null can be refreshed. This distinction is 
+important for SPINRISE: the attendance correction interface must set 
+modifiedon when saving a manual edit, and the download reprocessing 
+logic must check this field before overwriting. *This must be documented 
+precisely in Section 5.*
+
+*The Additional Clarification is the most valuable item in this mail*. 
+Sathiskumar has named the screen that handles manual attendance 
+corrections: Payroll Daily Attendance Entry. This was one of the three 
+related screens I specifically asked for in my earlier review mail, and 
+it is the primary remediation path when the download produces a wrong 
+result. *Section 10 must be updated immediately with this screen name 
+and its purpose.*
+
+
+*Palanivel — on your sign-off*
+
+I appreciate your review, but I want to be direct: the statement that 
+the points are found to be in order cannot be treated as a formal TL-IST 
+sign-off at this stage. Two of the three related screens I asked you to 
+name are still missing from this thread, and the stored procedure code 
+for KSP_AttendanceTransferDate has not been provided. A sign-off on a 
+document with incomplete sections is not a valid sign-off. Please note 
+this for future reference — *the IST review is complete when the 
+document is complete, not when the conversation feels resolved.*
+
+*The two screen names still required from you are:* the screen that 
+reviews Pr_DattExcept records and allows HR to decide whether to credit 
+attendance or treat as OT for weekly-off exceptions, and the screen 
+where provisional OT entries are verified and modified by HR before 
+finalisation. *Please provide both names in your next reply.*
+
+
+*KSP_AttendanceTransferDate stored procedure — final reminder*
+
+Both of you have now agreed twice that this SP performs day-by-day 
+consistent processing. I understand and accept what it does. What I 
+need, and what Section 8 of the FSD requires, is the SQL code. Agreement 
+on purpose is not a substitute for documented logic. A future SPINRISE 
+developer reading this FSD must know what this procedure does line by 
+line, not just what it is intended to achieve. Please obtain the code 
+from SQL Server Management Studio and submit it to Claude using 
+Follow-up Prompt B from the v2 guide. *This is non-negotiable before the 
+document proceeds to my review.
+*
+
+*For Sathiskumar — FSD update checklist*
+
+Before resubmitting the document, please confirm all of the following 
+have been done. These include items from my previous review mail that 
+have not yet been confirmed as completed:
+
+ From this exchange: Update Section 11 Customer Variation Register with 
+the broader Pr_DattExcept scope covering three exception categories. 
+Update Section 5 Business Logic with the precise modifiedon 
+write-protection rule. Add Payroll Daily Attendance Entry to Section 10 
+Related Screens with its purpose described.
+
+ From my previous review mail: Add Stage 0 Checklist status R1 through 
+R8 and TL-Dev Sasi sign-off to the document header. Add Section 6 TC 
+Framework with the explicit statement that this form does not carry a TC 
+value. Document the single canonical OT calculation formula in Section 
+5, identifying which of the two duplicated subroutines represents the 
+correct logic. Add SPINRISE structured exception type for each of error 
+messages E14 through E18. Record the PR_tmp_Atten session-safety design 
+decision once confirmed with TL-Dev Sasi.
+
+*Resubmit the updated document once all the above are reflected and the 
+two screen names and SP code have been received from Palanivel.
+*
+
+*Overall assessment*
+
+The developer-IST collaboration on this form is working correctly. 
+Sathiskumar is engaging with the technical detail and correcting where 
+needed rather than simply agreeing. Palanivel is reviewing promptly. 
+What we need now is completeness, not just alignment. A document that 
+records what the team agrees on is still incomplete if it is missing 
+three screen names and one stored procedure analysis.
+
+*Close these gaps and this FSD can reach CEO approval ahead of the PO 
+module PR form.*
+
+Regards,
+T. Mani
+
+cc: TL-Dev Sasi, PM Saravanan
+
+On 09/04/2026 06:54 pm, Palanivel wrote:
+>
+> Dear Mr.Sathishkumar,
+>
+>   I have reviewed the additional clarification points provided, and 
+> the same are found to be in order.
+>
+> Thanks & Regards,
+>
+> V. Palanivel
+>
+> On 09/04/2026 04:23 pm, SathishKumarM wrote:
+>>
+>> Dear Sir,
+>>
+>> Thank you for the detailed clarifications provided on the Daily 
+>> Attendance Download process.
+>>
+>> We have reviewed all the points, and the explanations are largely 
+>> aligned with the current system design. Please find below our 
+>> consolidated understanding and a few additional clarifications based 
+>> on system behavior:
+>>
+>> ------------------------------------------------------------------------
+>>
+>>
+>>       1. Multiple Punches per Shift
+>>
+>> Agreed. The system considers multiple In/Out punches to derive 
+>> accurate working time.
+>> Worked minutes are calculated by summing all valid punch pairs, 
+>> ensuring that break intervals are excluded from productive time.
+>>
+>> ------------------------------------------------------------------------
+>>
+>>
+>>       2. mac_ticketno vs ticketno
+>>
+>> Agreed. The system maps biometric data using |mac_ticketno|with 
+>> |ticketno|through Employee Master, allowing flexibility where both 
+>> differ across mills.
+>>
+>> ------------------------------------------------------------------------
+>>
+>>
+>>       3. Night Festival Holiday (NFH) Flag
+>>
+>> Agreed. NFH eligibility is handled as per statutory requirements, and 
+>> the system assigns the appropriate attendance flag based on employee 
+>> eligibility and presence.
+>>
+>> ------------------------------------------------------------------------
+>>
+>>
+>>       4. Pr_DattExcept Table (Weekly-Off / Exception Handling)
+>>
+>> Partially aligned. In the system, *Pr_DattExcept*is primarily used 
+>> for handling:
+>>
+>>   * Missing or incomplete punch data
+>>   * Irregular punch scenarios
+>>
+>> Weekly-off working is derived through shift configuration and 
+>> processed accordingly (Present/OT) based on setup.
+>>
+>> ------------------------------------------------------------------------
+>>
+>>
+>>       5. PostOT_AttnDwnd Flag
+>>
+>> Agreed. OT calculated during attendance download is provisional. 
+>> Final OT is subject to HR verification and can be modified in the 
+>> Payroll module before finalization.
+>>
+>> ------------------------------------------------------------------------
+>>
+>>
+>>       6. Attendance Lock (PR_AttendanceOTLock)
+>>
+>> Agreed. Attendance is locked by HR Admin after validation, preventing 
+>> further modifications.
+>>
+>> ------------------------------------------------------------------------
+>>
+>>
+>>       7. KSP_AttendanceTransferDate (Stored Procedure)
+>>
+>> Agreed. This procedure ensures consistent day-by-day processing, 
+>> aligning batch execution with transactional logic.
+>>
+>> ------------------------------------------------------------------------
+>>
+>>
+>>       8. Actual Shift vs Scheduled Shift (ActShift)
+>>
+>> Agreed. ActShift is derived based on actual punch timings and shift 
+>> definitions. It is system-calculated and not directly captured from 
+>> the biometric device.
+>>
+>> ------------------------------------------------------------------------
+>>
+>>
+>>       9. Half-Day Threshold Formula
+>>
+>> Agreed. Half-day and full-day eligibility are configurable in Shift 
+>> Setup and are applied dynamically during attendance processing.
+>>
+>> ------------------------------------------------------------------------
+>>
+>>
+>>       10. modifiedon Protection
+>>
+>> Slight clarification:
+>> During reprocessing, records with *manual modifications (modifiedon 
+>> is not null)*are *not overwritten*by the system. This ensures that 
+>> user-corrected data remains intact, while system-generated records 
+>> can be refreshed.
+>>
+>> ------------------------------------------------------------------------
+>>
+>>
+>>       Additional Clarification (Important)
+>>
+>> The attendance download process is strictly limited to *biometric 
+>> data processing*and is system-driven.
+>>
+>> Any manual corrections such as:
+>>
+>>   * Attendance status changes
+>>   * OT adjustments
+>>   * Punch corrections
+>>
+>> are performed separately in the *Payroll Daily Attendance Entry *, 
+>> ensuring proper audit control and data integrity.
+>>
+>> ------------------------------------------------------------------------
+>>
+>> Kindly let us know if any further clarification is required.
+>>
+>> Thanks & Regards
+>>
+>> M.Sathishkumar
+>>
+>> On 09/04/2026 02:48 pm, Palanivel wrote:
+>>>
+>>> Dear Mr. Sathishkumar,
+>>>
+>>> Please find below the clarifications for the IST Review Questions 
+>>> pertaining to the FSD document:
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> *1. Multiple Punches per Shift*
+>>> *Clarification:*
+>>> Multiple punches (In/Out) are considered to accurately capture 
+>>> actual working time excluding break periods.
+>>>
+>>> *Example Logic:*
+>>> Net Worked Time = (OutTime1 − InTime1) + (OutTime2 − InTime2)
+>>> = 233 + 217 = 450 minutes
+>>>
+>>> Break Duration = 30 minutes (excluded from productive time)
+>>>
+>>> For a standard shift of 480 minutes with a 30-minute scheduled 
+>>> break, the expected net working time is 450 minutes.
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> *2. mac_ticketno vs ticketno*
+>>> *Clarification:*
+>>> In most mills, both values are identical. However, where differences 
+>>> exist, a *mapping facility is available in the Employee Master*to 
+>>> link /mac_ticketno/with /ticketno/.
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> *3. Night Festival Holiday (NFH) Flag*
+>>> *Clarification:*
+>>> This is a *statutory requirement under the Tamil Nadu Shops and 
+>>> Establishments Act*.
+>>>
+>>>   * If an employee works on NFH → Eligible for one additional day
+>>>     salary (either OT or regular pay as per policy)
+>>>   * If absent → Still eligible for NFH salary
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> *4. Pr_DattExcept Table (Weekly-Off Attendance)*
+>>> *Clarification:*
+>>> Employees who work on weekly off are processed based on 
+>>> mill-specific configuration:
+>>>
+>>>   * Either marked as *Present*, or
+>>>   * Treated as *Overtime (OT)*
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> *5. PostOT_AttnDwnd Flag*
+>>> *Clarification:*
+>>> OT calculated during attendance download is *provisional*.
+>>>
+>>> HR personnel are responsible for:
+>>>
+>>>   * Verification
+>>>   * Modification (if required)
+>>>     based on disciplinary or punch irregularities.
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> *6. Attendance Lock (PR_AttendanceOTLock)*
+>>> *Clarification:*
+>>> Attendance locking is performed by the *HR Admin*after verifying and 
+>>> reconciling daily attendance records.
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> *7. KSP_AttendanceTransferDate (Stored Procedure)*
+>>> *Clarification:*
+>>> This procedure performs *day-by-day replication of attendance 
+>>> logic*, ensuring consistency with transactional calculations.
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> *8. Actual Shift vs Scheduled Shift (ActShift)*
+>>> *Clarification:*
+>>> Differences occur when employees work on *weekly off or 
+>>> non-scheduled days*.
+>>>
+>>>   * ActShift is *derived from shift setup*based on actual In/Out punches
+>>>   * It is not directly captured from the biometric device
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> *9. Half-Day Threshold Formula*
+>>> *Clarification:*
+>>> The half-day and full-day eligibility criteria are 
+>>> *customer-configurable*within the Shift Setup:
+>>>
+>>>   * “Half Day From”
+>>>   * “Full Day From”
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> *10. modifiedon Protection*
+>>> *Clarification:*
+>>> Manually edited records in *Pr_Datt*are overwritten during updates; 
+>>> however:
+>>>
+>>>   * All modifications are *logged within the ERP system*
+>>>   * Manual correction is performed through the *attendance
+>>>     correction interface*
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> Kindly review the above clarifications and provide your feedback.
+>>>
+>>> Thanks & Regards,
+>>> *V. Palanivel*
+>>>
+>>> On 07/04/2026 04:16 pm, SathishKumarM wrote:
+>>>>
+>>>> Dear Sir,
+>>>>
+>>>> Please kindly ignore my previous email, as the subject line was 
+>>>> mistakenly mentioned as “Sunrise” instead of “Spinrise.”
+>>>>
+>>>> I sincerely apologize for the error and any confusion it may have 
+>>>> caused.
+>>>>
+>>>> Thank you for your understanding.
+>>>>
+>>>> Thanks & Regards,
+>>>> M.Sathishkumar
+>>>>
+>>>>
+>>>> On 07/04/2026 04:06 pm, SathishKumarM wrote:
+>>>>>
+>>>>> Dear Sir,
+>>>>>
+>>>>> I have prepared the FSD draft for the 
+>>>>> FrmDailyAttendanceDownloadsql.FRM screen as part of the SPINRISE 
+>>>>> documentation initiative.
+>>>>>
+>>>>> The document covers a comprehensive analysis of the VB6 form, 
+>>>>> including screen structure, field definitions, validation logic, 
+>>>>> business rules, database interactions, and related process flows.
+>>>>>
+>>>>> All sections have been compiled as per the FSD v2 template.
+>>>>>
+>>>>> The document is attached in Word format for your review.
+>>>>>
+>>>>> Kindly go through the details and provide your feedback and 
+>>>>> confirmation.
+>>>>>
+>>>>> Thanks & Regards,
+>>>>>
+>>>>> M.Sathishkumar
+>>>>>
+>>>>>
+>>>>> On 04/04/2026 01:36 pm, SathishKumarM wrote:
+>>>>>>
+>>>>>> Dear Sir,
+>>>>>>
+>>>>>> I have prepared the FSD draft for the PREmployee screen as part 
+>>>>>> of the SPINRISE documentation initiative.
+>>>>>>
+>>>>>> The document covers a comprehensive analysis of the VB6 form, 
+>>>>>> including screen structure, field definitions, validation logic, 
+>>>>>> business rules, database interactions, and related process flows.
+>>>>>>
+>>>>>> All sections have been compiled as per the FSD v2 template.
+>>>>>>
+>>>>>> The document is attached in Word format for your review.
+>>>>>>
+>>>>>> Kindly go through the details and provide your feedback and 
+>>>>>> confirmation.
+>>>>>>
+>>>>>> Thanks & Regards,
+>>>>>>
+>>>>>> M.Sathishkumar
+>>>>>>
+>>>>>>
+--------------qZhJPet0ENW4RBJZQvl0ORtV
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <p>Dear Sathiskumar and Palanivel,<br>
+      <br>
+      Thank you both for this exchange. The clarification thread has
+      added meaningful value to the FSD in three specific areas, and I
+      want to acknowledge that before addressing what still needs to be
+      completed.<br>
+      <br>
+      <font size="4"><b>What this exchange has confirmed and added</b></font><br>
+      <br>
+      <b>Sathiskumar's Point 4 on Pr_DattExcept is an important
+        correction to the earlier IST response. </b>Palanivel's
+      original answer described this table as handling weekly-off
+      attendance. Sathiskumar correctly expands this: Pr_DattExcept is a
+      general attendance exception holding table, covering missing or
+      incomplete punch data and irregular punch scenarios in addition to
+      weekly-off processing. This broader scope must be reflected in the
+      FSD. <b>In SPINRISE, this table's design must accommodate all
+        three categories of exception, not just weekly-off cases.<br>
+      </b><br>
+      <b>Sathiskumar's Point 10 is a technically more precise statement
+        than what was provided earlier.</b> The write-protection is
+      controlled by the modifiedon field specifically — records where
+      modifiedon is not null are protected from overwrite during
+      reprocessing, while system-generated records where modifiedon is
+      null can be refreshed. This distinction is important for SPINRISE:
+      the attendance correction interface must set modifiedon when
+      saving a manual edit, and the download reprocessing logic must
+      check this field before overwriting. <b>This must be documented
+        precisely in Section 5.</b><br>
+      <br>
+      <b>The Additional Clarification is the most valuable item in this
+        mail</b>. Sathiskumar has named the screen that handles manual
+      attendance corrections: Payroll Daily Attendance Entry. This was
+      one of the three related screens I specifically asked for in my
+      earlier review mail, and it is the primary remediation path when
+      the download produces a wrong result. <b>Section 10 must be
+        updated immediately with this screen name and its purpose.</b><br>
+      <br>
+      <br>
+      <font size="4"><b>Palanivel — on your sign-off</b></font><br>
+      <br>
+      I appreciate your review, but I want to be direct: the statement
+      that the points are found to be in order cannot be treated as a
+      formal TL-IST sign-off at this stage. Two of the three related
+      screens I asked you to name are still missing from this thread,
+      and the stored procedure code for KSP_AttendanceTransferDate has
+      not been provided. A sign-off on a document with incomplete
+      sections is not a valid sign-off. Please note this for future
+      reference — <b>the IST review is complete when the document is
+        complete, not when the conversation feels resolved.</b><br>
+      <br>
+      <b>The two screen names still required from you are:</b> the
+      screen that reviews Pr_DattExcept records and allows HR to decide
+      whether to credit attendance or treat as OT for weekly-off
+      exceptions, and the screen where provisional OT entries are
+      verified and modified by HR before finalisation. <b>Please
+        provide both names in your next reply.</b><br>
+      <br>
+      <br>
+      <b><font color="#ff0000">KSP_AttendanceTransferDate stored
+          procedure — final reminder</font></b><br>
+      <br>
+      Both of you have now agreed twice that this SP performs day-by-day
+      consistent processing. I understand and accept what it does. What
+      I need, and what Section 8 of the FSD requires, is the SQL code.
+      Agreement on purpose is not a substitute for documented logic. A
+      future SPINRISE developer reading this FSD must know what this
+      procedure does line by line, not just what it is intended to
+      achieve. Please obtain the code from SQL Server Management Studio
+      and submit it to Claude using Follow-up Prompt B from the v2
+      guide. <b>This is non-negotiable before the document proceeds to
+        my review.<br>
+      </b><br>
+      <br>
+      <font size="4"><b>For Sathiskumar — FSD update checklist</b></font><br>
+      <br>
+      Before resubmitting the document, please confirm all of the
+      following have been done. These include items from my previous
+      review mail that have not yet been confirmed as completed:<br>
+      <br>
+      From this exchange: Update Section 11 Customer Variation Register
+      with the broader Pr_DattExcept scope covering three exception
+      categories. Update Section 5 Business Logic with the precise
+      modifiedon write-protection rule. Add Payroll Daily Attendance
+      Entry to Section 10 Related Screens with its purpose described.<br>
+      <br>
+      From my previous review mail: Add Stage 0 Checklist status R1
+      through R8 and TL-Dev Sasi sign-off to the document header. Add
+      Section 6 TC Framework with the explicit statement that this form
+      does not carry a TC value. Document the single canonical OT
+      calculation formula in Section 5, identifying which of the two
+      duplicated subroutines represents the correct logic. Add SPINRISE
+      structured exception type for each of error messages E14 through
+      E18. Record the PR_tmp_Atten session-safety design decision once
+      confirmed with TL-Dev Sasi.<br>
+      <br>
+      <b>Resubmit the updated document once all the above are reflected
+        and the two screen names and SP code have been received from
+        Palanivel.<br>
+      </b><br>
+      <br>
+      <b><font size="4">Overall assessment</font></b><br>
+      <br>
+      The developer-IST collaboration on this form is working correctly.
+      Sathiskumar is engaging with the technical detail and correcting
+      where needed rather than simply agreeing. Palanivel is reviewing
+      promptly. What we need now is completeness, not just alignment. A
+      document that records what the team agrees on is still incomplete
+      if it is missing three screen names and one stored procedure
+      analysis.<br>
+      <br>
+      <b>Close these gaps and this FSD can reach CEO approval ahead of
+        the PO module PR form.</b><br>
+      <br>
+      Regards,<br>
+      T. Mani<br>
+      <br>
+      cc: TL-Dev Sasi, PM Saravanan</p>
+    <div class="moz-cite-prefix">On 09/04/2026 06:54 pm, Palanivel
+      wrote:<br>
+    </div>
+    <blockquote type="cite"
+      cite="mid:c0ef4649-781c-4ec1-9015-8689c8805a47@kalsofte.com">
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <p>Dear Mr.Sathishkumar,</p>
+      <p>  I have reviewed the additional clarification points provided,
+        and the same are found to be in order.</p>
+      <p>Thanks &amp; Regards,</p>
+      <p>V. Palanivel</p>
+      <div class="moz-cite-prefix">On 09/04/2026 04:23 pm, SathishKumarM
+        wrote:<br>
+      </div>
+      <blockquote type="cite"
+        cite="mid:083268ea-d2bf-4cc6-afa3-2abdcb48db4b@kalsofte.com">
+        <p class="isSelectedEnd"><span>Dear Sir,</span></p>
+        <p class="isSelectedEnd"><span>Thank you for the detailed
+            clarifications provided on the Daily Attendance Download
+            process.</span></p>
+        <p class="isSelectedEnd"><span>We have reviewed all the points,
+            and the explanations are largely aligned with the current
+            system design. Please find below our consolidated
+            understanding and a few additional clarifications based on
+            system behavior:</span></p>
+        <div contenteditable="false">
+          <hr></div>
+        <h3><span>1. Multiple Punches per Shift</span></h3>
+        <p class="isSelectedEnd"><span>Agreed. The system considers
+            multiple In/Out punches to derive accurate working time.</span><br>
+          <span>Worked minutes are calculated by summing all valid punch
+            pairs, ensuring that break intervals are excluded from
+            productive time.</span></p>
+        <div contenteditable="false">
+          <hr></div>
+        <h3><span>2. mac_ticketno vs ticketno</span></h3>
+        <p class="isSelectedEnd"><span>Agreed. The system maps biometric
+            data using </span><code dir="ltr"><span>mac_ticketno</span></code><span>
+            with </span><code dir="ltr"><span>ticketno</span></code><span>
+            through Employee Master, allowing flexibility where both
+            differ across mills.</span></p>
+        <div contenteditable="false">
+          <hr></div>
+        <h3><span>3. Night Festival Holiday (NFH) Flag</span></h3>
+        <p class="isSelectedEnd"><span>Agreed. NFH eligibility is
+            handled as per statutory requirements, and the system
+            assigns the appropriate attendance flag based on employee
+            eligibility and presence.</span></p>
+        <div contenteditable="false">
+          <hr></div>
+        <h3><span>4. Pr_DattExcept Table (Weekly-Off / Exception
+            Handling)</span></h3>
+        <p class="isSelectedEnd"><span>Partially aligned. In the system,
+          </span><strong><span>Pr_DattExcept</span></strong><span> is
+            primarily used for handling:</span></p>
+        <ul data-spread="false">
+          <li><span>Missing or incomplete punch data</span></li>
+          <li><span>Irregular punch scenarios</span></li>
+        </ul>
+        <p class="isSelectedEnd"><span>Weekly-off working is derived
+            through shift configuration and processed accordingly
+            (Present/OT) based on setup.</span></p>
+        <div contenteditable="false">
+          <hr></div>
+        <h3><span>5. PostOT_AttnDwnd Flag</span></h3>
+        <p class="isSelectedEnd"><span>Agreed. OT calculated during
+            attendance download is provisional. Final OT is subject to
+            HR verification and can be modified in the Payroll module
+            before finalization.</span></p>
+        <div contenteditable="false">
+          <hr></div>
+        <h3><span>6. Attendance Lock (PR_AttendanceOTLock)</span></h3>
+        <p class="isSelectedEnd"><span>Agreed. Attendance is locked by
+            HR Admin after validation, preventing further modifications.</span></p>
+        <div contenteditable="false">
+          <hr></div>
+        <h3><span>7. KSP_AttendanceTransferDate (Stored Procedure)</span></h3>
+        <p class="isSelectedEnd"><span>Agreed. This procedure ensures
+            consistent day-by-day processing, aligning batch execution
+            with transactional logic.</span></p>
+        <div contenteditable="false">
+          <hr></div>
+        <h3><span>8. Actual Shift vs Scheduled Shift (ActShift)</span></h3>
+        <p class="isSelectedEnd"><span>Agreed. ActShift is derived based
+            on actual punch timings and shift definitions. It is
+            system-calculated and not directly captured from the
+            biometric device.</span></p>
+        <div contenteditable="false">
+          <hr></div>
+        <h3><span>9. Half-Day Threshold Formula</span></h3>
+        <p class="isSelectedEnd"><span>Agreed. Half-day and full-day
+            eligibility are configurable in Shift Setup and are applied
+            dynamically during attendance processing.</span></p>
+        <div contenteditable="false">
+          <hr></div>
+        <h3><span>10. modifiedon Protection</span></h3>
+        <p class="isSelectedEnd"><span>Slight clarification:</span><br>
+          <span>During reprocessing, records with </span><strong><span>manual
+              modifications (modifiedon is not null)</span></strong><span>
+            are </span><strong><span>not overwritten</span></strong><span>
+            by the system. This ensures that user-corrected data remains
+            intact, while system-generated records can be refreshed.</span></p>
+        <div contenteditable="false">
+          <hr></div>
+        <h3><span>Additional Clarification (Important)</span></h3>
+        <p class="isSelectedEnd"><span>The attendance download process
+            is strictly limited to </span><strong><span>biometric data
+              processing</span></strong><span> and is system-driven.</span></p>
+        <p class="isSelectedEnd"><span>Any manual corrections such as:</span></p>
+        <ul data-spread="false">
+          <li><span>Attendance status changes</span></li>
+          <li><span>OT adjustments</span></li>
+          <li><span>Punch corrections</span></li>
+        </ul>
+        <p class="isSelectedEnd"><span>are performed separately in the </span><strong><span>Payroll
+              Daily Attendance Entry </span></strong><span>, ensuring
+            proper audit control and data integrity.</span></p>
+        <div contenteditable="false">
+          <hr></div>
+        <p><span>Kindly let us know if any further clarification is
+            required.</span></p>
+        <p>Thanks &amp; Regards</p>
+        <p>M.Sathishkumar</p>
+        <div class="moz-cite-prefix">On 09/04/2026 02:48 pm, Palanivel
+          wrote:<br>
+        </div>
+        <blockquote type="cite"
+          cite="mid:2e28b1c4-08ff-4a0e-b68e-bab624219989@kalsofte.com">
+          <p class="isSelectedEnd"><span>Dear Mr. Sathishkumar,</span></p>
+          <p class="isSelectedEnd"><span>Please find below the
+              clarifications for the IST Review Questions pertaining to
+              the FSD document:</span></p>
+          <div contenteditable="false">
+            <hr></div>
+          <p class="isSelectedEnd"><strong><span>1. Multiple Punches per
+                Shift</span></strong><br>
+            <strong><span>Clarification:</span></strong><br>
+            <span>Multiple punches (In/Out) are considered to accurately
+              capture actual working time excluding break periods.</span></p>
+          <p class="isSelectedEnd"><strong><span>Example Logic:</span></strong><br>
+            <span>Net Worked Time = (OutTime1 − InTime1) + (OutTime2 −
+              InTime2)</span><br>
+            <span>= 233 + 217 = 450 minutes</span></p>
+          <p class="isSelectedEnd"><span>Break Duration = 30 minutes
+              (excluded from productive time)</span></p>
+          <p class="isSelectedEnd"><span>For a standard shift of 480
+              minutes with a 30-minute scheduled break, the expected net
+              working time is 450 minutes.</span></p>
+          <div contenteditable="false">
+            <hr></div>
+          <p class="isSelectedEnd"><strong><span>2. mac_ticketno vs
+                ticketno</span></strong><br>
+            <strong><span>Clarification:</span></strong><br>
+            <span>In most mills, both values are identical. However,
+              where differences exist, a </span><strong><span>mapping
+                facility is available in the Employee Master</span></strong><span>
+              to link </span><em><span>mac_ticketno</span></em><span>
+              with </span><em><span>ticketno</span></em><span>.</span></p>
+          <div contenteditable="false">
+            <hr></div>
+          <p class="isSelectedEnd"><strong><span>3. Night Festival
+                Holiday (NFH) Flag</span></strong><br>
+            <strong><span>Clarification:</span></strong><br>
+            <span>This is a </span><strong><span>statutory requirement
+                under the Tamil Nadu Shops and Establishments Act</span></strong><span>.</span></p>
+          <ul data-spread="false">
+            <li><span>If an employee works on NFH → Eligible for one
+                additional day salary (either OT or regular pay as per
+                policy)</span></li>
+            <li><span>If absent → Still eligible for NFH salary</span></li>
+          </ul>
+          <div contenteditable="false">
+            <hr></div>
+          <p class="isSelectedEnd"><strong><span>4. Pr_DattExcept Table
+                (Weekly-Off Attendance)</span></strong><br>
+            <strong><span>Clarification:</span></strong><br>
+            <span>Employees who work on weekly off are processed based
+              on mill-specific configuration:</span></p>
+          <ul data-spread="false">
+            <li><span>Either marked as </span><strong><span>Present</span></strong><span>,
+                or</span></li>
+            <li><span>Treated as </span><strong><span>Overtime (OT)</span></strong></li>
+          </ul>
+          <div contenteditable="false">
+            <hr></div>
+          <p class="isSelectedEnd"><strong><span>5. PostOT_AttnDwnd Flag</span></strong><br>
+            <strong><span>Clarification:</span></strong><br>
+            <span>OT calculated during attendance download is </span><strong><span>provisional</span></strong><span>.</span></p>
+          <p class="isSelectedEnd"><span>HR personnel are responsible
+              for:</span></p>
+          <ul data-spread="false">
+            <li><span>Verification</span></li>
+            <li><span>Modification (if required)</span><br>
+              <span>based on disciplinary or punch irregularities.</span></li>
+          </ul>
+          <div contenteditable="false">
+            <hr></div>
+          <p class="isSelectedEnd"><strong><span>6. Attendance Lock
+                (PR_AttendanceOTLock)</span></strong><br>
+            <strong><span>Clarification:</span></strong><br>
+            <span>Attendance locking is performed by the </span><strong><span>HR
+                Admin</span></strong><span> after verifying and
+              reconciling daily attendance records.</span></p>
+          <div contenteditable="false">
+            <hr></div>
+          <p class="isSelectedEnd"><strong><span>7.
+                KSP_AttendanceTransferDate (Stored Procedure)</span></strong><br>
+            <strong><span>Clarification:</span></strong><br>
+            <span>This procedure performs </span><strong><span>day-by-day
+                replication of attendance logic</span></strong><span>,
+              ensuring consistency with transactional calculations.</span></p>
+          <div contenteditable="false">
+            <hr></div>
+          <p class="isSelectedEnd"><strong><span>8. Actual Shift vs
+                Scheduled Shift (ActShift)</span></strong><br>
+            <strong><span>Clarification:</span></strong><br>
+            <span>Differences occur when employees work on </span><strong><span>weekly
+                off or non-scheduled days</span></strong><span>.</span></p>
+          <ul data-spread="false">
+            <li><span>ActShift is </span><strong><span>derived from
+                  shift setup</span></strong><span> based on actual
+                In/Out punches</span></li>
+            <li><span>It is not directly captured from the biometric
+                device</span></li>
+          </ul>
+          <div contenteditable="false">
+            <hr></div>
+          <p class="isSelectedEnd"><strong><span>9. Half-Day Threshold
+                Formula</span></strong><br>
+            <strong><span>Clarification:</span></strong><br>
+            <span>The half-day and full-day eligibility criteria are </span><strong><span>customer-configurable</span></strong><span>
+              within the Shift Setup:</span></p>
+          <ul data-spread="false">
+            <li><span>“Half Day From”</span></li>
+            <li><span>“Full Day From”</span></li>
+          </ul>
+          <div contenteditable="false">
+            <hr></div>
+          <p class="isSelectedEnd"><strong><span>10. modifiedon
+                Protection</span></strong><br>
+            <strong><span>Clarification:</span></strong><br>
+            <span>Manually edited records in </span><strong><span>Pr_Datt</span></strong><span>
+              are overwritten during updates; however:</span></p>
+          <ul data-spread="false">
+            <li><span>All modifications are </span><strong><span>logged
+                  within the ERP system</span></strong></li>
+            <li><span>Manual correction is performed through the </span><strong><span>attendance
+                  correction interface</span></strong></li>
+          </ul>
+          <div contenteditable="false">
+            <hr></div>
+          <p class="isSelectedEnd"><span>Kindly review the above
+              clarifications and provide your feedback.</span></p>
+          <p><span>Thanks &amp; Regards,</span><br>
+            <strong><span>V. Palanivel</span></strong></p>
+          On 07/04/2026 04:16 pm, SathishKumarM wrote:<br>
+          <blockquote type="cite"
+            cite="mid:85a51777-387a-4feb-93e5-be3573c2f515@kalsofte.com">
+            <p class="isSelectedEnd"><span>Dear Sir,</span></p>
+            <p class="isSelectedEnd"><span>Please kindly ignore my
+                previous email, as the subject line was mistakenly
+                mentioned as “Sunrise” instead of “Spinrise.”</span></p>
+            <p class="isSelectedEnd"><span>I sincerely apologize for the
+                error and any confusion it may have caused.</span></p>
+            <p class="isSelectedEnd"><span>Thank you for your
+                understanding.</span></p>
+            <p><span>Thanks &amp; Regards,</span><br>
+              <span>M.Sathishkumar</span></p>
+            <p><br>
+            </p>
+            <div class="moz-cite-prefix">On 07/04/2026 04:06 pm,
+              SathishKumarM wrote:<br>
+            </div>
+            <blockquote type="cite"
+cite="mid:b2dbb363-5aad-4f6c-a113-d1654a4bef7a@kalsofte.com">
+              <p class="isSelectedEnd"><span>Dear Sir,</span></p>
+              <p class="isSelectedEnd"><span>I have prepared the FSD
+                  draft for the FrmDailyAttendanceDownloadsql.FRM screen
+                  as part of the SPINRISE documentation initiative.</span></p>
+              <p class="isSelectedEnd"><span>The document covers a
+                  comprehensive analysis of the VB6 form, including
+                  screen structure, field definitions, validation logic,
+                  business rules, database interactions, and related
+                  process flows.</span></p>
+              <p class="isSelectedEnd"><span>All sections have been
+                  compiled as per the FSD v2 template. </span></p>
+              <p class="isSelectedEnd"><span>The document is attached in
+                  Word format for your review.</span></p>
+              <p class="isSelectedEnd"><span>Kindly go through the
+                  details and provide your feedback and confirmation.</span></p>
+              <span>Thanks &amp; Regards,</span><br>
+              <br>
+              <span>M.Sathishkumar</span>
+              <p><br>
+              </p>
+              <div class="moz-cite-prefix">On 04/04/2026 01:36 pm,
+                SathishKumarM wrote:<br>
+              </div>
+              <blockquote type="cite"
+cite="mid:4da23ce5-2bb1-4d9d-9a32-7d55ef5bf5ee@kalsofte.com">
+                <p class="isSelectedEnd"><span>Dear Sir,</span></p>
+                <p class="isSelectedEnd"><span>I have prepared the FSD
+                    draft for the PREmployee screen as part of the
+                    SPINRISE documentation initiative.</span></p>
+                <p class="isSelectedEnd"><span>The document covers a
+                    comprehensive analysis of the VB6 form, including
+                    screen structure, field definitions, validation
+                    logic, business rules, database interactions, and
+                    related process flows.</span></p>
+                <p class="isSelectedEnd"><span>All sections have been
+                    compiled as per the FSD v2 template. </span></p>
+                <p class="isSelectedEnd"><span>The document is attached
+                    in Word format for your review.</span></p>
+                <p class="isSelectedEnd"><span>Kindly go through the
+                    details and provide your feedback and confirmation.</span></p>
+                <span>Thanks &amp; Regards,</span><br>
+                <br>
+                <span>M.Sathishkumar</span>
+                <p><br>
+                </p>
+              </blockquote>
+            </blockquote>
+          </blockquote>
+        </blockquote>
+      </blockquote>
+    </blockquote>
+  </body>
+</html>
+
+--------------qZhJPet0ENW4RBJZQvl0ORtV--

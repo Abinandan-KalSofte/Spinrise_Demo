@@ -25,6 +25,7 @@ export interface ItemLookup {
   pendingPrQty?: number
   pendingPoQty?: number
   minLevel?: number
+  itemGroup?: string
 }
 
 export interface MachineLookup {
@@ -41,6 +42,7 @@ export interface SubCostLookup {
 
 export interface PRLineFormItem {
   key: string               // crypto.randomUUID() — local only, not sent to API
+  prSNo?: number            // set after save — used for per-line API deletion
   itemCode: string
   itemName: string
   uom: string
@@ -59,6 +61,7 @@ export interface PRLineFormItem {
   lastPoDate: string | null
   lastPoSupplierCode: string | null
   lastPoSupplierName: string | null
+  itemGroup?: string
   // V2 additions
   categoryCode: string
   model:        string
@@ -141,6 +144,7 @@ export interface CreatePRRequest {
   scopeCode?: string
   saleOrderNo?: string
   saleOrderDate?: string | null
+  submitForApproval?: boolean  // G19: Differentiate Save vs Submit
   lines: CreatePRLineRequest[]
 }
 
@@ -226,6 +230,7 @@ export interface PRSummaryResponse {
   refNo?: string
   reqName?: string
   prStatus: string
+  isDeleted: boolean
   createdBy: string
   createdAt: string
   lineCount: number
@@ -263,6 +268,7 @@ export interface PreCheckResult {
 
 export const PR_STATUS_LABELS: Record<string, { label: string; color: string }> = {
   OPEN:      { label: 'Open',      color: 'blue'    },
+  PENDING:   { label: 'Pending',   color: 'orange'  },  // G19: Added for submitted PRs
   APPROVED:  { label: 'Approved',  color: 'purple'  },
   RECEIVED:  { label: 'Received',  color: 'cyan'    },
   CANCELLED: { label: 'Cancelled', color: 'red'     },

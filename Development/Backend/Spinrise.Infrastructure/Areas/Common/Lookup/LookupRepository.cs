@@ -52,7 +52,8 @@ public class LookupRepository : ILookupRepository
             StoredProcedures.Lookup.GetItemsEnriched,
             new { DivCode = divCode, SearchTerm = searchTerm, DepCode = depCode, ItemGroup = itemGroup },
             transaction: _uow.Transaction,
-            commandType: CommandType.StoredProcedure);
+            commandType: CommandType.StoredProcedure,
+            commandTimeout: 15);  // 15s timeout for items lookup
     }
 
     public async Task<IEnumerable<MachineLookupDto>> GetMachinesAsync(string divCode)

@@ -11,8 +11,9 @@ public class PRSummaryResponseDto
     public long? PlanNo { get; set; }
     public string? RefNo { get; set; }
     public string? ReqName { get; set; }
-    public string PrStatus { get; set; } = string.Empty;
-    public string CreatedBy { get; set; } = string.Empty;
+    public string PrStatus   { get; set; } = string.Empty;
+    public bool   IsDeleted  { get; set; }
+    public string CreatedBy  { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public int LineCount { get; set; }
 }

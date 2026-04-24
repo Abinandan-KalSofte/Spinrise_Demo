@@ -1,0 +1,1503 @@
+X-UIDL: UID60-1774868925
+X-Mozilla-Status: 0000
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <palanivel@kalsofte.com>
+Received: from murphy.nocdirect.com
+	by murphy.nocdirect.com with LMTP
+	id hw87K3vH2GkdKS4Aet6MXA
+	(envelope-from <palanivel@kalsofte.com>); Fri, 10 Apr 2026 04:48:43 -0500
+Return-path: <palanivel@kalsofte.com>
+Envelope-to: pbsaravanan@kalsofte.com,
+ sasikumar.r@kalsofte.com,
+ implementation@kalsofte.com,
+ abinandan.n@kalsofte.com,
+ qa@kalsofte.com,
+ support@kalsofte.com,
+ mariyaiya.m@kalsofte.com,
+ ceo@kalsofte.com,
+ muthuvel.m@kalsofte.com,
+ seenivasan.v@kalsofte.com
+Delivery-date: Fri, 10 Apr 2026 04:48:43 -0500
+Received: from [49.204.235.253] (port=58464 helo=[172.16.16.64])
+	by murphy.nocdirect.com with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+	(Exim 4.99.1)
+	(envelope-from <palanivel@kalsofte.com>)
+	id 1wB8Ti-0000000Cgws-36eh;
+	Fri, 10 Apr 2026 04:48:43 -0500
+Content-Type: multipart/mixed; boundary="------------YOvJS0yC4CrjN6k2wZyi5pRT"
+Message-ID: <3021efaf-133a-4eed-892d-059a61e015b6@kalsofte.com>
+Date: Fri, 10 Apr 2026 15:18:32 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: =?UTF-8?Q?Re=3A_SPINRISE_PO_=E2=80=94_PR_Form_FSD_IST_Review_=7C_Ur?=
+ =?UTF-8?Q?gent=3A_Complete_Today_=7C_Saturday_Review_Tomorrow?=
+To: Pbsaravanan <pbsaravanan@kalsofte.com>
+Cc: 'Sasikumar R' <sasikumar.r@kalsofte.com>, implementation@kalsofte.com,
+ abinandan.n@kalsofte.com, Quality Assurance <qa@kalsofte.com>,
+ Support <support@kalsofte.com>, MariyaiyaM <mariyaiya.m@kalsofte.com>,
+ Ceo <ceo@kalsofte.com>, Muthuvel Mani <muthuvel.m@kalsofte.com>,
+ Seeni <seenivasan.v@kalsofte.com>
+References: <1216e878-93e0-493e-b325-49df3142ffe5@kalsofte.com>
+ <a89dfd20-3681-4f78-961c-f89bd71f6d1e@kalsofte.com>
+ <4cdeaa24-1d9c-4191-866c-bf5a79d1b526@kalsofte.com>
+ <54e7c45da3dd629cf6e1d56461cbd369@kalsofte.com>
+ <2bd7a650-04de-4740-b231-a6d6aa043f7a@kalsofte.com>
+ <32971bd5-3666-4649-99ff-0137b9c18363@kalsofte.com>
+ <9ac5cb17-9795-4df5-85fb-b9e520d8353d@kalsofte.com>
+ <88b26976-631d-4ebe-a5fb-9dbe5d262a66@kalsofte.com>
+ <71705b0e-395d-471a-a32b-c47b5c75add2@kalsofte.com>
+ <1821bce7-8aea-42c0-926c-43e3e9f4a61b@kalsofte.com>
+ <d227e4d95ec800127fbcac3fb6a5012b@kalsofte.com>
+Content-Language: en-US
+From: Palanivel <palanivel@kalsofte.com>
+In-Reply-To: <d227e4d95ec800127fbcac3fb6a5012b@kalsofte.com>
+
+This is a multi-part message in MIME format.
+--------------YOvJS0yC4CrjN6k2wZyi5pRT
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+Dear Sir,
+
+   Please find the attached document regarding IST Team Leader Support 
+for your review and feedback. Kindly go through the same and provide 
+your approval.
+
+Thanks & Regards,
+
+V. Palanivel
+
+On 10/04/2026 02:32 pm, muthuvel.m@kalsofte.com wrote:
+> Dear Sir,
+>
+> Please find attached the IST 1 to IST 7 questionnaire files along with 
+> the PR approval workflow details and po_para flags analysis for your 
+> kind review.
+>
+> 1. PR Approval Workflow
+>
+> The current system supports up to 3 levels of approval.
+> In practice, some clients are operating with 2 levels by bypassing 
+> Level 2, indicating that a 2-level approval structure is sufficient 
+> for standard use.
+> The approval levels are not customer-configurable at present.
+> For ASL-based PR, the system supports automatic RFQ generation only.
+> Automatic PO generation is not available; PO creation remains a 
+> separate manual step after approval.
+>
+> 2. po_para Flags Analysis
+>
+> As requested, the po_para table has been reviewed in detail.
+> It is observed that only 6 columns are used in the PR form, listed below:
+> Manual_IndNo
+> BudgetQty - Actively used
+> PRapprovalstatus
+> Penpodetails
+> PendingOrderPara
+> InditemGrp -  - Actively used
+>
+> A comprehensive column-wise status document (covering all fields in 
+> the po_para table with classification as Used, Customer-specific, or 
+> Unused) has been prepared and attached for your reference.
+> This document also includes recommendations aligned with standard 
+> SPINRISE implementation practices.
+>
+> Kindly review the attached documents and provide your feedback for PM 
+> and CEO approval to proceed with the Development Team.
+>
+> Thanks & Regards
+> M MuthuVel
+>
+> On 2026-04-10 02:07, CEO wrote:
+>> Dear Muthuvel,
+>>
+>> This is a reminder on the PO Module Purchase Requisition Form FSD IST
+>> review which has been pending with you for over two weeks now.
+>>
+>> The PR form critical analysis was submitted to you as IST reviewer
+>> with the IST-1 to IST-7 questionnaire along with three additional
+>> questions (IST-A, IST-B, IST-C). Partial responses were received from
+>> you and TL-IST Palanivel earlier this week, and the CEO has already
+>> responded with resolved items and four remaining open questions.
+>> Despite that, the completed IST review has not been submitted and the
+>> FSD has not reached the CEO for formal approval.
+>>
+>> I want to be direct: the PR form FSD is the first FSD in the entire
+>> SPINRISE project to enter the review chain. Its CEO approval is the
+>> first APPROVED FSD milestone for SPINRISE. Every other module's FSD
+>> pipeline is watching this one. The delay on the IST side is holding up
+>> that milestone.
+>>
+>> Tomorrow, Saturday 11 April, is our SPINRISE progress review meeting.
+>> It is important that this FSD reaches a completed IST sign-off status
+>> before that meeting so the team can see the first milestone crossed.
+>>
+>> The four remaining open items requiring your response are:
+>>
+>> 1. PR approval workflow — which form handles the actual approval
+>> action, how many levels are standard, are levels
+>> customer-configurable, and does Final Level Approval auto-convert to
+>> PO or require a separate step?
+>>
+>> 2. po_para flags — the complete list from SQL with each flag marked
+>> as Used, Customer-specific, or Unused, and the recommended SPINRISE
+>> default for each.
+>>
+>> 3. OCX UserFooter — Palanivel confirmed the functionality is
+>> required in SPINRISE. Is the custom footer selection actively used by
+>> customers when printing PRs, or is it rarely used in practice?
+>>
+>> 4. EmpCommon — this is now resolved by Mariyaiya. No action needed
+>> from you on this item.
+>>
+>> Please complete and submit your IST review responses on all four items
+>> today, Friday 10 April, so Mariyaiya can update the FSD and the
+>> document can reach the CEO before tomorrow's meeting.
+>>
+>> This cannot be deferred further.
+>>
+>> Regards,
+>> T. Mani
+>>
+>> cc: TL-IST Palanivel, PM Saravanan
+>>
+>> On 10/04/2026 10:33 am, MariyaiyaM wrote:
+>>
+>>> Dear Sir,
+>>>
+>>> Regarding the TC Rate Override query in Section 5.2 (reading from
+>>> IN_TRNHEAD and IN_TRNTAIL where TC = 1):
+>>>
+>>> After checking the VB6 code, the finding is as follows — the Rate
+>>> field is not updated in the PR form directly. The rate details are
+>>> sourced from the Receipt module, which is why the code references
+>>> the IN_TRNTAIL table. However, the TC = 1 condition does not apply
+>>> in the PO module context, and as confirmed by Muthuvel and
+>>> Palanivel, TC is not used in PO at all. This makes the rate override
+>>> query dead code. It was written to read from the Store/Receipt
+>>> module but is never triggered in any live customer scenario in the
+>>> PO context. This code has been identified for removal and will be
+>>> treated as dead code — it was already flagged for removal during
+>>> Stage 0 correction.
+>>>
+>>> I will update the FSD in all three sections as instructed:
+>>>
+>>> • Section 5 (Business Logic) – Adding the EmpCommon sub-section
+>>> covering the login-time read of PO_Para.EmpMasterComm per DivCode,
+>>> the Y/N flag logic (Y = True = Cry_Purchase_Req, N = False =
+>>> Cry_PR_KSL), and a cross-reference to Section 7.
+>>>
+>>> • Section 7 (Print / Report Architecture) – Adding the five
+>>> confirmed divisions (Saranya, Armstrong, Cheran, Skaat, VTS)
+>>> currently using Cry_Purchase_Req, along with the SPINRISE migration
+>>> note: dual Crystal report branching is replaced by a single
+>>> server-side PDF generator with division-level template selection via
+>>> PO_Para, and new customer onboarding must set EmpMasterComm
+>>> correctly before PR print will function.
+>>>
+>>> • Section 11 (Customer Variation Register) – Adding the entry
+>>> for the Cry_Purchase_Req vs Cry_PR_KSL division split with the five
+>>> divisions listed and the SPINRISE resolution documented.
+>>>
+>>> Section 5 will be updated to document this as dead code with the
+>>> above explanation, and the query will be marked for removal.
+>>>
+>>> I will resubmit the updated FSD shortly for your review before it
+>>> proceeds to Muthuvel for IST sign-off.
+>>>
+>>> Thank you,
+>>> Mariyaiya
+>>>
+>>> On 09/04/2026 08:14 pm, CEO wrote:
+>>>
+>>> Dear Mariyaiya,
+>>>
+>>> Thank you. This is a precise and complete answer — exactly what
+>>> the FSD requires.
+>>>
+>>> EmpCommon is now fully resolved. The origin (login module reading
+>>> PO_Para.EmpMasterComm per DivCode), the logic (Y = True =
+>>> Cry_Purchase_Req, else False = Cry_PR_KSL), and the five confirmed
+>>> divisions (Saranya, Armstrong, Cheran, Skaat, VTS) are all
+>>> documented. The flag is database-driven with no hardcoding anywhere
+>>> in the form — this is the right architecture and it carries
+>>> cleanly into SPINRISE.
+>>>
+>>> Please update the FSD in three places:
+>>>
+>>> In Section 5 (Business Logic), add a sub-section on the EmpCommon
+>>> flag: state that it is set at login by reading PO_Para.EmpMasterComm
+>>> for the active DivCode, document the Y/N logic, and cross-reference
+>>> Section 7.
+>>>
+>>> In Section 7 (Print / Report Architecture), add the list of five
+>>> divisions currently using Cry_Purchase_Req, and add a SPINRISE
+>>> migration note: the dual Crystal report branching is replaced by a
+>>> single server-side PDF generator with a division-level template
+>>> selection parameter in PO_Para. New customer onboarding must set
+>>> EmpMasterComm correctly before the PR print will work.
+>>>
+>>> In Section 11 (Customer Variation Register), add an entry recording
+>>> the Cry_Purchase_Req vs Cry_PR_KSL division split with the current
+>>> five divisions listed, and document the SPINRISE resolution.
+>>>
+>>> One item remains on your side before the FSD can be submitted for
+>>> the full IST review chain. I asked in my earlier mail whether the
+>>> Rate field override logic in Section 5.2 — which reads from
+>>> IN_TRNHEAD and IN_TRNTAIL where TC = 1 — is live and active in
+>>> practice, or dead code. Muthuvel and Palanivel have confirmed that
+>>> TC is not used in the PO module at all. If that is correct, this
+>>> query should never execute. Please check in the VB6 code whether
+>>> this rate override is actually triggered in any live customer
+>>> scenario, or whether it is a legacy query that was written but never
+>>> used. One of three outcomes is possible: it is dead code and should
+>>> be removed, it is active cross-module logic reading from the Store
+>>> module, or it executes but produces no visible effect because TC = 1
+>>> records do not exist in the PO context. The answer must be in
+>>> Section 5 before the FSD goes to Muthuvel for IST sign-off.
+>>>
+>>> Update the document with the three EmpCommon additions and the TC
+>>> rate override finding, then resubmit.
+>>>
+>>> Regards,
+>>> T. Mani
+>>>
+>>> cc: Muthuvel, PM Saravanan
+>>>
+>>> On 09/04/2026 06:52 pm, MariyaiyaM wrote:
+>>>
+>>> Dear Sir,
+>>>
+>>> As per your query regarding EmpCommon = True, I have analyzed the
+>>> application flow and would like to provide the confirmed details
+>>> below:
+>>>
+>>> *
+>>>
+>>> Origin of EmpCommon Flag
+>>> The EmpCommon flag is being set during the login process.
+>>> In the login module, the system executes the following logic:
+>>>
+>>> *
+>>>
+>>> It reads the value from the PO_Para table based on the selected
+>>> DivCode
+>>> *
+>>>
+>>> Field used: EmpMasterComm
+>>> *
+>>>
+>>> Logic:
+>>>
+>>> *
+>>>
+>>> If EmpMasterComm = 'Y' → EmpCommon = True
+>>> *
+>>>
+>>> Otherwise → EmpCommon = False
+>>>
+>>> Hence, the flag is database-driven and controlled through the
+>>> PO_Para configuration.
+>>> *
+>>>
+>>> Customers Using EmpCommon = True
+>>> Based on current data, the following customers/divisions have
+>>> EmpMasterComm = 'Y', and therefore EmpCommon = True:
+>>>
+>>> *
+>>>
+>>> Saranya
+>>> *
+>>>
+>>> Armstrong
+>>> *
+>>>
+>>> Cheran
+>>> *
+>>>
+>>> Skaat
+>>> *
+>>>
+>>> VTS
+>>>
+>>> *
+>>>
+>>> Report Template Selection Logic
+>>> The report selection is directly dependent on the EmpCommon flag:
+>>>
+>>> *
+>>>
+>>> If EmpCommon = True → Cry_Purchase_Req is used
+>>> *
+>>>
+>>> If EmpCommon = False → Cry_PR_KSL is used
+>>>
+>>> This confirms that the report behavior is fully controlled by the
+>>> parameter value in PO_Para and set during login.
+>>> *
+>>>
+>>> Conclusion
+>>>
+>>> *
+>>>
+>>> EmpCommon is not hardcoded; it is derived dynamically at login
+>>> *
+>>>
+>>> The controlling factor is the EmpMasterComm field in PO_Para
+>>> *
+>>>
+>>> Report template usage is automatically driven based on this flag
+>>>
+>>> Please let me know if any further analysis or validation is
+>>> required.
+>>>
+>>> Regards,
+>>> Mariyaiya.M
+>>>
+>>> On 09/04/2026 06:09 pm, CEO wrote:
+>>>
+>>> Dear Palanivel,
+>>>
+>>> Thank you for reviewing Muthuvel's IST responses and sharing your
+>>> suggestions promptly. I have also noted from PULSE 360 that PM
+>>> Saravanan is actively reviewing this thread.
+>>>
+>>> I have gone through both sets of responses carefully against the 11
+>>> questions raised in my earlier review. Out of the 11, six are now
+>>> resolved with clear answers from both of you. This is good progress
+>>> and I want to acknowledge it before addressing what remains open.
+>>>
+>>> What is resolved
+>>>
+>>> The following decisions are confirmed and must be documented in the
+>>> FSD immediately:
+>>>
+>>> ksp_PendPR: Full removal in SPINRISE. Used only for SUBAM, and SUBAM
+>>> itself has requested its removal. This check will not be implemented
+>>> in SPINRISE in any form. Document in Section 12 as a removed feature
+>>> and in the Customer Variation Register as resolved.
+>>>
+>>> blcode (Oracle field): Not required. Excluded from SPINRISE.
+>>>
+>>> Uniqueness rule for PR line items: Palanivel has given a clear
+>>> ruling — Item Code plus Machine Code. This resolves the three
+>>> inconsistent duplicate check implementations in the VB6 code. The
+>>> FSD must now document a single authoritative rule: a PR line item is
+>>> unique by the combination of Item Code and Machine Code. This
+>>> applies to both Add and Modify modes without exception.
+>>>
+>>> po_para.PRapprovalstatus: Display only. To be implemented in
+>>> SPINRISE as a visible status indicator on the PR form, showing the
+>>> current approval level without requiring the user to run a separate
+>>> query.
+>>>
+>>> Manual PR numbering (Manual_IndNo): Not required in SPINRISE.
+>>> Auto-sequential numbering via po_doc_para only.
+>>>
+>>> ksp_PendPR customer site history (IST-B): Confirmed as SUBAM only,
+>>> with SUBAM requesting removal. Fully documented.
+>>>
+>>> What still needs to be resolved before the FSD can be completed
+>>>
+>>> I am asking for specific responses to the following four items.
+>>> These are the only remaining gaps standing between this IST review
+>>> and a complete FSD ready for my approval.
+>>>
+>>> 1.  EmpCommon = True — origin not yet confirmed.
+>>> Both responses explain what EmpCommon controls (division-wise
+>>> employee display and print template selection) but neither confirms
+>>> where it is set. The form reads it but does not set it. It must be
+>>> set somewhere in the application login or startup module. Which
+>>> module sets it, and based on which table or configuration value?
+>>> Additionally, which specific customer divisions currently use
+>>> Cry_Purchase_Req and which use Cry_PR_KSL? Mariyaiya to check the
+>>> login module code and confirm.
+>>>
+>>> 2.  PurOrd.UserFooter OCX — contradiction to be resolved.
+>>> Muthuvel correctly states that the OCX control itself cannot be used
+>>> in a web application. Palanivel states that the functionality is
+>>> required in SPINRISE. Both are right about different things and I
+>>> want to clarify this for the team. The OCX mechanism — the Windows
+>>> ActiveX control — will not exist in SPINRISE. That is technically
+>>> non-negotiable. But the functionality it provides — the ability to
+>>> select a custom footer for the PR print — may still be a business
+>>> requirement. My question for Palanivel: is the custom footer
+>>> selector actively used by customers when printing PRs? If yes,
+>>> SPINRISE must implement this as a server-side configurable setting,
+>>> replacing the OCX with a dropdown selector in the print preferences.
+>>> Please confirm whether the custom footer selection is a real
+>>> business need or a legacy feature that is rarely used in practice.
+>>>
+>>> 3.  po_para flags — the actual list is still missing.
+>>> Both responses confirm that unused flags need to be removed. But
+>>> what I asked for, and what the FSD requires, is the complete list of
+>>> all po_para flags with their current usage status and the
+>>> recommended default value for each in a standard SPINRISE
+>>> installation. Agreeing that cleanup is needed is not the same as
+>>> providing the list. Muthuvel, please run the following against the
+>>> SQL Server database and share the result: select all column names
+>>> from po_para with at least one example value. Then mark each flag
+>>> as: Used in active code, Used in specific customer only, or Unused.
+>>> This list must be in FSD Section 8 before the document can be
+>>> approved.
+>>>
+>>> 4.  PR approval workflow (IST-A) — the four sub-questions are
+>>> still unanswered.
+>>> Both responses say approvals are handled in the PO module and Web
+>>> Approvals. That tells me the location but not the workflow. I need
+>>> all four of the following answered specifically:
+>>> (a) Which form or screen handles the actual approval action? Is it a
+>>> separate approval form or part of the PR form itself?
+>>> (b) How many approval levels are standard across a typical SPINRISE
+>>> installation? Is it one level, two, three, or variable?
+>>> (c) Are the number of approval levels customer-configurable, or is
+>>> it a fixed system-wide setting?
+>>> (d) When a PR reaches Final Level Approved, does it automatically
+>>> create a PO, or does a separate PO creation step follow?
+>>> This workflow is the core of the PR transaction lifecycle in
+>>> SPINRISE. Without these answers, the PR form FSD is describing an
+>>> entry point without documenting where that entry leads.
+>>>
+>>> A new question for Mariyaiya to verify
+>>>
+>>> Muthuvel and Palanivel have confirmed that TC (Transaction Code) is
+>>> not used in the PO module — it belongs to the Store module. This
+>>> is an important clarification and it correctly means Section 6 (TC
+>>> Framework) of the FSD should state: 'This form does not carry a TC
+>>> value. Stock and accounting movements are triggered downstream when
+>>> goods are received against the resulting PO.'
+>>>
+>>> However, the corrected critical analysis document (Section 5.2)
+>>> shows that the PR form's Rate field override logic reads from
+>>> IN_TRNHEAD and IN_TRNTAIL with TC=1. If TC is not used in the PO
+>>> module, this query either never executes or reads cross-module data
+>>> from the Store module. Mariyaiya, please verify: is this rate
+>>> override query live and active in practice, or is it dead code?
+>>> Check whether the Rate field in the PR form actually gets populated
+>>> from IN_TRNHEAD in any live customer scenario. The answer determines
+>>> whether this logic is replicated in SPINRISE or excluded as dead
+>>> code.
+>>>
+>>> On the overall progress
+>>>
+>>> I am pleased that the IST review has produced clear, actionable
+>>> answers on the majority of questions, and that Palanivel's
+>>> suggestions are aligned with Muthuvel's responses in most areas. The
+>>> collaboration between the two IST levels is exactly how this review
+>>> chain is supposed to work.
+>>>
+>>> The four remaining items above are not complex — they require one
+>>> targeted SQL query, one business confirmation from Palanivel, one
+>>> developer code check from Mariyaiya, and four specific workflow
+>>> answers. These can and should be completed before Saturday's review
+>>> meeting.
+>>>
+>>> Mariyaiya: please update the FSD document with all resolved items
+>>> from this thread, mark the four open items as [PENDING IST RESPONSE]
+>>> and share the updated document with Muthuvel and Palanivel by
+>>> tomorrow.
+>>>
+>>> Regards,
+>>> T. Mani
+>>>
+>>> cc:  Mariyaiya, TL-Dev Sasi
+>>>
+>>> On 09/04/2026 10:46 am, Palanivel wrote:
+>>>
+>>> Dear Mr.Muthuvel,
+>>>
+>>> Please find the below the Suggestions for the Purchase
+>>> Requisition Form,
+>>>
+>>> •Confirm: What does EmpCommon = True represent? Which divisions
+>>> use which Crystal report template?
+>>>
+>>> Ans:- For multiple divisions, the employee list should be displayed
+>>> based on division. We can continue using parameterized logic to
+>>> support both division-wise and combined unit views.
+>>>
+>>> Suggestions : In Tranaction print There is no change,
+>>>
+>>> •Confirm: Should ksp_PendPR be hard-blocking or a soft warning?
+>>> Should it be configurable per division?
+>>>
+>>> Ans:- The hard block needs to be removed, as certain critical
+>>> materials may require immediate purchase at any time. At present, if
+>>> a PR has already been raised, the system displays a validation
+>>> stating that the PR is pending for PO creation.
+>>>
+>>> Suggestions : It need to be removed,
+>>>
+>>> •Confirm: Is blcode (Oracle field) required in SPINRISE?
+>>>
+>>> Ans:- As per CEO Connfirmation, not required.
+>>>
+>>> Suggestions : It need to be removed.
+>>>
+>>> •Confirm: Uniqueness rule for PR line items — item code only, or
+>>> item code + machine?
+>>>
+>>> Ans:- In the PR form, certain customers associate a machine with the
+>>> selected item for procurement purposes. This information is
+>>> displayed based on the applicable department and is currently
+>>> available only in the transaction print, not in other reports. This
+>>> feature helps customers track item selection within their workflow.
+>>>
+>>>
+>>> Suggestions : PR Line Items needed Item code + Machine.
+>>>
+>>> •Confirm: Is po_para.PRapprovalstatus display-only, or does it
+>>> gate any operation?
+>>>
+>>> Ans:- One of the ease of use point, it display in the Transactions
+>>> Form Side up window to know current status of the PR, otherwise
+>>> every time qureies PR Status to know the status.
+>>>
+>>> Suggestions : In PO_Para.PRapproval status display only,
+>>>
+>>> •Confirm: Is Manual PR numbering (Manual_IndNo) required in
+>>> SPINRISE?
+>>>
+>>> Ans:- For the controlled structure manual numbering is not required.
+>>>
+>>>
+>>> Suggestions : Manual numbering not adviceable. and It is no needed.
+>>>
+>>>
+>>> •Confirm: Is PurOrd.UserFooter OCX footer selector functionality
+>>> required in SPINRISE?
+>>>
+>>> Ans:- OCX (ActiveX) is Windows desktop–only. Not supported in web
+>>> apps (browser security + architecture)
+>>>
+>>> Suggestions : It is required in SPINRISE.
+>>>
+>>> •Document: Complete list of po_para flags and their expected
+>>> default values in SPINRISE
+>>>
+>>> Ans:- Some flags are not used anywhere need to be remove from the
+>>> table.
+>>>
+>>> Suggestions : Un used Flag in PO_Para Table need to be removed.
+>>>
+>>> IST-A:  For the PR approval workflow — which form handles the
+>>> actual approval action? How many approval levels are standard? Are
+>>> approval levels customer-configurable? What happens to a PR that
+>>> reaches Final Level Approved — does it auto-convert to a PO or
+>>> does a separate PO creation step follow?
+>>>
+>>> Ans:- The approvals are handles in the PO module also Web Approvals
+>>> itself,
+>>>
+>>> Suggestions : The approvals are handles in the Web Approvals.
+>>>
+>>> IST-B:  For the ksp_PendPR hard block — at which customer sites
+>>> has this check caused legitimate procurement to be blocked
+>>> incorrectly? Has IST ever had to manually bypass this check at a
+>>> customer site? The answer determines whether it should be a
+>>> configurable soft warning in SPINRISE rather than an unconditional
+>>> hard block.
+>>>
+>>> Ans:- It needs to be removed and its used in Subam only forsome
+>>> control purpose, recently request to remove the control from the
+>>> Subam Side.
+>>>
+>>> IST-C:  For the Rate override from TC=1 receipts — is this the
+>>> intended behaviour or a historical workaround? Should SPINRISE
+>>> pre-fill the Rate from the item master (clean, predictable) or from
+>>> the last receipt (current practice, but supplier-linked)? This
+>>> decision affects how the API populates the Rate field on item
+>>> selection.
+>>>
+>>> Ans:- TC is no where used in the PO Module, used in the Store Module
+>>> only.
+>>>
+>>> Thanks & Regards,
+>>>
+>>> V. Palanivel
+>>>
+>>> On 08/04/2026 01:07 pm, muthuvel.m@kalsofte.com wrote:
+>>> Dear Sir,
+>>>
+>>> Please find below the feedback for the Purchase Requisition Form.
+>>> Kindly review and share your suggestions, if any, for the CEO’s
+>>> review.
+>>>
+>>> IST Review Checklist Before FSD Generation
+>>>
+>>> •Confirm: What does EmpCommon = True represent? Which divisions
+>>> use which Crystal report template?
+>>> Ans:- For multiple divisions, the employee list should be displayed
+>>> based on division. We can continue using parameterized logic to
+>>> support both division-wise and combined unit views.
+>>>
+>>> •Confirm: Should ksp_PendPR be hard-blocking or a soft warning?
+>>> Should it be configurable per division?
+>>> Ans:- The hard block needs to be removed, as certain critical
+>>> materials may require immediate purchase at any time. At present, if
+>>> a PR has already been raised, the system displays a validation
+>>> stating that the PR is pending for PO creation.
+>>>
+>>> •Confirm: Is blcode (Oracle field) required in SPINRISE?
+>>> Ans:- As per CEO Connfirmation, not required.
+>>>
+>>> •Confirm: Uniqueness rule for PR line items — item code only, or
+>>> item code + machine?
+>>> Ans:- In the PR form, certain customers associate a machine with the
+>>> selected item for procurement purposes. This information is
+>>> displayed based on the applicable department and is currently
+>>> available only in the transaction print, not in other reports. This
+>>> feature helps customers track item selection within their workflow.
+>>>
+>>> •Confirm: Is po_para.PRapprovalstatus display-only, or does it
+>>> gate any operation?
+>>> Ans:- One of the ease of use point, it display in the Transactions
+>>> Form Side up window to know current status of the PR, otherwise
+>>> every time qureies PR Status to know the status.
+>>>
+>>> •Confirm: Is Manual PR numbering (Manual_IndNo) required in
+>>> SPINRISE?
+>>> Ans:- For the controlled structure manual numbering is not required.
+>>>
+>>>
+>>> •Confirm: Is PurOrd.UserFooter OCX footer selector functionality
+>>> required in SPINRISE?
+>>> Ans:- OCX (ActiveX) is Windows desktop–only. Not supported in web
+>>> apps (browser security + architecture)
+>>>
+>>> •Document: Complete list of po_para flags and their expected
+>>> default values in SPINRISE
+>>> Ans:- Some flags are not used anywhere need to be remove from the
+>>> table.
+>>>
+>>> IST-A:  For the PR approval workflow — which form handles the
+>>> actual approval action? How many approval levels are standard? Are
+>>> approval levels customer-configurable? What happens to a PR that
+>>> reaches Final Level Approved — does it auto-convert to a PO or
+>>> does a separate PO creation step follow?
+>>>
+>>> Ans:- The approvals are handles in the PO module also Web Approvla
+>>> itself,
+>>>
+>>> IST-B:  For the ksp_PendPR hard block — at which customer sites
+>>> has this check caused legitimate procurement to be blocked
+>>> incorrectly? Has IST ever had to manually bypass this check at a
+>>> customer site? The answer determines whether it should be a
+>>> configurable soft warning in SPINRISE rather than an unconditional
+>>> hard block.
+>>>
+>>> Ans:- It needs to be removed and its used in Subam only forsome
+>>> control purpose, recently request to remove the control from the
+>>> Subam Side.
+>>>
+>>> IST-C:  For the Rate override from TC=1 receipts — is this the
+>>> intended behaviour or a historical workaround? Should SPINRISE
+>>> pre-fill the Rate from the item master (clean, predictable) or from
+>>> the last receipt (current practice, but supplier-linked)? This
+>>> decision affects how the API populates the Rate field on item
+>>> selection.
+>>>
+>>> Ans:- TC is no where used in the PO Module, used in the Store Module
+>>> only.
+>>>
+>>> Thanks & Regards
+>>> M MuthuVel
+>>>
+>>> On 2026-04-03 02:35, CEO wrote:
+>>> Dear Mariyaiya,
+>>>
+>>> I have gone through your Corrected Critical Analysis document for
+>>> tmpPoindent.frm carefully. I am also sharing this review with
+>>> Muthuvel
+>>> before he begins the IST review, and with the full team, as several
+>>> observations here have implications beyond the PO module.
+>>>
+>>> This is a substantially improved document from the first version.
+>>> Let
+>>> me give you both a clear picture of what has improved and what still
+>>>
+>>> needs to be completed before Muthuvel can begin his IST review.
+>>>
+>>> What you have done significantly better in this version
+>>>
+>>> The most important improvement is the complete removal of all
+>>> hardcoded customer ID checks. Your first version documented 13
+>>> separate CustID blocks embedded in the form logic. This corrected
+>>> version shows none — all conditional behaviour is now driven by
+>>> po_para parameter flags. This is not a minor cleanup. This is a
+>>> fundamental structural change to the form that directly improves
+>>> SPINRISE migration readiness. The Summary Scorecard correctly shows
+>>> 'Parameter-Driven Configuration: Good' where the previous version
+>>> showed 'Customer Configurability: Poor'. This change alone justifies
+>>>
+>>> the time spent on stabilisation.
+>>>
+>>> The dead code separation is correct and properly executed. You have
+>>> reduced from 9,108 total lines to approximately 7,467 active code
+>>> lines, with 27 commented blocks identified and excluded. This is
+>>> exactly what Stage 0 required and what the v2 guide specified must
+>>> happen before Claude submission. The analysis is now based on what
+>>> the
+>>> screen actually does, not on what it once considered doing.
+>>>
+>>> The new Section 9 on External Files, Classes, and Modules is the
+>>> most
+>>> significant structural addition. You have listed 9 OCX controls with
+>>>
+>>> their GUIDs, the .frx binary resource, two class modules (clsCrystal
+>>>
+>>> and Report.ReportView), 14 global variables declared outside the
+>>> form,
+>>> five external forms and objects called, and four utility functions
+>>> from the global module. This directly addresses the feedback raised
+>>> in
+>>> our first VB developer's mail about Common and Class module
+>>> dependencies. This section did not exist at all in the first
+>>> version.
+>>>
+>>> The new Print and Report Architecture section (Section 7) documents
+>>> both Crystal report branches controlled by the EmpCommon flag. The
+>>> first version only noted Crystal Reports as a medium-severity issue.
+>>>
+>>> This version documents the complete branching logic, the formula
+>>> injection for requester name, and both report objects. This is the
+>>> level of detail the SPINRISE web API will need to generate the PDF
+>>> equivalent correctly.
+>>>
+>>> The new Critical finding on dual Oracle and SQL Server database
+>>> paths
+>>> is significant. The first version did not identify this at all. This
+>>>
+>>> corrected version shows that Oracle-specific SQL (to_char, decode,
+>>> outer join syntax, and the blcode field) coexists in the same form
+>>> alongside SQL Server SQL. This is a migration complexity that the
+>>> team
+>>> could not have discovered without the thorough active code analysis
+>>> you have now done.
+>>>
+>>> The validation rules are now split into six categories rather than
+>>> four, adding Delete Validations and Print Validation as separate
+>>> sections. The error message catalogue has grown from 17 to 25
+>>> messages, with the additional entries being real messages that were
+>>> missed in the first pass. The table inventory has grown from 19 to
+>>> 24
+>>> tables, all with clear purpose descriptions. The PR status lifecycle
+>>>
+>>> with all 10 states is fully documented for the first time, and the
+>>> audit logging to LogDet_PO with all 18 fields is now on record. None
+>>>
+>>> of this was in version one.
+>>>
+>>> What still needs to be completed before IST review begins
+>>>
+>>> I am asking you to address the following before handing this to
+>>> Muthuvel. Some of these are additions to the document. Some are
+>>> process steps from the v2 guide that need to be confirmed.
+>>>
+>>> 1.  Stage 0 sign-off not confirmed.  The document header says
+>>> 'code-cleaned' which indicates Stage 0 was done. But the Screen
+>>> Readiness Checklist (R1 through R8 from the v2 guide Section 3.2) is
+>>>
+>>> not present in the document and TL-Dev sign-off is not recorded.
+>>> Before any FSD is submitted for IST review, the checklist must be
+>>> completed and TL-Dev must confirm the code version is the approved
+>>> stable version. Please add a Stage 0 sign-off block to the document
+>>> header.
+>>>
+>>> 2.  Section 6: TC Framework is missing.  The v2 FSD template
+>>> requires
+>>> this section for all transaction forms. For the PR form, the
+>>> question
+>>> is specific: does a Purchase Requisition carry a TC code? A PR
+>>> authorises a future purchase but does not directly move stock or
+>>> post
+>>> accounting entries. If the answer is that the PR form is not a
+>>> TC-bearing transaction, the section should be present and should
+>>> state
+>>> that explicitly — 'This form does not carry a TC value. Stock and
+>>> accounting movements are triggered by the GRN (TC 01) when goods are
+>>>
+>>> received against the resulting PO.' This one sentence protects the
+>>> SPINRISE developer from a wrong assumption. Do not leave the section
+>>>
+>>> absent.
+>>>
+>>> 3.  Customer Variation Register is absent.  Your first document had
+>>> 13
+>>> hardcoded customer IDs. Your corrected document has removed all of
+>>> them and replaced the behaviour with po_para flags — which is the
+>>> correct architectural decision. But the v2 template requires a
+>>> Customer Variation Register documenting what each former CustID
+>>> variation was, which po_para flag now controls it, and what the
+>>> recommended default value should be in SPINRISE. This register is
+>>> the
+>>> bridge between what the code used to do for specific customers and
+>>> what the configuration model will do for all customers. Please
+>>> create
+>>> this register as a table in the document. It protects the IST team
+>>> from missing a variation that a specific customer still relies on.
+>>>
+>>> 4.  Stored procedure code not submitted to Claude.  Section 9.4
+>>> correctly lists SP_GetStock, KSP_INDEDNT_CHECK, and ksp_PendPR by
+>>> name. But the v2 guide (Step 1 and Follow-up Prompt B) requires that
+>>>
+>>> the actual SQL code of each stored procedure be submitted to Claude
+>>> for business rule analysis. The current document documents these SPs
+>>>
+>>> only from their calling signatures — we know when they are called
+>>> and broadly what they return, but we do not know what business rules
+>>>
+>>> are embedded inside them. For ksp_PendPR in particular, which is a
+>>> hard-blocking unconditional check, the logic inside the SP is
+>>> migration-critical. Please obtain the SP code from SQL Server
+>>> Management Studio and run Follow-up Prompt B against each one. The
+>>> SP
+>>> business rules must be in Section 8.
+>>>
+>>> 5.  Common module analysis is partial.  Section 9.6 lists four
+>>> utility
+>>> functions: Record_Exists, Padl, Padr, and fnmfdate. This tells us
+>>> the
+>>> function names but not what Record_Exists does internally, whether
+>>> it
+>>> handles any business logic beyond existence checking, or whether
+>>> Padl
+>>> and Padr have any edge cases. The full modCommon.bas code should be
+>>> submitted to Claude using Follow-up Prompt A. The output belongs in
+>>> Section 7 of the v2 FSD template.
+>>>
+>>> 6.  EmpCommon = True origin must be resolved in the document. This
+>>> is
+>>> not only an IST question — it is a developer question. The form
+>>> reads EmpCommon but does not set it. It is set somewhere in the
+>>> application startup or login module. The developer who understands
+>>> the
+>>> login flow must be asked: what determines EmpCommon's value at
+>>> login?
+>>> Which divisions or configurations result in True vs False? This
+>>> answer
+>>> belongs in Section 5 (Business Logic) or Section 7 (External
+>>> Dependencies), not just as an open IST question.
+>>>
+>>> 7.  Delete guard is incomplete.  V28 correctly documents that a PR
+>>> linked to an Enquiry cannot be deleted. But what happens when a PR
+>>> line has been partially converted to a PO? Can the PR header be
+>>> deleted while a PO is in draft state? Can it be deleted if the PO is
+>>>
+>>> approved? These are the most common scenarios where customers
+>>> attempt
+>>> to delete a PR and get unexpected results. Muthuvel will know these
+>>> scenarios from customer site experience. Please add this as a
+>>> specific
+>>> question in the IST section.
+>>>
+>>> 8.  Approval workflow must be cross-referenced.  Section 5.7
+>>> confirms
+>>> that PRapprovalstatus is display-only on this form and Section 5.8
+>>> documents all 10 PR status states. But the approval process itself
+>>> —
+>>> which form handles it, how many levels, who approves — is not
+>>> documented or even cross-referenced. In SPINRISE, the PR approval
+>>> workflow is a separate feature that must be designed alongside this
+>>> form. The FSD should note: 'PR approval is handled by [form name].
+>>> See
+>>> [form name] FSD for the complete approval workflow.' This
+>>> cross-reference is the IST team's responsibility to provide.
+>>>
+>>> 9.  Rate override logic needs a plain-English statement. Section
+>>> 5.2
+>>> notes that the Rate field is overridden by the last receipt from
+>>> IN_TRNHEAD and IN_TRNTAIL where TC=1 and SLCODE IS NOT NULL. This is
+>>> a
+>>> business rule embedded in a SQL query. It should be stated plainly
+>>> in
+>>> Section 5: 'If a supplier-linked receipt transaction (TC 01) exists
+>>> for this item, the Rate field is pre-filled with the last receipt
+>>> rate
+>>> rather than the item master rate.' IST must confirm: is this the
+>>> correct intended behaviour, or is it a workaround that should not be
+>>>
+>>> carried into SPINRISE?
+>>>
+>>> 10.  po_para flags — defaults required.  Your IST question 8 asks
+>>> for the complete po_para flag list and default values. From the
+>>> corrected document analysis, six flags are identified: BudgetQty,
+>>> Manual_IndNo, PRapprovalstatus, Penpodetails, PendingOrderPara, and
+>>> InditemGrp. Muthuvel must provide the answer to this directly in the
+>>>
+>>> document — not in a separate mail. The recommended default for
+>>> each
+>>> flag in a standard SPINRISE installation (new customer, no special
+>>> requirements) must be recorded before the FSD is used for code
+>>> generation.
+>>>
+>>> A specific observation for the CEO's attention on the Oracle finding
+>>>
+>>>
+>>> I am flagging this separately because it is a product strategy
+>>> question, not just a technical one. The corrected document
+>>> identifies
+>>> that Oracle-specific SQL paths exist alongside SQL Server paths in
+>>> the
+>>> same form. This was previously invisible in the codebase. If any
+>>> current Kalpatharu customers are on the Oracle backend, that means
+>>> their data model includes the blcode field and the Oracle-specific
+>>> query patterns. The question of whether SPINRISE supports Oracle, or
+>>>
+>>> whether those customers will be migrated to SQL Server as part of
+>>> the
+>>> SPINRISE onboarding, needs a CEO-level decision before the canonical
+>>>
+>>> SPINRISE data model is locked. This affects not just the PR form but
+>>>
+>>> potentially every module that has similar Oracle/SQL Server
+>>> branching.
+>>>
+>>> For Muthuvel — three additional IST questions to add to your
+>>> review
+>>>
+>>> Beyond the eight questions Mariyaiya has listed, please also
+>>> address:
+>>>
+>>> IST-A:  For the PR approval workflow — which form handles the
+>>> actual
+>>> approval action? How many approval levels are standard? Are approval
+>>>
+>>> levels customer-configurable? What happens to a PR that reaches
+>>> Final
+>>> Level Approved — does it auto-convert to a PO or does a separate
+>>> PO
+>>> creation step follow?
+>>>
+>>> IST-B:  For the ksp_PendPR hard block — at which customer sites
+>>> has
+>>> this check caused legitimate procurement to be blocked incorrectly?
+>>> Has IST ever had to manually bypass this check at a customer site?
+>>> The
+>>> answer determines whether it should be a configurable soft warning
+>>> in
+>>> SPINRISE rather than an unconditional hard block.
+>>>
+>>> IST-C:  For the Rate override from TC=1 receipts — is this the
+>>> intended behaviour or a historical workaround? Should SPINRISE
+>>> pre-fill the Rate from the item master (clean, predictable) or from
+>>> the last receipt (current practice, but supplier-linked)? This
+>>> decision affects how the API populates the Rate field on item
+>>> selection.
+>>>
+>>> Overall assessment
+>>>
+>>> This corrected version is meaningfully better than the first — not
+>>>
+>>> incrementally, but structurally. The removal of all CustID
+>>> hardcoding,
+>>> the dead code separation, the new External Dependencies section, the
+>>>
+>>> Oracle/SQL Server finding, and the expanded validation categories
+>>> together represent exactly the kind of improvement the v2 guide was
+>>> designed to produce. You have done the right analytical work.
+>>>
+>>> The ten items above are not criticisms of the work done. They are
+>>> the
+>>> gaps that remain between where this document is now and where it
+>>> needs
+>>> to be before it can be approved and handed to the code conversion
+>>> team. Most of them are additions, not corrections.
+>>>
+>>> Complete the ten items above. Get Muthuvel's/ TL- IST review with
+>>> all
+>>> seven standard questions plus the three additional ones answered
+>>> directly in the document. Then bring both to Saturday's session.
+>>>
+>>> This remains on the critical path for the first APPROVED FSD
+>>> milestone.
+>>>
+>>> Warm regards,
+>>> T Mani
+>>>
+>>> cc: TL-Dev, Project Manager, Muthuvel (Module Sr IST), Full SPINRISE
+>>>
+>>> Team
+>>>
+>>> On 03/04/2026 11:58 am, MariyaiyaM wrote:
+>>>
+>>> Dear Team,
+>>>
+>>> Kindly disregard my previous email. Please refer only to this mail
+>>> and the attached revised document.
+>>>
+>>> Please find attached the Critical Analysis document for the Purchase
+>>>
+>>> Requisition code-cleaned form (tmpPoindent.frm), which I have
+>>> prepared as part of the SPINRISE FSD documentation process.
+>>>
+>>> This document covers a detailed review of the VB6 form code across
+>>> 13 sections:
+>>>
+>>> —  Form Overview and Screen Layout
+>>> —  All Header and Item Entry fields with mandatory flags
+>>> —  Toolbar Buttons and their behaviour
+>>> —  Complete Validation Rules (Pre-Add, Header, Item Line, and
+>>> Pending Order checks)
+>>> —  Business Logic and Auto-Fill Rules
+>>> —  Database Tables and Stored Procedures
+>>> —  Print / Report Architecture
+>>> —  Error Messages Catalogue
+>>> —  External Files, Classes & Modules Referenced
+>>> —  Related Screens and Navigation
+>>> —  Critical Findings and Defects (3 Critical, 3 High, 3 Medium,
+>>> 2 Low issues identified)
+>>> —  Summary Scorecard
+>>> —  SPINRISE Migration Recommendations
+>>>
+>>> Kindly verify all domain-level details, including validation rules,
+>>> business logic, po_para parameter flags, and the list of IST review
+>>> questions in Section 13. Your sign-off on this document is required
+>>> before the FSD draft is prepared.
+>>>
+>>> Please pay particular attention to the following open items that
+>>> require your confirmation:
+>>>
+>>> 1.  What does EmpCommon = True represent? Which divisions use the
+>>> Cry_Purchase_Req report template and which use Cry_PR_KSL?
+>>> 2.  Should ksp_PendPR be hard-blocking or a soft warning? Should
+>>> it be made configurable via a po_para flag per division?
+>>> 3.  Is the blcode (Oracle) field required in SPINRISE?
+>>> 4.  Uniqueness rule for PR line items — Item Code only, or Item
+>>> Code + Machine Code?
+>>> 5.  Is po_para.PRapprovalstatus display-only, or does it gate any
+>>> operation?
+>>> 6.  Is Manual PR numbering (Manual_IndNo) required in SPINRISE?
+>>> 7.  Is the PurOrd.UserFooter OCX footer selector functionality
+>>> required in SPINRISE?
+>>> 8.  Complete list of po_para flags and their expected default
+>>> values in SPINRISE.
+>>>
+>>> The document is attached in both Word (.docx) and Markdown (.md)
+>>> formats for your convenience.
+>>>
+>>> Kindly share your review comments and approval at the earliest so we
+>>>
+>>> can proceed with the FSD draft without further delay.
+>>>
+>>> Regards,
+>>> Mariyaiya
+--------------YOvJS0yC4CrjN6k2wZyi5pRT
+Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document;
+ name="PR_IST_Feedback_Review.docx"
+Content-Disposition: attachment; filename="PR_IST_Feedback_Review.docx"
+Content-Transfer-Encoding: base64
+
+UEsDBBQABgAIAAAAIQCMGLWHigEAAK0HAAATAAgCW0NvbnRlbnRfVHlwZXNdLnhtbCCiBAIo
+oAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC0lctqwzAQRfeF/oPRtthKuiilxMmij2Ub
+aPoBijSOTa0H0uT19x3HjikliUMTbwz2zL33jGSY0WSjy2gFPhTWpGyYDFgERlpVmEXKvmZv
+8SOLAgqjRGkNpGwLgU3Gtzej2dZBiEhtQspyRPfEeZA5aBES68BQJbNeC6RXv+BOyG+xAH4/
+GDxwaQ2CwRgrDzYevUAmliVGrxv6XJN4KAOLnuvGKitlwrmykAKpzldG/UmJm4SElLuekBcu
+3FED4wcTqsrxgEb3QUfjCwXRVHh8F5q6+Np6xZWVS03K5LTNAU6bZYWEVl+5OW8lhEBnrsuk
+rWhRmD3/UQ6z1HPwpLw+SGvdCRFwW0K4PkHt2x0PiCToA6Bx7kRYw/yzN4pf5p0gmbVoLPZx
+G611JwQY1RPD3rkTIQehwA+vT1Abn3UPveTXxmfkU56Yl9AHQWPdCYG0DqB+Xn4SO5tTkdQ5
+9dYFWi/+H2Pv90eljmlgBx6L039am0jWF88H1WpSoA5k892yHf8AAAD//wMAUEsDBBQABgAI
+AAAAIQAekRq37wAAAE4CAAALAAgCX3JlbHMvLnJlbHMgogQCKKAAAgAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAArJLBasMwDEDvg/2D0b1R2sEYo04vY9DbGNkHCFtJTBPb2GrX/v082NgC
+XelhR8vS05PQenOcRnXglF3wGpZVDYq9Cdb5XsNb+7x4AJWFvKUxeNZw4gyb5vZm/cojSSnK
+g4tZFYrPGgaR+IiYzcAT5SpE9uWnC2kiKc/UYySzo55xVdf3mH4zoJkx1dZqSFt7B6o9Rb6G
+HbrOGX4KZj+xlzMtkI/C3rJdxFTqk7gyjWop9SwabDAvJZyRYqwKGvC80ep6o7+nxYmFLAmh
+CYkv+3xmXBJa/ueK5hk/Nu8hWbRf4W8bnF1B8wEAAP//AwBQSwMEFAAGAAgAAAAhAIt6byI0
+AQAAvwUAABwACAF3b3JkL19yZWxzL2RvY3VtZW50LnhtbC5yZWxzIKIEASigAAEAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAArJTLTsMwFET3SPxD5D1xUqA8VKcb
+hNQthA9w45uHSOzIvgXy91iNkrhQWV14ecfyzNH4sdn+dG30Bdo0SjKSxgmJQBZKNLJi5CN/
+vXkkkUEuBW+VBEYGMGSbXV9t3qDlaDeZuulNZF2kYaRG7J8pNUUNHTex6kHalVLpjqMddUV7
+XnzyCugqSdZUux4kO/GMdoIRvRM2Px96uMRblWVTwIsqDh1IPBNBS6UQtHXkugJkZJzT2BoR
+ej7/NmS+AUTbrFkIJsWH8BASoQYu3ArG2VvBKmgFOLTgFnCcffFpyHh56PagbeMLwSz5INYh
+IUAKaS+e08Kk+BDuQ7+EPwyz5D2MJCQF2r2wEBzHUfReyLuQDN+wf//3LB3RB/IU9kgk5nzf
+OoXM0gRBT77d7BcAAP//AwBQSwMEFAAGAAgAAAAhAH9I4bFpGwAA3eUAABEAAAB3b3JkL2Rv
+Y3VtZW50LnhtbOxd3XLbOLK+P1X7Dihv1Sm7jn4s2XES7yRbsiwlrnVmNFYmU7M3UxAJSRiD
+BBcAJSt1LvYd9g3Pk5xugKQom3ZkyZ6xPUiqTIkk/hr9odEfGtB3f7+KBJkxpbmM3+20Gvs7
+hMWBDHk8ebfz0+d+/c0O0YbGIRUyZu92Fkzv/P39X/7ru/lxKIM0YrEhkEWsj+dJ8G5nakxy
+3GzqYMoiqhsRD5TUcmwagYyacjzmAWvOpQqb7f3Wvv2UKBkwraG8Lo1nVO9k2QVX6+UWKjqH
+xJjhYTOYUmXY1TKP1r0zedV823xzPaPoZtNkwmJ4OJYqoga+qkkzouoyTeqQb0INH3HBzQKy
+3D/Ks5HvdlIVH2dZ1IuqYJJjV5XskqdQ65Trkpxm3WFLbComoA4y1lOeFDKNNs0NHk7zTGZ3
+NWIWify9edI63E4hTl2vLDNcp/pZV0bC1fzuHFv7a/QIZlGkWKcKq2XmNYkoj5cFbySaknBb
+r+6XQftGBkea3S+LV1kWTb2IltCYJ5PtevmDkmmyzI1vl9tZfFnkhePVPfLKtKWswXq7ygyn
+NAEoR8Hx2SSWio4E1Aj6nkD3EdsDBFGy8x5G05EMF3hNyPwYRuPw4t3O/n6v237z6nQnv3XK
+xjQVBp/s91/3XvdsymSg8KITGkCZ8C4dGwYDx9H+ThMf/BbAvRkV73YCADRTeLdZJBtJeYkD
+19DAiAcv8hCyxxJjGkFtf/0gT2hw6XLK3+3FYfGmfWBzUlmG7tWuttdACqny8tu9w87bnkui
+v+Z3D7NM9NeuXr3XLDI174eDs+8vzoY90rsYkP/793/IIFUwSoMIL9i/Uq45jnbkkwxTwTCh
+ccldU/8Iwa4pk1b/4M3rN9dl0i7uLGXi7pVlcjb8DK2fcTYnfcbCEXQUfE8kdOT/kh9Tpq0F
+IPBavUWMtB9eP6xwkpMwUyNjZJRXFZVfMMxBf32388Z+ACmCPh3iZyuAsjpgNbKMbkj7YP/e
+4ub2fV4l7ldv8f8NcVeooLtXFrcTNQvJaHFMPjMakXNGQ6bIME0yoX9mV4YLRk4lDvdwo9X+
+H/ILo0qT3lXCFIfJFYPbnURxQdr77aMH7o6hWUDxWRM+QvVAlq3bJXVfjWs1coUbphEMBYvK
+6puRyC5ZupH4GfIE4/n24MgOLmaRgDKEV9QVCi+cwMgJ01D7TWL7KxTJKk+mSDabTJFoaqTL
+SLAxDmIbpb1Lhb+dWvHJdOOieQw9yz5ul/zLZsmxA1fFPxJdJsQnavsukyj0Xauq5/JmVz93
+eZdyg2/nYETymoIK20RjrrS5kPOshoKWv9mHXSnSKC49X7kRy48n4KMU377k34o6FIr4QfEQ
+P07gCnm4qrcPciP0ALddgXk5Boee61gu0NG7uilxp/5566/Ju1DSyufX5J03PSslcH8zUQQZ
+JG21bxZkgm0QWbb098dkOfUmqCyn3wCXK3ZpRQ56ihMfZ4MEjOrX4URQW8W1mY4Jrndsy2n9
+NYmXkFbZI+Wur86hDMaKLGxrsrrMOoJP4qIxZYOaa8jGRuhB5kV9+y+3Sfnd9Qz1Z2moWE6A
+KmyUbaYHhQfFnwcU30sDU1f0nL6X5ILrSw8LDwsPi66gio95YNlSxyUoFnpseGx4bHSCNUGB
+F5cGy32x3k77FkXv7nff9DL+5HaUrpP6LpSuk/4OlH47+cYo7e/3D3Mdu4nSN9uCtDKDtTH6
+RyJxCbhWBb3m7pUBV0XOPqrd8RpdrdG9dq9/2vEavbVGt8gurjoc7HnNfiJjdb/f7na9Zm+t
+2QdOs1s1u6z2yl1eez1/Knre7R2eHnk9fyg9bzsFP3SXozv0HC9ZG9064JpNLHkLN1beR2ws
+FUiy7cSaLQ23CpfFJnC12EKklaun7dsFW/Kn7FuronT3yqIcGmpSTc7ZhMVV3tQWVb8pKqeh
+maSKlakHUY/58RQ0XZRxPVGMxdfai2E0OboTxTRTM7bznpAbTCQhK8K4Tchr6etthd5VxINI
+YAF+qJyvWZtq1ulFyAHasWZVrtEL16p2T0isNXo4tuf3HD1aa40eFfK9GXvRbpBTZigXIKqK
+yJ9K4flIjHsm9pEYf2wkxtHbbM62GlrRep3FbF27fVR1+6D11sLu2u1Wq/1qWY0nGJ+RI30k
+cPBgKkuQ3652Hl5XMth+1SETnl91+L38CivJPOk2qw4//rXClNmW3QGDdmbbPQ48Dl4IDkpz
+vDyUyQPDA8MDwwFDJzLWjOx2pVIsMCzchHo9aFd7QR4dHh3roOPg5KB9eJI/GZRuPTXAIN1W
+7FlZQQr8KTe2BPhHrdUtrNB/0yj5G8A7kFHE4tBtYt0A2a3MofXI9sh+IXbv4jpsH7/IbK+X
+Xbe4HYR4cQlWRpInGP61DVviV1o3GRT+xCuta6BwvSVYG2ewgQ3cyvfz6l6t7v3X/bcvM9ix
+rMmrW6jvq7DdVEODmCJfqOL5GueEawCPnYjiyt+MEfca/+omeTXSVVLrepH4gqXg4LkJYbH9
+vyvjMZ+kyuU6NPCBTaq2IXtweHA8EjjuC4fBBelLFRGuCbo1oLdjMAxUCBIIDiYFknIzJbEk
+Qab7dZ2wAAMEsjs5RhobKPpWHIdX9D+bot+Inlg59aR63nNfQBTsHSCChuxfKQziFhM85oZT
+QajWTGs8gKqB0FkO/yORskTx2JD8+DELjBpJoLsgwwDNg4qOK3DyIMLIQ0kcpB5BNLutvcwu
+VpvPKdVkxJgdQiIYQhZE5ceS0DgkGtxf+CjH46qh4pmIoL1HOkRDzzJ7vlzWp1j6V6YkocvZ
+w9npcqQUcgJ/eUxguI3sOUCoXlZNVkSxXeXQAwixFDNlpM9N/QNNSCemYqGhtN3+h84e1uQZ
+S/9gj5yNQZkWTvA41xqBLBOqaMRQBalQjIYLwq5AJXUuC8EmNFgQvQA1jWqEGxJBB4Gukogm
+CcjMQM9BlkpZ8GNw1BLWRUlW2eXoNxYYAt+mUJyZUigBikTBg/ZTErM5GaVchJuYw62IQW8O
+bzGHW+0qqOyQe5nDihyW5nD+JGnBEi6zkKcVXNp7ZVzed6MyXlxSVdE0+8CTci8WkJ6UuwV2
+D0TK2cBIFkO/sHBAJ+wE7NOlk7al69obWCbPSDyOZSq62NN11VM+mDB3kkRJeEx+lupyLOTc
+8nTnbMaErmVPQfQ1MgTDA4ADJ605gBmhEEzA85G2Bxt+BBdE4MTOkXa5H1Mf5nP0wqHZ6FAm
+jw+Pj83wcf9NbzQHhLAYQC/nywnZbbkPNdLGDz+z0V6DnCwSqjX43KQNHrh9Hz1PTM/xXHUW
+NpaejlqJbDiGfLICEG+nLDENgtHf4Eqet/asS58ddLsCmO1ax8gP9uBiBYW0oQGfaAwmzPra
+sTSExRP4ap1cGBlyQXju0UP2JXCPP4NvUqfK8CAVllJwfIRmANLOoF7gE8kGt0GNGxbp580o
+Ql14zMg8N+4RNYpfIcJXmRd8AU/5Pnamv0YupGA1XHQL7QHbtXywu0gFqxoQng/DaBcSVURo
+NneJloNgxGDAjbmO7KAcMqS2DENSmk9ifKNGEJF1pgPqfmahRsCpMDxiMjW52uT0Vy5hVklX
+PR9SMP9JCMv2jZwaBLlikN35VBJQqsnEThNTdI3IfEpBBCmMjAxeVqAze5YGnEkewisgxKlU
+/CsS1jC7VDxk1tCCwQlTK8RnLLHDPdKLNXQ7yIs/oPW+JW6ygDZFqitbUcSe6mRCdgD/wVGr
+IGgkxHZZY9KokX/+Orj4tTMAY29TWX6dG+R/sUNwXea8Zaci522iYEDQe5vMBTzx+hhzga2O
+ufDE60283SBeX+ApeJ5xfXgkesb1Frw9EOPqeNWDDQyP540ew/D4MMhvKuzQSDzXZIA/CBXC
+TNCRPCdsSmdcKirALZtldGiN/COW85icpBOdsafIxFIlYSatyVmU4KwMpq4wSRsGeNiOB4IH
+wtMlUE+RPpAJ+IBZ9A7goDK+cVasCGR8o3agsb+i5kCDngekvbQAGSFA0J4s0dHYAAqemPRQ
+eGLEZCcIWGJsrNWSksTgR5qGHKPgokQwwyyVAlApVhQiPsnYu5WQyOdNWOIGUBVa6iQfQVwb
+bQCYi320wY51OR4TaLNa5IFop3Sl5dvVxVDyqZBvE4/uwyC3U0sSc42rO8882q+9R75QwUMk
+OA3SdRiWPhxk0ZRFtKliicDYI7csVOjeSSc8g7lLL57SOHDk6TCRRls+1A32ZJzGGSFqgzIx
+Q2wUCUtCxNZmAYTDQeWA/izEWc3NIXlabGgG7YUKs/poUccrSWPAtmHakN3hT5/3LMzBJJbl
+8YCnAr6XqUlS43i+oheR2YD3sffA4mLZP3U+kwR/XXMT2+qJvkewrdudSO6JvpvYuEH03eMX
+kvDiUqmKVtkHnup7sVj0VN8tiHtQqu9wA9PjGY7HcOt8COU3FTb/CeiPHPmLhbUiXbfXs6eU
+xCXxUwrOxJnWKcsZvoFiM4ylLG1ktqut+cTMA8AD4OlSfJl660zzA3Ac9TFB570IJs4OvF/d
+uoLQYDHyHHY7V7GvrD4CfyMkIdeJoNabz/dNo6M0oqpB0Fsd4O5P9FEuWETVpV4mMCyqr0Bm
+m/bdFeA/57h11dbP1sY2iQotwXubYYLGBsj1jKRH7pNiJO9CQHkDd4LBlHYnck5RNpZ0B/JF
+kd08gOTQM4+ixMGICv4VmTL26CFdGHCYLXqEbMwCo0kTBs4l06ZwK0ZpB66dW5BzOXH0jobJ
+hcIwrt9lTAwEhkcWg/xuF4qGLwLq/In+BpMauPJYqsrQsefDlRamDbeng2nDCP8RFyjmqu3O
+BcX20xlhwnVbFnTXOf+SZxLYE/Rryxg+Ho8kRueGKE6pymyq4YIREHCfS8XJOU3jYJpQQNkY
+I/WRowXD+pyFjNvP0ZJbI+uOelCZpddTmYoQZUzDEHCC0wVko+GpQWwiQDqhhOfum4tyXJXF
+IwC1CCWGPnAVhukIBgIX7DmPA5HasdAh9eKs2+vDF5z9g7fwjHvrEKltOwzZ3yQxeMIoaL7d
++xJCP5FWuw6zRByOsnkijAqXzBB2BR5PYKy/Y1d5tI1qwMSQEGZ444U9gyCN81UtG6ofpMoS
+1Nz6UVWCwzuenf6951k+DPVx2em7TK8PUPUYXQOjnrW+BYkPylq/2sAkedLuMUySD1D9psL2
+eQzeJB649guIkpxgOB1Vi+U+fiS2fmErKv2Q5VNV78Uh6QqpWc1xfZ0Z5YJmLtWpi0bA53h1
+rLkLlMUK28Rn0ACcMPoTBTzwnjBbvoTaAqE2yqEWSqbtrns6Ro6n7As1yA+4MXUw+NWiE+5n
+tHmNDC40CWhst5e6k9EaG6i/p5y9+j+xINiVk0GXAbGj1NGdHOPBDQumseUWGVgKmQVnlhdO
+V3e1P/PDQDNyaT5l9jjE0nBAs9MWS2czYrgwSTVTdRCBUVLgKpuRE9D9xnIHNzdZVG2x8T+h
+ZlqO7KwaTp6FzG4JwbwR5powxWVIZMLiZoDzjyziFdXojvnOfXvw0yey+wkKVTDy69JBK3tk
+ILXb0GMrot3h0PanrMTCbeLOgtHs+goeVqGECw/AwV9RjuxnjJpg+bU6xpbCQ7Qu9rNdAwiZ
+4DOGZgbqAHYlobGNtUUSMmZXhow5nmFgU720Lj8A7NDE5DvwXeT4qtbbuNsAzw3OiNnPeGMY
+KJ4YcsESmHbaaI7d7gIGfdJ6SM3Arj0DNzUPLseiQV5PeGv9/wsAAAD//+xb3VIbyxF+lS5d
+xFBBGAQYTAJVQggfqsxBJWH7erTbkuZ4tLOZmZWQKxe5ygMkb3ieJN0zu4uEFyzzcwKJ7Cpr
+f2Z3Z/r362/a08OJUEc1K5OhwhpMD+23o1rDH6QiwqPaFh9HWmlzVGtttQ7aB7W3x3+dHva1
+c3pM9x74vJHDkXvo42+nhy460SZGY/lldhQXr4oUCjP3kMic5tOBVHT37Oys0WqFGbjoQhh/
+oFMaMD2qHfivuVlKH46vRRimcMDzpNvbW1X3S0Hc9YJipXe8wa8ln8mkqeQwKZeCiUNTjun4
+ITxVY2XcJdlstVuNg71TfqW/dIoDkSnHd7bO9tv77Zp/Ijz4W1T53vxu+Ccc98O6Wtb/2m/F
+c9vvwoLst5ZdvPa2fNYdt5QwciAj4aROoIt/y6TB2C8hDAyfzRcVfsKjpmJp/kZfdUz7Oj9s
+oVK3FfcjvVRLfe5d4bT8ShT+zZcUfQlv2a/U/4Ihhhk90CVyS/u/cshGe7f5vv1Qh9x9tENW
+vOHGIf+bbuelVTx65v8U3ldc3c41t+CPhTpKfzzvXdXf3e1+d1p7o7Ey9+fIP6Ui/7fMfd6S
+pf+u/D6BLGWwp6jQIfxJjNO/wIWO5WAGLZ04o5WF3//xb/ADOLl00IylcxiDTODzyTuYWOh1
+zn/tnvfaG3Ahkkwo+KLNV2F0lsQWhINWZklcaKAnHdqVX6z84o/zi5/0BLgeq0LeqUGLZoK1
+Y+8RBbwSSQxx4Q7CIAil9JQcQidqBtMRkpN0wTrhMgvSwmWn/SusJdqBSFOjJxivb8JlEiEM
+pLGurnCCKr9HvkNPDI2gtBVvwIKrPGZdSljXxYRsBOOOGOKJQfE1aP54fO/iYmlFX2G8+QC3
+3Wm8W7ntym1/Er2x2EiYNFYMCLwd1ciIwkcqANzTucEXqkvqMQ5kQq7cz0ifaC2YTOEm9Jqd
+usFIj8f8MHmIjjI6dLnPRPxjDys85EnE0MeBNujl8BxCccdr2+twNZJhtTCmbA19BEzosxE+
+WQy6I7bGMJGihBDQzNxIG/ktiPay/xtGzv4xgZBjXy+EbcIxdJNV7NFPrIHjt0EK8DSrT+d1
+JWaEZ6IAkSgD6ASrIuQr0X9jnQAeWz64Ec5lLxuNcCwY6fF1Wu1ADjMTVDMljNfX+uthSHC/
+//Nf8HEbmp1O9/Jz+zScNxbPO5fQ6rabV+3TVyyrnXVGxpS6x5zrSS4GBLzpostMAvRx6OJE
+WpLQG1gzT+c8xxgRzliHMUYjkUg7BryW1gV0LgeUuAt4YSBBJODtNFiydOiL6CtNkbTKsxMc
+wtiwN0in5PKFt8do5ZBDnyDIzlk/MlwRsJYHBG/IIjDd8F4gYBxQvscJWCe34eBIjkTjaQYR
+xc1XrN/ddfgslIx5NWIoZELyEVks2f09r8bCC2IvgZIelNiO5ExCFbNiNCg9HD6hGbAYyB8F
+sBkMsUxFVRLnK/fhs+2tVVn19Pis1d49zVnbFd19h1f2w7oeRHffl8KbHoqtGPCf8JIVA75i
+wJ+HAd9/QEpaMX3PkZL2z96vGPD7DfaEULLHfB7cl1UOw7xWZgxXgh1hCD075rHROVKehWZk
+tLXwUU6wZLltTqOXJW1OpFNtSS/F4WzlFiu3eLEE+I0jpKW5Lxb+VDTmZLaSEXPDXGlSaX+h
+Y0+WlS/47jExEVL5JzxVntMKPUcVHZwnE/IxbWYwDu95gJes+OaVl7wovvl2Z47BCClVxBvQ
+zxzYSKcIfd4mFWz3ORMz0GYsFPlHUdpj/Lqp5YIucyPhAumE15HKmCPjqIDXHEikU8yZRGyh
+fm/ZhwYvoZNCQoVAOOCkBjlg5EKMDGIKcWZ4WWXi7WdSVW5cvR5a9ozgeHWA9NAEE5sZZm29
+ZNFzfRWxV+mhjFjWkUgdPRCDRQ7vjgltkrV0lmRvU6TymZAMgXc6nUic+v3AUp7VBPCrFXD1
+fgQTvN1ir4d5NkZ49VzmckzDKfdZi9ayKR567hU63brTdUqCJKIJRdjctAt1xNwFsSCmx1mG
+LG3Bbx5vAH2TWzYKOyCT8Fma9G0jEbM4vVXIhOZnpXWYRGX+7XTnHMtQhn5I6l1Ric+z1bvq
+nH2RnbP801c/scI5YvHOOLcT5J0Huu3GQqR7dFxNe25GESyXxC/ow8L2MsG0URGTwrV5Se5s
+wiWFIUIu0DF6QPGRJCrUTSz1In7uXBFsOhfhwVK5Isj51vKKJ3/MOVdnkatRSKMOxRhGwvLG
+2EQytBFgSRJ2QHmEA7hMpJMkJk6/FJs9/CvCcp508lQczaJQXll6y1LJZJmVuWMd0sB2488w
+o2hkeTfrCq+dVLy7NBaUJgiioaFJo8cDV7ymj2RAzIRkaaqNCyMkcleTLwwLDMdNBX76vN3I
+i+NeKVYZJyIdttlij/tubMT6xiNpbfZCke/7isjir82LdXuTwRsheTid7xY5hCZ5CDlKX6i3
+SNJVAVbRyLD2NY/DpK8AmEXd8TL3fOr6rRpBfvNiJjTswXIB086kq38QKTTJ/WaU7WHt7ENz
+PUC5akBNSMWLA/oqw5RANLNbHi8qbat7v16HEhqbvhfV72AvEnt8ObQvsGgbpZAX27Yf9fXq
+yFB6ui0UDx4FLPYc2YDlCn1L8o5YBrxOGC2xyvuN1325Rc9LEAvtM9WAnbTNUJGsKEv8fpnw
+NmhJYaJ6I/l1KJsyUPe81T6jlDNkjGvgU8rxJah4Fyj8kmEPJPqmZJI5yVYn3LNAcqwbDDLF
+ZCQojHk4vCYdjutTDnxLtnIsNVFye0NakL5RtMNfX98MDViFvk2+gqIfw6/rC2jfDlUAd0op
+fPrG5sueqwr08PWqcXeTal2Hw9xqr5BE0ouMTJ0NmtzzeapeEid9HImJ5N6Wwofz/qV63+fK
+hQbXvGUrFzWKaETpecL9LzEPCU5Vftzxx234OIgnNAHvpqzdhLMfJ0juOgxBuHd+BWu9Gel/
+/J0kSAfrNG4ok5fZY7PU4vc2oeWr6kAZw3moqrlxCqdBx/swokJEcTHC9r9QhJMKIzQJyegW
+MVKyHxMLnUvyqWaeKH9QxJduR2+Os4iNYI5hojdyC1yonJ/QBEIRnmr69FDXlZy8zA7Cpdby
+bhN6VAvWLwcDaI0w+ppqyeSID2olu+DB4E0XLcmYZO58ezlHZI5pCQFP6DlEz+S1aCz/ZxOE
+t1xU+ODXYp17CDpG9DiFEXOu5xwqcytbXdNcco/yXWnoeZAcLJ0wNQgpIfPHSX2Zuq4RKOzK
+ouTRSk5P4qCDu8iV3Tl+wh/nVMNNDwTPIX/LDwqq3XtMZnH7daGRYO89/y3sqLSipQr0AjwD
+VepUUhZx/NBHRsPQhXnQwjg+3eOfzzRBwgaXvJsFf4c8gkGLKzUfx2hiWA+2lt/jYSHsHcLF
+RZh8ZiI2xEA/WOmDPY8rEX2+vEpDtXSjwyu5bT58c+SrtC4OCEpwbTYt2JxgUjUwhzI+qpnz
+eD+sdaC1W+6BnBRIhz0WGNNFewfB0EdMXrDR5wMuBE+PDJQppWBPnmW6OQ2s1M05s1g3Z2ER
+3Al1wKdhiuXpMHP+NP9cxLm9NPj9ogSmGPTBSObdFIHsjnQRzXKnDIFBiP6wr+OZPyjC1vF/
+AAAA//8DAFBLAwQUAAYACAAAACEA90FjReABAAC7BgAAEgAAAHdvcmQvZm9vdG5vdGVzLnht
+bKSUzW7jIBDH7yv1HSzuCXbVtF0rTg9Nu+p1u/sAFOMY1TAIcJy8/Y4df21bRU59wQZmfvOH
+YWb9cFBFsBfWSdAJiZYhCYTmkEq9S8jfP8+LexI4z3TKCtAiIUfhyMPm6se6ijMAr8ELFyBD
+u7gyPCG59yam1PFcKOaWSnILDjK/5KAoZJnkglZgU3odRmHzZyxw4RwGfGR6zxxpcfwwjZZa
+VqFzDbyhPGfWi8PAiC6GrOhPev8RpD4fDYzQuJmBVczj1O6oYva9NAvkGublmyykPyIyvO0w
+kJDS6rhFLHoptUt8ktJ+Og87Je7JZQu8VEL7JiK1okANoF0uTX+n6rs03Mw7yP7cIfaq6Owq
+E93MexDbU1YG4BT5bSpVcVJ+nhiFEzJSI3qPKRL+j9kpUUzqIfC3rmZ0udHqMsD1J8CtE5ch
+Vi2CuqMaSqMyu3lZ/mWhNANNzqO96PeeVTesC1jtaxm/YDdPzGvODJay4vHLToNlbwUqwtwH
+mL6gyUBQVwnZjNppUMX+aNDOCcMs82AJLsk0IYuoMTQ4xX6d/k5IGIbPd093T7VFs7QVGSsL
+P9qpPWw99Di6WdNmDUfTjF3oL2Vw0F7qsmkmrx8lhXMUfUk+p240cZt/AAAA//8DAFBLAwQU
+AAYACAAAACEAiT04M94BAAC1BgAAEQAAAHdvcmQvZW5kbm90ZXMueG1spJTLTuswEIb3R+Id
+Iu9bJ4gCJ2rKggJiC5wHMI7TWMQzlu007dvjpLn0AKpSsvF15pvfHnuWdztVBFthrERISDQP
+SSCAYyphk5B/b4+zWxJYxyBlBYJIyF5Ycre6+LOsYgEpoBM28AiwcaV5QnLndEyp5blQzM6V
+5AYtZm7OUVHMMskFrdCk9DKMwmakDXJhrY93z2DLLGlxfDeOlhpWeecaeEV5zowTu4ERnQ1Z
+0L/09itIfT8aagF+M0OjmPNTs6GKmY9SzzxXMyffZSHd3iPD6w6DCSkNxC1i1kupXeKDlLbr
+PMyYuAeXNfJSCXBNRGpE4TUg2Fzq/k7Vb2l+M+8g21OH2Kqis6t0dDXtQawPWRmAY+S3qVTF
+QflpYhSOyEiN6D3GSPg/ZqdEMQlD4F9dzdHlRovzAJffANdWnIdYtAhq92r4GpXeTMvyk8FS
+DzQ5jfYMHz2rrldnsNrXcvyC7TQxrznT/isrHj9vAA17L7win/vApy9oMhDUv4SshmoaVLHb
+a29mhWaGOTTEL8k0IbOosdN+6qt1+pKQMAwfbx5uHmqLZmktMlYW7min9jB10+PoakmbNd/q
+pm0j/ySCIzgJZVNJXr8KCqfo+ZF8QtswtqtPAAAA//8DAFBLAwQUAAYACAAAACEAaUxLp14C
+AAB5BwAAEAAAAHdvcmQvaGVhZGVyMS54bWy8ld1u2jAUx+8n7R0s37dOUGlpRKg2SCcuNiHo
+HsA4DrHqL9mGwLSLvcPecE8yOyGkrFIFRdqN7djn/M7fPvbJ8GErONhQY5mSKYyvIwioJCpn
+cpXC70+PVwMIrMMyx1xJmsIdtfBh9PHDsErK3ADvLW1SaZLC0jmdIGRJSQW214IRo6wq3DVR
+AqmiYISiSpkc9aI4qkfaKEKt9aHGWG6whXsc2Z5Gyw2uvHMA3iBSYuPotmPEZ0P66B4N/gWJ
+11tTmkq/WCgjsPOfZoUENs9rfeW5Gju2ZJy5nUdGty1GpXBtZLJHXB2kBJekkbLvWg9zStzG
+ZaLIWlDp6ojIUO41KGlLpg9nKt5L84tlC9m8tYmN4K1dpeObyy7EpMlKBzxF/j6VgjfK3ybG
+0QkZCYiDxykSjmO2SgRmsgv8rqN5cbhx/zxA7xXg1tLzEP09Atmd6J5GpVeXZfmLUWvd0dhl
+tKl8PrBCqTqDtb8tL2+wvUzMosTaP2VBkulKKoOX3CvyuQc+faDOAAivBI58IdWgSnwBzucp
+jKJs3Bv0J7CdmtACr7kLK9HjXXaXNR4zU3ef87pfKueU8C4bzFMYwnMaCPZHCm/rgcbEx4/D
+mCiufG3pZTef7jOIRkPUgYKd9/ZWuHDUW8VR1Jo0IZumGS9R3Y5t3dfcVkNHDyra2XjQzozt
+8Rw6QN1oMZt+m08XGcjmMzAVmtNQjeqSBsBPAGZz8FXla07Bn1+/wXTxBOZ0w2gFHinNl5g8
++2+tjKuNx0oWLOBdE+Q/7SH3ihnmR4HDIdat/3GO/gIAAP//AwBQSwMEFAAGAAgAAAAhAMQm
+cynoAgAAtQwAABAAAAB3b3JkL2Zvb3RlcjEueG1s7JfJbtswEEDvBfoPBK+FIsmxE0eIFMRL
+iqALnNg59EhLI1uIuICkt6KH/kP/sF9SUrKspEECO27aAi0MSDQ582Y4Cwmdni1pjuYgVcZZ
+iP0DDyNgMU8yNgnxzejCaWOkNGEJyTmDEK9A4bPo9avTRZBqiYw2U8FCxCGeai0C11XxFChR
+BzSLJVc81Qcxpy5P0ywGd8Fl4jY83ytGQvIYlDKmuoTNicJrXLzcjpZIsjDKFth04ymRGpY1
+w98Z0nJP3PbPIPpwa1wAM4spl5Ro81dOXErk7Uw4hiuIzsZZnumVQXpHFYaHeCZZsEY4G1es
+SlC6sn5VGnIbu6VKj8czCkwXFl0JufGBMzXNxCam9Lk0szitIPOnNjGneSW3EH5zv4LolVmp
+gdu4v04lzUvPnyb63hYZsYiNxjYu3LdZeUJJxmrDzwrNneD6rd0AjQeAIwW7IVprhKtWtG6N
+hZjsl+W3ks9ETcv2o12y2w3LHlU7sNbVcreC1X7ODKdEmFamcXA5YVyScW48MrlHJn2oyACy
+XYIjc5AKtAjMAZxch9jz+t1Gu9XD1VQPUjLLtV3xLo77x/1SYyCLVycp3ppbxJzkIba2c7Dq
+6nOIm8VAkNgY9+045jk3B0uj3zw/6WM3OnVripUz2kZqDKamjUrbq0RKe+WjHBekymrrxP6s
+sLVbzfpH1UxX3Z9zNxhtA165KCQokHPA0UCCIBISNF4FaASEovdAEpBoOBOCS42+f/1m5pc6
+ywH1uG0whL4g1F8KkJm5wSBAfuMN+gREqmKlOtXQNaQgS4nBtXM5HDkXnXfOle9cHReCAzIB
+ZD3UpZ8vtPE0T7rmpkGb0WglTAjGMDFnxVryhUxnTGlpgxcNzt/27UI9U9u9W5SHncNGs1OU
+3m+JgrLZJxruBeJphxgfSM7TwuKvqs2o8cfqAFjywlXwSOchnv4r1f/x5oNtgOH/Dni8A1p/
+RwfYO6h4mo+O6AcAAAD//wMAUEsDBBQABgAIAAAAIQAHt0CqJAYAAI8aAAAVAAAAd29yZC90
+aGVtZS90aGVtZTEueG1s7FlNixs3GL4X+h+GuTse2zP+WOIN47GdtNlNQnaTkqM8I88o1oyM
+JO+uCYGSnHopFNLSQwO99VBKAw009NIfs5DQpj+iksZjj2y5S7oOhNI1rPXxvK8eva/0SOO5
+eu0sxdYJpAyRrGvXrji2BbOQRCiLu/a942GlbVuMgywCmGSwa88hs6/tf/zRVbDHE5hCS9hn
+bA907YTz6V61ykLRDNgVMoWZ6BsTmgIuqjSuRhScCr8prtYdp1lNAcpsKwOpcHt7PEYhtI6l
+S3u/cD7A4l/GmWwIMT2SrqFmobDRpCa/2JwFmFonAHdtMU5ETo/hGbctDBgXHV3bUX92df9q
+dWmE+Rbbkt1Q/S3sFgbRpK7saDxaGrqu5zb9pX8FwHwTN2gNmoPm0p8CgDAUM825lLFer9Pr
+ewtsCZQXDb77rX6jpuFL/hsbeN+THw2vQHnR3cAPh8EqhiVQXvQMMWnVA1fDK1BebG7gW47f
+d1saXoESjLLJBtrxmo2gmO0SMib4hhHe8dxhq76Ar1DV0urK7TO+ba2l4CGhQwFQyQUcZRaf
+T+EYhAIXAIxGFFkHKE7EwpuCjDDR7NSdodMQ/+XHVSUVEbAHQck6bwrZRpPkY7GQoinv2p8K
+r3YJ8vrVq/MnL8+f/Hr+9On5k58XY2/a3QBZXLZ7+8NXfz3/3Przl+/fPvvajGdl/Jufvnjz
+2+//5J5rtL558ebli9fffvnHj88McJ+CURl+jFLIrFvw1LpLUjFBwwBwRN/N4jgBqGzhZzED
+GZA2BvSAJxr61hxgYMD1oB7H+1TIhQl4ffZQI3yU0BlHBuDNJNWAh4TgHqHGOd2UY5WjMMti
+8+B0VsbdBeDENHawluXBbCrWPTK5DBKo0byDRcpBDDPILdlHJhAazB4gpMX1EIWUMDLm1gNk
+9QAyhuQYjbTVtDK6gVKRl7mJoMi3FpvD+1aPYJP7PjzRkWJvAGxyCbEWxutgxkFqZAxSXEYe
+AJ6YSB7NaagFnHGR6RhiYg0iyJjJ5jada3RvCpkxp/0Qz1MdSTmamJAHgJAysk8mQQLSqZEz
+ypIy9hM2EUsUWHcIN5Ig+g6RdZEHkG1N930EtXRfvLfvCRkyLxDZM6OmLQGJvh/neAygcl5d
+0/UUZReK/Jq8e+9P3oWIvv7uuVlzdyDpZuBlxNynyLib1iV8G25duANCI/Th63YfzLI7UGwV
+A/R/2f5ftv/zsr1tP+9erFf6rC7yxXVduUm33t3HCOMjPsfwgCllZ2J60VA0qooyWj4qTBNR
+XAyn4WIKVNmihH+GeHKUgKkYpqZGiNnCdcysKWHibFDNRt+yA8/SQxLlrbVa8XQqDABftYuz
+pWgXJxHPW5ut1WPY0r2qxepxuSAgbd+FRGkwnUTDQKJVNF5AQs1sJyw6BhZt6X4rC/W1yIrY
+fxaQP2x4bs5IrDeAYSTzlNsX2d15prcFU5923TC9juS6m0xrJErLTSdRWoYJiOB6845z3Vml
+VKMnQ7FJo9V+H7mWIrKmDTjTa9ap2HMNT7gJwbRrj8WtUBTTqfDHpG4CHGddO+SLQP8bZZlS
+xvuAJTlMdeXzTxGH1MIoFWu9nAacrbjV6i05xw+UXMf58CKnvspJhuMxDPmWllVV9OVOjL2X
+BMsKmQnSR0l0ao3wjN4FIlBeqyYDGCHGl9GMEC0t7lUU1+RqsRW1X81WWxTgaQIWJ0pZzHO4
+Ki/plOahmK7PSq8vJjOKZZIufepebCQ7SqK55QCRp6ZZP97fIV9itdJ9jVUu3eta1ym0btsp
+cfkDoURtNZhGTTI2UFu16tR2eCEoDbdcmtvOiF2fBuurVh4Qxb1S1TZeT5DRQ7Hy++K6OsOc
+KarwTDwjBMUPy7kSqNZCXc64NaOoaz9yPN8N6l5QcdreoOI2XKfS9vxGxfe8Rm3g1Zx+r/5Y
+BIUnac3Lxx6K5xk8X7x9Ue0bb2DS4pp9JSRplah7cFUZqzcwtfr2NzAWEpF51KwPO41Or1np
+NPxhxe332pVO0OxV+s2g1R/2A6/dGT62rRMFdv1G4DYH7UqzFgQVt+lI+u1OpeXW677b8tsD
+13+8iLWYefFdhFfx2v8bAAD//wMAUEsDBBQABgAIAAAAIQBZo4863AMAAJAKAAARAAAAd29y
+ZC9zZXR0aW5ncy54bWy0Vttu2zgQfV9g/0HQ8yq6+BKvUKdIfNmmiNuiyn4AJdE2EV4EkrLj
+Lvbfd0iKlp0EhbtFn0zOmZuGZ2b87v0zo8EOS0UEn4bpVRIGmFeiJnwzDf9+XEaTMFAa8RpR
+wfE0PGAVvr/5/bd3+1xhrUFNBeCCq5xV03CrdZPHsaq2mCF1JRrMAVwLyZCGq9zEDMmntokq
+wRqkSUko0Yc4S5Jx2LkR07CVPO9cRIxUUiix1sYkF+s1qXD34y3kJXGdyVxULcNc24ixxBRy
+EFxtSaO8N/Z/vQG49U523/uIHaNeb58mF3zuXsj6aHFJesagkaLCSsEDMeoTJLwPPHzl6Bj7
+CmJ3n2hdgXma2NNp5qMfc5C9cjBW+MdcjDoXsTow/OwdKXpJSRz0QEqJpCNcVw9W5fcbLiQq
+KaQDdQng0wKbXXgDLP8mBAv2eYNlBU8NLZIkYWyAmqiGosMdqp42UrS8LraowQ7Ca9RS/YjK
+QosGrHcIkrzOOstqiySqNJZFgyp4oJngWgrq9WrxSegZNIiE93MWayE0Fxp/kac3MCD1NIzS
+c6VObIPFL20xr19dXvg5l3o3Z4aufftT4UYBmHDEoIxn7b0SNfTqPm8lufy9jYGtRjrqivZm
+IAGjS5IaP5rnK/SB4iUUsyDf8C2vP7ZKE/Bom/wnMvheApibyJ+BcI+HBi8x0i082y8KZpmx
+pKRZESmFvOc1UPKXBSPrNZYQgCCNV0BnIsXe1vkDRjVsjJ+MG5/SCPZPrfzhKzDWqybJYpZN
+RnOXqUF7JFleL64XbyGDu0E2vHsL6b3Fx6gsN7PbMNudDIUC5ixmiJWSoGBlpntsNEr5dEe4
+x0sMUwafIkVbejCKHKAYonQJPe8B21TMjpA5XtszXSG56f12GvJNKcyXj0dfZixh+ReMoMah
+e4kaRw2vkg6HnSXh+oEwL1dtWXgrDnPxBIJ59nknbZ368uxzDU9sW+wBWapYXcyj+08dlags
+DA3wCjWNY1O5SachJZutTg0BNNxq+BNgL+Um67DMYpnD7AVV5stAuzv0sszLTvQGXjboZUMv
+G/aykZeNetnYy8ZGtoU+lpTwJyC2Pxr5WlAq9rj+0OOvRK4IyiyCudsBQC/hBN1SUMEux8+w
+SHBNNPy3akjN0LPZK9nYmHfasFlEq890DWaUm3MPNdLIt9SZsaX4i1zMbqoI0LE4sLJfOVcu
+cUoUjIEGtpMW0mN/WCwd5rWo7qGT4ORI9edkskgcsWBlHuGRg/8Z3S5Hy2wwj2azJI2G88Eg
+us1maTRO5reTwSLJkmz4b9eI/q/kzX8AAAD//wMAUEsDBBQABgAIAAAAIQAFDgqo+QAAAA0C
+AAAUAAAAd29yZC93ZWJTZXR0aW5ncy54bWyUz8FOwzAMBuA7Eu8Q5b6mndiEqnW7ICTOwAOk
+mdtGi+Mozuj69kSlwGGX7WbL9if/u8MFnfiCyJZ8I6uilAK8oaP1fSM/P15Xz1Jw0v6oHXlo
+5AQsD/vHh91Yj9C+Q0p5k0VWPNdoGjmkFGql2AyAmgsK4POwo4g65Tb2CnU8ncPKEAadbGud
+TZNal+VWLky8RaGuswZeyJwRfJrvVQSXRfI82MC/2niLNlI8hkgGmHMedD8eauv/mOrpCkJr
+IjF1qchhlo9mKp9X5Vyh+wc29wHrK2DLcB+xWQjFE8JFCjT1W+8p6tZlKUcS+Ssxw1LtvwEA
+AP//AwBQSwMEFAAGAAgAAAAhAEUBCMbMDAAAz3wAAA8AAAB3b3JkL3N0eWxlcy54bWzUnVt3
+27gRx997Tr8Dj57ah8QXyXbis949jmM3Pk2y3pXTPEMkZLEhCZUXX/rpCwKgBGoIigNO3e2T
+LUrzI4CZ/wDD60+/PKdJ8MjzIhbZxeTo7eEk4Fkoojh7uJh8u795824SFCXLIpaIjF9MXngx
++eXnP//pp6fzonxJeBFIQFacp+HFZFWW6/ODgyJc8ZQVb8WaZ/LLpchTVsqP+cNByvIf1fpN
+KNI1K+NFnMTly8Hx4eHpxGDyIRSxXMYh/yjCKuVZqewPcp5IosiKVbwuGtrTENqTyKN1LkJe
+FLLTaaJ5KYuzDeZoBkBpHOaiEMvyreyMaZFCSfOjQ/VfmmwBJzjAMQCcFhyHODGIg+Il5c+T
+IA3Pbx8ykbNFIkmyS4FsVaDAk5+lNyMRfuRLViVlUX/M73Lz0XxSf25EVhbB0zkrwji+mFzm
+MZNtfDrnrCgvi5hZm1aXWWH/JCyaDwc1qvi33PbIkovJ8XGz5apGt7YlLHtotvHsze3X9s42
+mxZxJPfF8jfzy9rwwLRY/7X6sd580r/a6bQMIRlQcx3X8lu+/CzCHzyal/KLi8lhvSu58dvt
+XR6LXMbuxeT9e7NxztP4UxxFPLN+mK3iiH9f8exbwaPt9t9uVPyZDaGoMvn/9OxIOSIpouvn
+kK/raJbfZiyVu/5aG6hxrOLtzpX5vxrYkRmzLvsVZ7Wkg6NdhGo+CnFcWxRWb7uZ1U7f1a9Q
+O5q+1o5mr7Wjk9fa0elr7ejstXb07rV2pDD/zR3FWcSftRDhbgB1H8ehRjTHITY0x6ElNMch
+FTTHoQQ0xxHoaI4jjtEcR5giOKUIXVFoBfvUEe393P1zhB93/5Tgx90/A/hx9yd8P+7+/O7H
+3Z/O/bj7s7cfd3+yxnP1Uiu4lTLLytEqWwpRZqLkQcmfx9NYJlmqzqHh1ZMez0k6SYDRmc1M
+xKNpIVOf90eIEqn/fF7WFVUglsEyfqhyWR6PbTjPHnkiC9WARZHkEQJzXla5Y0R8YjrnS57z
+LOSUgU0HTeKMB1mVLghic80eyFg8i4iHryGSJIVNQLOqXNUiiQmCOmVhLsY3TTCy/PA5LsaP
+VQ0JPlRJwolYX2lCTLHG1wYKM740UJjxlYHCjC8MLJ9RDZGhEY2UoRENmKERjZuOT6pxMzSi
+cTM0onEztPHjdh+XiUrx9qrjaPixu6tE1EemR7djHj9kTC4Axk835phpcMdy9pCz9SqoDwx3
+Y+0+Y/fzQUQvwT3FnLYhUa3rVYhcyV7HWTV+QFs0KnFteETy2vCIBLbhjZfYF7lMrhdon2jq
+mXm1KDtFq0iDRDtnSaUXtOPVxsrxEbYVwE2cF2Qy6MYSRPDXejlbu5Mi821bOb5hW9Z4We1m
+JdLmGSRBKxMR/qBJw59e1jyXZdmP0aQbkSTiiUd0xHmZCx1rtuSPlUsGSf46Xa9YEataqYUY
+PtU357SDL2w9ukN3CYszGr9dv0lZnAR0K4hP918+B/diXZeZ9cDQAD+IshQpGdMcCfzLd774
+K00DL2URnL0Q9faS6PCQgl3FBJOMJomIiCSXmXEWk8yhivd3/rIQLI9oaHc515eRlJyIOGfp
+Wi86CLQl8+KTzD8EqyHF+wfL4/q4EJWo7klg1mHDolr8k4fjU91XEZAcGfq1KtXxR7XUVdZ0
+uPHLhBZu/BJBeVNOD3X8EnS2hRvf2RaOqrNXCSuK2HkK1ZtH1d2GR93f8cWf4YlE5MsqoRvA
+Bkg2gg2QbAhFUqVZQdljxSPssOJR95cwZBSP4JCc4v0tjyMyZygYlScUjMoNCkblAwUjdcD4
+K3Qs2PjLdCzY+Gt1NIxoCWDBqOKMdPonOstjwajiTMGo4kzBqOJMwajibPox4MulXATTTTEW
+kirmLCTdRJOVPF2LnOUvRMjrhD8wggOkmnaXi2V9f4HI9EXcBMj6GHVCuNjWOConf+cLsqbV
+LMp2ERwRZUkiBNGxte2Eoyzb167tM7tf8XR8GX2XsJCvRBLx3NEnt62sl+drFprD9OB036DD
+np/jh1UZzFebo/025vRwr2VTsLfM9u+wa8xPmztPusy+8Ciu0qah8GaK0+lwYxXRLePZfuPt
+SqJleTLQEu7zdL/ldpXcsjwbaAn3+W6gpdJpy7JPDx9Z/qMzEM764mdT4zmC76wvijbGnbvt
+C6SNZVcInvVFUUsqwWUY1mcLoHeGacZtP0w8bnuMitwUjJzclMG6ciP6BPY7f4zrmR2TNNX+
+NldPgLyvFtGDMudvldDH7VsnnIbf1HUrF05ZwYNOznT4iatWlnGP4+B040YMzjtuxOAE5EYM
+ykROc1RKclMG5yY3YnCSciPQ2QrOCLhsBe1x2Qra+2QrSPHJViNWAW7E4OWAG4EWKkSghTpi
+peBGoIQKzL2ECilooUIEWqgQgRYqXIDhhArtcUKF9j5ChRQfoUIKWqgQgRYqRKCFChFooUIE
+Wqiea3unuZdQIQUtVIhACxUi0EJV68URQoX2OKFCex+hQoqPUCEFLVSIQAsVItBChQi0UCEC
+LVSIQAkVmHsJFVLQQoUItFAhAi1Ufauhv1ChPU6o0N5HqJDiI1RIQQsVItBChQi0UCECLVSI
+QAsVIlBCBeZeQoUUtFAhAi1UiEALVZ0sHCFUaI8TKrT3ESqk+AgVUtBChQi0UCECLVSIQAsV
+ItBChQiUUIG5l1AhBS1UiEALFSL64tOconRdZn+EP+rpvGJ/+Kkr06jf7Vu5bdR0OKpplZs1
+/F6ED0L8CDpvPJyqemMYJF4ksVCHqB2n1W2uuiQCdeLz16v+O3xs+siHLpl7IdQ5UwCfDbUE
+x1RmfSFvW4Iib9YX6bYlWHXO+rKvbQmmwVlf0lW6bC5KkdMRMO5LM5bxkcO8L1tb5nCI+3K0
+ZQhHuC8zW4ZwgPvysWV4EtTJedf6ZOA4nW6uLwWEvnC0CGduQl9YQl816RgKY6jT3ISh3nMT
+hrrRTUD504nBO9aNQnvYjfJzNZQZ1tX+QnUTsK6GBC9XA4y/qyHK29UQ5edqmBixroYErKv9
+k7Ob4OVqgPF3NUR5uxqi/FwNpzKsqyEB62pIwLp65ITsxPi7GqK8XQ1Rfq6GizusqyEB62pI
+wLoaErxcDTD+roYob1dDlJ+rQZWMdjUkYF0NCVhXQ4KXqwHG39UQ5e1qiOpztTqK0nI1ysOW
+OW4RZhniJmTLEJecLUOPasmy9qyWLIJntQR91fgcVy3ZTnMThnrPTRjqRjcB5U8nBu9YNwrt
+YTfKz9W4aqnL1f5CdROwrsZVS05X46qlXlfjqqVeV+OqJbercdVSl6tx1VKXq/2Ts5vg5Wpc
+tdTraly11OtqXLXkdjWuWupyNa5a6nI1rlrqcvXICdmJ8Xc1rlrqdTWuWnK7GlctdbkaVy11
+uRpXLXW5GlctOV2Nq5Z6XY2rlnpdjauW3K7GVUtdrsZVS12uxlVLXa7GVUtOV+OqpV5X46ql
+Xlc7qqWDp9YLmGq2esWY/HH5sub1M7itG2Yi/QxScxJQ/fA22rwoqTauWxKYl0eZzarB5oSh
+3qMy3LOrDdycrdTvabLx29cr7exBvXJK4fU9ktJgUT82Su7ieKZur2HLkueyF8fGM0I/mefz
+Y9LA1RcHG5J5F9dC/XpxVai/YT3EjcHx9ezy/bXGbd+zNTU7sN+zpbdZr8vyGY5j53AYBQ8b
+jsPWcBw6h0ONMWY4jm6m786MAK3XjpnTqK3XjqltI4dj6hwOc8q3YzhgLxtFtHu506/Zx1fs
+18zZL7PHQf1SYwD6FSujuDuYz2Yf1Inrke0/cbbfnBYf1P5mJHv8QtbiU2eLzZQ2qMVNSwZF
+0v4WhyvZ5NA8V86RhM3zoTc3OKqnQ+/2xfEQadWZ7eTQUr19kYj+XeuCEN1+R7vLejLqabOa
+rHpnDz2fuRr43kzQ+1oo27NItA/kP7dZJAFP5lV+uqXRM9Mo+f0VT5IvTP9arN0/Tfiy1N8e
+HarHiex8v9BPxnTa52oJ5QQctBujP/bHiX5Xhrm2xzlZ1+uEjuFWF5qNHWms6vTlUruN0VuB
+3IyMtnn3xGjSzrt6GzILhFUhXTWvf7A7XvoRtXD50Wx3tXKhY0ClV9+cVHtke8fybgvUem/7
+9U5DBmaTbf7bPNR3dz/bb/YER4fuujLf4cnp9MoMXNVsrJ+2r32OTIebDtyYN+RsL+Xb7UjH
+O3RGJxbTwUeel5dJ/FCvxnV/KjloRZjHa6Up3whoOqWeEOLsj3oFjc5J0k3N17btlRwyss5a
+C5+O9a3ehvRijwBBN3aHofmBfgT3tqeusfgjj8Om19f67ULuYIYvNPqjx7LpUmcot16mBLxn
+Wf4fB/JuL3bHwHzfF8b2EP5vB6H5r/j5PwAAAP//AwBQSwMEFAAGAAgAAAAhAEzb6DLHAQAA
+RAYAABIAAAB3b3JkL2ZvbnRUYWJsZS54bWzckk1u2zAQhfcFegeC+1iULDmpEDlo0hgoUHRR
+JAegaUoiwh+BQ1vx7TuiZHfhGIgXLdBICw3fkN/MPPH27tVospMelLMVTWeMEmmF2yjbVPT5
+aXV1QwkEbjdcOysrupdA75afP932Ze1sAILnLZRGVLQNoSuTBEQrDYeZ66TFZO284QGXvkkM
+9y/b7ko40/Gg1kqrsE8yxhZ0wvj3UFxdKyG/ObE10oZ4PvFSI9FZaFUHB1r/Hlrv/KbzTkgA
+nNnokWe4skdMmp+AjBLegavDDIeZOoooPJ6yGBn9B1BcBshOAAuQlyGKCZHA3shXSowovzfW
+eb7WSMKRCHZFIpgup59J+tJyg+mvXnEd5Y5bBzLFzI7rirKM3bMFy/F7eHOaDBtFyz3IATFu
+ZKNcc6P0/qBCrwDGRKeCaA/6jmNBbGxMgWowsYU1q+gjYyx7XK3oqKQVfUDl+qa4n5RsqBWf
+L5MyPypsUETkxGU6ckTkHPdgzWSc/8SHJ2UkkJ+yJ7+c4faMIxk6MmcFulJgPL/IER+5/48j
+D1yrtVfkh2racMaPFXow3Y0Y/eUbkr/lR5Zf/0s/zjox3IgP6sQUwPI3AAAA//8DAFBLAwQU
+AAYACAAAACEAXXnk2VMBAACJAgAAEQAIAWRvY1Byb3BzL2NvcmUueG1sIKIEASigAAEAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjJJda8IwFIbvB/sPJfdt0lZk
+K21kH3gzhcGUjd2F5KhhzQdJZvXfr+20KvNil8l5zpM3JyknO1VHW3BeGl2hNCEoAs2NkHpd
+oeViGt+hyAemBauNhgrtwaMJvb0puS24cfDqjAUXJPioNWlfcFuhTQi2wNjzDSjmk5bQbXFl
+nGKhXbo1tox/sTXgjJAxVhCYYIHhThjbwYgOSsEHpf12dS8QHEMNCnTwOE1SfGIDOOWvNvSV
+M1LJsLdwFT0WB3rn5QA2TZM0eY+2+VP8MZ+99VeNpe5mxQHRUvCCO2DBOLrUsWYKRInPNrsB
+1syHeTvrlQTxuKcvrPZmFSCaGc7q6EEoqUv8l+taHWxl92Y064lhWR4G8HsOiKgNXvxe81h5
+z5+eF1NEM5KNYzKKU7Ig90WeF4R8dhEv+k9CdQjwb+NodGk8Cmif+PLz0B8AAAD//wMAUEsD
+BBQABgAIAAAAIQBC3755qwMAAIESAAASAAAAd29yZC9udW1iZXJpbmcueG1sxFbNbuM2EL4X
+2HcwdE/0R1GUsc5Cv0WKtlug6QPQMm0LESmBku341nsPvbXXxT5an2RJ/TsBUkuON/BBFmfm
+m49Dzjf6+OmJprM94UWSsYWi32rKjLA4WyVss1D+eIhukDIrSsxWOM0YWShHUiif7j788PEw
+Zzu6JFw4zgQGK+aHPF4o27LM56paxFtCcXFLk5hnRbYub+OMqtl6ncREPWR8pRqarlX/cp7F
+pCgEjo/ZHhdKAxc/nYe24vgggiUgUOMt5iV56jH00SCW6qjoORB9ubUsJ0wY1xmnuBSvfKNS
+zB93+Y3AzXGZLJM0KY8CUoMtTLZQdpzNG4ibjooMmddUmkcbwc/JW4cEWbyjhJVVRpWTVHDI
+WLFN8q6mdCqaMG5bkP1rm9jTtPU75Dq47EIE9an0gOfQb46SpjXz1xF17YwTkRBdxDkUTnO2
+TChOWJ94UmkGxdWtcQDGCwBYkHEQVgOhFkfat8Yh31x2yj/ybJf3aMllaPfsscOSgjUCq7kt
+wxtcXEbm9y3ORSvTeH6/YRnHy1QwEmc/E8c3q05gJrtEuRNyipdFyXFc/rqjs5O3+9VCEbIs
+QuacCC3mcrFWXnddEu5xgh+li0RhRbIS4XucLhTbsTXD1KGiSgvdpWXyM9mT9OGYk9Zne1zy
+ZPWLtKXSVvuWNE9bD+REELhRg5LupSERj5rUvMxToY1a4EEAI6PiUHFsw/U6TgyLiHaLy12a
+krJDfCBPnem/f//u1n+K29WUrBv3/DcuHwmT25TLYp9GxWSL2aYaWybUpK/aOKsV1nPyek8e
+AD10HATfgvxfY8nrAExgbwzYa64ReH74Buz/+TKWvaHDCezNnn2kayCE6H0ujoHQBPagZ+/7
+thtFuv8uN0eQncDe6tk7wAUR8t6i9uNvDjCndC3s2VsmhGEQ1uL5vW+OpU3pWrtnH0AHetB1
+34e9PaVr0UDufRO4hvU+tYfgvK5VT6aoRHl1xMqBMH7EBiE0HduvyU4dsRFACHmO0VWiq/lg
+xPq27YpvlJrDZTX/8+vYml86YiM/MFzg1xfmlOiKxAnFTVWeMX2F5v/ORcdGPgicusOumHIw
+zGzDkr+rpxxOINcNIwCbm3m9lIOxgTwrND3v6rscaL3naqER2ujaKQcCrUUBMt3mw+SKKQeq
+GjlGGKLmI/pNU76UQlZJIGulTy6d6GGLVLV5hfJ5T7jQMSlrrTZJS6VEA1uvSHXy1lS9M5m8
+ftbqevcNAAD//wMAUEsDBBQABgAIAAAAIQBsnZ8kfgEAANMCAAAQAAgBZG9jUHJvcHMvYXBw
+LnhtbCCiBAEooAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJxS
+y07DMBC8I/EPUe6tEx5NhbauUBFC4ik1wNlyNomFY1u2QfTv2TQ0BHEjp90Z73h2Ylh/djr5
+QB+UNas0n2dpgkbaSplmlT6X17NlmoQoTCW0NbhKdxjSNT8+gidvHfqoMCQkYcIqbWN0F4wF
+2WInwpxoQ0xtfScitb5htq6VxCsr3zs0kZ1k2YLhZ0RTYTVzo2A6KF58xP+KVlb2/sJLuXOk
+x6HEzmkRkT/0kxrYCEBpo9Cl6pCfETw28CQaDPwc2FDAq/VV4HleFMCGGjat8EJGSo8vijwH
+NgHg0jmtpIgULL9X0ttg65g87t0mvQCw6RGgDbYo372KO54Bm7Zwp0zvhcwMFZnzovHCteRo
+b3FsYSuFxg1tz2uhAwL7AWBjOyfMjt8SQ26IPCD9FW/h2ZX2qk/le/Q3ONn3VcV264QkL8Wy
+OJ1uPqFgSyhWtMroZQTghn6N1/0FNGsarA5n/hJ9li/DG+X5Yp7Rtw/vgFEA4+PhXwAAAP//
+AwBQSwECLQAUAAYACAAAACEAjBi1h4oBAACtBwAAEwAAAAAAAAAAAAAAAAAAAAAAW0NvbnRl
+bnRfVHlwZXNdLnhtbFBLAQItABQABgAIAAAAIQAekRq37wAAAE4CAAALAAAAAAAAAAAAAAAA
+AMMDAABfcmVscy8ucmVsc1BLAQItABQABgAIAAAAIQCLem8iNAEAAL8FAAAcAAAAAAAAAAAA
+AAAAAOMGAAB3b3JkL19yZWxzL2RvY3VtZW50LnhtbC5yZWxzUEsBAi0AFAAGAAgAAAAhAH9I
+4bFpGwAA3eUAABEAAAAAAAAAAAAAAAAAWQkAAHdvcmQvZG9jdW1lbnQueG1sUEsBAi0AFAAG
+AAgAAAAhAPdBY0XgAQAAuwYAABIAAAAAAAAAAAAAAAAA8SQAAHdvcmQvZm9vdG5vdGVzLnht
+bFBLAQItABQABgAIAAAAIQCJPTgz3gEAALUGAAARAAAAAAAAAAAAAAAAAAEnAAB3b3JkL2Vu
+ZG5vdGVzLnhtbFBLAQItABQABgAIAAAAIQBpTEunXgIAAHkHAAAQAAAAAAAAAAAAAAAAAA4p
+AAB3b3JkL2hlYWRlcjEueG1sUEsBAi0AFAAGAAgAAAAhAMQmcynoAgAAtQwAABAAAAAAAAAA
+AAAAAAAAmisAAHdvcmQvZm9vdGVyMS54bWxQSwECLQAUAAYACAAAACEAB7dAqiQGAACPGgAA
+FQAAAAAAAAAAAAAAAACwLgAAd29yZC90aGVtZS90aGVtZTEueG1sUEsBAi0AFAAGAAgAAAAh
+AFmjjzrcAwAAkAoAABEAAAAAAAAAAAAAAAAABzUAAHdvcmQvc2V0dGluZ3MueG1sUEsBAi0A
+FAAGAAgAAAAhAAUOCqj5AAAADQIAABQAAAAAAAAAAAAAAAAAEjkAAHdvcmQvd2ViU2V0dGlu
+Z3MueG1sUEsBAi0AFAAGAAgAAAAhAEUBCMbMDAAAz3wAAA8AAAAAAAAAAAAAAAAAPToAAHdv
+cmQvc3R5bGVzLnhtbFBLAQItABQABgAIAAAAIQBM2+gyxwEAAEQGAAASAAAAAAAAAAAAAAAA
+ADZHAAB3b3JkL2ZvbnRUYWJsZS54bWxQSwECLQAUAAYACAAAACEAXXnk2VMBAACJAgAAEQAA
+AAAAAAAAAAAAAAAtSQAAZG9jUHJvcHMvY29yZS54bWxQSwECLQAUAAYACAAAACEAQt++easD
+AACBEgAAEgAAAAAAAAAAAAAAAAC3SwAAd29yZC9udW1iZXJpbmcueG1sUEsBAi0AFAAGAAgA
+AAAhAGydnyR+AQAA0wIAABAAAAAAAAAAAAAAAAAAkk8AAGRvY1Byb3BzL2FwcC54bWxQSwUG
+AAAAABAAEAD8AwAARlIAAAAA
+
+--------------YOvJS0yC4CrjN6k2wZyi5pRT--

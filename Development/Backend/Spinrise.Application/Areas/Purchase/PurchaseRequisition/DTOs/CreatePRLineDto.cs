@@ -19,7 +19,7 @@ public class CreatePRLineDto
     [Range(0, double.MaxValue)]
     public decimal? ApproxCost { get; set; }
 
-    [StringLength(50)]
+    [StringLength(100)]
     public string? Remarks { get; set; }
 
     [StringLength(5)]
@@ -43,7 +43,7 @@ public class CreatePRLineDto
     [StringLength(3)]
     public string? Uom { get; set; }
 
-    [Range(0, double.MaxValue)]
+    [Range(0, 99999999.99, ErrorMessage = "Rate must be between 0 and 99,999,999.99")]
     public decimal? Rate { get; set; }
 
     [Range(0, double.MaxValue)]

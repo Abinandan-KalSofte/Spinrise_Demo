@@ -1,0 +1,1174 @@
+X-UIDL: UID113-1774868925
+X-Mozilla-Status: 0000
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <ceo@kalsofte.com>
+Received: from murphy.nocdirect.com
+	by murphy.nocdirect.com with LMTP
+	id Y6B0KNMO42nXbgAAet6MXA
+	(envelope-from <ceo@kalsofte.com>); Fri, 17 Apr 2026 23:55:47 -0500
+Return-path: <ceo@kalsofte.com>
+Envelope-to: palanivel@kalsofte.com,
+ mariyaiya.m@kalsofte.com,
+ support@kalsofte.com,
+ pbsaravanan@kalsofte.com,
+ sasikumar.r@kalsofte.com,
+ muthuvel.m@kalsofte.com,
+ abinandan.n@kalsofte.com
+Delivery-date: Fri, 17 Apr 2026 23:55:47 -0500
+Received: from [49.204.235.253] (port=56045 helo=[172.16.16.101])
+	by murphy.nocdirect.com with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+	(Exim 4.99.1)
+	(envelope-from <ceo@kalsofte.com>)
+	id 1wDxib-000000007Jp-0xOg;
+	Fri, 17 Apr 2026 23:55:47 -0500
+Content-Type: multipart/alternative;
+ boundary="------------76kl5RbtOOfvQS8D02jWbIWv"
+Message-ID: <5517a03e-b174-41fb-9a7d-f2a318689ea4@kalsofte.com>
+Date: Sat, 18 Apr 2026 10:25:56 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: =?UTF-8?Q?_Re=3A_SPINRISE_PO_M01_=E2=80=94_PR_Form_FSD_v2=2E3_=7C_C?=
+ =?UTF-8?Q?EO_APPROVED_=E2=80=94_17_April_2026_=7C_Sprint_0_Begins?=
+To: MariyaiyaM <mariyaiya.m@kalsofte.com>
+Cc: Support <support@kalsofte.com>, pbsaravanan <pbsaravanan@kalsofte.com>,
+ Palanivel <palanivel@kalsofte.com>, 'Sasikumar R'
+ <sasikumar.r@kalsofte.com>, 'Muthuvel' <muthuvel.m@kalsofte.com>,
+ abinandan.n@kalsofte.com
+References: <1debdce8-df6d-4031-9a00-e06201bb80d3@kalsofte.com>
+ <e04ccee5-3e68-410b-8aeb-91a79e492e48@kalsofte.com>
+ <8f3b50f1-6839-49b3-9d93-e46801961790@kalsofte.com>
+ <ebb0d4f6-796c-497d-9fb1-4261b1740dde@kalsofte.com>
+Content-Language: en-US
+From: CEO <ceo@kalsofte.com>
+In-Reply-To: <ebb0d4f6-796c-497d-9fb1-4261b1740dde@kalsofte.com>
+
+This is a multi-part message in MIME format.
+--------------76kl5RbtOOfvQS8D02jWbIWv
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+Dear Mariyaiya,
+
+I have reviewed v2.3. Both corrections directed in the previous CEO mail 
+are in place.
+
+Muthuvel's Sr. IST sign-off row is restored with the correct date of 
+13-Apr-2026. The TL-IST sign-off row now correctly reads Stage 3 with 
+Palanivel's approval dated 17-Apr-2026. The PM Sign-Off row carries 
+Saravanan's Stage 4 approval dated 17-Apr-2026. The CEO Approval Date 
+field is correctly blank. The complete sign-off chain from Stage 0 
+through Stage 4 is in order.
+
+*One minor note: *the Document Version field in the Document Identity 
+table still reads '2.2'. Update it to read '2.3' so the document is 
+internally consistent with the filename and your submission mail. This 
+does not affect the approval.
+
+*I am recording CEO approval for M01 — Purchase Requisition FSD.*
+
+
+CEO APPROVAL — M01 PURCHASE REQUISITION FSD
+
+Approved Version: v2.3
+Form: tmpPoindent — Purchase Requisition
+Module: M01 — Purchase Order Management
+CEO Approval Date: 17 April 2026
+
+This is the first CEO-approved FSD in SPINRISE. *Mariyaiya, you may now 
+use Claude Code for the Purchase Requisition form development.* The 
+approved v2.3 FSD is the locked development baseline. Update the 
+Document Identity table with the CEO Approval Date and the corrected 
+version number, and distribute the approved copy to TL-Dev Sasi as the 
+development reference.
+
+*Mariyaiya, the work on this FSD from the first draft to this approved 
+version reflects persistence and a willingness to absorb and apply 
+detailed feedback across multiple rounds. It is well acknowledged.
+*
+Regards,
+T. Mani
+cc: TL-Dev Sasi (Sprint 0 — M01 development may begin), TL-IST 
+Palanivel, PM Saravanan, Muthuvel, Abinandan
+
+On 17/04/2026 07:48 pm, MariyaiyaM wrote:
+>
+> Dear Sir,
+>
+> I hope this message finds you well.
+>
+> I am pleased to formally submit the updated Form Specification 
+> Document (FSD) for the Purchase Requisition screen (tmpPoindent — 
+> Module: Purchase Order Management) for your kind review and final 
+> approval.
+>
+> Document Details:
+>
+>   • Document Title    :  FSD — Purchase Requisition (tmpPoindent)
+>   • Module            :  Purchase Order Management
+>   • Document Version  :  v2.3
+>   • Migration Target  :  SPINRISE Web Platform (React / REST API / SQL 
+> Server)
+>   • Product           :  Kalsofte ERP — Indian Spinning Mills Edition
+>
+> Approval Chain — All Stages Completed:
+>
+>   • Stage 0  —  Screen Readiness     :  COMPLETED  — Mariyaiya.M / 
+> TL-Dev: Saikumar.R, 04-Apr-2026
+>   • Stage 1  —  TL-Dev Sign-Off      :  SIGNED OFF  — Saikumar.R 
+> (Sasi), 04-Apr-2026
+>   • Stage 2  —  Sr. IST Sign-Off     :  SIGNED OFF  —  MuthuVel, 
+> 13-Apr-2026
+>   • Stage 3  —  TL-IST Sign-Off      :  APPROVED  —  Palanivel, 
+> 17-Apr-2026
+>   • Stage 4  —  PM Sign-Off          :  APPROVED  —  P.B. Saravanan, 
+> 17-Apr-2026
+>
+> The document covers all 14 sections in full, including screen purpose, 
+> field rules, validation logic, business rules, database schema, stored 
+> procedure analysis, 28 SPINRISE migration recommendations, and all 20 
+> IST review questions resolved and incorporated.
+>
+> The document has successfully passed all four review stages and is now 
+> ready for your approval. Your sign-off will enable the team to proceed 
+> to the next stage of the SPINRISE migration for this module.
+>
+> The approved FSD (v2.3) is attached for your reference. Please do not 
+> hesitate to reach out should you require any clarification.
+>
+> Thank you for your time and continued guidance.
+>
+> Regards,
+>
+> Mariyaiya.M
+>
+> On 17/04/2026 04:45 pm, CEO wrote:
+>>
+>> Dear Mariyaiya,
+>>
+>> I have reviewed the v2.2 document submitted today. The content is 
+>> excellent and this is the most complete FSD in the SPINRISE project. 
+>> Before I record CEO approval, two text corrections must be made to 
+>> the Document Identity table.
+>>
+>> *What the document has achieved*
+>>
+>> All 20 IST questions are answered and resolved. All 12 defects 
+>> directed in the CEO review mail are in Section 12 as Rec 17 through 
+>> Rec 28, each with a specific QuestPDF fix. The three-level approval 
+>> workflow is documented in Section 5.5a with Palanivel's confirmation, 
+>> the web approval URL, and both screen names. Section 10 has the full 
+>> approval screen detail. Section 11 has the Pallavaa division-wise 
+>> stock variation. The po_para 63-column audit with 10 unused columns 
+>> identified is thorough and directly useful for the SPINRISE schema 
+>> design. QuestPDF is used consistently throughout all recommendations 
+>> — no FastReport conflict. The scorecard is honest. TL-Dev Sasi's 
+>> Stage 0 sign-off, Palanivel's TL-IST sign-off dated today, and 
+>> Saravanan's PM Stage 4 sign-off dated today are all present.
+>>
+>> Mariyaiya, the technical work on this FSD over the past two weeks is 
+>> acknowledged. It reflects sustained effort across multiple rounds of 
+>> review.
+>>
+>>
+>> *Two corrections needed — five minutes of work
+>> *
+>> *Correction 1: *Muthuvel's Sr. IST sign-off row is missing from the 
+>> Document Identity table.
+>>
+>> The previous version submitted on 13 April had the row: 'SIGNED OFF. 
+>> Sr.IST: MuthuVel — reviewed and approved IST part. Sign-off confirmed 
+>> via email reply. Date: 13-Apr-2026.' That row has been removed in 
+>> this version. It must be restored. Muthuvel is Stage 2 in the review 
+>> chain and his sign-off must be present in the Document Identity table 
+>> before the document can carry CEO approval. The content of his review 
+>> is in the FSD — his name and date simply need to be back in the 
+>> identity table.
+>>
+>> *Correction 2: *TL-IST sign-off row labels Palanivel's review as 
+>> 'Stage 4 TL-IST sign-off.'
+>>
+>> TL-IST is Stage 3 of the review chain. Stage 4 is the PM. Change the 
+>> wording to: 'APPROVED. TL-IST: Palanivel — Stage 3 TL-IST sign-off 
+>> received and approved via email on 17-Apr-2026.'
+>>
+>>
+>> *Resubmit with these two corrections*
+>>
+>> Restore Muthuvel's Sr. IST sign-off row and correct the Stage 4 label 
+>> to Stage 3 in the TL-IST row. Resubmit as the final version. Both 
+>> corrections take five minutes. Once I receive the corrected document 
+>> with those two rows in the Document Identity table, I will record CEO 
+>> approval.
+>>
+>> Regards,
+>> T. Mani
+>>
+>> On 17/04/2026 02:53 pm, MariyaiyaM wrote:
+>>>
+>>> Dear Sir,
+>>>
+>>> I hope this message finds you well.
+>>>
+>>> I am writing to formally submit the Form Specification Document 
+>>> (FSD) for the Purchase Requisition screen (tmpPoindent — Module: 
+>>> Purchase Order Management) for your kind review and final approval.
+>>>
+>>> Document Details:
+>>>
+>>>   • Document Title   :  FSD — Purchase Requisition (tmpPoindent)
+>>>   • Module           :  Purchase Order Management
+>>>   • Document Version :  v2.2
+>>>   • Migration Target :  SPINRISE Web Platform (React / REST API / 
+>>> SQL Server)
+>>>   • Product          :  Kalsofte ERP — Indian Spinning Mills Edition
+>>>
+>>> Approval Status:
+>>>
+>>>   • TL-Dev Sign-Off  :  COMPLETED — Saikumar.R (Sasi), 04-Apr-2026
+>>>   • TL-IST Sign-Off  :  COMPLETED — Palanivel (TL-IST), 17 - April 2026
+>>>   • PM Sign-Off      :  COMPLETED — P.B. Saravanan, 17 - April 2026
+>>>
+>>> The document covers all 14 sections including screen purpose, field 
+>>> rules, validation logic, business rules, database schema, stored 
+>>> procedure analysis, SPINRISE migration recommendations, and 
+>>> IST-resolved review questions. All 20 IST queries have been answered 
+>>> and incorporated into the final version.
+>>>
+>>> Kindly review the attached FSD document at your convenience. Your 
+>>> approval will enable us to proceed to the next stage of the SPINRISE 
+>>> migration for this module.
+>>>
+>>> Please do not hesitate to reach out should you require any 
+>>> clarification or additional information.
+>>>
+>>> Thank you for your time and guidance.
+>>>
+>>> Regards,
+>>>
+>>> Mariyaiya.M
+>>>
+>>>
+>>>
+>>> -------- Forwarded Message --------
+>>> Subject: 	Re: SPINRISE PO M01 — PR Form FSD | CEO Review | TL-IST 
+>>> Stage 3 Not Completed | Process Action Required
+>>> Date: 	Fri, 17 Apr 2026 13:53:22 +0530
+>>> From: 	Saravanan Balakrishnan <pbsaravanan@kalsofte.com>
+>>> To: 	Mariyaiya Malaiyandi <mariyaiya.m@kalsofte.com>
+>>> CC: 	'Sasikumar' <sasikumar.r@kalsofte.com>, Muthuvel Mani 
+>>> <muthuvel.m@kalsofte.com>, 'Kalpatharu' <support@kalsofte.com>, 
+>>> Quality Assurance <qa@kalsofte.com>, CEO <ceo@kalsofte.com>, 
+>>> Palanivel <palanivel@kalsofte.com>
+>>>
+>>>
+>>>
+>>> Dear Maari,
+>>>
+>>> Approved to proceed with submission to the CEO for approval.
+>>>
+>>> Regards,
+>>> P.B.Saravanan
+>>>
+>>> On 17/04/2026 12:53 pm, Palanivel wrote:
+>>>>
+>>>> Dear Sir,
+>>>>
+>>>> Please find attached the *SPINRISE PO M01 – PR Form FSD* for your 
+>>>> final review and approval. Kindly find below the remarks from Claude.
+>>>>
+>>>> The Final document is in very good shape — all 16 CEO content 
+>>>> points are addressed and all 16 FSD v2 sections are 
+>>>> present* for CEO submission*:
+>>>>
+>>>> *⚠️**Notable Flags for CEO Attention*
+>>>>
+>>>>   * *Stage 3 date (17/04/2026) is later than Stage 4
+>>>>     (13/04/2026):*TL-IST Palanivel signed off on 17 April, but PM
+>>>>     Saravanan signed on 13 April. This suggests the PM review may
+>>>>     have been completed /before/ the TL-IST stage was formally
+>>>>     closed. This sequencing anomaly is worth confirming — the PM
+>>>>     should ideally not have signed off before TL-IST.
+>>>>   * *Stage 2 — SP Issues flagged:*The IST reviewer (MuthuVel) noted
+>>>>     /"SP's level issues are identified and it needs to be
+>>>>     addressed."/ CEO should confirm this has been addressed in
+>>>>     Section 8 of the FSD before final approval.
+>>>>
+>>>> ------------------------------------------------------------------------
+>>>>
+>>>> *✅**CEO Approval Recommendation*
+>>>>
+>>>> *All stages 0–4 carry valid signatures.*The review chain is 
+>>>> substantially complete and the document is *eligible for CEO review.*
+>>>>
+>>>> However, *formal CEO approval should be withheld* until:
+>>>>
+>>>>  1. The date sequencing anomaly (Stage 3 after Stage 4) is
+>>>>     clarified or confirmed acceptable.
+>>>>  2. The SP-level issues flagged in Stage 2 are confirmed as
+>>>>     resolved in the FSD.
+>>>>  3. All five CEO-stage checklist items are independently verified
+>>>>     against the actual FSD document.
+>>>>
+>>>> Once those are confirmed, the CEO may sign off, authorize 
+>>>> distribution to TL-Dev Sasi, and permit Claude Code usage for this 
+>>>> form.
+>>>>
+>>>> Thanks & Regards,
+>>>>
+>>>> V. Palanivel
+>>>>
+>>>> On 13/04/2026 05:01 pm, CEO wrote:
+>>>>>
+>>>>> Dear Saravanan,
+>>>>>
+>>>>> Thank you for submitting the M01 PR Form FSD v2.2 with the 
+>>>>> checklist. I have reviewed both documents in full. *The FSD 
+>>>>> content is excellent and I want to acknowledge that before 
+>>>>> addressing the process issue, which is the reason I cannot approve 
+>>>>> this document.
+>>>>> *
+>>>>> *What the FSD has achieved*
+>>>>>
+>>>>> *Mariyaiya has delivered a thorough FSD.* All 20 IST questions are 
+>>>>> resolved. All 12 CEO-directed defects from the IST-3, IST-4, and 
+>>>>> PM feedback are in Section 12 as Rec 17 through Rec 28. Each has a 
+>>>>> specific SPINRISE fix. Section 5.5a documents the three-level 
+>>>>> approval workflow with Palanivel's confirmation, both web screen 
+>>>>> names, and the URL. Section 10 has the complete web approval 
+>>>>> screen detail. Section 11 includes the Pallavaa division-wise 
+>>>>> stock variation. The ManIndNo duplicate is confirmed and resolved. 
+>>>>> *This is the most complete FSD in the project and I acknowledge 
+>>>>> Mariyaiya's work.*
+>>>>>
+>>>>> *Muthuvel's Sr.IST Stage 2 sign-off dated 13 April 2026 is 
+>>>>> properly recorded in the checklist.
+>>>>>
+>>>>> *
+>>>>> *The problem — and it is a process problem, not a content problem*
+>>>>>
+>>>>> I have reviewed both the FSD Document Identity table and the 
+>>>>> Review Checklist document carefully.*There are two specific issues.*
+>>>>>
+>>>>> *First:* the TL-IST sign-off. The FSD Document Identity table 
+>>>>> reads: 'SIGNED OFF. TL IST: PENDING.' That is a contradiction in 
+>>>>> one sentence. It cannot be both signed off and pending. More 
+>>>>> importantly, I have checked the Review Checklist document you 
+>>>>> attached. The Stage 3 TL-IST section shows every tick box as empty 
+>>>>> and the Stage 3 sign-off box is completely blank — no name and no 
+>>>>> date. There is no evidence in either document that Palanivel has 
+>>>>> performed the TL-IST review.
+>>>>>
+>>>>> Your mail says 'Updated in the FSD review checklist. As Palanivel 
+>>>>> is on leave, I have verified and approved.' Saravanan, I have 
+>>>>> looked at the checklist you attached. The TL-IST Stage 3 section 
+>>>>> is not updated. The boxes are empty and the sign-off is 
+>>>>> blank.*This statement is not accurate based on the document in 
+>>>>> front of me.*
+>>>>>
+>>>>> *Second:* the PM sign-off in the FSD. The Document Identity table 
+>>>>> in the FSD still reads 'PENDING. PM: P.B. Saravanan — Stage 4 PM 
+>>>>> sign-off not yet received.' Your name and date are in the 
+>>>>> checklist Stage 4 sign-off box, which is correct. But the FSD 
+>>>>> Document Identity table, which is the formal record, still says 
+>>>>> PENDING. *Both documents must be consistent.*
+>>>>>
+>>>>>
+>>>>> *Why the PM cannot substitute for TL-IST*
+>>>>>
+>>>>> I understand the intent and I understand that Palanivel being on 
+>>>>> leave creates a genuine inconvenience. But the Stage 3 TL-IST 
+>>>>> review and the Stage 4 PM review are two distinct stages with two 
+>>>>> distinct purposes, and *neither can be combined into one.
+>>>>> *
+>>>>> *Palanivel's Stage 3* review requires senior IST field experience 
+>>>>> from 14 years in IT and 10+ years at Kalpatharu. His specific task 
+>>>>> is to independently verify each of Muthuvel's IST answers from his 
+>>>>> own customer site experience — not to read Muthuvel's answers and 
+>>>>> agree, but to confirm or correct them from his own knowledge. The 
+>>>>> Stage 3 checklist items include: IST-2 approval screen URL 
+>>>>> independently confirmed, IST-4 support patterns verified with 
+>>>>> additions from own senior experience, and independent commentary 
+>>>>> added as a separate column in the review.
+>>>>>
+>>>>> *This is domain work that only Palanivel can do. *Your Stage 4 
+>>>>> review verifies completeness and build-readiness — that is a 
+>>>>> different kind of review and does not substitute for the domain 
+>>>>> validation that Stage 3 requires. The process chain was designed 
+>>>>> this way deliberately. *Collapsing two stages into one undermines 
+>>>>> the quality gate the chain is intended to provide.
+>>>>> *
+>>>>>
+>>>>> *What needs to happen*
+>>>>>
+>>>>> *First: *confirm Palanivel's expected return date and share it 
+>>>>> with me today. If he returns this week, we wait for his Stage 3 
+>>>>> review. One or two days on this FSD is not the bottleneck — the 
+>>>>> FSD content is complete and ready for him.
+>>>>>
+>>>>> *Second:* when Palanivel completes Stage 3, he must tick all Stage 
+>>>>> 3 checklist items, sign the Stage 3 sign-off box with his name and 
+>>>>> date, update the FSD Document Identity TL-IST row with his name 
+>>>>> and date, and provide his independent commentary on the IST answers.
+>>>>>
+>>>>> *Third:* once Palanivel's Stage 3 is complete, Mariyaiya must 
+>>>>> update the FSD Document Identity table with two corrections: the 
+>>>>> TL-IST row with Palanivel's sign-off detail, and the PM row with 
+>>>>> your name, date, and confirmation method.
+>>>>>
+>>>>> *Fourth: resubmit the FSD and completed checklist for CEO approval.
+>>>>> *
+>>>>> One additional point
+>>>>>
+>>>>> Saravanan, your Stage 4 PM sign-off on the checklist is dated 13 
+>>>>> April 2026. The checklist Stage 4 tick boxes are all unticked. The 
+>>>>> sign-off box has your name and date but the checklist items 
+>>>>> themselves show empty tick boxes. A sign-off on a checklist where 
+>>>>> the items are not ticked is not a completed checklist. When you 
+>>>>> resubmit, please ensure Stage 4 tick boxes are completed before 
+>>>>> signing.
+>>>>>
+>>>>> *The FSD is one Palanivel Stage 3 review away from CEO approval. 
+>>>>> The content is ready. Let us complete the process correctly.
+>>>>> *
+>>>>> Regards,
+>>>>> T. Mani
+>>>>>
+>>>>> cc: Mariyaiya, TL-IST Palanivel, Muthuvel, TL-Dev Sasi
+>>>>>
+>>>>> On 13/04/2026 04:18 pm, Saravanan Balakrishnan wrote:
+>>>>>>
+>>>>>> Dear Sir,
+>>>>>>
+>>>>>> Please find attached the *SPINRISE PO M01 – PR Form FSD* for your 
+>>>>>> final review and approval. Kindly find below the remarks from Claude.
+>>>>>>
+>>>>>> The Final document is in very good shape — all 16 CEO content 
+>>>>>> points are addressed and all 14 FSD v2 sections are present. Only 
+>>>>>> *2 items block CEO submission*:
+>>>>>>
+>>>>>> *Must fix immediately:*
+>>>>>>
+>>>>>>  1. *TL-IST sign-off row* — the current text reads /"SIGNED OFF.
+>>>>>>     TL IST: PENDING"/ which is a direct contradiction. If
+>>>>>>     Palanivel has signed off, add his name, confirmation method,
+>>>>>>     and date. If not, change the row to plainly say PENDING.
+>>>>>>
+>>>>>> *Reply:* Updated in the FSD review checklist. As Palanivel is on 
+>>>>>> leave, I have verified and approved.
+>>>>>>
+>>>>>> *Awaiting external:* 2. *PM sign-off (P.B. Saravanan)* — Stage 4 
+>>>>>> sign-off not yet received. Once he replies, his name, date, and 
+>>>>>> confirmation method must be added to the Document Identity table 
+>>>>>> before the document goes to the CEO.
+>>>>>>
+>>>>>> Reply : Updated in FSD review check list, as palanivel is leave i 
+>>>>>> have verified and approved.
+>>>>>>
+>>>>>>
+>>>>>> Regards,
+>>>>>> P.B.Saravanan
+>>>>>>
+>>>>>>
+>>>>>> -------- Forwarded Message --------
+>>>>>> Subject: 	Fwd: SPINRISE PO M01— PR Form FSD IST Review | Revised 
+>>>>>> IST-3 and IST-4 | CEO Observations
+>>>>>> Date: 	Mon, 13 Apr 2026 05:15:14 -0500
+>>>>>> From: 	muthuvel.m@kalsofte.com
+>>>>>> To: 	Palanivel Venkatachalam <palanivel@kalsofte.com>
+>>>>>> CC: 	Ceo <ceo@kalsofte.com>, Pbsaravanan 
+>>>>>> <pbsaravanan@kalsofte.com>, Sasikumar R 
+>>>>>> <sasikumar.r@kalsofte.com>, Mariyaiya Malaiyandi 
+>>>>>> <mariyaiya.m@kalsofte.com>, Support <support@kalsofte.com>
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> Dear Sir,
+>>>>>> Please find attached the SPINRISE PO M01 – PR Form FSD IST Review 
+>>>>>> Approval Checklist, along with the updated M01_FSD_Purchase 
+>>>>>> Requisition document.
+>>>>>>
+>>>>>> The Document Identity table has been updated to include the Sr. 
+>>>>>> IST and TL IST details as required.
+>>>>>>
+>>>>>> Kindly review the documents and provide your approval.
+>>>>>> Thanks & Regards
+>>>>>> M MuthuVel
+>>>>>>
+>>>>>> -------- Original Message --------
+>>>>>> Subject: SPINRISE PO M01— PR Form FSD IST Review | Revised IST-3 
+>>>>>> and IST-4 | CEO Observations
+>>>>>> Date: 2026-04-11 09:20
+>>>>>> From: MariyaiyaM <mariyaiya.m@kalsofte.com>
+>>>>>> To: 'Muthuvel' <muthuvel.m@kalsofte.com>
+>>>>>> Cc: pbsaravanan <pbsaravanan@kalsofte.com>, Palanivel 
+>>>>>> <palanivel@kalsofte.com>, Support <support@kalsofte.com>, 
+>>>>>> 'Sasikumar R' <sasikumar.r@kalsofte.com>, Quality Assurance 
+>>>>>> <qa@kalsofte.com>
+>>>>>>
+>>>>>> Dear sir,
+>>>>>>
+>>>>>> I have enclosed the updated FSD document for your review and
+>>>>>> approval. Kindly review and approve the same.
+>>>>>>
+>>>>>> Regards,
+>>>>>> Mariyaiya.M
+--------------76kl5RbtOOfvQS8D02jWbIWv
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <p>Dear Mariyaiya,<br>
+      <br>
+      I have reviewed v2.3. Both corrections directed in the previous
+      CEO mail are in place.<br>
+      <br>
+      Muthuvel's Sr. IST sign-off row is restored with the correct date
+      of 13-Apr-2026. The TL-IST sign-off row now correctly reads Stage
+      3 with Palanivel's approval dated 17-Apr-2026. The PM Sign-Off row
+      carries Saravanan's Stage 4 approval dated 17-Apr-2026. The CEO
+      Approval Date field is correctly blank. The complete sign-off
+      chain from Stage 0 through Stage 4 is in order.<br>
+      <br>
+      <b>One minor note: </b>the Document Version field in the Document
+      Identity table still reads '2.2'. Update it to read '2.3' so the
+      document is internally consistent with the filename and your
+      submission mail. This does not affect the approval.<br>
+      <br>
+      <b><font size="4">I am recording CEO approval for M01 — Purchase
+          Requisition FSD.</font></b><br>
+      <br>
+      <br>
+      CEO APPROVAL — M01 PURCHASE REQUISITION FSD<br>
+      <br>
+      Approved Version: v2.3<br>
+      Form: tmpPoindent — Purchase Requisition<br>
+      Module: M01 — Purchase Order Management<br>
+      CEO Approval Date: 17 April 2026<br>
+      <br>
+      This is the first CEO-approved FSD in SPINRISE. <b>Mariyaiya, you
+        may now use Claude Code for the Purchase Requisition form
+        development.</b> The approved v2.3 FSD is the locked development
+      baseline. Update the Document Identity table with the CEO Approval
+      Date and the corrected version number, and distribute the approved
+      copy to TL-Dev Sasi as the development reference.<br>
+      <br>
+      <b>Mariyaiya, the work on this FSD from the first draft to this
+        approved version reflects persistence and a willingness to
+        absorb and apply detailed feedback across multiple rounds. It is
+        well acknowledged.<br>
+      </b><br>
+      Regards,<br>
+      T. Mani<br>
+      cc: TL-Dev Sasi (Sprint 0 — M01 development may begin), TL-IST
+      Palanivel, PM Saravanan, Muthuvel, Abinandan</p>
+    <div class="moz-cite-prefix">On 17/04/2026 07:48 pm, MariyaiyaM
+      wrote:<br>
+    </div>
+    <blockquote type="cite"
+      cite="mid:ebb0d4f6-796c-497d-9fb1-4261b1740dde@kalsofte.com">
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <p>Dear Sir,<br>
+        <br>
+        I hope this message finds you well.<br>
+        <br>
+        I am pleased to formally submit the updated Form Specification
+        Document (FSD) for the Purchase Requisition screen (tmpPoindent
+        — Module: Purchase Order Management) for your kind review and
+        final approval.<br>
+        <br>
+        Document Details:<br>
+        <br>
+          • Document Title    :  FSD — Purchase Requisition
+        (tmpPoindent)<br>
+          • Module            :  Purchase Order Management<br>
+          • Document Version  :  v2.3<br>
+          • Migration Target  :  SPINRISE Web Platform (React / REST API
+        / SQL Server)<br>
+          • Product           :  Kalsofte ERP — Indian Spinning Mills
+        Edition<br>
+        <br>
+        Approval Chain — All Stages Completed:<br>
+        <br>
+          • Stage 0  —  Screen Readiness     :  COMPLETED  — 
+        Mariyaiya.M / TL-Dev: Saikumar.R, 04-Apr-2026<br>
+          • Stage 1  —  TL-Dev Sign-Off      :  SIGNED OFF  — 
+        Saikumar.R (Sasi), 04-Apr-2026<br>
+          • Stage 2  —  Sr. IST Sign-Off     :  SIGNED OFF  —  MuthuVel,
+        13-Apr-2026<br>
+          • Stage 3  —  TL-IST Sign-Off      :  APPROVED  —  Palanivel,
+        17-Apr-2026<br>
+          • Stage 4  —  PM Sign-Off          :  APPROVED  —  P.B.
+        Saravanan, 17-Apr-2026<br>
+        <br>
+        The document covers all 14 sections in full, including screen
+        purpose, field rules, validation logic, business rules, database
+        schema, stored procedure analysis, 28 SPINRISE migration
+        recommendations, and all 20 IST review questions resolved and
+        incorporated.<br>
+        <br>
+        The document has successfully passed all four review stages and
+        is now ready for your approval. Your sign-off will enable the
+        team to proceed to the next stage of the SPINRISE migration for
+        this module.<br>
+        <br>
+        The approved FSD (v2.3) is attached for your reference. Please
+        do not hesitate to reach out should you require any
+        clarification.<br>
+        <br>
+        Thank you for your time and continued guidance.<br>
+        <br>
+        Regards,</p>
+      <p>Mariyaiya.M</p>
+      <div class="moz-cite-prefix">On 17/04/2026 04:45 pm, CEO wrote:<br>
+      </div>
+      <blockquote type="cite"
+        cite="mid:8f3b50f1-6839-49b3-9d93-e46801961790@kalsofte.com">
+        <p>Dear Mariyaiya,<br>
+          <br>
+          I have reviewed the v2.2 document submitted today. The content
+          is excellent and this is the most complete FSD in the SPINRISE
+          project. Before I record CEO approval, two text corrections
+          must be made to the Document Identity table.<br>
+          <br>
+          <b>What the document has achieved</b><br>
+          <br>
+          All 20 IST questions are answered and resolved. All 12 defects
+          directed in the CEO review mail are in Section 12 as Rec 17
+          through Rec 28, each with a specific QuestPDF fix. The
+          three-level approval workflow is documented in Section 5.5a
+          with Palanivel's confirmation, the web approval URL, and both
+          screen names. Section 10 has the full approval screen detail.
+          Section 11 has the Pallavaa division-wise stock variation. The
+          po_para 63-column audit with 10 unused columns identified is
+          thorough and directly useful for the SPINRISE schema design.
+          QuestPDF is used consistently throughout all recommendations —
+          no FastReport conflict. The scorecard is honest. TL-Dev Sasi's
+          Stage 0 sign-off, Palanivel's TL-IST sign-off dated today, and
+          Saravanan's PM Stage 4 sign-off dated today are all present.<br>
+          <br>
+          Mariyaiya, the technical work on this FSD over the past two
+          weeks is acknowledged. It reflects sustained effort across
+          multiple rounds of review.<br>
+          <br>
+          <br>
+          <b>Two corrections needed — five minutes of work<br>
+          </b><br>
+          <b>Correction 1: </b>Muthuvel's Sr. IST sign-off row is
+          missing from the Document Identity table.<br>
+          <br>
+          The previous version submitted on 13 April had the row:
+          'SIGNED OFF. Sr.IST: MuthuVel — reviewed and approved IST
+          part. Sign-off confirmed via email reply. Date: 13-Apr-2026.'
+          That row has been removed in this version. It must be
+          restored. Muthuvel is Stage 2 in the review chain and his
+          sign-off must be present in the Document Identity table before
+          the document can carry CEO approval. The content of his review
+          is in the FSD — his name and date simply need to be back in
+          the identity table.<br>
+          <br>
+          <b>Correction 2: </b>TL-IST sign-off row labels Palanivel's
+          review as 'Stage 4 TL-IST sign-off.'<br>
+          <br>
+          TL-IST is Stage 3 of the review chain. Stage 4 is the PM.
+          Change the wording to: 'APPROVED. TL-IST: Palanivel — Stage 3
+          TL-IST sign-off received and approved via email on
+          17-Apr-2026.'<br>
+          <br>
+          <br>
+          <b>Resubmit with these two corrections</b><br>
+          <br>
+          Restore Muthuvel's Sr. IST sign-off row and correct the Stage
+          4 label to Stage 3 in the TL-IST row. Resubmit as the final
+          version. Both corrections take five minutes. Once I receive
+          the corrected document with those two rows in the Document
+          Identity table, I will record CEO approval.<br>
+          <br>
+          Regards,<br>
+          T. Mani<br>
+          <br>
+        </p>
+        <div class="moz-cite-prefix">On 17/04/2026 02:53 pm, MariyaiyaM
+          wrote:<br>
+        </div>
+        <blockquote type="cite"
+          cite="mid:e04ccee5-3e68-410b-8aeb-91a79e492e48@kalsofte.com">
+          <p>Dear Sir,<br>
+            <br>
+            I hope this message finds you well.<br>
+            <br>
+            I am writing to formally submit the Form Specification
+            Document (FSD) for the Purchase Requisition screen
+            (tmpPoindent — Module: Purchase Order Management) for your
+            kind review and final approval.<br>
+            <br>
+            Document Details:<br>
+            <br>
+              • Document Title   :  FSD — Purchase Requisition
+            (tmpPoindent)<br>
+              • Module           :  Purchase Order Management<br>
+              • Document Version :  v2.2<br>
+              • Migration Target :  SPINRISE Web Platform (React / REST
+            API / SQL Server)<br>
+              • Product          :  Kalsofte ERP — Indian Spinning Mills
+            Edition<br>
+            <br>
+            Approval Status:<br>
+            <br>
+              • TL-Dev Sign-Off  :  COMPLETED — Saikumar.R (Sasi),
+            04-Apr-2026<br>
+              • TL-IST Sign-Off  :  COMPLETED — Palanivel (TL-IST), 17 -
+            April 2026<br>
+              • PM Sign-Off      :  COMPLETED — P.B. Saravanan, 17 -
+            April 2026<br>
+            <br>
+            The document covers all 14 sections including screen
+            purpose, field rules, validation logic, business rules,
+            database schema, stored procedure analysis, SPINRISE
+            migration recommendations, and IST-resolved review
+            questions. All 20 IST queries have been answered and
+            incorporated into the final version.<br>
+            <br>
+            Kindly review the attached FSD document at your convenience.
+            Your approval will enable us to proceed to the next stage of
+            the SPINRISE migration for this module.<br>
+            <br>
+            Please do not hesitate to reach out should you require any
+            clarification or additional information.<br>
+            <br>
+            Thank you for your time and guidance.<br>
+            <br>
+            Regards,</p>
+          <p>Mariyaiya.M</p>
+          <div class="moz-forward-container"><br>
+            <br>
+            -------- Forwarded Message --------
+            <table class="moz-email-headers-table">
+              <tbody>
+                <tr>
+                  <th nowrap="nowrap">Subject: </th>
+                  <td>Re: SPINRISE PO M01 — PR Form FSD | CEO Review |
+                    TL-IST Stage 3 Not Completed | Process Action
+                    Required</td>
+                </tr>
+                <tr>
+                  <th nowrap="nowrap">Date: </th>
+                  <td>Fri, 17 Apr 2026 13:53:22 +0530</td>
+                </tr>
+                <tr>
+                  <th nowrap="nowrap">From: </th>
+                  <td>Saravanan Balakrishnan <a
+                      class="moz-txt-link-rfc2396E"
+                      href="mailto:pbsaravanan@kalsofte.com"
+                      moz-do-not-send="true">&lt;pbsaravanan@kalsofte.com&gt;</a></td>
+                </tr>
+                <tr>
+                  <th nowrap="nowrap">To: </th>
+                  <td>Mariyaiya Malaiyandi <a
+                      class="moz-txt-link-rfc2396E"
+                      href="mailto:mariyaiya.m@kalsofte.com"
+                      moz-do-not-send="true">&lt;mariyaiya.m@kalsofte.com&gt;</a></td>
+                </tr>
+                <tr>
+                  <th nowrap="nowrap">CC: </th>
+                  <td>'Sasikumar' <a class="moz-txt-link-rfc2396E"
+                      href="mailto:sasikumar.r@kalsofte.com"
+                      moz-do-not-send="true">&lt;sasikumar.r@kalsofte.com&gt;</a>,
+                    Muthuvel Mani <a class="moz-txt-link-rfc2396E"
+                      href="mailto:muthuvel.m@kalsofte.com"
+                      moz-do-not-send="true">&lt;muthuvel.m@kalsofte.com&gt;</a>,
+                    'Kalpatharu' <a class="moz-txt-link-rfc2396E"
+                      href="mailto:support@kalsofte.com"
+                      moz-do-not-send="true">&lt;support@kalsofte.com&gt;</a>,
+                    Quality Assurance <a class="moz-txt-link-rfc2396E"
+                      href="mailto:qa@kalsofte.com"
+                      moz-do-not-send="true">&lt;qa@kalsofte.com&gt;</a>,
+                    CEO <a class="moz-txt-link-rfc2396E"
+                      href="mailto:ceo@kalsofte.com"
+                      moz-do-not-send="true">&lt;ceo@kalsofte.com&gt;</a>,
+                    Palanivel <a class="moz-txt-link-rfc2396E"
+                      href="mailto:palanivel@kalsofte.com"
+                      moz-do-not-send="true">&lt;palanivel@kalsofte.com&gt;</a></td>
+                </tr>
+              </tbody>
+            </table>
+            <br>
+            <br>
+            <p>Dear Maari,</p>
+            <p>Approved to proceed with submission to the CEO for
+              approval.</p>
+            Regards,<br>
+            P.B.Saravanan
+            <div class="moz-cite-prefix"><br>
+            </div>
+            <div class="moz-cite-prefix">On 17/04/2026 12:53 pm,
+              Palanivel wrote:<br>
+            </div>
+            <blockquote type="cite"
+cite="mid:41181db7-9c9b-4d07-97c4-29712c98a5f2@kalsofte.com">
+              <p>Dear Sir,</p>
+              <p>Please find attached the <strong data-start="159"
+                  data-end="192">SPINRISE PO M01 – PR Form FSD</strong>
+                for your final review and approval. Kindly find below
+                the remarks from Claude.</p>
+              <p
+class="font-claude-response-body break-words whitespace-normal leading-[1.7]">The
+                Final document is in very good shape — all 16 CEO
+                content points are addressed and all 16 FSD v2 sections
+                are present<strong> for CEO submission</strong>:</p>
+              <p
+class="font-claude-response-body break-words whitespace-normal leading-[1.7]">
+              </p>
+              <p class="MsoNormal"><b><span>⚠️</span></b><b><span>
+                    Notable Flags for CEO Attention</span></b></p>
+              <ul type="disc">
+                <li class="MsoNormal"><b><span>Stage 3 date (17/04/2026)
+                      is later than Stage 4 (13/04/2026):</span></b><span>
+                    TL-IST Palanivel signed off on 17 April, but PM
+                    Saravanan signed on 13 April. This suggests the PM
+                    review may have been completed <i>before</i> the
+                    TL-IST stage was formally closed. This sequencing
+                    anomaly is worth confirming — the PM should ideally
+                    not have signed off before TL-IST.</span></li>
+                <li class="MsoNormal"><b><span>Stage 2 — SP Issues
+                      flagged:</span></b><span> The IST reviewer
+                    (MuthuVel) noted <i>"SP's level issues are
+                      identified and it needs to be addressed."</i> CEO
+                    should confirm this has been addressed in Section 8
+                    of the FSD before final approval.</span></li>
+              </ul>
+              <div class="MsoNormal"><span>
+                  <hr width="100%"> </span></div>
+              <p class="MsoNormal"><b><span>✅</span></b><b><span> CEO
+                    Approval Recommendation</span></b></p>
+              <p class="MsoNormal"><b><span>All stages 0–4 carry valid
+                    signatures.</span></b><span> The review chain is
+                  substantially complete and the document is <b>eligible
+                    for CEO review.</b></span></p>
+              <p class="MsoNormal"><span>However, <b>formal CEO
+                    approval should be withheld</b> until:</span></p>
+              <ol start="1" type="1">
+                <li class="MsoNormal"><span>The date sequencing anomaly
+                    (Stage 3 after Stage 4) is clarified or confirmed
+                    acceptable.</span></li>
+                <li class="MsoNormal"><span>The SP-level issues flagged
+                    in Stage 2 are confirmed as resolved in the FSD.</span></li>
+                <li class="MsoNormal"><span>All five CEO-stage checklist
+                    items are independently verified against the actual
+                    FSD document.</span></li>
+              </ol>
+              <p class="MsoNormal"><span>Once those are confirmed, the
+                  CEO may sign off, authorize distribution to TL-Dev
+                  Sasi, and permit Claude Code usage for this form.</span></p>
+              <p class="MsoNormal"><span> </span>Thanks &amp; Regards,</p>
+              <div class="moz-forward-container">V. Palanivel</div>
+              <div class="moz-forward-container"><br>
+              </div>
+              <div class="moz-cite-prefix">On 13/04/2026 05:01 pm, CEO
+                wrote:<br>
+              </div>
+              <blockquote type="cite"
+cite="mid:cb9f25b8-647b-46d0-84d9-d9fb9d5d8420@kalsofte.com">
+                <p>Dear Saravanan,<br>
+                  <br>
+                  Thank you for submitting the M01 PR Form FSD v2.2 with
+                  the checklist. I have reviewed both documents in full.
+                  <b>The FSD content is excellent and I want to
+                    acknowledge that before addressing the process
+                    issue, which is the reason I cannot approve this
+                    document.<br>
+                  </b><br>
+                  <b>What the FSD has achieved</b><br>
+                  <br>
+                  <b>Mariyaiya has delivered a thorough FSD.</b> All 20
+                  IST questions are resolved. All 12 CEO-directed
+                  defects from the IST-3, IST-4, and PM feedback are in
+                  Section 12 as Rec 17 through Rec 28. Each has a
+                  specific SPINRISE fix. Section 5.5a documents the
+                  three-level approval workflow with Palanivel's
+                  confirmation, both web screen names, and the URL.
+                  Section 10 has the complete web approval screen
+                  detail. Section 11 includes the Pallavaa division-wise
+                  stock variation. The ManIndNo duplicate is confirmed
+                  and resolved. <b>This is the most complete FSD in the
+                    project and I acknowledge Mariyaiya's work.</b><br>
+                  <br>
+                  <b>Muthuvel's Sr.IST Stage 2 sign-off dated 13 April
+                    2026 is properly recorded in the checklist.<br>
+                    <br>
+                  </b><br>
+                  <b>The problem — and it is a process problem, not a
+                    content problem</b><br>
+                  <br>
+                  I have reviewed both the FSD Document Identity table
+                  and the Review Checklist document carefully.<b> There
+                    are two specific issues.</b><br>
+                  <br>
+                  <b>First:</b> the TL-IST sign-off. The FSD Document
+                  Identity table reads: 'SIGNED OFF. TL IST: PENDING.'
+                  That is a contradiction in one sentence. It cannot be
+                  both signed off and pending. More importantly, I have
+                  checked the Review Checklist document you attached.
+                  The Stage 3 TL-IST section shows every tick box as
+                  empty and the Stage 3 sign-off box is completely blank
+                  — no name and no date. There is no evidence in either
+                  document that Palanivel has performed the TL-IST
+                  review.<br>
+                  <br>
+                  Your mail says 'Updated in the FSD review checklist.
+                  As Palanivel is on leave, I have verified and
+                  approved.' Saravanan, I have looked at the checklist
+                  you attached. The TL-IST Stage 3 section is not
+                  updated. The boxes are empty and the sign-off is
+                  blank.<b> This statement is not accurate based on the
+                    document in front of me.</b><br>
+                  <br>
+                  <b>Second:</b> the PM sign-off in the FSD. The
+                  Document Identity table in the FSD still reads
+                  'PENDING. PM: P.B. Saravanan — Stage 4 PM sign-off not
+                  yet received.' Your name and date are in the checklist
+                  Stage 4 sign-off box, which is correct. But the FSD
+                  Document Identity table, which is the formal record,
+                  still says PENDING. <b>Both documents must be
+                    consistent.</b><br>
+                  <br>
+                  <br>
+                  <b>Why the PM cannot substitute for TL-IST</b><br>
+                  <br>
+                  I understand the intent and I understand that
+                  Palanivel being on leave creates a genuine
+                  inconvenience. But the Stage 3 TL-IST review and the
+                  Stage 4 PM review are two distinct stages with two
+                  distinct purposes, and <b>neither can be combined
+                    into one.<br>
+                  </b><br>
+                  <b>Palanivel's Stage 3</b> review requires senior IST
+                  field experience from 14 years in IT and 10+ years at
+                  Kalpatharu. His specific task is to independently
+                  verify each of Muthuvel's IST answers from his own
+                  customer site experience — not to read Muthuvel's
+                  answers and agree, but to confirm or correct them from
+                  his own knowledge. The Stage 3 checklist items
+                  include: IST-2 approval screen URL independently
+                  confirmed, IST-4 support patterns verified with
+                  additions from own senior experience, and independent
+                  commentary added as a separate column in the review.<br>
+                  <br>
+                  <b>This is domain work that only Palanivel can do. </b>Your
+                  Stage 4 review verifies completeness and
+                  build-readiness — that is a different kind of review
+                  and does not substitute for the domain validation that
+                  Stage 3 requires. The process chain was designed this
+                  way deliberately. <b>Collapsing two stages into one
+                    undermines the quality gate the chain is intended to
+                    provide.<br>
+                  </b><br>
+                  <br>
+                  <b>What needs to happen</b><br>
+                  <br>
+                  <b>First: </b>confirm Palanivel's expected return
+                  date and share it with me today. If he returns this
+                  week, we wait for his Stage 3 review. One or two days
+                  on this FSD is not the bottleneck — the FSD content is
+                  complete and ready for him.<br>
+                  <br>
+                  <b>Second:</b> when Palanivel completes Stage 3, he
+                  must tick all Stage 3 checklist items, sign the Stage
+                  3 sign-off box with his name and date, update the FSD
+                  Document Identity TL-IST row with his name and date,
+                  and provide his independent commentary on the IST
+                  answers.<br>
+                  <br>
+                  <b>Third:</b> once Palanivel's Stage 3 is complete,
+                  Mariyaiya must update the FSD Document Identity table
+                  with two corrections: the TL-IST row with Palanivel's
+                  sign-off detail, and the PM row with your name, date,
+                  and confirmation method.<br>
+                  <br>
+                  <b>Fourth: resubmit the FSD and completed checklist
+                    for CEO approval.<br>
+                  </b><br>
+                  One additional point<br>
+                  <br>
+                  Saravanan, your Stage 4 PM sign-off on the checklist
+                  is dated 13 April 2026. The checklist Stage 4 tick
+                  boxes are all unticked. The sign-off box has your name
+                  and date but the checklist items themselves show empty
+                  tick boxes. A sign-off on a checklist where the items
+                  are not ticked is not a completed checklist. When you
+                  resubmit, please ensure Stage 4 tick boxes are
+                  completed before signing.<br>
+                  <br>
+                  <b>The FSD is one Palanivel Stage 3 review away from
+                    CEO approval. The content is ready. Let us complete
+                    the process correctly.<br>
+                  </b><br>
+                  Regards,<br>
+                  T. Mani<br>
+                  <br>
+                  cc: Mariyaiya, TL-IST Palanivel, Muthuvel, TL-Dev Sasi</p>
+                <div class="moz-cite-prefix">On 13/04/2026 04:18 pm,
+                  Saravanan Balakrishnan wrote:<br>
+                </div>
+                <blockquote type="cite"
+cite="mid:cb40bb6d-748d-4794-ba88-afdb06bbc731@kalsofte.com">
+                  <p>Dear Sir,</p>
+                  <p>Please find attached the <strong data-start="159"
+                      data-end="192">SPINRISE PO M01 – PR Form FSD</strong>
+                    for your final review and approval. Kindly find
+                    below the remarks from Claude.</p>
+                  <p
+class="font-claude-response-body break-words whitespace-normal leading-[1.7]">The
+                    Final document is in very good shape — all 16 CEO
+                    content points are addressed and all 14 FSD v2
+                    sections are present. Only <strong>2 items block
+                      CEO submission</strong>:</p>
+                  <p
+class="font-claude-response-body break-words whitespace-normal leading-[1.7]"><strong>Must
+                      fix immediately:</strong></p>
+                  <ol
+class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-decimal flex flex-col gap-1 pl-8 mb-3">
+                    <li class="whitespace-normal break-words pl-2"><strong>TL-IST
+                        sign-off row</strong> — the current text reads <em>"SIGNED
+                        OFF. TL IST: PENDING"</em> which is a direct
+                      contradiction. If Palanivel has signed off, add
+                      his name, confirmation method, and date. If not,
+                      change the row to plainly say PENDING.</li>
+                  </ol>
+                  <p><strong data-start="980" data-end="990">Reply:</strong>
+                    Updated in the FSD review checklist. As Palanivel is
+                    on leave, I have verified and approved.</p>
+                  <p
+class="font-claude-response-body break-words whitespace-normal leading-[1.7]"><strong>Awaiting
+                      external:</strong> 2. <strong>PM sign-off (P.B.
+                      Saravanan)</strong> — Stage 4 sign-off not yet
+                    received. Once he replies, his name, date, and
+                    confirmation method must be added to the Document
+                    Identity table before the document goes to the CEO.</p>
+                  <p>Reply : Updated in FSD review check list, as
+                    palanivel is leave i have verified and approved.</p>
+                  <div class="moz-forward-container"><br>
+                  </div>
+                  <div class="moz-forward-container">Regards,</div>
+                  <div class="moz-forward-container">P.B.Saravanan</div>
+                  <div class="moz-forward-container"><br>
+                  </div>
+                  <div class="moz-forward-container"><br>
+                  </div>
+                  <div class="moz-forward-container">-------- Forwarded
+                    Message --------
+                    <table class="moz-email-headers-table">
+                      <tbody>
+                        <tr>
+                          <th nowrap="nowrap">Subject: </th>
+                          <td>Fwd: SPINRISE PO M01— PR Form FSD IST
+                            Review | Revised IST-3 and IST-4 | CEO
+                            Observations</td>
+                        </tr>
+                        <tr>
+                          <th nowrap="nowrap">Date: </th>
+                          <td>Mon, 13 Apr 2026 05:15:14 -0500</td>
+                        </tr>
+                        <tr>
+                          <th nowrap="nowrap">From: </th>
+                          <td><a
+class="moz-txt-link-abbreviated moz-txt-link-freetext"
+                              href="mailto:muthuvel.m@kalsofte.com"
+                              moz-do-not-send="true">muthuvel.m@kalsofte.com</a></td>
+                        </tr>
+                        <tr>
+                          <th nowrap="nowrap">To: </th>
+                          <td>Palanivel Venkatachalam <a
+                              class="moz-txt-link-rfc2396E"
+                              href="mailto:palanivel@kalsofte.com"
+                              moz-do-not-send="true">&lt;palanivel@kalsofte.com&gt;</a></td>
+                        </tr>
+                        <tr>
+                          <th nowrap="nowrap">CC: </th>
+                          <td>Ceo <a class="moz-txt-link-rfc2396E"
+                              href="mailto:ceo@kalsofte.com"
+                              moz-do-not-send="true">&lt;ceo@kalsofte.com&gt;</a>,
+                            Pbsaravanan <a
+                              class="moz-txt-link-rfc2396E"
+                              href="mailto:pbsaravanan@kalsofte.com"
+                              moz-do-not-send="true">&lt;pbsaravanan@kalsofte.com&gt;</a>,
+                            Sasikumar R <a
+                              class="moz-txt-link-rfc2396E"
+                              href="mailto:sasikumar.r@kalsofte.com"
+                              moz-do-not-send="true">&lt;sasikumar.r@kalsofte.com&gt;</a>,
+                            Mariyaiya Malaiyandi <a
+                              class="moz-txt-link-rfc2396E"
+                              href="mailto:mariyaiya.m@kalsofte.com"
+                              moz-do-not-send="true">&lt;mariyaiya.m@kalsofte.com&gt;</a>,
+                            Support <a class="moz-txt-link-rfc2396E"
+                              href="mailto:support@kalsofte.com"
+                              moz-do-not-send="true">&lt;support@kalsofte.com&gt;</a></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <br>
+                    <br>
+                    Dear Sir,<br>
+                    Please find attached the SPINRISE PO M01 – PR Form
+                    FSD IST Review Approval Checklist, along with the
+                    updated M01_FSD_Purchase Requisition document.<br>
+                    <br>
+                    The Document Identity table has been updated to
+                    include the Sr. IST and TL IST details as required.<br>
+                    <br>
+                    Kindly review the documents and provide your
+                    approval.<br>
+                    Thanks &amp; Regards<br>
+                    M MuthuVel<br>
+                    <br>
+                    -------- Original Message --------<br>
+                    Subject: SPINRISE PO M01— PR Form FSD IST Review |
+                    Revised IST-3 and IST-4 | CEO Observations<br>
+                    Date: 2026-04-11 09:20<br>
+                    From: MariyaiyaM <a class="moz-txt-link-rfc2396E"
+                      href="mailto:mariyaiya.m@kalsofte.com"
+                      moz-do-not-send="true">&lt;mariyaiya.m@kalsofte.com&gt;</a><br>
+                    To: 'Muthuvel' <a class="moz-txt-link-rfc2396E"
+                      href="mailto:muthuvel.m@kalsofte.com"
+                      moz-do-not-send="true">&lt;muthuvel.m@kalsofte.com&gt;</a><br>
+                    Cc: pbsaravanan <a class="moz-txt-link-rfc2396E"
+                      href="mailto:pbsaravanan@kalsofte.com"
+                      moz-do-not-send="true">&lt;pbsaravanan@kalsofte.com&gt;</a>,
+                    Palanivel <a class="moz-txt-link-rfc2396E"
+                      href="mailto:palanivel@kalsofte.com"
+                      moz-do-not-send="true">&lt;palanivel@kalsofte.com&gt;</a>,
+                    Support <a class="moz-txt-link-rfc2396E"
+                      href="mailto:support@kalsofte.com"
+                      moz-do-not-send="true">&lt;support@kalsofte.com&gt;</a>,
+                    'Sasikumar R' <a class="moz-txt-link-rfc2396E"
+                      href="mailto:sasikumar.r@kalsofte.com"
+                      moz-do-not-send="true">&lt;sasikumar.r@kalsofte.com&gt;</a>,
+                    Quality Assurance <a class="moz-txt-link-rfc2396E"
+                      href="mailto:qa@kalsofte.com"
+                      moz-do-not-send="true">&lt;qa@kalsofte.com&gt;</a><br>
+                    <br>
+                    Dear sir,<br>
+                    <br>
+                    I have enclosed the updated FSD document for your
+                    review and<br>
+                    approval. Kindly review and approve the same.<br>
+                    <br>
+                    Regards,<br>
+                    Mariyaiya.M<br>
+                  </div>
+                </blockquote>
+              </blockquote>
+            </blockquote>
+          </div>
+        </blockquote>
+      </blockquote>
+    </blockquote>
+  </body>
+</html>
+
+--------------76kl5RbtOOfvQS8D02jWbIWv--

@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, Dropdown, Input, Layout, Popover, Space, Typography } from 'antd'
+import { Avatar, Badge, Button, Dropdown, Input, Layout, Popover, Tooltip, Typography } from 'antd'
 import {
   AppstoreOutlined,
   BellOutlined,
@@ -7,7 +7,6 @@ import {
   MenuOutlined,
   MenuUnfoldOutlined,
   SearchOutlined,
-  UserOutlined,
 } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
 import { useNavigate } from 'react-router-dom'
@@ -43,7 +42,6 @@ export function AppHeader({
 }: AppHeaderProps) {
   const navigate  = useNavigate()
   const { user, clearAuthSession } = useAuthStore()
-
   const displayName = user?.userName || user?.userId || 'User'
   const initials    = displayName.slice(0, 2).toUpperCase()
 

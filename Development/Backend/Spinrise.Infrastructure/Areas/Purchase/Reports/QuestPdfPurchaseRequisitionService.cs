@@ -80,7 +80,7 @@ public sealed class QuestPdfPurchaseRequisitionService : IPurchaseReportService
 
             //var shortUser = user.Contains('@') ? user.Split('@')[0] : user;
 
-            var document = new PurchaseRequisitionQuestDocument(division, prData, user, logoBytes);
+            var document = new PurchaseRequisitionQuestDocument(division, prData, logoBytes);
 
 #if DEBUG
             // Opens / refreshes the QuestPDF Companion App preview.
@@ -126,7 +126,7 @@ public sealed class QuestPdfPurchaseRequisitionService : IPurchaseReportService
             byte[]? logoBytes = divisions.FirstOrDefault()?.DIV_LOGO;
 
             var documents = headers
-                .Select(h => (IDocument)new PurchaseRequisitionQuestDocument(division, h, string.Empty, logoBytes))
+                .Select(h => (IDocument)new PurchaseRequisitionQuestDocument(division, h, logoBytes))
                 .ToList();
 
             return Document.Merge(documents).GeneratePdf();

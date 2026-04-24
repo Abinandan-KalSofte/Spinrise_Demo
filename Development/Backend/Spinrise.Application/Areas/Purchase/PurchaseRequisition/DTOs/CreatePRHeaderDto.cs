@@ -19,7 +19,7 @@ public class CreatePRHeaderDto
     [Range(1, 99999)]
     public long? SubCost { get; set; }
 
-    [StringLength(2)]
+    [StringLength(1)]
     public string? IType { get; set; }
 
     [StringLength(10)]
@@ -38,6 +38,8 @@ public class CreatePRHeaderDto
     public string? SaleOrderNo { get; set; }
 
     public DateTime? SaleOrderDate { get; set; }
+
+    public bool SubmitForApproval { get; set; } = false;  // G19: Differentiate Save vs Submit
 
     [Required]
     [MinLength(1, ErrorMessage = "At least one line item is required.")]

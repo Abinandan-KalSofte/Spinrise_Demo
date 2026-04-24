@@ -30,6 +30,13 @@ export function usePurchaseRequisitionList() {
   // ── Download ────────────────────────────────────────────────────────────────
   const [downloading, setDownloading] = useState<number | null>(null)
 
+  // ── Delete ──────────────────────────────────────────────────────────────────
+  const [deleteOpen,       setDeleteOpen]       = useState(false)
+  const [deletingPrNo,     setDeletingPrNo]     = useState<number | null>(null)
+  const [deleteReasons,    setDeleteReasons]    = useState<Array<{ reasonCode: string; reasonDesc: string }>>([])
+  const [deleteReason,     setDeleteReason]     = useState<string | undefined>(undefined)
+  const [deleteSubmitting, setDeleteSubmitting] = useState(false)
+
   const activeFilters = useRef<PRPaginatedFilters>({})
 
   // ── Lookups on mount ────────────────────────────────────────────────────────
@@ -66,12 +73,13 @@ export function usePurchaseRequisitionList() {
   const handleSearch = useCallback(async (values: SearchFormValues) => {
     const { yfDate, ylDate } = getFYBounds()
     await fetchPage(1, {
-      prNo:      values.prNo ? String(values.prNo) : undefined,
-      startDate: values.dateRange?.[0]?.format('YYYY-MM-DD') ?? yfDate,
-      endDate:   values.dateRange?.[1]?.format('YYYY-MM-DD') ?? ylDate,
-      depCode:   values.depCode  || undefined,
-      reqName:   values.reqName  || undefined,
-      status:    values.status   || undefined,
+      prNo:       values.prNo ? String(values.prNo) : undefined,
+      startDate:  values.dateRange?.[0]?.format('YYYY-MM-DD') ?? yfDate,
+      endDate:    values.dateRange?.[1]?.format('YYYY-MM-DD') ?? ylDate,
+      depCode:    values.depCode    || undefined,
+      reqName:    values.reqName    || undefined,
+      status:     values.status     || undefined,
+      searchText: values.searchText || undefined,
     })
   }, [fetchPage])
 
@@ -116,7 +124,7 @@ export function usePurchaseRequisitionList() {
 
     setDownloading(record.prNo)
     try {
-      const { blob, fileName } = await prListService.downloadReport(record.id, startDate, endDate)
+      const { blob, fileName } = await prListService.downloadReport(record.prNo, startDate, endDate)
       const url = URL.createObjectURL(blob)
       const a   = document.createElement('a')
       a.href     = url
@@ -130,6 +138,44 @@ export function usePurchaseRequisitionList() {
     }
   }, [message])
 
+  const handleOpenDelete = useCallback(async (prNo: number) => {
+    setDeletingPrNo(prNo)
+    setDeleteReason(undefined)
+    setDeleteOpen(true)
+    if (deleteReasons.length === 0) {
+      try {
+        const reasons = await prListService.getDeleteReasons()
+        setDeleteReasons(reasons)
+      } catch {
+        void message.error('Failed to load delete reasons.')
+      }
+    }
+  }, [message, deleteReasons.length])
+
+  const handleCancelDelete = useCallback(() => {
+    setDeleteOpen(false)
+    setDeletingPrNo(null)
+    setDeleteReason(undefined)
+  }, [])
+
+  const handleConfirmDelete = useCallback(async () => {
+    if (!deletingPrNo || !deleteReason) return
+    setDeleteSubmitting(true)
+    try {
+      const { startDate, endDate } = activeFilters.current
+      await prListService.deletePR(deletingPrNo, deleteReason, startDate, endDate)
+      void message.success(`PR #${deletingPrNo} cancelled successfully.`)
+      setDeleteOpen(false)
+      setDeletingPrNo(null)
+      setDeleteReason(undefined)
+      await fetchPage(page, activeFilters.current)
+    } catch {
+      void message.error('Failed to cancel purchase requisition.')
+    } finally {
+      setDeleteSubmitting(false)
+    }
+  }, [deletingPrNo, deleteReason, message, fetchPage, page])
+
   return {
     // data
     rows, total, page, loading,
@@ -138,8 +184,12 @@ export function usePurchaseRequisitionList() {
     viewOpen, viewPr, viewLoading,
     // download
     downloading,
+    // delete
+    deleteOpen, deletingPrNo, deleteReasons, deleteReason, deleteSubmitting,
+    setDeleteReason,
     // handlers
     handleSearch, handleReset, handleTableChange,
     handleView, handleCloseView, handleDownload,
+    handleOpenDelete, handleCancelDelete, handleConfirmDelete,
   }
 }
