@@ -118,12 +118,72 @@ src/features/<featureName>/
 
 ---
 
+## Deployment
+
+### Environment
+
+| Layer | URL | Host |
+|---|---|---|
+| Frontend | `http://172.16.16.40:3000` | IIS on Windows Server |
+| Backend API | `http://172.16.16.40:5001` | IIS on Windows Server |
+| SQL Server | `172.16.16.52\sql2016` | Database: `SpinRiseSaranya` |
+
+### Backend — IIS Publish
+
+**Rule: Always stop the IIS app pool before publishing. The running process locks the DLLs.**
+
+```
+1. Stop app pool in IIS Manager (or: iisreset /stop)
+2. dotnet publish Spinrise.API/Spinrise.API.csproj -c Release -o <iis-site-path>
+3. Start app pool (or: iisreset /start)
+```
+
+- Connection string lives in `Spinrise.API/appsettings.json` → `ConnectionStrings:DefaultConnection`
+- CORS origins live in `appsettings.json` → `Cors:AllowedOrigins` — the base file is what gets published; `appsettings.Development.json` is local only
+- JWT secret is in `appsettings.json` → `Jwt:SecretKey` — replace with a strong secret before production
+
+### Frontend — IIS Publish
+
+```
+1. cd Development/spinrise-web
+2. npm run build          # uses .env.production automatically
+3. Copy dist/ → IIS site root for port 3000
+```
+
+- Production API URL is set in `.env.production` → `VITE_BACKEND_ORIGIN`
+- Dev URL is set in `.env.development` → `VITE_API_URL`
+- Never commit `.env.production` changes that point to localhost
+
+### Database — Stored Procedure Deploy
+
+**Always use `merged.sql` — never run individual SP files in production.**
+
+```
+1. Open SSMS → connect to 172.16.16.52\sql2016 → SpinRiseSaranya
+2. Open Development/Backend/Spinrise.DBScripts/merged.sql
+3. Execute (F5)
+```
+
+- Every SP add or change in a session must also update `merged.sql` in the same session
+- Tables go in `DBScripts/01 Tables/`, SPs in `DBScripts/02 Stored Procedures/`
+- Use `CREATE OR ALTER PROCEDURE` — never `DROP + CREATE`
+
+### Session Logging
+
+After every development session, write a summary log to:
+```
+E:\Abinandan\SPINRISE\.claude\logs\<YYYY-MM-DD>_session_<topic>.md
+```
+Update `README.md` in that folder with an index entry.
+
+---
+
 ## Key Documentation
 
 - `Development/AI_CONTEXT.md` — architecture summary for AI context
 - `Development/Backend/PROJECT_GUIDE.md` — backend patterns reference
 - `Development/Backend/DEVELOPMENT_WORKFLOW_GUIDE.md` — dev workflow
 - `Development/Backend/TESTING_GUIDE.md` — testing conventions
-- `Development/Backend/SETUP_AND_DEPLOYMENT.md` — environment setup
+- `Development/Backend/SETUP_AND_DEPLOYMENT.md` — environment setup (generic; see Deployment section above for actual env)
 - `Development/spinrise-web/Guide.md` — frontend guide
 - `Docs/` — design documents and blueprints
