@@ -11,28 +11,28 @@
 -- ─────────────────────────────────────────────────────────────
 
 -- ksp_Auth_ValidateUser
-CREATE OR ALTER PROCEDURE dbo.ksp_Auth_ValidateUser
-(
-    @DivCode  VARCHAR(2),
-    @UserId   VARCHAR(5),
-    @Password VARCHAR(10)
-)
-AS
-BEGIN
-    SET NOCOUNT ON;
+-- CREATE OR ALTER PROCEDURE dbo.ksp_Auth_ValidateUser
+-- (
+--     @DivCode  VARCHAR(2),
+--     @UserId   VARCHAR(5),
+--     @Password VARCHAR(10)
+-- )
+-- AS
+-- BEGIN
+--     SET NOCOUNT ON;
 
-    SELECT
-        p.divcode   AS DivCode,
-        p.user_id   AS UserId,
-        p.user_name AS UserName,
-        p.alevel    AS ALevel
-    FROM dbo.PP_PASSWD p
-    WHERE p.divcode  = @DivCode
-      AND p.user_id  = @UserId
-      AND p.password = @Password
-      AND UPPER(ISNULL(p.activeflg, 'N')) = 'Y';
-END;
-GO
+--     SELECT
+--         p.divcode   AS DivCode,
+--         p.user_id   AS UserId,
+--         p.user_name AS UserName,
+--         p.alevel    AS ALevel
+--     FROM dbo.PP_PASSWD p
+--     WHERE p.divcode  = @DivCode
+--       AND p.user_id  = @UserId
+--       AND p.password = @Password
+--       AND UPPER(ISNULL(p.activeflg, 'N')) = 'Y';
+-- END;
+-- GO
 
 -- ─────────────────────────────────────────────────────────────
 -- Lookups / Shared
@@ -751,7 +751,7 @@ BEGIN
             ) THEN 'RECEIVED'
             ELSE 'OPEN'
         END                                 AS PrStatus,
-        h.createdby                         AS CreatedBy,
+        ISNULL(u.user_name, h.createdby)    AS CreatedBy,
         CASE
             WHEN ISDATE(h.createddt) = 1
             THEN CAST(h.createddt AS DATETIME)
@@ -782,6 +782,9 @@ BEGIN
     LEFT JOIN in_dep d
         ON h.depcode = d.DEPCODE
        AND d.divcode = h.divcode
+    LEFT JOIN dbo.PP_PASSWD u
+        ON h.createdby = u.user_id
+       AND u.divcode   = h.divcode
     WHERE h.divcode = @DivCode
       AND (@PrNo      IS NULL OR h.prno    =  @PrNo)
       AND (@StartDate IS NULL OR h.prdate >= @StartDate)

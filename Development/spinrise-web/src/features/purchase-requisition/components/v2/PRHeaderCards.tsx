@@ -1,5 +1,4 @@
-import { App, Col, DatePicker, Form, Input, Row, Select, Tag, Tooltip, Typography } from 'antd'
-import { BankOutlined, CopyOutlined } from '@ant-design/icons'
+import { App, Col, DatePicker, Form, Input, Row, Select, Tag, Typography } from 'antd'
 import type { FormInstance } from 'antd'
 import dayjs from 'dayjs'
 import { prefixFilterOption, priorityFilterSort } from '@/shared/utils/selectUtils'
@@ -12,7 +11,6 @@ interface PRHeaderCardsProps {
   poTypes:                   POTypeLookup[]
   savedPrNo?:                number | null
   disabled?:                 boolean
-  purTypeFlgEnabled?:        boolean
   requireRequesterName?:     boolean
   requireRefNo?:             boolean
   pendingPoDetailsEnabled?:  boolean
@@ -42,7 +40,6 @@ export function PRHeaderCards({
   poTypes,
   savedPrNo             = null,
   disabled              = false,
-  purTypeFlgEnabled     = false,
   requireRequesterName  = false,
   requireRefNo          = false,
   pendingPoDetailsEnabled = false,
@@ -59,11 +56,12 @@ export function PRHeaderCards({
 }: PRHeaderCardsProps) {
   const { message } = App.useApp()
 
-  const deptOptions = departments.map((d) => ({ value: d.depCode, label: `${d.depCode} – ${d.depName}` }))
-  const empOptions  = employees.map((e)   => ({ value: e.eName,   label: `${e.empNo} – ${e.eName}` }))
-  const typeOptions = poTypes.map((p)     => ({ value: p.typeCode, label: `${p.typeCode} – ${p.typName}` }))
+  const deptOptions      = departments.map((d) => ({ value: d.depCode, label: `${d.depCode} – ${d.depName}` }))
+  const empOptions       = employees.map((e)   => ({ value: e.empNo,   label: `${e.empNo} – ${e.eName}` }))
+  const typeOptions      = poTypes.map((p)     => ({ value: p.typeCode, label: `${p.typeCode} – ${p.typName}` }))
+  const orderTypeOptions = typeOptions.filter((o) => ['E', 'O', 'U'].includes(o.value))
 
-  const prNoText = savedPrNo ? `PR-${String(savedPrNo).padStart(5, '0')}-${dayjs().year()}` : ''
+  const prNoText = savedPrNo ? String(savedPrNo) : ''
 
   const handleCopy = () => {
     if (!savedPrNo) return
@@ -76,9 +74,9 @@ export function PRHeaderCards({
     <div style={{
       background:   '#ffffff',
       border:       '1px solid #e5e7eb',
-      borderRadius: 10,
+      borderRadius: 12,
       padding:      '20px 24px 8px',
-      boxShadow:    '0 1px 3px rgba(0,0,0,0.05)',
+      boxShadow:    '0 2px 10px rgba(0,0,0,0.05)',
     }}>
       <style>{`
         .pr-header-form .ant-input,
@@ -103,9 +101,27 @@ export function PRHeaderCards({
           border-color: #e2e8f0 !important;
         }
       `}</style>
-      <Typography.Text strong style={{ fontSize: 13, color: '#1e293b', display: 'block', marginBottom: 16 }}>
-        Requisition Details
-      </Typography.Text>
+
+      {/* Section title + PR number badge */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+        <Typography.Text strong style={{ fontSize: 13, color: '#1e293b' }}>
+          Requisition Details
+        </Typography.Text>
+        {/* H2: PR Number as clickable badge — replaces disabled Input */}
+        {savedPrNo && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Typography.Text type="secondary" style={{ fontSize: 12 }}>PR No:</Typography.Text>
+            <Tag
+              color="blue"
+              style={{ fontSize: 13, fontWeight: 700, padding: '2px 10px', fontFamily: 'monospace', cursor: 'pointer', marginRight: 0 }}
+              onClick={handleCopy}
+            >
+              {prNoText}
+            </Tag>
+            <Typography.Text type="secondary" style={{ fontSize: 11 }}>Click to copy</Typography.Text>
+          </div>
+        )}
+      </div>
 
       <Form
         className="pr-header-form"
@@ -115,29 +131,9 @@ export function PRHeaderCards({
         disabled={disabled}
         size="middle"
       >
-        {/* Row 1: PR No | PR Date | Department */}
+        {/* H3 Row 1: PR Date | Department */}
         <Row gutter={[16, 0]}>
-          <Col xs={24} sm={8} md={6}>
-            <Form.Item label={<FL text="PR Number" />} style={ITEM}>
-              <Input
-                value={prNoText}
-                placeholder="Auto-generated on save"
-                disabled
-                style={{ background: '#f1f5f9', border: '1px solid #e2e8f0', color: '#64748b' }}
-                suffix={
-                  savedPrNo ? (
-                    <Tooltip title="Copy">
-                      <CopyOutlined
-                        onClick={handleCopy}
-                        style={{ cursor: 'pointer', color: '#9ca3af', fontSize: 12 }}
-                      />
-                    </Tooltip>
-                  ) : null
-                }
-              />
-            </Form.Item>
-          </Col>
-          <Col xs={24} sm={8} md={6}>
+          <Col xs={24} sm={12} md={12}>
             <Form.Item
               name="prDate"
               label={<FL text="PR Date" />}
@@ -148,14 +144,12 @@ export function PRHeaderCards({
                 style={{ width: '100%' }}
                 format="DD-MM-YYYY"
                 disabledDate={(d) =>
-                  backDateAllowed
-                    ? d.isAfter(dayjs(), 'day')                   // Only block future dates
-                    : !d.isSame(dayjs(), 'day')                   // Only today allowed
+                  backDateAllowed ? d.isAfter(dayjs(), 'day') : !d.isSame(dayjs(), 'day')
                 }
               />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={8} md={6}>
+          <Col xs={24} sm={12} md={12}>
             <Form.Item
               name="depCode"
               label={<FL text="Department" />}
@@ -172,21 +166,11 @@ export function PRHeaderCards({
               />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={8} md={6}>
-            <Form.Item
-              name="refNo"
-              label={<FL text="Reference No." />}
-              rules={requireRefNo ? [{ required: true, message: 'Required' }] : []}
-              style={ITEM}
-            >
-              <Input placeholder="e.g. VEN-QUOT-2026" maxLength={20} />
-            </Form.Item>
-          </Col>
         </Row>
 
-        {/* Row 2: Requester | Required Date | Cost Centre */}
+        {/* H3 Row 2: Requested By | Order Type — H1: merged into single row */}
         <Row gutter={[16, 0]}>
-          <Col xs={24} sm={8} md={6}>
+          <Col xs={24} sm={12} md={12}>
             <Form.Item
               name="reqName"
               label={<FL text="Requested By" />}
@@ -203,40 +187,7 @@ export function PRHeaderCards({
               />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={8} md={6}>
-            <Form.Item
-              name="poGroupCode"
-              label={<FL text="Cost Centre" />}
-              rules={purTypeFlgEnabled ? [{ required: true, message: 'Required' }] : []}
-              style={ITEM}
-            >
-              <Input
-                prefix={<BankOutlined style={{ color: '#9ca3af', fontSize: 12 }} />}
-                placeholder="e.g. CC-2001"
-                maxLength={5}
-              />
-            </Form.Item>
-          </Col>
-          <Col xs={24} sm={8} md={6}>
-            <Form.Item name="saleOrderNo" label={<FL text="Sale Order No." />} style={ITEM}>
-              <Input placeholder="Sale order number" maxLength={25} />
-            </Form.Item>
-          </Col>
-          <Col xs={24} sm={8} md={6}>
-            <Form.Item name="saleOrderDate" label={<FL text="Sale Order Date" />} style={ITEM}>
-              <DatePicker style={{ width: '100%' }} format="DD-MM-YYYY" />
-            </Form.Item>
-          </Col>
-        </Row>
-
-        {/* Row 3: Section/Team | Order Type | Scope Code */}
-        <Row gutter={[16, 0]}>
-          <Col xs={24} sm={8} md={6}>
-            <Form.Item name="section" label={<FL text="Section / Team" />} style={ITEM}>
-              <Input placeholder="e.g. Infrastructure" maxLength={20} />
-            </Form.Item>
-          </Col>
-          <Col xs={24} sm={8} md={6}>
+          <Col xs={24} sm={12} md={12}>
             <Form.Item
               name="iType"
               label={<FL text="Order Type" />}
@@ -246,16 +197,35 @@ export function PRHeaderCards({
               <Select
                 showSearch
                 placeholder="Select order type…"
-                options={typeOptions}
+                options={orderTypeOptions}
                 filterOption={prefixFilterOption}
                 filterSort={priorityFilterSort}
                 allowClear
               />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={8} md={6}>
-            <Form.Item name="scopeCode" label={<FL text="Scope Code" />} style={ITEM}>
-              <Input placeholder="e.g. SC-01" maxLength={10} />
+        </Row>
+
+        {/* H3 Row 3: Section | Reference No */}
+        <Row gutter={[16, 0]}>
+          <Col xs={24} sm={12} md={12}>
+            <Form.Item name="section" label={<FL text="Section" />} style={ITEM}>
+              <Input placeholder="e.g. Infrastructure" maxLength={100} />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={12} md={12}>
+            <Form.Item
+              name="refNo"
+              label={<FL text="Reference No." />}
+              rules={requireRefNo ? [{ required: true, message: 'Required' }] : []}
+              style={ITEM}
+            >
+              <Input
+                placeholder="e.g. VEN-QUOT-2026"
+                maxLength={50}
+                style={{ textTransform: 'uppercase' }}
+                onChange={(e) => form.setFieldValue('refNo', e.target.value.toUpperCase())}
+              />
             </Form.Item>
           </Col>
         </Row>

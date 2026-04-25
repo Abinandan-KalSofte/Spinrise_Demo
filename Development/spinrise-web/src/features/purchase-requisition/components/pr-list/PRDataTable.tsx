@@ -3,10 +3,11 @@ import { AgGridReact } from 'ag-grid-react'
 import type { CellStyle, ColDef, GridReadyEvent, ICellRendererParams } from 'ag-grid-community'
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from 'ag-grid-community'
 import { Button, Space, Tag, Tooltip, Typography } from 'antd'
-import { DeleteOutlined, EditOutlined, EyeOutlined, FileTextOutlined } from '@ant-design/icons'
+import { DeleteOutlined, DownloadOutlined, EditOutlined, EyeOutlined, FileTextOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
-import type { DepartmentLookup, PRSummaryResponse } from '../../types'
+import { getFYBounds } from '@/shared/lib/dateUtils'
+import type { DepartmentLookup, EmployeeLookup, PRSummaryResponse } from '../../types'
 import { STATUS_TAG } from './prListConfig'
 
 ModuleRegistry.registerModules([AllCommunityModule])
@@ -16,8 +17,11 @@ interface PRDataTableProps {
   loading:      boolean
   deletingPrNo: number | null
   departments:  DepartmentLookup[]
+  employees:    EmployeeLookup[]
   onView:       (prNo: number) => void
   onDelete:     (prNo: number) => void
+  onDownload:   (record: PRSummaryResponse) => void
+  downloading?: number | null
 }
 
 const HEADER_HEIGHT = 38
@@ -51,7 +55,8 @@ const prTheme = themeQuartz.withParams({
 })
 
 export function PRDataTable({
-  rows, loading, deletingPrNo, departments, onView, onDelete,
+  rows, loading, deletingPrNo, departments, employees,
+  onView, onDelete, onDownload, downloading = null,
 }: PRDataTableProps) {
   const navigate = useNavigate()
   const gridRef  = useRef<AgGridReact<PRSummaryResponse>>(null)
@@ -94,13 +99,18 @@ export function PRDataTable({
       },
     },
     {
+      // B04: display "empNo – eName" by looking up from employees list
       headerName: 'Requested By',
       field:      'reqName',
       flex:       1,
       minWidth:   140,
       sortable:   true,
       cellStyle:  CELL_BASE,
-      valueFormatter: ({ value }: { value: string | undefined }) => value || '—',
+      valueFormatter: ({ value }: { value: string | undefined }) => {
+        if (!value) return '—'
+        const emp = employees.find((e) => String(e.empNo) === String(value))
+        return emp ? `${emp.empNo} – ${emp.eName}` : value
+      },
     },
     {
       headerName:  'Items',
@@ -136,7 +146,7 @@ export function PRDataTable({
     {
       headerName: 'Actions',
       colId:      'actions',
-      width:      100,
+      width:      136,
       sortable:   false,
       filter:     false,
       pinned:     'right',
@@ -144,6 +154,8 @@ export function PRDataTable({
       cellRenderer: ({ data }: ICellRendererParams<PRSummaryResponse>) => {
         if (!data) return null
         const deletable = canDelete(data)
+        // B03: pass FY date range so Edit page can load rate history context
+        const { yfDate, ylDate } = getFYBounds()
         return (
           <Space size={2}>
             <Tooltip title="View">
@@ -155,7 +167,18 @@ export function PRDataTable({
             <Tooltip title="Edit">
               <Button
                 type="text" size="small" icon={<EditOutlined />}
-                onClick={() => navigate(`/purchase/requisition/edit/${data.prNo}`)}
+                onClick={() => navigate(
+                  `/purchase/requisition/edit/${data.prNo}?from=${yfDate}&to=${ylDate}`
+                )}
+              />
+            </Tooltip>
+            {/* B02: Download PDF per row */}
+            <Tooltip title="Download PDF">
+              <Button
+                type="text" size="small"
+                icon={<DownloadOutlined />}
+                loading={downloading === data.prNo}
+                onClick={() => onDownload(data)}
               />
             </Tooltip>
             <Tooltip title={deletable ? 'Cancel PR' : 'Already cancelled or converted'}>
@@ -170,15 +193,16 @@ export function PRDataTable({
         )
       },
     },
-  ], [departments, deletingPrNo, navigate, onView, onDelete, canDelete])
+  ], [departments, employees, deletingPrNo, downloading, navigate, onView, onDelete, onDownload, canDelete])
 
   const defaultColDef = useMemo<ColDef>(() => ({
     resizable: true,
     filter:    true,
   }), [])
 
+  // B01: auto-size on grid ready (no data yet); onFirstDataRendered fires when rows are loaded
   const onGridReady = useCallback((_: GridReadyEvent) => {
-    gridRef.current?.api?.sizeColumnsToFit()
+    // intentionally empty — sizing handled by onFirstDataRendered
   }, [])
 
   const getRowId = useCallback(
@@ -219,6 +243,8 @@ export function PRDataTable({
         rowSelection={{ mode: 'singleRow' }}
         enableCellTextSelection
         onGridReady={onGridReady}
+        // B01: auto-size all columns to content width when first data renders
+        onFirstDataRendered={(e) => e.api.autoSizeAllColumns(false)}
         noRowsOverlayComponent={() => (
           <div style={{ textAlign: 'center', padding: '64px 0' }}>
             <FileTextOutlined style={{ fontSize: 40, color: '#d1d5db', display: 'block', marginBottom: 12 }} />

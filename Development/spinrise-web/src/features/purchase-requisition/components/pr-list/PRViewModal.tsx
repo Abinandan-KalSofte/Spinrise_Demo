@@ -95,12 +95,12 @@ function PRViewContent({ pr }: { pr: PRHeaderResponse }) {
           size="small"
           rowKey="prSNo"
           dataSource={pr.lines}
-          scroll={{ x: 680 }}
+          scroll={{ x: 760 }}
           pagination={false}
           columns={[
-            { title: '#', dataIndex: 'prSNo', key: 'prSNo', width: 44, align: 'center' },
+            { title: '#', dataIndex: 'prSNo', key: 'prSNo', width: 40, align: 'center' },
             {
-              title: 'Item Code', dataIndex: 'itemCode', key: 'itemCode', width: 100,
+              title: 'Item Code', dataIndex: 'itemCode', key: 'itemCode', width: 88,
               render: (v: string) => (
                 <Typography.Text code style={{ fontSize: 11 }}>{v}</Typography.Text>
               ),
@@ -112,32 +112,32 @@ function PRViewContent({ pr }: { pr: PRHeaderResponse }) {
                 : '—',
             },
             {
-              title: 'UOM', dataIndex: 'uom', key: 'uom', width: 60, align: 'center',
+              title: 'UOM', dataIndex: 'uom', key: 'uom', width: 52, align: 'center',
               render: (v: string | undefined) => v || '—',
             },
             {
-              title: 'Qty', dataIndex: 'qtyRequired', key: 'qtyRequired', width: 72, align: 'right',
+              title: 'Qty', dataIndex: 'qtyRequired', key: 'qtyRequired', width: 60, align: 'right',
               render: (v: number) => <strong>{v}</strong>,
             },
             {
-              title: 'Stock', dataIndex: 'currentStock', key: 'currentStock', width: 80, align: 'right',
+              title: 'Stock', dataIndex: 'currentStock', key: 'currentStock', width: 68, align: 'right',
               render: (v: number | undefined) =>
                 v != null ? v : <Typography.Text type="secondary">—</Typography.Text>,
             },
             {
-              title: 'Last Rate', dataIndex: 'lastPoRate', key: 'lastPoRate', width: 100, align: 'right',
+              title: 'Last Rate', dataIndex: 'lastPoRate', key: 'lastPoRate', width: 88, align: 'right',
               render: (v: number | undefined) =>
                 v != null
                   ? `₹${v.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
                   : <Typography.Text type="secondary">—</Typography.Text>,
             },
             {
-              title: 'Reqd. Date', dataIndex: 'requiredDate', key: 'requiredDate', width: 100,
+              title: 'Reqd. Date', dataIndex: 'requiredDate', key: 'requiredDate', width: 86,
               render: (v: string | undefined) =>
                 v ? dayjs(v).format('DD/MM/YYYY') : <Typography.Text type="secondary">—</Typography.Text>,
             },
             {
-              title: 'Approx. Cost', dataIndex: 'approxCost', key: 'approxCost', width: 110, align: 'right' as const,
+              title: 'Approx. Cost', dataIndex: 'approxCost', key: 'approxCost', width: 98, align: 'right' as const,
               render: (val: number | undefined, row: { lastPoRate?: number; qtyRequired: number }) => {
                 const v = val && val > 0 ? val : (row.lastPoRate ?? 0) * (row.qtyRequired ?? 0)
                 return v > 0
@@ -146,26 +146,15 @@ function PRViewContent({ pr }: { pr: PRHeaderResponse }) {
               },
             },
             {
-              title: 'Remarks', dataIndex: 'remarks', key: 'remarks', ellipsis: true,
-              render: (v: string | undefined) => v
-                ? <Tooltip title={v}><span style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{v}</span></Tooltip>
-                : <Typography.Text type="secondary">—</Typography.Text>,
-            },
-            {
-              title: 'Machine', dataIndex: 'machineNo', key: 'machineNo', width: 90,
+              title: 'Machine', dataIndex: 'machineNo', key: 'machineNo', width: 70,
               render: (v: string | undefined) => v || <Typography.Text type="secondary">—</Typography.Text>,
             },
             {
-              title: 'Sub-Cost', dataIndex: 'subCostCode', key: 'subCostCode', width: 80, align: 'right' as const,
-              render: (v: number | undefined) =>
-                v != null ? v : <Typography.Text type="secondary">—</Typography.Text>,
-            },
-            {
-              title: 'Draw No', dataIndex: 'drawNo', key: 'drawNo', width: 90,
+              title: 'Draw No', dataIndex: 'drawNo', key: 'drawNo', width: 72,
               render: (v: string | undefined) => v || <Typography.Text type="secondary">—</Typography.Text>,
             },
             {
-              title: 'Cat', dataIndex: 'categoryCode', key: 'categoryCode', width: 56, align: 'center' as const,
+              title: 'Cat', dataIndex: 'categoryCode', key: 'categoryCode', width: 46, align: 'center' as const,
               render: (v: string | undefined) => v || <Typography.Text type="secondary">—</Typography.Text>,
             },
           ]}

@@ -8,7 +8,7 @@ import {
   CloseCircleOutlined,
   SaveOutlined,
 } from '@ant-design/icons'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import dayjs from 'dayjs'
 
 import { purchaseRequisitionApi } from '../api/purchaseRequisitionApi'
@@ -68,6 +68,10 @@ export default function PurchaseRequisitionEditPage() {
   const { prNo: prNoParam } = useParams<{ prNo: string }>()
   const prNo = Number(prNoParam)
   const navigate  = useNavigate()
+  // B03: FY date range passed via URL query params from list page Edit button
+  const [searchParams] = useSearchParams()
+  const fromDate = searchParams.get('from') ?? undefined
+  const toDate   = searchParams.get('to')   ?? undefined
   const { message } = App.useApp()
   const { token } = theme.useToken()
   const [headerForm] = Form.useForm<PRHeaderFormValues>()
@@ -104,7 +108,7 @@ export default function PurchaseRequisitionEditPage() {
     if (!prNo) return
     setLoadingPr(true)
     void purchaseRequisitionApi
-      .getById(prNo)
+      .getById(prNo, fromDate, toDate)
       .then((pr) => {
         setSavedPr(pr)
         headerForm.setFieldsValue({
@@ -142,7 +146,7 @@ export default function PurchaseRequisitionEditPage() {
     section:       values.section?.trim()      || undefined,
     iType:         values.iType?.trim()        || undefined,
     reqName:       values.reqName?.trim()      || undefined,
-    refNo:         values.refNo?.trim()        || undefined,
+    refNo:         values.refNo?.trim().toUpperCase() || undefined,
     poGroupCode:   values.poGroupCode?.trim()  || undefined,
     scopeCode:     values.scopeCode?.trim()    || undefined,
     saleOrderNo:   values.saleOrderNo?.trim()  || undefined,
@@ -265,7 +269,6 @@ export default function PurchaseRequisitionEditPage() {
             poTypes={poTypes}
             savedPrNo={savedPr?.prNo ?? null}
             disabled={pageBusy || isLocked}
-            purTypeFlgEnabled={preCheckResult?.purTypeFlgEnabled ?? false}
             requireRequesterName={preCheckResult?.requireRequesterName ?? false}
             requireRefNo={preCheckResult?.requireRefNo ?? false}
             pendingPoDetailsEnabled={preCheckResult?.pendingPoDetailsEnabled ?? false}

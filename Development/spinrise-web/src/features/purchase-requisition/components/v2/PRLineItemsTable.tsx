@@ -3,18 +3,19 @@ import { AgGridReact } from 'ag-grid-react'
 import type { ColDef, GridApi, GridReadyEvent, ICellRendererParams, CellStyle } from 'ag-grid-community'
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from 'ag-grid-community'
 import {
-  Button, Checkbox, Col, DatePicker, Drawer, Empty, Form, Input,
-  InputNumber, Modal, Popconfirm, Row, Select, Spin,
+  Button, Checkbox, Col, Collapse, DatePicker, Drawer, Empty, Form, Input,
+  InputNumber, Modal, Popconfirm, Row, Select, Space, Spin,
   Table, Tag, Tooltip, Typography,
 } from 'antd'
 import {
-  ClockCircleOutlined, DeleteOutlined, EditOutlined,
-  FileAddOutlined, PlusOutlined, SettingOutlined,
+  AppstoreOutlined, ClockCircleOutlined, DeleteOutlined, EditOutlined,
+  FileAddOutlined, HistoryOutlined, PlusOutlined, SettingOutlined,
 } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
 import { lookupApi } from '../../api/lookupApi'
 import { purchaseRequisitionApi } from '../../api/purchaseRequisitionApi'
+import { useLookupStore } from '../../store/useLookupStore'
 import type { ItemLookup, MachineLookup, PRItemHistoryDto, PRLineFormItem } from '../../types'
 
 ModuleRegistry.registerModules([AllCommunityModule])
@@ -30,6 +31,7 @@ interface EntryFormValues {
   requiredDate: Dayjs | null
   remarks:      string
   machineNo:    string | null
+  subCostCode:  number | null
   drawNo:       string
   catNo:        string
   place:        string
@@ -60,7 +62,7 @@ function emptyRow(): PRLineFormItem {
     currentStock: null, qtyRequired: 1, requiredDate: null,
     place: '', approxCost: null, remarks: '', machineNo: '',
     costCentreCode: '', budgetGroupCode: '', subCostCode: null,
-    isSample: false, lastPoRate: null, lastPoDate: null,
+    isSample: true, lastPoRate: null, lastPoDate: null,
     lastPoSupplierCode: null, lastPoSupplierName: null,
     categoryCode: '', model: '', maxCost: null, rate: null,
     drawNo: '', catNo: '',
@@ -123,8 +125,9 @@ export function PRLineItemsTable({
   const [drawerForm] = Form.useForm()
 
   // ── Entry form state ──────────────────────────────────────────────────────
-  const [editingKey,    setEditingKey]    = useState<string | null>(null)  // null = add mode
+  const [editingKey,    setEditingKey]    = useState<string | null>(null)
   const [itemMeta,      setItemMeta]      = useState<{ itemName: string; uom: string; currentStock: number | null } | null>(null)
+  const [lpoMeta,       setLpoMeta]       = useState<{ lastPoRate: number | null; lastPoDate: string | null; lastPoSupplierCode: string | null; lastPoSupplierName: string | null } | null>(null)
   const [itemOptions,   setItemOptions]   = useState<ItemSelectOption[]>([])
   const [itemSearching, setItemSearching] = useState(false)
 
@@ -146,7 +149,12 @@ export function PRLineItemsTable({
   // ── Flash total on rate change ────────────────────────────────────────────
   const [flashKey, setFlashKey] = useState<string | null>(null)
 
-  const machineOpts = machines.map((m) => ({ value: m.macNo, label: `${m.macNo} – ${m.description}` }))
+  const subCosts    = useLookupStore((s) => s.subCosts)
+  const machineOpts  = machines.map((m) => ({ value: m.macNo, label: `${m.macNo} – ${m.description}` }))
+  const subCostOpts  = subCosts.map((s) => ({ value: s.sccCode, label: `${s.sccCode} – ${s.sccName}` }))
+
+  // R08: local state for days-from-today quick-fill
+  const [daysInput, setDaysInput] = useState<number | null>(null)
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const seqRef      = useRef(0)
@@ -219,6 +227,14 @@ export function PRLineItemsTable({
             entryForm.setFieldValue('rate', info.lastPoRate)
           }
 
+          // G1/E2: store LPO data so grid row and badge row can show it
+          setLpoMeta({
+            lastPoRate:         info.lastPoRate ?? null,
+            lastPoDate:         info.lastPoDate ?? null,
+            lastPoSupplierCode: info.lastPoSupplierCode ?? null,
+            lastPoSupplierName: info.lastPoSupplierName ?? null,
+          })
+
           // Show warnings for pending indents/PRs if checks are enabled
           if (preCheckResult?.pendingIndentCheckEnabled && info.hasPendingIndent) {
             const msg = `Pending indent exists for this item — Qty: ${info.pendingIndentQty}`
@@ -246,6 +262,13 @@ export function PRLineItemsTable({
         _item: { itemCode: row.itemCode, itemName: row.itemName, uom: row.uom, currentStock: row.currentStock ?? undefined },
       }])
     }
+    setDaysInput(null)
+    setLpoMeta({
+      lastPoRate:         row.lastPoRate,
+      lastPoDate:         row.lastPoDate,
+      lastPoSupplierCode: row.lastPoSupplierCode,
+      lastPoSupplierName: row.lastPoSupplierName,
+    })
     entryForm.setFieldsValue({
       itemCode:     row.itemCode,
       qtyRequired:  row.qtyRequired,
@@ -253,6 +276,7 @@ export function PRLineItemsTable({
       requiredDate: row.requiredDate ? dayjs(row.requiredDate) : null,
       remarks:      row.remarks,
       machineNo:    row.machineNo || null,
+      subCostCode:  row.subCostCode ?? null,
       drawNo:       row.drawNo ?? '',
       catNo:        row.catNo ?? '',
       place:        row.place ?? '',
@@ -263,7 +287,9 @@ export function PRLineItemsTable({
   const cancelEdit = useCallback(() => {
     setEditingKey(null)
     setItemMeta(null)
+    setLpoMeta(null)
     setItemOptions([])
+    setDaysInput(null)
     entryForm.resetFields()
   }, [entryForm])
 
@@ -285,6 +311,7 @@ export function PRLineItemsTable({
         requiredDate: values.requiredDate ? values.requiredDate.format('YYYY-MM-DD') : null,
         remarks:     values.remarks ?? '',
         machineNo:   values.machineNo ?? '',
+        subCostCode: values.subCostCode ?? null,
         drawNo:      values.drawNo ?? '',
         catNo:       values.catNo ?? '',
         place:       values.place ?? '',
@@ -300,12 +327,14 @@ export function PRLineItemsTable({
       const row: PRLineFormItem = {
         ...emptyRow(),
         ...(itemMeta ?? {}),
+        ...(lpoMeta  ?? {}),
         itemCode:    values.itemCode,
         qtyRequired: values.qtyRequired,
         rate:        values.rate,
         requiredDate: values.requiredDate ? values.requiredDate.format('YYYY-MM-DD') : null,
         remarks:     values.remarks ?? '',
         machineNo:   values.machineNo ?? '',
+        subCostCode: values.subCostCode ?? null,
         drawNo:      values.drawNo ?? '',
         catNo:       values.catNo ?? '',
         place:       values.place ?? '',
@@ -318,6 +347,7 @@ export function PRLineItemsTable({
       setFlashKey(row.key)
       // Clear form and focus item code
       setItemMeta(null)
+      setLpoMeta(null)
       setItemOptions([])
       entryForm.resetFields()
       setTimeout(() => {
@@ -325,7 +355,7 @@ export function PRLineItemsTable({
         el?.focus()
       }, 80)
     }
-  }, [editingKey, entryForm, itemMeta, onAdd, onUpdate, cancelEdit])
+  }, [editingKey, entryForm, itemMeta, lpoMeta, onAdd, onUpdate, cancelEdit])
 
   // ── Rate history ──────────────────────────────────────────────────────────
   const openHistory = useCallback(async (row: PRLineFormItem) => {
@@ -339,6 +369,14 @@ export function PRLineItemsTable({
     } catch { setHistoryData([]) }
     finally  { setHistoryLoading(false) }
   }, [])
+
+  // R07: Open rate history from the entry form for the currently selected item
+  const openHistoryForEntryItem = useCallback(async () => {
+    const itemCode = entryForm.getFieldValue('itemCode') as string | undefined
+    if (!itemCode) return
+    const opt = itemOptions.find((o) => o.value === itemCode)
+    await openHistory({ ...emptyRow(), itemCode, currentStock: opt?._item.currentStock ?? null })
+  }, [entryForm, itemOptions, openHistory])
 
   // ── Advanced drawer ───────────────────────────────────────────────────────
   const openDrawer = useCallback((row: PRLineFormItem) => {
@@ -361,7 +399,7 @@ export function PRLineItemsTable({
     setDrawerRow(null)
   }, [drawerRow, drawerForm, onUpdate])
 
-  // ── Column defs ───────────────────────────────────────────────────────────
+  // ── Column defs — R12: Item Code, Description, Last Rate, PO Date, Supplier Code, Supplier Name, Qty, UOM, Unit Price, Total, Actions ──
   const colDefs = useMemo((): ColDef<PRLineFormItem>[] => [
     {
       headerName: '#',
@@ -374,7 +412,7 @@ export function PRLineItemsTable({
     {
       headerName: 'Item Code',
       field:      'itemCode',
-      width:      130,
+      width:      120,
       cellStyle:  { ...CELL, fontWeight: 700, color: '#1677ff', fontFamily: 'monospace', fontSize: 12 },
       valueFormatter: ({ value }) => value || '—',
     },
@@ -382,21 +420,52 @@ export function PRLineItemsTable({
       headerName: 'Description',
       field:      'itemName',
       flex:       1,
-      minWidth:   160,
+      minWidth:   140,
+      cellStyle:  CELL,
+      valueFormatter: ({ value }) => (value as string) || '—',
+    },
+    {
+      headerName:  'Last Rate',
+      field:       'lastPoRate',
+      width:       100,
+      cellStyle:   { ...CELL, justifyContent: 'flex-end' },
+      headerClass: 'ag-right-aligned-header',
+      valueFormatter: ({ value }) =>
+        value != null ? `₹ ${Number(value).toFixed(2)}` : '—',
+    },
+    {
+      headerName: 'PO Date',
+      field:      'lastPoDate',
+      width:      90,
+      cellStyle:  CELL,
+      valueFormatter: ({ value }) =>
+        value ? dayjs(value as string).format('DD/MM/YY') : '—',
+    },
+    {
+      headerName: 'Supplier Code',
+      field:      'lastPoSupplierCode',
+      width:      110,
+      cellStyle:  { ...CELL, fontFamily: 'monospace', fontSize: 12 },
+      valueFormatter: ({ value }) => (value as string) || '—',
+    },
+    {
+      headerName: 'Supplier Name',
+      field:      'lastPoSupplierName',
+      width:      140,
       cellStyle:  CELL,
       valueFormatter: ({ value }) => (value as string) || '—',
     },
     {
       headerName:  'Qty',
       field:       'qtyRequired',
-      width:       76,
+      width:       70,
       cellStyle:   { ...CELL, justifyContent: 'flex-end', fontWeight: 600 },
       headerClass: 'ag-right-aligned-header',
     },
     {
       headerName: 'UOM',
       field:      'uom',
-      width:      66,
+      width:      60,
       cellStyle:  { ...CELL, justifyContent: 'center' },
       cellRenderer: ({ value }: ICellRendererParams) =>
         value
@@ -406,7 +475,7 @@ export function PRLineItemsTable({
     {
       headerName:  'Unit Price',
       field:       'rate',
-      width:       108,
+      width:       100,
       cellStyle:   { ...CELL, justifyContent: 'flex-end' },
       headerClass: 'ag-right-aligned-header',
       valueFormatter: ({ value }) =>
@@ -415,10 +484,14 @@ export function PRLineItemsTable({
     {
       headerName:  'Total',
       colId:       'total',
-      width:       112,
+      width:       108,
       cellStyle:   { ...CELL, justifyContent: 'flex-end', fontWeight: 700, color: '#16a34a' },
       headerClass: 'ag-right-aligned-header',
-      valueGetter: ({ data }) => data ? (data.rate ?? 0) * data.qtyRequired : 0,
+      valueGetter: ({ data }) => {
+        if (!data) return 0
+        const r = data.rate && data.rate > 0 ? data.rate : (data.lastPoRate ?? 0)
+        return r * data.qtyRequired
+      },
       valueFormatter: ({ value }) =>
         Number(value) > 0
           ? `₹ ${Number(value).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
@@ -426,17 +499,9 @@ export function PRLineItemsTable({
       cellClassRules: { 'pr-cell-flash': ({ data }) => !!data && data.key === flashKey },
     },
     {
-      headerName: 'Req. Date',
-      field:      'requiredDate',
-      width:      108,
-      cellStyle:  CELL,
-      valueFormatter: ({ value }) =>
-        value ? dayjs(value as string).format('DD/MM/YY') : '—',
-    },
-    {
       headerName: '',
       colId:      'actions',
-      width:      116,
+      width:      90,
       sortable:   false,
       pinned:     'right',
       cellStyle:  { ...CELL, justifyContent: 'center', gap: 2 },
@@ -450,14 +515,6 @@ export function PRLineItemsTable({
                 icon={<EditOutlined style={{ color: '#1677ff' }} />}
                 disabled={disabled}
                 onClick={() => startEdit(data)}
-              />
-            </Tooltip>
-            <Tooltip title="Rate History">
-              <Button
-                type="text" size="small"
-                icon={<ClockCircleOutlined style={{ color: '#7c3aed' }} />}
-                disabled={!data.itemCode}
-                onClick={() => void openHistory(data)}
               />
             </Tooltip>
             <Tooltip title="Advanced">
@@ -496,13 +553,12 @@ export function PRLineItemsTable({
         )
       },
     },
-  ], [disabled, flashKey, startEdit, openHistory, openDrawer, onDelete, editingKey, cancelEdit, savedPrNo])
+  ], [disabled, flashKey, startEdit, openDrawer, onDelete, editingKey, cancelEdit, savedPrNo])
 
   const defaultColDef = useMemo<ColDef>(() => ({ resizable: true, sortable: false, filter: false }), [])
 
   const onGridReady = useCallback((e: GridReadyEvent) => {
     apiRef.current = e.api
-    e.api.sizeColumnsToFit()
   }, [])
 
   const getRowId = useCallback(({ data }: { data: PRLineFormItem }) => data.key, [])
@@ -511,7 +567,10 @@ export function PRLineItemsTable({
     data?.key === editingKey ? 'pr-row--editing' : '', [editingKey])
 
   const validCount = items.filter((l) => l.itemCode.trim() !== '').length
-  const subtotal   = useMemo(() => items.reduce((s, l) => s + (l.rate ?? 0) * l.qtyRequired, 0), [items])
+  const subtotal   = useMemo(() => items.reduce((s, l) => {
+    const r = l.rate && l.rate > 0 ? l.rate : (l.lastPoRate ?? 0)
+    return s + r * l.qtyRequired
+  }, 0), [items])
 
   // ── Rate history columns ──────────────────────────────────────────────────
   const historyColumns = useMemo(() => [
@@ -573,34 +632,34 @@ export function PRLineItemsTable({
         }
       `}</style>
 
-      {/* ── Item Entry Panel ────────────────────────────────────────────────── */}
+      {/* ── Item Entry Panel — E7 card style ──────────────────────────────── */}
       <div className="pr-entry-form" style={{
-        background:   '#f8fafc',
+        background:   '#ffffff',
         border:       '1px solid #e2e8f0',
         borderLeft:   '3px solid #1677ff',
-        borderRadius: 8,
+        borderRadius: 12,
         padding:      '16px 20px',
+        boxShadow:    '0 2px 8px rgba(0,0,0,0.04)',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-          <Typography.Text strong style={{ fontSize: 13, color: '#1e293b' }}>
-            {editingKey ? 'Edit Item' : 'Item Entry'}
-          </Typography.Text>
-          {editingKey && (
-            <Tag color="blue" style={{ fontSize: 11 }}>
-              Editing row #{(items.findIndex((r) => r.key === editingKey) + 1)}
-            </Tag>
-          )}
+        {/* E6: Section header with icon */}
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 14 }}>
+          <Space size={6}>
+            <AppstoreOutlined style={{ color: '#1677ff', fontSize: 14 }} />
+            <Typography.Text strong style={{ fontSize: 13, color: '#1e293b' }}>
+              {editingKey ? 'Edit Item' : 'Item Entry'}
+            </Typography.Text>
+          </Space>
         </div>
 
         <Form form={entryForm} layout="vertical" size="middle" disabled={disabled}>
+          {/* E1: Row 1 — Item Code (wide) | Qty + Add button inline via Space.Compact */}
           <Row gutter={[12, 0]}>
-            {/* Item Code */}
-            <Col xs={24} sm={12} md={6}>
+            <Col xs={24} sm={14} md={14}>
               <Form.Item
                 name="itemCode"
                 label={<span style={LABEL_STYLE}>Item Code</span>}
                 rules={[{ required: true, message: 'Required' }]}
-                style={{ marginBottom: 12 }}
+                style={{ marginBottom: 8 }}
               >
                 <Select
                   className="pr-entry-item-select"
@@ -613,151 +672,127 @@ export function PRLineItemsTable({
                   filterOption={false}
                   notFoundContent={itemSearching ? <Spin size="small" /> : 'Type ≥ 2 chars to search'}
                   allowClear
-                  onClear={() => { setItemMeta(null); setItemOptions([]) }}
+                  onClear={() => { setItemMeta(null); setLpoMeta(null); setItemOptions([]) }}
                 />
               </Form.Item>
             </Col>
 
-            {/* Description — auto-filled */}
-            <Col xs={24} sm={12} md={7}>
-              <Form.Item
-                label={<span style={LABEL_STYLE}>Description</span>}
-                style={{ marginBottom: 12 }}
-              >
-                <Input
-                  value={itemMeta?.itemName ?? ''}
-                  readOnly
-                  style={READONLY_STYLE}
-                  placeholder="Auto-filled on item select"
-                />
-              </Form.Item>
-            </Col>
-
-            {/* UOM + Stock badge */}
-            <Col xs={12} sm={6} md={3}>
-              <Form.Item
-                label={<span style={LABEL_STYLE}>UOM</span>}
-                style={{ marginBottom: 12 }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <Input
-                    value={itemMeta?.uom ?? ''}
-                    readOnly
-                    style={{ ...READONLY_STYLE, width: 70 }}
-                    placeholder="—"
-                  />
-                  {itemMeta?.currentStock != null && (
-                    <Tooltip title="Current stock">
-                      <Tag color={itemMeta.currentStock > 0 ? 'green' : 'orange'} style={{ fontSize: 11, margin: 0 }}>
-                        {itemMeta.currentStock} in stock
-                      </Tag>
-                    </Tooltip>
-                  )}
-                </div>
-              </Form.Item>
-            </Col>
-
-            {/* Qty */}
-            <Col xs={12} sm={6} md={3}>
+            <Col xs={24} sm={10} md={10}>
               <Form.Item
                 name="qtyRequired"
                 label={<span style={LABEL_STYLE}>Qty</span>}
-                rules={[{ required: true, message: 'Req.' }, { type: 'number', min: 0.001, message: '> 0' }]}
-                initialValue={1}
-                style={{ marginBottom: 12 }}
+                initialValue={0}
+                rules={[
+                  { required: true, message: 'Req.' },
+                  { type: 'number', min: 0.001, message: 'Must be > 0' },
+                ]}
+                style={{ marginBottom: 8 }}
               >
                 <InputNumber
                   style={{ width: '100%', ...INPUT_STYLE }}
-                  min={0.001} precision={3}
+                  min={0} precision={3}
+                  onPressEnter={() => void handleAddOrUpdate()}
                 />
               </Form.Item>
             </Col>
           </Row>
 
-          <Row gutter={[12, 0]}>
-            {/* Unit Price */}
-            <Col xs={12} sm={8} md={5}>
-              <Form.Item
-                name="rate"
-                label={<span style={LABEL_STYLE}>Unit Price (₹)</span>}
-                rules={[{ type: 'number', min: 0, message: 'Must be ≥ 0' }]}
-                style={{ marginBottom: 12 }}
+          {/* E2+E3: Context badges — appear after item select; stock red if 0/null, green if > 0 */}
+          {itemMeta && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 10 }}>
+              <Tag style={{ fontSize: 12, padding: '2px 8px' }}>
+                UOM: {itemMeta.uom || '—'}
+              </Tag>
+              <Tag
+                color={itemMeta.currentStock != null && itemMeta.currentStock > 0 ? 'success' : 'error'}
+                style={{ fontSize: 12, padding: '2px 8px', fontWeight: 600 }}
               >
-                <InputNumber
-                  style={{ width: '100%', ...INPUT_STYLE }}
-                  min={0} precision={2} placeholder="0.00"
-                  prefix="₹"
-                />
-              </Form.Item>
-            </Col>
-
-            {/* Required Date */}
-            <Col xs={12} sm={8} md={5}>
-              <Form.Item
-                name="requiredDate"
-                label={<span style={LABEL_STYLE}>Required Date</span>}
-                style={{ marginBottom: 12 }}
-              >
-                <DatePicker
-                  style={{ width: '100%', ...INPUT_STYLE }}
-                  format="DD/MM/YYYY"
-                  placeholder="dd/mm/yyyy"
-                />
-              </Form.Item>
-            </Col>
-
-            {/* Remarks */}
-            <Col xs={24} sm={8} md={9}>
-              <Form.Item
-                name="remarks"
-                label={<span style={LABEL_STYLE}>Remarks</span>}
-                style={{ marginBottom: 12 }}
-              >
-                <Input
-                  style={INPUT_STYLE}
-                  placeholder="Optional notes…"
-                  maxLength={100}
-                />
-              </Form.Item>
-            </Col>
-
-            {/* Buttons */}
-            <Col xs={24} sm={24} md={5} style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: 12 }}>
-              {editingKey ? (
-                <div style={{ display: 'flex', gap: 8, width: '100%' }}>
-                  <Button
-                    type="primary"
-                    style={{ flex: 1 }}
-                    onClick={() => void handleAddOrUpdate()}
-                    disabled={disabled}
-                  >
-                    Update Row
-                  </Button>
-                  <Button onClick={cancelEdit} disabled={disabled}>
-                    Cancel
-                  </Button>
-                </div>
-              ) : (
-                <Button
-                  type="primary"
-                  icon={<PlusOutlined />}
-                  style={{ width: '100%' }}
-                  onClick={() => void handleAddOrUpdate()}
-                  disabled={disabled}
-                >
-                  Add to List
-                </Button>
+                Stock: {itemMeta.currentStock ?? 0}
+              </Tag>
+              {lpoMeta?.lastPoRate != null && (
+                <Tag color="green" style={{ fontSize: 12, padding: '2px 8px' }}>
+                  Last Rate: ₹{lpoMeta.lastPoRate.toFixed(2)}
+                </Tag>
               )}
+              {lpoMeta?.lastPoDate && (
+                <Tag color="cyan" style={{ fontSize: 12, padding: '2px 8px' }}>
+                  PO: {dayjs(lpoMeta.lastPoDate).format('DD-MMM-YY')}
+                </Tag>
+              )}
+            </div>
+          )}
+
+          {/* Row 2: Unit Price + Rate History | Required Date + days quick-fill */}
+          <Row gutter={[12, 0]}>
+            <Col xs={12} sm={8} md={7}>
+              <Form.Item
+                label={<span style={LABEL_STYLE}>Unit Price (₹)</span>}
+                style={{ marginBottom: 10 }}
+              >
+                <Space.Compact style={{ width: '100%' }}>
+                  <Form.Item
+                    name="rate"
+                    noStyle
+                    rules={[{ type: 'number', min: 0, message: 'Must be ≥ 0' }]}
+                  >
+                    <InputNumber
+                      style={{ width: '100%', ...INPUT_STYLE }}
+                      min={0} precision={2} placeholder="0.00"
+                      prefix="₹"
+                    />
+                  </Form.Item>
+                  <Tooltip title="Rate History">
+                    <Button
+                      icon={<HistoryOutlined />}
+                      disabled={!entryForm.getFieldValue('itemCode')}
+                      onClick={() => void openHistoryForEntryItem()}
+                    />
+                  </Tooltip>
+                </Space.Compact>
+              </Form.Item>
+            </Col>
+
+            <Col xs={12} sm={8} md={7}>
+              <Form.Item
+                label={<span style={LABEL_STYLE}>Required Date</span>}
+                style={{ marginBottom: 10 }}
+              >
+                <Space.Compact style={{ width: '100%' }}>
+                  <Tooltip title="Days from today">
+                    <InputNumber
+                      placeholder="Days"
+                      min={1} max={999} precision={0}
+                      style={{ width: 72 }}
+                      value={daysInput}
+                      onChange={(v) => {
+                        const days = v as number | null
+                        setDaysInput(days)
+                        if (days != null && days > 0) {
+                          entryForm.setFieldValue('requiredDate', dayjs().add(days, 'day'))
+                        }
+                      }}
+                    />
+                  </Tooltip>
+                  <Form.Item name="requiredDate" noStyle>
+                    <DatePicker
+                      style={{ width: '100%', ...INPUT_STYLE }}
+                      format="DD/MM/YYYY"
+                      placeholder="dd/mm/yyyy"
+                      onChange={() => setDaysInput(null)}
+                    />
+                  </Form.Item>
+                </Space.Compact>
+              </Form.Item>
             </Col>
           </Row>
 
+          {/* Row 3: Machine | Sub Cost Centre | Sample */}
           <Row gutter={[12, 0]}>
-            {/* Machine */}
-            <Col xs={24} sm={8} md={8}>
+            <Col xs={12} sm={8} md={8}>
               <Form.Item
                 name="machineNo"
                 label={<span style={LABEL_STYLE}>Machine</span>}
-                style={{ marginBottom: 12 }}
+                style={{ marginBottom: 10 }}
               >
                 <Select
                   options={machineOpts}
@@ -771,48 +806,86 @@ export function PRLineItemsTable({
               </Form.Item>
             </Col>
 
-            {/* Drawing No. */}
-            <Col xs={12} sm={8} md={8}>
+            <Col xs={12} sm={10} md={10}>
               <Form.Item
-                name="drawNo"
-                label={<span style={LABEL_STYLE}>Drawing No.</span>}
-                style={{ marginBottom: 12 }}
+                name="subCostCode"
+                label={<span style={LABEL_STYLE}>Sub Cost Centre</span>}
+                style={{ marginBottom: 10 }}
               >
-                <Input style={INPUT_STYLE} placeholder="Drawing number…" maxLength={30} />
+                <Select
+                  showSearch allowClear
+                  options={subCostOpts}
+                  placeholder="Select sub cost…"
+                  style={INPUT_STYLE}
+                  filterOption={(input, opt) =>
+                    String(opt?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                  }
+                />
               </Form.Item>
             </Col>
 
-            {/* Cat No. */}
-            <Col xs={12} sm={8} md={8}>
-              <Form.Item
-                name="catNo"
-                label={<span style={LABEL_STYLE}>Cat No.</span>}
-                style={{ marginBottom: 12 }}
-              >
-                <Input style={INPUT_STYLE} placeholder="Catalogue number…" maxLength={30} />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Row gutter={[12, 0]}>
-            {/* Place */}
-            <Col xs={18} sm={16} md={10}>
-              <Form.Item
-                name="place"
-                label={<span style={LABEL_STYLE}>Place</span>}
-                style={{ marginBottom: 12 }}
-              >
-                <Input style={INPUT_STYLE} placeholder="Delivery place…" maxLength={50} />
-              </Form.Item>
-            </Col>
-
-            {/* Sample */}
-            <Col xs={6} sm={8} md={4} style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: 12 }}>
-              <Form.Item name="isSample" valuePropName="checked" style={{ marginBottom: 0 }}>
+            <Col xs={12} sm={6} md={6} style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: 10 }}>
+              <Form.Item name="isSample" valuePropName="checked" initialValue={true} style={{ marginBottom: 0 }}>
                 <Checkbox>Sample</Checkbox>
               </Form.Item>
             </Col>
           </Row>
+
+          {/* E4: Advanced collapsible — Drawing No, Cat No, Remarks */}
+          <Collapse
+            size="small"
+            ghost
+            style={{ marginTop: 2 }}
+            items={[{
+              key: 'adv',
+              label: <span style={{ fontSize: 12, color: '#6b7280' }}>Advanced ▼</span>,
+              children: (
+                <Row gutter={[12, 0]}>
+                  <Col xs={24} sm={8} md={8}>
+                    <Form.Item name="drawNo" label={<span style={LABEL_STYLE}>Drawing No.</span>} style={{ marginBottom: 8 }}>
+                      <Input style={INPUT_STYLE} placeholder="Drawing number…" maxLength={25} />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={8} md={8}>
+                    <Form.Item name="catNo" label={<span style={LABEL_STYLE}>Cat No.</span>} style={{ marginBottom: 8 }}>
+                      <Input style={INPUT_STYLE} placeholder="Catalogue number…" maxLength={25} />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={8} md={8}>
+                    <Form.Item name="remarks" label={<span style={LABEL_STYLE}>Remarks</span>} style={{ marginBottom: 8 }}>
+                      <Input style={INPUT_STYLE} placeholder="Optional notes…" maxLength={500} />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              ),
+            }]}
+          />
+
+          {/* Action row — separate last row */}
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 12 }}>
+            {editingKey ? (
+              <>
+                <Button onClick={cancelEdit} disabled={disabled}>Cancel</Button>
+                <Button
+                  type="primary"
+                  icon={<PlusOutlined />}
+                  onClick={() => void handleAddOrUpdate()}
+                  disabled={disabled}
+                >
+                  Update Row
+                </Button>
+              </>
+            ) : (
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => void handleAddOrUpdate()}
+                disabled={disabled}
+              >
+                Add to List
+              </Button>
+            )}
+          </div>
         </Form>
       </div>
 
@@ -842,31 +915,30 @@ export function PRLineItemsTable({
           </div>
         </div>
 
-        {/* AG Grid — read-only */}
-        <div style={{ height: Math.max(120, Math.min(items.length * 34 + 40, 400)) }}>
-          <AgGridReact<PRLineFormItem>
-            ref={gridRef}
-            className="pr-items-grid"
-            theme={gridTheme}
-            rowData={items}
-            columnDefs={colDefs}
-            defaultColDef={defaultColDef}
-            getRowId={getRowId}
-            getRowClass={getRowClass}
-            onGridReady={onGridReady}
-            domLayout="normal"
-            suppressRowClickSelection
-            suppressScrollOnNewData
-            noRowsOverlayComponent={() => (
-              <div style={{ textAlign: 'center', padding: '24px 0' }}>
-                <FileAddOutlined style={{ fontSize: 28, color: '#d1d5db', display: 'block', marginBottom: 8 }} />
-                <Typography.Text type="secondary" style={{ fontSize: 13 }}>
-                  Fill the form above and click "Add to List"
-                </Typography.Text>
-              </div>
-            )}
-          />
-        </div>
+        {/* AG Grid — autoHeight: grows with rows, page scroll handles overflow */}
+        <AgGridReact<PRLineFormItem>
+          ref={gridRef}
+          className="pr-items-grid"
+          theme={gridTheme}
+          rowData={items}
+          columnDefs={colDefs}
+          defaultColDef={defaultColDef}
+          getRowId={getRowId}
+          getRowClass={getRowClass}
+          onGridReady={onGridReady}
+          onFirstDataRendered={(e) => e.api.autoSizeAllColumns(false)}
+          domLayout="autoHeight"
+          suppressRowClickSelection
+          suppressScrollOnNewData
+          noRowsOverlayComponent={() => (
+            <div style={{ textAlign: 'center', padding: '24px 0' }}>
+              <FileAddOutlined style={{ fontSize: 28, color: '#d1d5db', display: 'block', marginBottom: 8 }} />
+              <Typography.Text type="secondary" style={{ fontSize: 13 }}>
+                Fill the form above and click "Add to List"
+              </Typography.Text>
+            </div>
+          )}
+        />
 
         {/* Footer totals */}
         {validCount > 0 && (
@@ -979,13 +1051,13 @@ export function PRLineItemsTable({
             <InputNumber style={{ width: '100%' }} min={0} precision={0} placeholder="Sub cost code…" />
           </Form.Item>
           <Form.Item name="categoryCode" label="Category">
-            <Input placeholder="Category code…" maxLength={10} />
+            <Input placeholder="Category code…" maxLength={1} />
           </Form.Item>
           <Form.Item name="remarks" label="Remarks">
-            <Input.TextArea placeholder="Optional notes…" maxLength={100} rows={3} />
+            <Input.TextArea placeholder="Optional notes…" maxLength={500} rows={3} />
           </Form.Item>
           <Form.Item name="model" label="Model">
-            <Input placeholder="Model…" maxLength={50} />
+            <Input placeholder="Model…" maxLength={100} />
           </Form.Item>
           <Form.Item name="maxCost" label="Max Cost">
             <InputNumber style={{ width: '100%' }} min={0} precision={2} prefix="₹" />

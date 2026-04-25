@@ -19,12 +19,13 @@ const CARD_SHADOW = '0 1px 4px rgba(15,23,42,0.08), 0 0 0 1px rgba(15,23,42,0.04
 export default function PurchaseRequisitionListPage() {
   const {
     rows, total, loading,
-    departments,
+    departments, employees,
     viewOpen, viewPr, viewLoading,
+    downloading,
     deleteOpen, deletingPrNo, deleteReasons, deleteReason, deleteSubmitting,
     setDeleteReason,
     handleSearch, handleReset,
-    handleView, handleCloseView,
+    handleView, handleCloseView, handleDownload,
     handleOpenDelete, handleCancelDelete, handleConfirmDelete,
   } = usePurchaseRequisitionList()
 
@@ -190,8 +191,11 @@ export default function PurchaseRequisitionListPage() {
           loading={loading}
           deletingPrNo={deletingPrNo}
           departments={departments}
+          employees={employees}
           onView={(prNo) => void handleView(prNo)}
           onDelete={(prNo) => void handleOpenDelete(prNo)}
+          onDownload={(record) => void handleDownload(record)}
+          downloading={downloading}
         />
       </Card>
 

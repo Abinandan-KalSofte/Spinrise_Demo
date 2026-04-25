@@ -159,7 +159,7 @@ export default function PurchaseRequisitionV2Page() {
     section:       values.section?.trim()     || undefined,
     iType:         values.iType?.trim()       || undefined,
     reqName:       values.reqName?.trim()     || undefined,
-    refNo:         values.refNo?.trim()       || undefined,
+    refNo:         values.refNo?.trim().toUpperCase() || undefined,
     poGroupCode:   values.poGroupCode?.trim() || undefined,
     scopeCode:     values.scopeCode?.trim()   || undefined,
     saleOrderNo:   values.saleOrderNo?.trim() || undefined,
@@ -435,7 +435,6 @@ export default function PurchaseRequisitionV2Page() {
             poTypes={poTypes}
             savedPrNo={savedPrNo}
             disabled={pageBusy}
-            purTypeFlgEnabled={preCheckResult?.purTypeFlgEnabled ?? false}
             requireRequesterName={preCheckResult?.requireRequesterName ?? false}
             requireRefNo={preCheckResult?.requireRefNo ?? false}
             pendingPoDetailsEnabled={preCheckResult?.pendingPoDetailsEnabled ?? false}

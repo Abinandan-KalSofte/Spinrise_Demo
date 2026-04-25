@@ -53,7 +53,7 @@ BEGIN
             ) THEN 'RECEIVED'
             ELSE 'OPEN'
         END                                 AS PrStatus,
-        h.createdby                         AS CreatedBy,
+        ISNULL(u.user_name, h.createdby)    AS CreatedBy,
         CASE
             WHEN ISDATE(h.createddt) = 1
             THEN CAST(h.createddt AS DATETIME)
@@ -84,6 +84,9 @@ BEGIN
     LEFT JOIN in_dep d
         ON h.depcode = d.DEPCODE
        AND d.divcode = h.divcode
+    LEFT JOIN dbo.PP_PASSWD u
+        ON h.createdby = u.user_id
+       AND u.divcode   = h.divcode
     WHERE h.divcode = @DivCode
       AND (@PrNo     IS NULL OR h.prno    =  @PrNo)
       AND (@StartDate IS NULL OR h.prdate >= @StartDate)
