@@ -3,6 +3,7 @@ import {
   Alert, App, Breadcrumb, Button, Form, Modal,
   Select, Skeleton, Space, Spin, Tag, Typography, theme,
 } from 'antd'
+import { generateUUID } from '@/shared/lib/uuid'
 import {
   ArrowLeftOutlined,
   CloseCircleOutlined,
@@ -33,7 +34,7 @@ const LOCKED_STATUSES = new Set(['APPROVED', 'RECEIVED', 'CONVERTED', 'CANCELLED
 
 function mapLine(line: PRLineResponse): PRLineFormItem {
   return {
-    key:                crypto.randomUUID(),
+    key:                generateUUID(),
     prSNo:              line.prSNo,
     itemCode:           line.itemCode,
     itemName:           line.itemName           ?? '',
@@ -187,7 +188,7 @@ export default function PurchaseRequisitionEditPage() {
     try {
       const values = headerForm.getFieldsValue()
       await purchaseRequisitionApi.update(prNo, buildPayload(values))
-      const refreshed = await purchaseRequisitionApi.getById(prNo)
+      const refreshed = await purchaseRequisitionApi.getById(prNo, fromDate, toDate)
       setSavedPr(refreshed)
       setItems(refreshed.lines.map(mapLine))
       void message.success(`PR ${prNo} updated successfully.`)

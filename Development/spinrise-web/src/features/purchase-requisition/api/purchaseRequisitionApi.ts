@@ -34,7 +34,23 @@ export interface PagedResult<T> {
   totalPages: number
 }
 
+export interface PRStatusSummary {
+  totalCount:     number
+  openCount:      number
+  approvedCount:  number
+  cancelledCount: number
+}
+
 export const purchaseRequisitionApi = {
+  getSummary: (filters: Omit<PRPaginatedFilters, 'page' | 'pageSize'> = {}) => {
+    const params = new URLSearchParams()
+    Object.entries(filters).forEach(([k, v]) => {
+      if (v !== undefined && v !== null && v !== '') params.set(k, String(v))
+    })
+    const qs = params.toString()
+    return apiHelpers.get<PRStatusSummary>(qs ? `${BASE}/summary?${qs}` : `${BASE}/summary`)
+  },
+
   getPaginated: (filters: PRPaginatedFilters = {}) => {
     const params = new URLSearchParams()
     Object.entries(filters).forEach(([k, v]) => {

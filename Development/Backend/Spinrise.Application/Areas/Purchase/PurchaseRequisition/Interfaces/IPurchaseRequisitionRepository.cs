@@ -15,6 +15,7 @@ public interface IPurchaseRequisitionRepository
         string? depCode, string? status);
 
     Task<PagedResult<PRSummaryResponseDto>> GetPaginatedAsync(string divCode, PRListQueryDto query);
+    Task<PRStatusSummaryDto>               GetStatusSummaryAsync(string divCode, PRListQueryDto query);
 
     Task<PurchaseRequisitionHeader?> GetByIdAsync(string divCode, long prNo, DateTime? startDate = null, DateTime? endDate = null);
     Task<IEnumerable<PurchaseRequisitionHeader>> GetByDateRangeAsync(string divCode, DateTime startDate, DateTime endDate);

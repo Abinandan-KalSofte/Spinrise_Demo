@@ -18,7 +18,7 @@ const CARD_SHADOW = '0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05)'
 
 export default function PurchaseRequisitionListPage() {
   const {
-    rows, total, page, loading,
+    rows, total, page, loading, summary,
     departments, employees,
     viewOpen, viewPr, viewLoading,
     downloading,
@@ -89,7 +89,7 @@ export default function PurchaseRequisitionListPage() {
         {[
           {
             label:  'Total PRs',
-            value:  total,
+            value:  summary.totalCount,
             icon:   <FileTextOutlined />,
             accent: '#1677ff',
             bg:     'rgba(22,119,255,0.08)',
@@ -97,7 +97,7 @@ export default function PurchaseRequisitionListPage() {
           },
           {
             label:  'Open',
-            value:  rows.filter((r) => r.prStatus === 'OPEN').length,
+            value:  summary.openCount,
             icon:   <ClockCircleOutlined />,
             accent: '#d97706',
             bg:     'rgba(217,119,6,0.08)',
@@ -105,7 +105,7 @@ export default function PurchaseRequisitionListPage() {
           },
           {
             label:  'Approved',
-            value:  rows.filter((r) => r.prStatus === 'APPROVED').length,
+            value:  summary.approvedCount,
             icon:   <CheckCircleOutlined />,
             accent: '#16a34a',
             bg:     'rgba(22,163,74,0.08)',
@@ -113,7 +113,7 @@ export default function PurchaseRequisitionListPage() {
           },
           {
             label:  'Cancelled',
-            value:  rows.filter((r) => r.isDeleted).length,
+            value:  summary.cancelledCount,
             icon:   <StopOutlined />,
             accent: '#dc2626',
             bg:     'rgba(220,38,38,0.08)',

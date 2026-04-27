@@ -35,6 +35,14 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
         return result;
     }
 
+    public async Task<PRStatusSummaryDto> GetStatusSummaryAsync(string divCode, PRListQueryDto query)
+    {
+        await _uow.BeginAsync();
+        var result = await _repo.GetStatusSummaryAsync(divCode.Trim(), query);
+        await _uow.CommitAsync();
+        return result;
+    }
+
     public async Task<PagedResult<PRSummaryResponseDto>> GetPaginatedAsync(string divCode, PRListQueryDto query)
     {
         await _uow.BeginAsync();

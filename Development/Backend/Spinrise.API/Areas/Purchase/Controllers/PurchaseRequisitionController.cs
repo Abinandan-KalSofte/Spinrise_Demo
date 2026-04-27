@@ -85,6 +85,14 @@ public class PurchaseRequisitionController : BaseApiController
         return Success(result, "Delete reasons retrieved successfully.");
     }
 
+    [HttpGet("summary")]
+    public async Task<IActionResult> GetStatusSummary([FromQuery] PRListQueryDto query)
+    {
+        var divCode = RequireDivCode();
+        var result  = await _service.GetStatusSummaryAsync(divCode, query);
+        return Success(result, "Summary counts retrieved.");
+    }
+
     [HttpGet("paginated")]
     public async Task<IActionResult> GetPaginated([FromQuery] PRListQueryDto query)
     {

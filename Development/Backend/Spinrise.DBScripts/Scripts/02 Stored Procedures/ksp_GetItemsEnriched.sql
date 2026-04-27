@@ -65,11 +65,11 @@ BEGIN
         ISNULL(pp.TotalPendingPr, 0)                AS PendingPrQty,
         ISNULL(po.TotalPendingPo, 0)                AS PendingPoQty,
         ISNULL(i.DRAWNO, '')                        AS DrawNo,
-        ISNULL(ic.CATDESC, '')                        AS CatNo
+        ISNULL(ic.CATLNO, '')                        AS CatNo
     FROM   dbo.in_item i
     LEFT JOIN PendingPr pp ON pp.ITEMCODE = i.ITEMCODE
     LEFT JOIN PendingPo po ON po.ITEMCODE = i.ITEMCODE
-	INNER JOIN in_cat ic on ic.CATCODE = i.CATCODE
+	
     WHERE  i.IsItemActive = 1
       AND  (i.ITEMCODE LIKE @Term OR i.ITEMNAME LIKE @Term)
     ORDER BY

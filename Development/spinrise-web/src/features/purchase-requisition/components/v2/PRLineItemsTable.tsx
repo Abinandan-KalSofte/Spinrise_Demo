@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import type { ColDef, GridApi, GridReadyEvent, ICellRendererParams, CellStyle } from 'ag-grid-community'
-import { AllCommunityModule, ModuleRegistry, themeQuartz } from 'ag-grid-community'
+import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community'
+import { spinriseGridTheme } from '@/shared/lib/agGridTheme'
+import { generateUUID } from '@/shared/lib/uuid'
 import {
   Alert, Button, Checkbox, Col, DatePicker, Drawer, Empty, Form, Input,
   InputNumber, Modal, Popconfirm, Row, Select, Space, Spin,
@@ -9,7 +11,7 @@ import {
 } from 'antd'
 import {
   AppstoreOutlined, ClockCircleOutlined, DeleteOutlined, EditOutlined,
-  FileAddOutlined, HistoryOutlined, PlusOutlined, SettingOutlined,
+  FileAddOutlined, HistoryOutlined, PlusOutlined,
 } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
@@ -57,7 +59,7 @@ interface PRLineItemsTableProps {
 
 function emptyRow(): PRLineFormItem {
   return {
-    key: crypto.randomUUID(),
+    key: generateUUID(),
     itemCode: '', itemName: '', uom: '',
     currentStock: null, qtyRequired: 1, requiredDate: null,
     place: '', approxCost: null, remarks: '', machineNo: '',
@@ -68,16 +70,6 @@ function emptyRow(): PRLineFormItem {
     drawNo: '', catNo: '',
   }
 }
-
-// ── AG Grid theme ─────────────────────────────────────────────────────────────
-
-const gridTheme = themeQuartz.withParams({
-  rowHeight:    34,
-  headerHeight: 38,
-  fontSize:     13,
-  rowBorder:    true,
-  columnBorder: false,
-})
 
 const CELL: CellStyle = { display: 'flex', alignItems: 'center' }
 
@@ -431,7 +423,7 @@ export function PRLineItemsTable({
     {
       headerName: 'Supplier Code',
       field:      'lastPoSupplierCode',
-      width:      110,
+      width:      150,
       minWidth:   112,
       cellStyle:  { ...CELL, fontFamily: 'monospace', fontSize: 12 },
       valueFormatter: ({ value }) => (value as string) || '—',
@@ -449,14 +441,16 @@ export function PRLineItemsTable({
       field:       'qtyRequired',
       width:       70,
       minWidth:    52,
+      pinned:      'right',
       cellStyle:   { ...CELL, justifyContent: 'flex-end', fontWeight: 600 },
       headerClass: 'ag-right-aligned-header',
     },
     {
       headerName: 'UOM',
       field:      'uom',
-      width:      60,
+      width:      90,
       minWidth:   52,
+      pinned:     'right',
       cellStyle:  { ...CELL, justifyContent: 'center' },
       cellRenderer: ({ value }: ICellRendererParams) =>
         value
@@ -466,8 +460,9 @@ export function PRLineItemsTable({
     {
       headerName:  'Unit Price',
       field:       'rate',
-      width:       100,
+      width:       120,
       minWidth:    90,
+      pinned:      'right',
       cellStyle:   { ...CELL, justifyContent: 'flex-end' },
       headerClass: 'ag-right-aligned-header',
       valueFormatter: ({ value }) =>
@@ -478,6 +473,7 @@ export function PRLineItemsTable({
       colId:       'total',
       width:       108,
       minWidth:    80,
+      pinned:      'right',
       cellStyle:   { ...CELL, justifyContent: 'flex-end', fontWeight: 700 },
       headerClass: 'ag-right-aligned-header',
       valueGetter: ({ data }) => {
@@ -511,14 +507,14 @@ export function PRLineItemsTable({
                 onClick={() => startEdit(data)}
               />
             </Tooltip>
-            <Tooltip title="Advanced">
+            {/* <Tooltip title="Advanced">
               <Button
                 type="text" size="small"
                 icon={<SettingOutlined style={{ color: '#6b7280' }} />}
                 disabled={disabled}
                 onClick={() => openDrawer(data)}
               />
-            </Tooltip>
+            </Tooltip> */}
             {savedPrNo && data.prSNo ? (
               <Tooltip title="Delete line">
                 <Button
@@ -687,38 +683,36 @@ export function PRLineItemsTable({
             </Col>
           </Row>
 
-          {/* Context badges — UOM/Stock/Last Rate appear after item select; Cat No/Drg No always visible */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 10 }}>
-            {itemMeta && (
-              <>
-                <Tag style={{ fontSize: 12, padding: '2px 8px' }}>
-                  UOM: {itemMeta.uom || '—'}
+          {/* Context badges — all appear only after item is selected */}
+          {itemMeta && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 10 }}>
+              <Tag style={{ fontSize: 12, padding: '2px 8px' }}>
+                UOM: {itemMeta.uom || '—'}
+              </Tag>
+              <Tag
+                color={itemMeta.currentStock != null && itemMeta.currentStock > 0 ? 'success' : 'error'}
+                style={{ fontSize: 12, padding: '2px 8px', fontWeight: 600 }}
+              >
+                Stock: {itemMeta.currentStock ?? 0}
+              </Tag>
+              {lpoMeta?.lastPoRate != null && (
+                <Tag color="green" style={{ fontSize: 12, padding: '2px 8px' }}>
+                  Last Rate: ₹{lpoMeta.lastPoRate.toFixed(2)}
                 </Tag>
-                <Tag
-                  color={itemMeta.currentStock != null && itemMeta.currentStock > 0 ? 'success' : 'error'}
-                  style={{ fontSize: 12, padding: '2px 8px', fontWeight: 600 }}
-                >
-                  Stock: {itemMeta.currentStock ?? 0}
+              )}
+              {lpoMeta !== null && lpoMeta.lastPoRate == null && (
+                <Tag color="warning" style={{ fontSize: 12, padding: '2px 8px' }}>
+                  No previous purchase data
                 </Tag>
-                {lpoMeta?.lastPoRate != null && (
-                  <Tag color="green" style={{ fontSize: 12, padding: '2px 8px' }}>
-                    Last Rate: ₹{lpoMeta.lastPoRate.toFixed(2)}
-                  </Tag>
-                )}
-                {lpoMeta !== null && lpoMeta.lastPoRate == null && (
-                  <Tag color="warning" style={{ fontSize: 12, padding: '2px 8px' }}>
-                    No previous purchase data
-                  </Tag>
-                )}
-              </>
-            )}
-            <Tag color="purple" style={{ fontSize: 12, padding: '2px 8px' }}>
-              Cat No: {itemCatNo || '—'}
-            </Tag>
-            <Tag color="geekblue" style={{ fontSize: 12, padding: '2px 8px' }}>
-              Drg No: {itemDrawNo || '—'}
-            </Tag>
-          </div>
+              )}
+              <Tag color="purple" style={{ fontSize: 12, padding: '2px 8px' }}>
+                Cat No: {itemCatNo || '—'}
+              </Tag>
+              <Tag color="geekblue" style={{ fontSize: 12, padding: '2px 8px' }}>
+                Draw No: {itemDrawNo || '—'}
+              </Tag>
+            </div>
+          )}
 
           {/* Row 2 — Required Date | Machine | Sub Cost Centre | Remarks | Sample */}
           <Row gutter={[12, 0]}>
@@ -864,15 +858,14 @@ export function PRLineItemsTable({
         {/* AG Grid — autoHeight: grows with rows, page scroll handles overflow */}
         <AgGridReact<PRLineFormItem>
           ref={gridRef}
-          className="pr-items-grid"
-          theme={gridTheme}
+          className="spinrise-ag-grid"
+          theme={spinriseGridTheme}
           rowData={items}
           columnDefs={colDefs}
           defaultColDef={defaultColDef}
           getRowId={getRowId}
           getRowClass={getRowClass}
           onGridReady={onGridReady}
-          onFirstDataRendered={(e) => e.api.autoSizeAllColumns(false)}
           domLayout="autoHeight"
           suppressRowClickSelection
           suppressScrollOnNewData

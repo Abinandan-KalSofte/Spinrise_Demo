@@ -295,27 +295,38 @@ function PRViewContent({ pr, accentColor, accentBg, onClose }: {
               }}
               summary={() => (
                 <Table.Summary.Row style={{ background: '#f1f5f9' }}>
+                  {/* cols 0-3: #, Item Code, Description, Machine */}
                   <Table.Summary.Cell index={0} colSpan={4}>
                     <Typography.Text strong style={{ fontSize: 12, color: '#475569' }}>
                       Total
                     </Typography.Text>
                   </Table.Summary.Cell>
-                  <Table.Summary.Cell index={4} align="right">
+                  {/* col 4: Draw No */}
+                  <Table.Summary.Cell index={4} />
+                  {/* col 5: Cat */}
+                  <Table.Summary.Cell index={5} />
+                  {/* col 6: UOM */}
+                  <Table.Summary.Cell index={6} />
+                  {/* col 7: Qty ← total qty here */}
+                  <Table.Summary.Cell index={7} align="right">
                     <Typography.Text strong style={{ fontVariantNumeric: 'tabular-nums' }}>
                       {totalQty}
                     </Typography.Text>
                   </Table.Summary.Cell>
-                  <Table.Summary.Cell index={5} />
-                  <Table.Summary.Cell index={6} />
-                  <Table.Summary.Cell index={7} />
-                  <Table.Summary.Cell index={8} align="right">
+                  {/* col 8: Stock */}
+                  <Table.Summary.Cell index={8} />
+                  {/* col 9: Last Rate */}
+                  <Table.Summary.Cell index={9} />
+                  {/* col 10: Reqd. Date */}
+                  <Table.Summary.Cell index={10} />
+                  {/* col 11: Approx. Cost ← total cost here */}
+                  <Table.Summary.Cell index={11} align="right">
                     <Typography.Text strong style={{ color: accentColor, fontVariantNumeric: 'tabular-nums' }}>
                       {totalCost > 0
                         ? `₹ ${totalCost.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
                         : '—'}
                     </Typography.Text>
                   </Table.Summary.Cell>
-                  <Table.Summary.Cell index={9} colSpan={3} />
                 </Table.Summary.Row>
               )}
               columns={[
@@ -331,6 +342,18 @@ function PRViewContent({ pr, accentColor, accentBg, onClose }: {
                 {
                   title: 'Description', dataIndex: 'itemName', key: 'itemName', minWidth: 200,
                   render: (val: string | undefined) => val || '—',
+                },
+                {
+                  title: 'Machine', dataIndex: 'machineNo', key: 'machineNo', width: 76,
+                  render: (val: string | undefined) => val || <Typography.Text type="secondary">—</Typography.Text>,
+                },
+                {
+                  title: 'Draw No', dataIndex: 'drawNo', key: 'drawNo', width: 76,
+                  render: (val: string | undefined) => val || <Typography.Text type="secondary">—</Typography.Text>,
+                },
+                {
+                  title: 'Cat', dataIndex: 'categoryCode', key: 'categoryCode', width: 48, align: 'center' as const,
+                  render: (val: string | undefined) => val || <Typography.Text type="secondary">—</Typography.Text>,
                 },
                 {
                   title: 'UOM', dataIndex: 'uom', key: 'uom', width: 52, align: 'center',
@@ -366,18 +389,7 @@ function PRViewContent({ pr, accentColor, accentBg, onClose }: {
                       : <Typography.Text type="secondary">—</Typography.Text>
                   },
                 },
-                {
-                  title: 'Machine', dataIndex: 'machineNo', key: 'machineNo', width: 76,
-                  render: (val: string | undefined) => val || <Typography.Text type="secondary">—</Typography.Text>,
-                },
-                {
-                  title: 'Draw No', dataIndex: 'drawNo', key: 'drawNo', width: 76,
-                  render: (val: string | undefined) => val || <Typography.Text type="secondary">—</Typography.Text>,
-                },
-                {
-                  title: 'Cat', dataIndex: 'categoryCode', key: 'categoryCode', width: 48, align: 'center' as const,
-                  render: (val: string | undefined) => val || <Typography.Text type="secondary">—</Typography.Text>,
-                },
+                
               ]}
             />
           </Card>

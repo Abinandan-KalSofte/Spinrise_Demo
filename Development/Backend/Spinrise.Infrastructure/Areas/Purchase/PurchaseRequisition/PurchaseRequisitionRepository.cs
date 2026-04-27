@@ -59,6 +59,25 @@ public class PurchaseRequisitionRepository : IPurchaseRequisitionRepository
             commandType: CommandType.StoredProcedure);
     }
 
+    public async Task<PRStatusSummaryDto> GetStatusSummaryAsync(string divCode, PRListQueryDto query)
+    {
+        return await _uow.Connection!.QueryFirstAsync<PRStatusSummaryDto>(
+            StoredProcedures.PurchaseRequisition.GetSummary,
+            new
+            {
+                DivCode    = divCode,
+                PrNo       = query.PrNo,
+                StartDate  = query.StartDate,
+                EndDate    = query.EndDate,
+                DepCode    = query.DepCode,
+                ReqName    = query.ReqName,
+                Status     = query.Status,
+                SearchText = query.SearchText,
+            },
+            transaction: _uow.Transaction,
+            commandType: CommandType.StoredProcedure);
+    }
+
     public async Task<PagedResult<PRSummaryResponseDto>> GetPaginatedAsync(string divCode, PRListQueryDto query)
     {
         using var multi = await _uow.Connection!.QueryMultipleAsync(

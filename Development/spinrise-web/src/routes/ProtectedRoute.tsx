@@ -1,8 +1,12 @@
+import { lazy, Suspense } from 'react'
 import { Navigate } from 'react-router-dom'
 import type { PropsWithChildren } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { useAuthStore } from '@/features/auth/store/useAuthStore'
 import type { UserRole } from '@/features/auth/types'
+
+// Render login inline (no URL redirect) so IIS doesn't 404 on /login
+const LoginPage = lazy(() => import('@/features/auth/pages/LoginPage'))
 
 interface ProtectedRouteProps extends PropsWithChildren {
   requiredRole?: UserRole
@@ -14,7 +18,11 @@ export default function ProtectedRoute({ children, requiredRole }: ProtectedRout
   )
 
   if (!isAuthenticated || !user) {
-    return <Navigate to="/login" replace />
+    return (
+      <Suspense fallback={null}>
+        <LoginPage />
+      </Suspense>
+    )
   }
 
   if (requiredRole && user.role !== requiredRole) {

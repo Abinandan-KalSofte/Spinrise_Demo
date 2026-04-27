@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { generateUUID } from '@/shared/lib/uuid'
 import {
   Alert,
   Button,
@@ -273,7 +274,7 @@ export function PRItemFormV2({
     // Note: subCostCode is now stored per line item, not on header
 
     const line: PRLineFormItem = {
-      key:                editingItem?.key          ?? crypto.randomUUID(),
+      key:                editingItem?.key          ?? generateUUID(),
       itemCode:           values.itemCode,
       itemName:           selectedInfo?.itemName    ?? editingItem?.itemName ?? '',
       uom:                selectedInfo?.uom         ?? editingItem?.uom      ?? '',

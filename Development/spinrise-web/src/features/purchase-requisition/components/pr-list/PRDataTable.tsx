@@ -1,7 +1,8 @@
 import { useMemo, useCallback, useRef } from 'react'
 import { AgGridReact } from 'ag-grid-react'
-import type { CellStyle, ColDef, GridReadyEvent, ICellRendererParams } from 'ag-grid-community'
-import { AllCommunityModule, ModuleRegistry, themeQuartz } from 'ag-grid-community'
+import type { CellStyle, ColDef, ICellRendererParams } from 'ag-grid-community'
+import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community'
+import { spinriseGridTheme } from '@/shared/lib/agGridTheme'
 import { Button, Pagination, Space, Tag, Tooltip, Typography } from 'antd'
 import { DeleteOutlined, DownloadOutlined, EditOutlined, EyeOutlined, FileTextOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
@@ -27,9 +28,6 @@ interface PRDataTableProps {
   downloading?: number | null
 }
 
-const HEADER_HEIGHT = 38
-const ROW_HEIGHT    = 34
-
 const CELL_BASE: CellStyle = { display: 'flex', alignItems: 'center' }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -40,22 +38,6 @@ const STATUS_COLORS: Record<string, string> = {
   CANCELLED: 'red',
   REJECTED:  'red',
 }
-
-const prTheme = themeQuartz.withParams({
-  headerBackgroundColor:     '#1e293b',
-  headerTextColor:           '#f8fafc',
-  headerFontWeight:          700,
-  headerFontSize:            12,
-  rowHeight:                 ROW_HEIGHT,
-  headerHeight:              HEADER_HEIGHT,
-  oddRowBackgroundColor:     '#f8fafc',
-  rowHoverColor:             '#eff6ff',
-  borderColor:               '#f1f5f9',
-  cellTextColor:             '#1e293b',
-  fontSize:                  13,
-  rowBorder:                 true,
-  columnBorder:              false,
-})
 
 export function PRDataTable({
   rows, loading, deletingPrNo, departments, employees,
@@ -204,11 +186,6 @@ export function PRDataTable({
     filter:    true,
   }), [])
 
-  // B01: auto-size on grid ready (no data yet); onFirstDataRendered fires when rows are loaded
-  const onGridReady = useCallback((_: GridReadyEvent) => {
-    // intentionally empty — sizing handled by onFirstDataRendered
-  }, [])
-
   const getRowClass = useCallback(
     ({ data }: { data?: PRSummaryResponse }) =>
       data?.isDeleted || data?.prStatus === 'CANCELLED' ? 'pr-row--muted' : '',
@@ -218,21 +195,10 @@ export function PRDataTable({
   return (
     <div>
     <div style={{ height: 'calc(100vh - 380px)', minHeight: 360 }}>
-      <style>{`
-        .pr-ag-grid .ag-header-cell {
-          text-transform: uppercase;
-          letter-spacing: 0.04em;
-          border-right: 1px solid rgba(255,255,255,0.08) !important;
-        }
-        .pr-ag-grid .ag-header-cell:last-child { border-right: none !important; }
-        .pr-ag-grid .ag-pinned-right-header .ag-header-cell { border-right: none !important; }
-        .pr-ag-grid .pr-row--muted { opacity: 0.45; }
-        .pr-ag-grid .ag-header-center .ag-header-cell-label { justify-content: center; }
-      `}</style>
       <AgGridReact<PRSummaryResponse>
         ref={gridRef}
-        className="pr-ag-grid"
-        theme={prTheme}
+        className="spinrise-ag-grid"
+        theme={spinriseGridTheme}
         rowData={rows}
         columnDefs={colDefs}
         defaultColDef={defaultColDef}
@@ -241,9 +207,6 @@ export function PRDataTable({
         suppressRowClickSelection
         rowSelection={{ mode: 'singleRow' }}
         enableCellTextSelection
-        onGridReady={onGridReady}
-        // B01: auto-size all columns to content width when first data renders
-        onFirstDataRendered={(e) => e.api.autoSizeAllColumns(false)}
         noRowsOverlayComponent={() => (
           <div style={{ textAlign: 'center', padding: '64px 0' }}>
             <FileTextOutlined style={{ fontSize: 40, color: '#d1d5db', display: 'block', marginBottom: 12 }} />

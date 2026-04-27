@@ -9,6 +9,7 @@ public interface IPurchaseRequisitionService
         string? depCode, string? status);
 
     Task<PagedResult<PRSummaryResponseDto>> GetPaginatedAsync(string divCode, PRListQueryDto query);
+    Task<PRStatusSummaryDto>               GetStatusSummaryAsync(string divCode, PRListQueryDto query);
 
     Task<PRHeaderResponseDto?> GetByIdAsync(string divCode, long prNo, DateTime? startDate = null, DateTime? endDate = null);
 

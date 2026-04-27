@@ -90,6 +90,7 @@ public static class StoredProcedures
     {
         public const string GetAll                    = "ksp_PR_GetAll";
         public const string GetPaginated              = "ksp_PR_GetPaginated";
+        public const string GetSummary                = "ksp_PR_GetSummary";
         public const string GetById                   = "ksp_PR_GetById";
         public const string Insert                    = "ksp_PR_Insert";
         public const string InsertLine                = "ksp_PR_InsertLine";

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { generateUUID } from '@/shared/lib/uuid'
 import {
   Alert, Button, Card, Col, Collapse, DatePicker, Flex, Form,
   Input, InputNumber, Row, Select, Skeleton, Space, Tag, Tooltip,
@@ -148,7 +149,7 @@ export default function PurchaseOrderFormPage() {
           }
 
           setLines(det.lines.map((l) => ({
-            key:         crypto.randomUUID(),
+            key:         generateUUID(),
             varCode:     l.varCode,
             varName:     l.varName ?? '',
             bbFlag:      l.bbFlag,
@@ -196,7 +197,7 @@ export default function PurchaseOrderFormPage() {
     if (addedPRKeys.has(key)) return
 
     const newLine: POLineFormItem = {
-      key:         crypto.randomUUID(),
+      key:         generateUUID(),
       varCode:     pr.varCode,
       varName:     pr.varName ?? '',
       bbFlag:      'B',

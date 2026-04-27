@@ -3,7 +3,7 @@ import { App } from 'antd'
 import type { TablePaginationConfig } from 'antd/es/table'
 import type { SorterResult } from 'antd/es/table/interface'
 import { prListService } from '../services/prListService'
-import type { PRPaginatedFilters } from '../api/purchaseRequisitionApi'
+import type { PRPaginatedFilters, PRStatusSummary } from '../api/purchaseRequisitionApi'
 import type { DepartmentLookup, EmployeeLookup, PRHeaderResponse, PRSummaryResponse } from '../types'
 import { PAGE_SIZE } from '../components/pr-list/prListConfig'
 import { getFYBounds } from '@/shared/lib/dateUtils'
@@ -17,6 +17,7 @@ export function usePurchaseRequisitionList() {
   const [total,       setTotal]       = useState(0)
   const [page,        setPage]        = useState(1)
   const [loading,     setLoading]     = useState(false)
+  const [summary,     setSummary]     = useState<PRStatusSummary>({ totalCount: 0, openCount: 0, approvedCount: 0, cancelledCount: 0 })
 
   // ── Lookups ─────────────────────────────────────────────────────────────────
   const [departments, setDepartments] = useState<DepartmentLookup[]>([])
@@ -52,9 +53,13 @@ export function usePurchaseRequisitionList() {
     setRows([])
     setLoading(true)
     try {
-      const result = await prListService.getPaginated({ ...filters, page: pg, pageSize: PAGE_SIZE })
+      const [result, summaryResult] = await Promise.all([
+        prListService.getPaginated({ ...filters, page: pg, pageSize: PAGE_SIZE }),
+        prListService.getSummary(filters),
+      ])
       setRows((result.items ?? []).filter((item): item is PRSummaryResponse => item != null && !!item.prNo))
       setTotal(result.totalCount)
+      setSummary(summaryResult)
       setPage(pg)
       activeFilters.current = filters
     } catch {
@@ -183,7 +188,7 @@ export function usePurchaseRequisitionList() {
 
   return {
     // data
-    rows, total, page, loading,
+    rows, total, page, loading, summary,
     departments, employees,
     // modal
     viewOpen, viewPr, viewLoading,

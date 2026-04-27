@@ -44,7 +44,7 @@ export function PRHeaderCards({
   requireRequesterName  = false,
   requireRefNo          = false,
   pendingPoDetailsEnabled = false,
-  backDateAllowed       = true,
+  backDateAllowed:      _backDateAllowed = true,
   budgetValidationEnabled = false,
   budgetBalance         = null,
   approvalVisible       = false,

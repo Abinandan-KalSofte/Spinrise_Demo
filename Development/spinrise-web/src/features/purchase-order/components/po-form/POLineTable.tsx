@@ -2,6 +2,7 @@ import { Button, InputNumber, Table, Input, Tooltip, Select, Space } from 'antd'
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
 import type { POLineFormItem } from '../../types'
+import { generateUUID } from '@/shared/lib/uuid'
 
 interface Props {
   lines: POLineFormItem[]
@@ -16,7 +17,7 @@ const BB_OPTIONS = [
 
 function newLine(): POLineFormItem {
   return {
-    key:         crypto.randomUUID(),
+    key:         generateUUID(),
     varCode:     '',
     varName:     '',
     bbFlag:      'B',

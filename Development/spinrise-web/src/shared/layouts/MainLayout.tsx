@@ -190,10 +190,10 @@ export default function MainLayout() {
         </div>
         {!collapsed && (
           <div className="sidebar__brand-copy">
-            <Typography.Text strong style={{ fontSize: 15 }}>
+            <Typography.Text strong style={{ fontSize: 15, color: '#f1f5f9' }}>
               Spinrise
             </Typography.Text>
-            <Typography.Text type="secondary" style={{ fontSize: 11 }}>
+            <Typography.Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)' }}>
               ERP Platform
             </Typography.Text>
           </div>
@@ -232,7 +232,7 @@ export default function MainLayout() {
       {/* Navigation */}
       <Menu
         mode="inline"
-        theme="light"
+        theme="dark"
         selectedKeys={selectedKeys}
         items={menuItems}
         className="sidebar__menu"
@@ -245,7 +245,7 @@ export default function MainLayout() {
       <div className="sidebar__footer">
         <Badge status="processing" />
         {!collapsed && (
-          <Typography.Text type="secondary" style={{ fontSize: 11 }}>
+          <Typography.Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.40)' }}>
             All services operational
           </Typography.Text>
         )}
@@ -262,9 +262,9 @@ export default function MainLayout() {
         onCollapse={setCollapsed}
         collapsedWidth={64}
         width={240}
-        theme="light"
+        theme="dark"
         className="main-sider"
-        style={{ background: '#ffffff' }}
+        style={{ background: '#0f172a' }}
       >
         {sidebarContent}
       </Sider>
