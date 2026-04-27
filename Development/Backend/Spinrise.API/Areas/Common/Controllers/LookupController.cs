@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spinrise.Application.Areas.Common.Lookup.Interfaces;
 using Spinrise.Shared;
@@ -18,6 +19,13 @@ public class LookupController : BaseApiController
     private string RequireDivCode() =>
         User.FindFirst(SpinriseClaims.DivCode)?.Value?.Trim()
         ?? throw new UnauthorizedAccessException("Division code not found in token. Access denied.");
+
+    [AllowAnonymous]
+    [HttpGet("/api/v1/divisions/active")]
+    public async Task<IActionResult> GetActiveDivisions()
+    {
+        return Success(await _service.GetActiveDivisionsAsync(), "Active divisions retrieved successfully.");
+    }
 
     [HttpGet("departments")]
     public async Task<IActionResult> GetDepartments()

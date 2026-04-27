@@ -9,4 +9,6 @@ public class ItemLookupDto
     public decimal? PendingPrQty   { get; init; }
     public decimal? PendingPoQty   { get; init; }
     public decimal? MinLevel       { get; init; }
+    public string?  DrawNo         { get; init; }
+    public string?  CatNo          { get; init; }
 }

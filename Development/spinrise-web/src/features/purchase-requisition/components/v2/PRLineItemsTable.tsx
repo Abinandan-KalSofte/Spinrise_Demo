@@ -3,7 +3,7 @@ import { AgGridReact } from 'ag-grid-react'
 import type { ColDef, GridApi, GridReadyEvent, ICellRendererParams, CellStyle } from 'ag-grid-community'
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from 'ag-grid-community'
 import {
-  Button, Checkbox, Col, Collapse, DatePicker, Drawer, Empty, Form, Input,
+  Alert, Button, Checkbox, Col, DatePicker, Drawer, Empty, Form, Input,
   InputNumber, Modal, Popconfirm, Row, Select, Space, Spin,
   Table, Tag, Tooltip, Typography,
 } from 'antd'
@@ -72,41 +72,22 @@ function emptyRow(): PRLineFormItem {
 // ── AG Grid theme ─────────────────────────────────────────────────────────────
 
 const gridTheme = themeQuartz.withParams({
-  headerBackgroundColor: '#1e293b',
-  headerTextColor:       '#f1f5f9',
-  headerFontWeight:      700,
-  headerFontSize:        11,
-  rowHeight:             34,
-  headerHeight:          38,
-  oddRowBackgroundColor: '#f8fafc',
-  rowHoverColor:         '#eff6ff',
-  borderColor:           '#e5e7eb',
-  cellTextColor:         '#1e293b',
-  fontSize:              13,
-  rowBorder:             true,
-  columnBorder:          false,
+  rowHeight:    34,
+  headerHeight: 38,
+  fontSize:     13,
+  rowBorder:    true,
+  columnBorder: false,
 })
 
 const CELL: CellStyle = { display: 'flex', alignItems: 'center' }
 
 // ── Input style helpers ───────────────────────────────────────────────────────
 
-const INPUT_STYLE: React.CSSProperties = {
-  background:  '#f8fafc',
-  border:      '1px solid #d1d5db',
-  borderRadius: 6,
-}
-const READONLY_STYLE: React.CSSProperties = {
-  background: '#f1f5f9',
-  border:     '1px solid #e2e8f0',
-  color:      '#64748b',
-  cursor:     'not-allowed',
-  borderRadius: 6,
-}
 const LABEL_STYLE: React.CSSProperties = {
-  fontWeight: 500,
-  color:      '#374151',
-  fontSize:   13,
+  fontWeight:    700,
+  fontSize:      11,
+  textTransform: 'uppercase',
+  letterSpacing: '0.04em',
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -130,6 +111,10 @@ export function PRLineItemsTable({
   const [lpoMeta,       setLpoMeta]       = useState<{ lastPoRate: number | null; lastPoDate: string | null; lastPoSupplierCode: string | null; lastPoSupplierName: string | null } | null>(null)
   const [itemOptions,   setItemOptions]   = useState<ItemSelectOption[]>([])
   const [itemSearching, setItemSearching] = useState(false)
+
+  // ── Item master reference fields (auto-filled, display-only) ────────────
+  const [itemDrawNo, setItemDrawNo] = useState<string>('')
+  const [itemCatNo,  setItemCatNo]  = useState<string>('')
 
   // ── Rate history modal ────────────────────────────────────────────────────
   const [historyOpen,    setHistoryOpen]    = useState(false)
@@ -168,6 +153,7 @@ export function PRLineItemsTable({
 
   // ── Item search ───────────────────────────────────────────────────────────
   const handleItemSearch = useCallback((q: string) => {
+    if (!depCode) { setItemOptions([]); return }
     if (debounceRef.current) clearTimeout(debounceRef.current)
     if (q.trim().length < 2) { setItemOptions([]); return }
     const seq = ++seqRef.current
@@ -198,63 +184,61 @@ export function PRLineItemsTable({
       currentStock: opt._item.currentStock ?? null,
     }
     setItemMeta(meta)
-    // Pre-fill rate from last PO if available (will be overridden by user)
+    setItemDrawNo(opt._item.drawNo ?? '')
+    setItemCatNo(opt._item.catNo   ?? '')
+    setLpoMeta(null)                          // clear stale PO data from previous item
     entryForm.setFieldValue('rate', null)
 
-    // G11: Call getItemInfo to check for pending indents/PRs and get rate history
-    if (prDate && depCode) {
-      (async () => {
-        try {
-          const prDateObj = dayjs(prDate)
-          // Calculate financial year: April to March
-          const month = prDateObj.month() // 0-indexed
-          const year = prDateObj.year()
-          const fy = month >= 3 ? year : year - 1
-          const yfDate = `${fy}-04-01`
-          const ylDate = `${fy + 1}-03-31`
+    // Call getItemInfo on every item selection — divCode is resolved server-side from auth token,
+    // so this works regardless of whether depCode has been filled in the header yet.
+    ;(async () => {
+      try {
+        const prDateObj = dayjs(prDate ?? undefined)
+        const month = prDateObj.month()
+        const year  = prDateObj.year()
+        const fy    = month >= 3 ? year : year - 1
+        const yfDate = `${fy}-04-01`
+        const ylDate = `${fy + 1}-03-31`
 
-          const info = await purchaseRequisitionApi.getItemInfo(
-            depCode,
-            opt._item.itemCode,
-            yfDate,
-            ylDate,
-            preCheckResult?.pendingIndentCheckEnabled ?? false,
-            preCheckResult?.pendingPRCheckEnabled ?? false
-          )
+        const info = await purchaseRequisitionApi.getItemInfo(
+          depCode,
+          opt._item.itemCode,
+          yfDate,
+          ylDate,
+          preCheckResult?.pendingIndentCheckEnabled ?? false,
+          preCheckResult?.pendingPRCheckEnabled ?? false
+        )
 
-          // Pre-fill rate from last PO
-          if (info.lastPoRate) {
-            entryForm.setFieldValue('rate', info.lastPoRate)
-          }
+        // Pre-fill Unit Price from last PO; fall back to 0 when no prior PO exists
+        entryForm.setFieldValue('rate', info.lastPoRate ?? 0)
 
-          // G1/E2: store LPO data so grid row and badge row can show it
-          setLpoMeta({
-            lastPoRate:         info.lastPoRate ?? null,
-            lastPoDate:         info.lastPoDate ?? null,
-            lastPoSupplierCode: info.lastPoSupplierCode ?? null,
-            lastPoSupplierName: info.lastPoSupplierName ?? null,
-          })
+        // Store LPO data so grid row and badge row can show it
+        setLpoMeta({
+          lastPoRate:         info.lastPoRate ?? null,
+          lastPoDate:         info.lastPoDate ?? null,
+          lastPoSupplierCode: info.lastPoSupplierCode ?? null,
+          lastPoSupplierName: info.lastPoSupplierName ?? null,
+        })
 
-          // Show warnings for pending indents/PRs if checks are enabled
-          if (preCheckResult?.pendingIndentCheckEnabled && info.hasPendingIndent) {
-            const msg = `Pending indent exists for this item — Qty: ${info.pendingIndentQty}`
-            onWarning?.(msg)
-          }
-          if (preCheckResult?.pendingPRCheckEnabled && info.hasPendingPR) {
-            const msg = `Open PR (${info.pendingPrNo}) dated ${dayjs(info.pendingPrDate).format('DD/MM/YYYY')} already exists for this item`
-            onWarning?.(msg)
-          }
-        } catch {
-          // Silently fail — getItemInfo is supplementary
+        // Show warnings for pending indents/PRs if checks are enabled
+        if (preCheckResult?.pendingIndentCheckEnabled && info.hasPendingIndent) {
+          onWarning?.(`Pending indent exists for this item — Qty: ${info.pendingIndentQty}`)
         }
-      })()
-    }
+        if (preCheckResult?.pendingPRCheckEnabled && info.hasPendingPR) {
+          onWarning?.(`Open PR (${info.pendingPrNo}) dated ${dayjs(info.pendingPrDate).format('DD/MM/YYYY')} already exists for this item`)
+        }
+      } catch {
+        // Silently fail — getItemInfo is supplementary; user can still enter price manually
+      }
+    })()
   }, [entryForm, depCode, prDate, preCheckResult, onWarning])
 
   // ── Populate entry form for edit ──────────────────────────────────────────
   const startEdit = useCallback((row: PRLineFormItem) => {
     setEditingKey(row.key)
     setItemMeta({ itemName: row.itemName, uom: row.uom, currentStock: row.currentStock })
+    setItemDrawNo(row.drawNo ?? '')
+    setItemCatNo(row.catNo  ?? '')
     if (row.itemCode) {
       setItemOptions([{
         value: row.itemCode,
@@ -277,9 +261,6 @@ export function PRLineItemsTable({
       remarks:      row.remarks,
       machineNo:    row.machineNo || null,
       subCostCode:  row.subCostCode ?? null,
-      drawNo:       row.drawNo ?? '',
-      catNo:        row.catNo ?? '',
-      place:        row.place ?? '',
       isSample:     row.isSample ?? false,
     })
   }, [entryForm])
@@ -290,6 +271,8 @@ export function PRLineItemsTable({
     setLpoMeta(null)
     setItemOptions([])
     setDaysInput(null)
+    setItemDrawNo('')
+    setItemCatNo('')
     entryForm.resetFields()
   }, [entryForm])
 
@@ -312,10 +295,9 @@ export function PRLineItemsTable({
         remarks:     values.remarks ?? '',
         machineNo:   values.machineNo ?? '',
         subCostCode: values.subCostCode ?? null,
-        drawNo:      values.drawNo ?? '',
-        catNo:       values.catNo ?? '',
-        place:       values.place ?? '',
         isSample:    values.isSample ?? false,
+        drawNo:      itemDrawNo || existing.drawNo,
+        catNo:       itemCatNo  || existing.catNo,
         approxCost:  values.rate && values.qtyRequired
           ? parseFloat((values.rate * values.qtyRequired).toFixed(2))
           : null,
@@ -335,10 +317,9 @@ export function PRLineItemsTable({
         remarks:     values.remarks ?? '',
         machineNo:   values.machineNo ?? '',
         subCostCode: values.subCostCode ?? null,
-        drawNo:      values.drawNo ?? '',
-        catNo:       values.catNo ?? '',
-        place:       values.place ?? '',
         isSample:    values.isSample ?? false,
+        drawNo:      itemDrawNo,
+        catNo:       itemCatNo,
         approxCost:  values.rate && values.qtyRequired
           ? parseFloat((values.rate * values.qtyRequired).toFixed(2))
           : null,
@@ -349,6 +330,8 @@ export function PRLineItemsTable({
       setItemMeta(null)
       setLpoMeta(null)
       setItemOptions([])
+      setItemDrawNo('')
+      setItemCatNo('')
       entryForm.resetFields()
       setTimeout(() => {
         const el = document.querySelector<HTMLElement>('.pr-entry-item-select input')
@@ -405,22 +388,24 @@ export function PRLineItemsTable({
       headerName: '#',
       colId:      'idx',
       width:      46,
+      minWidth:   40,
       sortable:   false,
-      cellStyle:  { ...CELL, justifyContent: 'center', color: '#94a3b8', fontSize: 11 },
+      cellStyle:  { ...CELL, justifyContent: 'center', fontSize: 11 },
       valueGetter: ({ node }) => (node?.rowIndex ?? 0) + 1,
     },
     {
       headerName: 'Item Code',
       field:      'itemCode',
       width:      120,
-      cellStyle:  { ...CELL, fontWeight: 700, color: '#1677ff', fontFamily: 'monospace', fontSize: 12 },
+      minWidth:   92,
+      cellStyle:  { ...CELL, fontWeight: 700, fontFamily: 'monospace', fontSize: 12 },
       valueFormatter: ({ value }) => value || '—',
     },
     {
       headerName: 'Description',
       field:      'itemName',
       flex:       1,
-      minWidth:   140,
+      minWidth:   120,
       cellStyle:  CELL,
       valueFormatter: ({ value }) => (value as string) || '—',
     },
@@ -428,6 +413,7 @@ export function PRLineItemsTable({
       headerName:  'Last Rate',
       field:       'lastPoRate',
       width:       100,
+      minWidth:    88,
       cellStyle:   { ...CELL, justifyContent: 'flex-end' },
       headerClass: 'ag-right-aligned-header',
       valueFormatter: ({ value }) =>
@@ -437,6 +423,7 @@ export function PRLineItemsTable({
       headerName: 'PO Date',
       field:      'lastPoDate',
       width:      90,
+      minWidth:   76,
       cellStyle:  CELL,
       valueFormatter: ({ value }) =>
         value ? dayjs(value as string).format('DD/MM/YY') : '—',
@@ -445,6 +432,7 @@ export function PRLineItemsTable({
       headerName: 'Supplier Code',
       field:      'lastPoSupplierCode',
       width:      110,
+      minWidth:   112,
       cellStyle:  { ...CELL, fontFamily: 'monospace', fontSize: 12 },
       valueFormatter: ({ value }) => (value as string) || '—',
     },
@@ -452,6 +440,7 @@ export function PRLineItemsTable({
       headerName: 'Supplier Name',
       field:      'lastPoSupplierName',
       width:      140,
+      minWidth:   112,
       cellStyle:  CELL,
       valueFormatter: ({ value }) => (value as string) || '—',
     },
@@ -459,6 +448,7 @@ export function PRLineItemsTable({
       headerName:  'Qty',
       field:       'qtyRequired',
       width:       70,
+      minWidth:    52,
       cellStyle:   { ...CELL, justifyContent: 'flex-end', fontWeight: 600 },
       headerClass: 'ag-right-aligned-header',
     },
@@ -466,6 +456,7 @@ export function PRLineItemsTable({
       headerName: 'UOM',
       field:      'uom',
       width:      60,
+      minWidth:   52,
       cellStyle:  { ...CELL, justifyContent: 'center' },
       cellRenderer: ({ value }: ICellRendererParams) =>
         value
@@ -476,6 +467,7 @@ export function PRLineItemsTable({
       headerName:  'Unit Price',
       field:       'rate',
       width:       100,
+      minWidth:    90,
       cellStyle:   { ...CELL, justifyContent: 'flex-end' },
       headerClass: 'ag-right-aligned-header',
       valueFormatter: ({ value }) =>
@@ -485,7 +477,8 @@ export function PRLineItemsTable({
       headerName:  'Total',
       colId:       'total',
       width:       108,
-      cellStyle:   { ...CELL, justifyContent: 'flex-end', fontWeight: 700, color: '#16a34a' },
+      minWidth:    80,
+      cellStyle:   { ...CELL, justifyContent: 'flex-end', fontWeight: 700 },
       headerClass: 'ag-right-aligned-header',
       valueGetter: ({ data }) => {
         if (!data) return 0
@@ -502,6 +495,7 @@ export function PRLineItemsTable({
       headerName: '',
       colId:      'actions',
       width:      90,
+      minWidth:   88,
       sortable:   false,
       pinned:     'right',
       cellStyle:  { ...CELL, justifyContent: 'center', gap: 2 },
@@ -584,77 +578,44 @@ export function PRLineItemsTable({
       render: (v: number) => v != null ? Number(v).toFixed(2) : '—' },
     { title: 'Received',     dataIndex: 'receivedQty',   key: 'receivedQty',   width: 72, align: 'right' as const,
       render: (v: number) => v != null ? Number(v).toFixed(2) : '—' },
-    { title: 'Pending',      dataIndex: 'pendingQty',    key: 'pendingQty',    width: 72, align: 'right' as const,
-      render: (v: number) => v != null && v > 0 ? <Tag color="orange" style={{ fontVariantNumeric: 'tabular-nums' }}>{Number(v).toFixed(2)}</Tag> : '—' },
   ], [])
 
   return (
     <>
-      <style>{`
-        .pr-items-grid .ag-header { background: #1e293b !important; }
-        .pr-items-grid .ag-header-cell {
-          color: #f1f5f9 !important; font-weight: 700 !important;
-          font-size: 11px !important; text-transform: uppercase; letter-spacing: 0.04em;
-          border-right: 1px solid rgba(255,255,255,0.06) !important;
-        }
-        .pr-items-grid .ag-header-cell:last-child,
-        .pr-items-grid .ag-pinned-right-header .ag-header-cell { border-right: none !important; }
-        .pr-items-grid .ag-pinned-right-header { background: #1e293b !important; }
-        .pr-items-grid .ag-row-even { background: #ffffff; }
-        .pr-items-grid .ag-row-odd  { background: #f8fafc; }
-        .pr-items-grid .ag-row:hover { background: #eff6ff !important; }
-        .pr-items-grid .ag-pinned-right-cols-container .ag-row-even { background: #ffffff; }
-        .pr-items-grid .ag-pinned-right-cols-container .ag-row-odd  { background: #f8fafc; }
-        .pr-items-grid .ag-pinned-right-cols-container .ag-row:hover { background: #eff6ff !important; }
-        .pr-items-grid .pr-row--editing { background: #eff6ff !important; outline: 2px solid #1677ff; outline-offset: -2px; }
-        .pr-cell-flash { animation: prFlash 0.65s ease-out; }
-        @keyframes prFlash { 0%,100%{background:transparent} 35%{background:#dcfce7} }
-        .ag-right-aligned-header .ag-header-cell-label { justify-content: flex-end; }
-        .pr-entry-form .ant-input,
-        .pr-entry-form .ant-input-number,
-        .pr-entry-form .ant-picker,
-        .pr-entry-form .ant-select:not(.ant-select-disabled) .ant-select-selector {
-          background: #f8fafc !important;
-          border: 1px solid #d1d5db !important;
-          border-radius: 6px !important;
-        }
-        .pr-entry-form .ant-input:focus,
-        .pr-entry-form .ant-input-number-focused,
-        .pr-entry-form .ant-picker-focused,
-        .pr-entry-form .ant-select-focused .ant-select-selector {
-          border-color: #1677ff !important;
-          box-shadow: 0 0 0 2px rgba(22,119,255,0.15) !important;
-        }
-        .pr-entry-form .ant-form-item-label > label {
-          font-weight: 500 !important;
-          color: #374151 !important;
-          font-size: 13px !important;
-        }
-      `}</style>
-
-      {/* ── Item Entry Panel — E7 card style ──────────────────────────────── */}
+      {/* ── Item Entry Panel ──────────────────────────────────────────────── */}
       <div className="pr-entry-form" style={{
         background:   '#ffffff',
-        border:       '1px solid #e2e8f0',
-        borderLeft:   '3px solid #1677ff',
-        borderRadius: 12,
-        padding:      '16px 20px',
-        boxShadow:    '0 2px 8px rgba(0,0,0,0.04)',
+        border:       '1px solid #f0f0f0',
+        borderLeft:   '3px solid #4f46e5',
+        borderRadius: 8,
+        padding:      0,
+        overflow:     'hidden',
+        boxShadow:    '0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05)',
       }}>
-        {/* E6: Section header with icon */}
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 14 }}>
-          <Space size={6}>
-            <AppstoreOutlined style={{ color: '#1677ff', fontSize: 14 }} />
-            <Typography.Text strong style={{ fontSize: 13, color: '#1e293b' }}>
+        {/* Card header */}
+        <div style={{ display: 'flex', alignItems: 'center', padding: '10px 20px', borderBottom: '1px solid #f0f0f0' }}>
+          <Space size={8}>
+            <AppstoreOutlined style={{ color: '#4f46e5', fontSize: 13 }} />
+            <Typography.Text style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
               {editingKey ? 'Edit Item' : 'Item Entry'}
             </Typography.Text>
           </Space>
         </div>
 
+        {/* Form body */}
+        <div style={{ padding: '14px 20px 8px' }}>
+        {!depCode && (
+          <Alert
+            message="Please select a Department in the header before adding items."
+            type="warning"
+            showIcon
+            style={{ marginBottom: 12 }}
+          />
+        )}
         <Form form={entryForm} layout="vertical" size="middle" disabled={disabled}>
-          {/* E1: Row 1 — Item Code (wide) | Qty + Add button inline via Space.Compact */}
+          {/* Row 1 — Item Code | Qty | Unit Price */}
           <Row gutter={[12, 0]}>
-            <Col xs={24} sm={14} md={14}>
+            <Col xs={24} sm={12} md={11}>
               <Form.Item
                 name="itemCode"
                 label={<span style={LABEL_STYLE}>Item Code</span>}
@@ -672,12 +633,13 @@ export function PRLineItemsTable({
                   filterOption={false}
                   notFoundContent={itemSearching ? <Spin size="small" /> : 'Type ≥ 2 chars to search'}
                   allowClear
-                  onClear={() => { setItemMeta(null); setLpoMeta(null); setItemOptions([]) }}
+                  disabled={!depCode}
+                  onClear={() => { setItemMeta(null); setLpoMeta(null); setItemOptions([]); setItemDrawNo(''); setItemCatNo('') }}
                 />
               </Form.Item>
             </Col>
 
-            <Col xs={24} sm={10} md={10}>
+            <Col xs={12} sm={5} md={5}>
               <Form.Item
                 name="qtyRequired"
                 label={<span style={LABEL_STYLE}>Qty</span>}
@@ -689,45 +651,17 @@ export function PRLineItemsTable({
                 style={{ marginBottom: 8 }}
               >
                 <InputNumber
-                  style={{ width: '100%', ...INPUT_STYLE }}
+                  style={{ width: '100%' }}
                   min={0} precision={3}
                   onPressEnter={() => void handleAddOrUpdate()}
                 />
               </Form.Item>
             </Col>
-          </Row>
 
-          {/* E2+E3: Context badges — appear after item select; stock red if 0/null, green if > 0 */}
-          {itemMeta && (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 10 }}>
-              <Tag style={{ fontSize: 12, padding: '2px 8px' }}>
-                UOM: {itemMeta.uom || '—'}
-              </Tag>
-              <Tag
-                color={itemMeta.currentStock != null && itemMeta.currentStock > 0 ? 'success' : 'error'}
-                style={{ fontSize: 12, padding: '2px 8px', fontWeight: 600 }}
-              >
-                Stock: {itemMeta.currentStock ?? 0}
-              </Tag>
-              {lpoMeta?.lastPoRate != null && (
-                <Tag color="green" style={{ fontSize: 12, padding: '2px 8px' }}>
-                  Last Rate: ₹{lpoMeta.lastPoRate.toFixed(2)}
-                </Tag>
-              )}
-              {lpoMeta?.lastPoDate && (
-                <Tag color="cyan" style={{ fontSize: 12, padding: '2px 8px' }}>
-                  PO: {dayjs(lpoMeta.lastPoDate).format('DD-MMM-YY')}
-                </Tag>
-              )}
-            </div>
-          )}
-
-          {/* Row 2: Unit Price + Rate History | Required Date + days quick-fill */}
-          <Row gutter={[12, 0]}>
-            <Col xs={12} sm={8} md={7}>
+            <Col xs={12} sm={7} md={8}>
               <Form.Item
                 label={<span style={LABEL_STYLE}>Unit Price (₹)</span>}
-                style={{ marginBottom: 10 }}
+                style={{ marginBottom: 8 }}
               >
                 <Space.Compact style={{ width: '100%' }}>
                   <Form.Item
@@ -736,7 +670,7 @@ export function PRLineItemsTable({
                     rules={[{ type: 'number', min: 0, message: 'Must be ≥ 0' }]}
                   >
                     <InputNumber
-                      style={{ width: '100%', ...INPUT_STYLE }}
+                      style={{ width: '100%' }}
                       min={0} precision={2} placeholder="0.00"
                       prefix="₹"
                     />
@@ -751,8 +685,44 @@ export function PRLineItemsTable({
                 </Space.Compact>
               </Form.Item>
             </Col>
+          </Row>
 
-            <Col xs={12} sm={8} md={7}>
+          {/* Context badges — UOM/Stock/Last Rate appear after item select; Cat No/Drg No always visible */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 10 }}>
+            {itemMeta && (
+              <>
+                <Tag style={{ fontSize: 12, padding: '2px 8px' }}>
+                  UOM: {itemMeta.uom || '—'}
+                </Tag>
+                <Tag
+                  color={itemMeta.currentStock != null && itemMeta.currentStock > 0 ? 'success' : 'error'}
+                  style={{ fontSize: 12, padding: '2px 8px', fontWeight: 600 }}
+                >
+                  Stock: {itemMeta.currentStock ?? 0}
+                </Tag>
+                {lpoMeta?.lastPoRate != null && (
+                  <Tag color="green" style={{ fontSize: 12, padding: '2px 8px' }}>
+                    Last Rate: ₹{lpoMeta.lastPoRate.toFixed(2)}
+                  </Tag>
+                )}
+                {lpoMeta !== null && lpoMeta.lastPoRate == null && (
+                  <Tag color="warning" style={{ fontSize: 12, padding: '2px 8px' }}>
+                    No previous purchase data
+                  </Tag>
+                )}
+              </>
+            )}
+            <Tag color="purple" style={{ fontSize: 12, padding: '2px 8px' }}>
+              Cat No: {itemCatNo || '—'}
+            </Tag>
+            <Tag color="geekblue" style={{ fontSize: 12, padding: '2px 8px' }}>
+              Drg No: {itemDrawNo || '—'}
+            </Tag>
+          </div>
+
+          {/* Row 2 — Required Date | Machine | Sub Cost Centre | Remarks | Sample */}
+          <Row gutter={[12, 0]}>
+            <Col xs={24} sm={10} md={7}>
               <Form.Item
                 label={<span style={LABEL_STYLE}>Required Date</span>}
                 style={{ marginBottom: 10 }}
@@ -775,7 +745,7 @@ export function PRLineItemsTable({
                   </Tooltip>
                   <Form.Item name="requiredDate" noStyle>
                     <DatePicker
-                      style={{ width: '100%', ...INPUT_STYLE }}
+                      style={{ width: '100%' }}
                       format="DD/MM/YYYY"
                       placeholder="dd/mm/yyyy"
                       onChange={() => setDaysInput(null)}
@@ -784,11 +754,8 @@ export function PRLineItemsTable({
                 </Space.Compact>
               </Form.Item>
             </Col>
-          </Row>
 
-          {/* Row 3: Machine | Sub Cost Centre | Sample */}
-          <Row gutter={[12, 0]}>
-            <Col xs={12} sm={8} md={8}>
+            <Col xs={12} sm={6} md={5}>
               <Form.Item
                 name="machineNo"
                 label={<span style={LABEL_STYLE}>Machine</span>}
@@ -801,12 +768,12 @@ export function PRLineItemsTable({
                     (opt?.label as string ?? '').toLowerCase().includes(input.toLowerCase())
                   }
                   placeholder="Select machine…"
-                  style={INPUT_STYLE}
+                  style={{ borderRadius: 6 }}
                 />
               </Form.Item>
             </Col>
 
-            <Col xs={12} sm={10} md={10}>
+            <Col xs={12} sm={6} md={5}>
               <Form.Item
                 name="subCostCode"
                 label={<span style={LABEL_STYLE}>Sub Cost Centre</span>}
@@ -816,7 +783,7 @@ export function PRLineItemsTable({
                   showSearch allowClear
                   options={subCostOpts}
                   placeholder="Select sub cost…"
-                  style={INPUT_STYLE}
+                  style={{ borderRadius: 6 }}
                   filterOption={(input, opt) =>
                     String(opt?.label ?? '').toLowerCase().includes(input.toLowerCase())
                   }
@@ -824,42 +791,22 @@ export function PRLineItemsTable({
               </Form.Item>
             </Col>
 
-            <Col xs={12} sm={6} md={6} style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: 10 }}>
-              <Form.Item name="isSample" valuePropName="checked" initialValue={true} style={{ marginBottom: 0 }}>
+            <Col xs={24} sm={10} md={5}>
+              <Form.Item
+                name="remarks"
+                label={<span style={LABEL_STYLE}>Remarks</span>}
+                style={{ marginBottom: 10 }}
+              >
+                <Input style={{ borderRadius: 6 }} placeholder="Notes…" maxLength={500} />
+              </Form.Item>
+            </Col>
+
+            <Col xs={12} sm={2} md={2} style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: 10 }}>
+              <Form.Item name="isSample"  initialValue={true} style={{ marginBottom: 0 }}>
                 <Checkbox>Sample</Checkbox>
               </Form.Item>
             </Col>
           </Row>
-
-          {/* E4: Advanced collapsible — Drawing No, Cat No, Remarks */}
-          <Collapse
-            size="small"
-            ghost
-            style={{ marginTop: 2 }}
-            items={[{
-              key: 'adv',
-              label: <span style={{ fontSize: 12, color: '#6b7280' }}>Advanced ▼</span>,
-              children: (
-                <Row gutter={[12, 0]}>
-                  <Col xs={24} sm={8} md={8}>
-                    <Form.Item name="drawNo" label={<span style={LABEL_STYLE}>Drawing No.</span>} style={{ marginBottom: 8 }}>
-                      <Input style={INPUT_STYLE} placeholder="Drawing number…" maxLength={25} />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={8} md={8}>
-                    <Form.Item name="catNo" label={<span style={LABEL_STYLE}>Cat No.</span>} style={{ marginBottom: 8 }}>
-                      <Input style={INPUT_STYLE} placeholder="Catalogue number…" maxLength={25} />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={8} md={8}>
-                    <Form.Item name="remarks" label={<span style={LABEL_STYLE}>Remarks</span>} style={{ marginBottom: 8 }}>
-                      <Input style={INPUT_STYLE} placeholder="Optional notes…" maxLength={500} />
-                    </Form.Item>
-                  </Col>
-                </Row>
-              ),
-            }]}
-          />
 
           {/* Action row — separate last row */}
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 12 }}>
@@ -887,30 +834,29 @@ export function PRLineItemsTable({
             )}
           </div>
         </Form>
+        </div>{/* /form body inner */}
       </div>
 
       {/* ── Items Grid ─────────────────────────────────────────────────────── */}
       <div style={{
-        background: '#ffffff', border: '1px solid #e5e7eb',
-        borderRadius: 10, overflow: 'hidden',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-        marginTop: 12,
+        background:   '#ffffff',
+        border:       '1px solid #f0f0f0',
+        borderRadius: 8,
+        overflow:     'hidden',
+        marginTop:    12,
+        boxShadow:    '0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05)',
       }}>
-        {/* Section header */}
+        {/* Grid header */}
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '10px 16px', borderBottom: '1px solid #e5e7eb', background: '#fafafa',
+          padding: '10px 16px', borderBottom: '1px solid #f0f0f0',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Typography.Text strong style={{ fontSize: 13, color: '#1e293b' }}>Added Items</Typography.Text>
+            <Typography.Text style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Added Items</Typography.Text>
             {validCount > 0 && (
-              <span style={{
-                fontSize: 11, fontWeight: 600, color: '#6366f1',
-                background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.20)',
-                borderRadius: 10, padding: '1px 8px',
-              }}>
+              <Tag color="blue" style={{ fontSize: 11, borderRadius: 10 }}>
                 {validCount} {validCount === 1 ? 'item' : 'items'}
-              </span>
+              </Tag>
             )}
           </div>
         </div>
@@ -944,14 +890,13 @@ export function PRLineItemsTable({
         {validCount > 0 && (
           <div style={{
             display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 16,
-            padding: '10px 16px', borderTop: '2px solid #e5e7eb', background: '#f8fafc',
+            padding: '10px 16px', borderTop: '1px solid #f0f0f0',
           }}>
             <Typography.Text type="secondary" style={{ fontSize: 12 }}>
               {validCount} line{validCount !== 1 ? 's' : ''}
             </Typography.Text>
-            <span style={{ width: 1, height: 14, background: '#e5e7eb' }} />
             <Typography.Text type="secondary" style={{ fontSize: 12 }}>Grand Total</Typography.Text>
-            <Typography.Text strong style={{ fontSize: 16, color: '#16a34a', fontVariantNumeric: 'tabular-nums' }}>
+            <Typography.Text strong style={{ fontSize: 16, fontVariantNumeric: 'tabular-nums' }}>
               ₹ {subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
             </Typography.Text>
           </div>
@@ -1003,16 +948,9 @@ export function PRLineItemsTable({
         destroyOnClose
       >
         {historyStock != null && (
-          <div style={{
-            background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 6,
-            padding: '8px 14px', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8,
-          }}>
-            <Typography.Text style={{ fontSize: 13, color: '#166534' }}>
-              Current Stock:
-            </Typography.Text>
-            <Typography.Text strong style={{ fontSize: 14, color: '#15803d' }}>
-              {historyStock}
-            </Typography.Text>
+          <div style={{ marginBottom: 14 }}>
+            <Typography.Text type="secondary" style={{ fontSize: 13 }}>Current Stock: </Typography.Text>
+            <Typography.Text strong style={{ fontSize: 14 }}>{historyStock}</Typography.Text>
           </div>
         )}
         {historyLoading ? (

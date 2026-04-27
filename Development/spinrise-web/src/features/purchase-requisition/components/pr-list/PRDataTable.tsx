@@ -2,13 +2,13 @@ import { useMemo, useCallback, useRef } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import type { CellStyle, ColDef, GridReadyEvent, ICellRendererParams } from 'ag-grid-community'
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from 'ag-grid-community'
-import { Button, Space, Tag, Tooltip, Typography } from 'antd'
+import { Button, Pagination, Space, Tag, Tooltip, Typography } from 'antd'
 import { DeleteOutlined, DownloadOutlined, EditOutlined, EyeOutlined, FileTextOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { getFYBounds } from '@/shared/lib/dateUtils'
 import type { DepartmentLookup, EmployeeLookup, PRSummaryResponse } from '../../types'
-import { STATUS_TAG } from './prListConfig'
+import { PAGE_SIZE, STATUS_TAG } from './prListConfig'
 
 ModuleRegistry.registerModules([AllCommunityModule])
 
@@ -18,6 +18,9 @@ interface PRDataTableProps {
   deletingPrNo: number | null
   departments:  DepartmentLookup[]
   employees:    EmployeeLookup[]
+  page:         number
+  total:        number
+  onPageChange: (page: number) => void
   onView:       (prNo: number) => void
   onDelete:     (prNo: number) => void
   onDownload:   (record: PRSummaryResponse) => void
@@ -56,6 +59,7 @@ const prTheme = themeQuartz.withParams({
 
 export function PRDataTable({
   rows, loading, deletingPrNo, departments, employees,
+  page, total, onPageChange,
   onView, onDelete, onDownload, downloading = null,
 }: PRDataTableProps) {
   const navigate = useNavigate()
@@ -205,11 +209,6 @@ export function PRDataTable({
     // intentionally empty — sizing handled by onFirstDataRendered
   }, [])
 
-  const getRowId = useCallback(
-    ({ data }: { data: PRSummaryResponse }) => `${data.divCode}-${data.prNo}`,
-    [],
-  )
-
   const getRowClass = useCallback(
     ({ data }: { data?: PRSummaryResponse }) =>
       data?.isDeleted || data?.prStatus === 'CANCELLED' ? 'pr-row--muted' : '',
@@ -217,7 +216,8 @@ export function PRDataTable({
   )
 
   return (
-    <div style={{ height: 'calc(100vh - 320px)', minHeight: 360 }}>
+    <div>
+    <div style={{ height: 'calc(100vh - 380px)', minHeight: 360 }}>
       <style>{`
         .pr-ag-grid .ag-header-cell {
           text-transform: uppercase;
@@ -236,7 +236,6 @@ export function PRDataTable({
         rowData={rows}
         columnDefs={colDefs}
         defaultColDef={defaultColDef}
-        getRowId={getRowId}
         getRowClass={getRowClass}
         loading={loading}
         suppressRowClickSelection
@@ -259,6 +258,24 @@ export function PRDataTable({
         domLayout="normal"
         suppressScrollOnNewData
       />
+    </div>
+    <div style={{
+      display:        'flex',
+      justifyContent: 'flex-end',
+      alignItems:     'center',
+      padding:        '10px 16px',
+      borderTop:      '1px solid #f0f0f0',
+    }}>
+      <Pagination
+        current={page}
+        total={total}
+        pageSize={PAGE_SIZE}
+        showSizeChanger={false}
+        showTotal={(t, range) => `${range[0]}–${range[1]} of ${t} records`}
+        onChange={onPageChange}
+        disabled={loading}
+      />
+    </div>
     </div>
   )
 }

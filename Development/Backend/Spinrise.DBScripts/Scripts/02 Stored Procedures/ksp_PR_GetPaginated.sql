@@ -72,7 +72,7 @@ BEGIN
         END          AS IsDeleted,
         h.createdby  AS CreatedBy,
         CASE
-            WHEN ISDATE(h.createddt) = 1 THEN CAST(h.createddt AS DATETIME)
+            WHEN ISDATE(MAX(h.createddt)) = 1 THEN CAST(MAX(h.createddt) AS DATETIME)
             ELSE NULL
         END          AS CreatedAt,
         COUNT(l.prsno) AS LineCount
@@ -103,7 +103,7 @@ BEGIN
            )
     GROUP BY
         h.divcode, h.prno, h.prdate, h.depcode, h.REQNAME,
-        h.planno, h.refno, h.cancelflag, h.APPFLG, h.createdby, h.createddt
+        h.planno, h.refno, h.cancelflag, h.APPFLG, h.createdby
     ORDER BY h.prdate DESC, h.prno DESC
     OFFSET  (@Page - 1) * @PageSize ROWS
     FETCH NEXT @PageSize ROWS ONLY;

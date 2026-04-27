@@ -1,9 +1,12 @@
-import { api } from '@/shared/api/client'
+import { api, apiHelpers } from '@/shared/api/client'
 import type { ApiResponse } from '@/shared/api/types'
-import type { AuthResponse, LoginDto } from '../types'
+import type { ActiveDivisionDto, AuthResponse, LoginDto } from '../types'
 
 export const authApi = {
   login: (data: LoginDto) => api.post<ApiResponse<AuthResponse>>('auth/login', data),
+
+  getActiveDivisions: () =>
+    apiHelpers.get<ActiveDivisionDto[]>('divisions/active'),
 
   refreshToken: (refreshToken: string) =>
     api.post<ApiResponse<AuthResponse>>('auth/refresh', { refreshToken }),

@@ -1,19 +1,16 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import {
-  Badge, Button, Drawer, Input, Layout, Menu, Popover,
+  Badge, Drawer, Input, Layout, Menu,
   Select, Tooltip, Typography,
 } from 'antd'
 import type { MenuProps } from 'antd'
 import {
   AccountBookOutlined,
   ApartmentOutlined,
-  AppstoreOutlined,
   BarChartOutlined,
   BuildOutlined,
   FileTextOutlined,
   InboxOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
   SearchOutlined,
   SettingOutlined,
   ShoppingCartOutlined,
@@ -60,7 +57,7 @@ const SIDEBAR_MENUS: Record<string, MenuProps['items']> = {
       type: 'group',
       children: [
         { key: 'purchase/requisition',   icon: <FileTextOutlined />,    label: 'Requisitions' },
-        { key: 'purchase/orders',        icon: <ShoppingOutlined />,    label: 'Purchase Orders',  disabled: true },
+        { key: 'purchase/order',          icon: <ShoppingOutlined />,    label: 'Purchase Orders' },
         { key: 'purchase/goods-receipt', icon: <InboxOutlined />,       label: 'Goods Receipt',    disabled: true },
       ],
     },
@@ -112,7 +109,7 @@ function ModuleSwitcherContent({
   return (
     <div className="module-switcher">
       <Input
-        prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
+        prefix={<SearchOutlined />}
         placeholder="Search modules…"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
@@ -193,7 +190,7 @@ export default function MainLayout() {
         </div>
         {!collapsed && (
           <div className="sidebar__brand-copy">
-            <Typography.Text strong style={{ fontSize: 15, color: '#e2e8f0' }}>
+            <Typography.Text strong style={{ fontSize: 15 }}>
               Spinrise
             </Typography.Text>
             <Typography.Text type="secondary" style={{ fontSize: 11 }}>
@@ -235,6 +232,7 @@ export default function MainLayout() {
       {/* Navigation */}
       <Menu
         mode="inline"
+        theme="light"
         selectedKeys={selectedKeys}
         items={menuItems}
         className="sidebar__menu"
@@ -247,7 +245,7 @@ export default function MainLayout() {
       <div className="sidebar__footer">
         <Badge status="processing" />
         {!collapsed && (
-          <Typography.Text style={{ fontSize: 11, color: '#64748b' }}>
+          <Typography.Text type="secondary" style={{ fontSize: 11 }}>
             All services operational
           </Typography.Text>
         )}
@@ -264,8 +262,9 @@ export default function MainLayout() {
         onCollapse={setCollapsed}
         collapsedWidth={64}
         width={240}
-        theme="dark"
+        theme="light"
         className="main-sider"
+        style={{ background: '#ffffff' }}
       >
         {sidebarContent}
       </Sider>

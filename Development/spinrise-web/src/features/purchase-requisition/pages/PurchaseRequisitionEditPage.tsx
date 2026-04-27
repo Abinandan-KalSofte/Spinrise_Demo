@@ -124,7 +124,6 @@ export default function PurchaseRequisitionEditPage() {
           saleOrderDate: pr.saleOrderDate ? dayjs(pr.saleOrderDate) : null,
         })
         setItems(pr.lines.map(mapLine))
-        setIsHeaderSaved(true)
       })
       .catch(() => message.error('Failed to load Purchase Requisition.'))
       .finally(() => setLoadingPr(false))

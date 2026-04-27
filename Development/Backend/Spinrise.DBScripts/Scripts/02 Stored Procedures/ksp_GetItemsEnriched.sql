@@ -19,7 +19,9 @@ BEGIN
             CAST(NULL AS DECIMAL(20,3))  AS CurrentStock,
             CAST(0   AS NUMERIC(12,3))   AS PendingPrQty,
             CAST(0   AS NUMERIC(12,3))   AS PendingPoQty,
-            CAST(0   AS DECIMAL(12,3))   AS MinLevel
+            CAST(0   AS DECIMAL(12,3))   AS MinLevel,
+            CAST('' AS VARCHAR(25))      AS DrawNo,
+            CAST('' AS VARCHAR(25))      AS CatNo
         FROM dbo.in_item WHERE 1 = 0;
         RETURN;
     END
@@ -54,17 +56,20 @@ BEGIN
           AND  (ISNULL(o.ORDQTY, 0) - ISNULL(o.RCVDQTY, 0)) > 0
         GROUP BY o.ITEMCODE
     )
-    SELECT TOP 20
+    SELECT  --TOP 20
         i.ITEMCODE                                  AS ItemCode,
         i.ITEMNAME                                  AS ItemName,
         i.UOM                                       AS Uom,
         i.CURSTK                                    AS CurrentStock,
         ISNULL(i.MINLEVEL, 0)                       AS MinLevel,
         ISNULL(pp.TotalPendingPr, 0)                AS PendingPrQty,
-        ISNULL(po.TotalPendingPo, 0)                AS PendingPoQty
+        ISNULL(po.TotalPendingPo, 0)                AS PendingPoQty,
+        ISNULL(i.DRAWNO, '')                        AS DrawNo,
+        ISNULL(ic.CATDESC, '')                        AS CatNo
     FROM   dbo.in_item i
     LEFT JOIN PendingPr pp ON pp.ITEMCODE = i.ITEMCODE
     LEFT JOIN PendingPo po ON po.ITEMCODE = i.ITEMCODE
+	INNER JOIN in_cat ic on ic.CATCODE = i.CATCODE
     WHERE  i.IsItemActive = 1
       AND  (i.ITEMCODE LIKE @Term OR i.ITEMNAME LIKE @Term)
     ORDER BY

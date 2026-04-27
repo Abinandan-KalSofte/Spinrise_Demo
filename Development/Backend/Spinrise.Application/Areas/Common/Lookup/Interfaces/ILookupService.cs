@@ -10,4 +10,5 @@ public interface ILookupService
     Task<IEnumerable<ItemLookupDto>>       GetItemsAsync(string divCode, string searchTerm, string? depCode, string? itemGroup);
     Task<IEnumerable<MachineLookupDto>>    GetMachinesAsync(string divCode);
     Task<IEnumerable<SubCostLookupDto>>    GetSubCostsAsync(string divCode);
+    Task<IEnumerable<ActiveDivisionDto>>   GetActiveDivisionsAsync();
 }

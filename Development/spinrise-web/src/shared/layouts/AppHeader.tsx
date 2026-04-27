@@ -2,12 +2,14 @@ import { Avatar, Badge, Button, Dropdown, Input, Layout, Popover, Tooltip, Typog
 import {
   AppstoreOutlined,
   BellOutlined,
+  CalendarOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
   MenuOutlined,
   MenuUnfoldOutlined,
   SearchOutlined,
 } from '@ant-design/icons'
+import dayjs from 'dayjs'
 import type { MenuProps } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/features/auth/store/useAuthStore'
@@ -41,7 +43,7 @@ export function AppHeader({
   switcherContent,
 }: AppHeaderProps) {
   const navigate  = useNavigate()
-  const { user, clearAuthSession } = useAuthStore()
+  const { user, processingDate, clearAuthSession } = useAuthStore()
   const displayName = user?.userName || user?.userId || 'User'
   const initials    = displayName.slice(0, 2).toUpperCase()
 
@@ -83,23 +85,18 @@ export function AppHeader({
     <Header className="topbar">
       {/* ── Left: Toggle + Module Switcher ────────────────────────────────── */}
       <div className="topbar__left">
-        {/* Desktop sidebar toggle */}
         <Button
           type="text"
           icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
           onClick={onToggle}
           className="topbar__icon-btn topbar__toggle--desktop"
         />
-
-        {/* Mobile hamburger */}
         <Button
           type="text"
           icon={<MenuOutlined />}
           onClick={onMobileToggle}
           className="topbar__icon-btn topbar__toggle--mobile"
         />
-
-        {/* Module Switcher */}
         <Popover
           open={switcherOpen}
           onOpenChange={onSwitcherOpenChange}
@@ -125,15 +122,43 @@ export function AppHeader({
       {/* ── Center: Global Search ─────────────────────────────────────────── */}
       <div className="topbar__center">
         <Input
-          prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
+          prefix={<SearchOutlined />}
           placeholder="Search items, PRs, orders…"
           className="topbar__search"
           variant="filled"
         />
       </div>
 
-      {/* ── Right: Notifications + Profile ───────────────────────────────── */}
+      {/* ── Right: Processing Date + Notifications + Profile ─────────────── */}
       <div className="topbar__right">
+
+        {/* Processing Date badge */}
+        {processingDate && (
+          <Tooltip title="Processing Date">
+            <div style={{
+              display:      'flex',
+              alignItems:   'center',
+              gap:          6,
+              background:   '#fef3c7',
+              border:       '1px solid #f59e0b',
+              borderRadius: 8,
+              padding:      '3px 10px',
+              cursor:       'default',
+              flexShrink:   0,
+            }}>
+              <CalendarOutlined style={{ color: '#d97706', fontSize: 13 }} />
+              <Typography.Text style={{
+                fontSize:          12,
+                fontWeight:        700,
+                color:             '#92400e',
+                fontVariantNumeric:'tabular-nums',
+              }}>
+                {dayjs(processingDate).format('DD-MM-YYYY')}
+              </Typography.Text>
+            </div>
+          </Tooltip>
+        )}
+
         <Badge count={0} size="small" offset={[-2, 2]}>
           <Button
             type="text"

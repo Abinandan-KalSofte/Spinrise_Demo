@@ -167,6 +167,8 @@ builder.Services.AddScoped<IDatewisePrReportRepository, DatewisePrReportReposito
 builder.Services.AddScoped<IPurchaseReportService, QuestPdfPurchaseRequisitionService>();
 builder.Services.AddScoped<ILookupRepository, LookupRepository>();
 builder.Services.AddScoped<ILookupService, LookupService>();
+builder.Services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
+builder.Services.AddScoped<IPurchaseOrderService, PurchaseOrderService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddSingleton<IRefreshTokenStore, InMemoryRefreshTokenStore>();
 builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
