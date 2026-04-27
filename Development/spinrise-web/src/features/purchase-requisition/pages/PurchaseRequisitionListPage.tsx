@@ -14,17 +14,17 @@ import { PRFilterBar } from '../components/pr-list/PRFilterBar'
 import { PRDataTable } from '../components/pr-list/PRDataTable'
 import { PRViewModal } from '../components/pr-list/PRViewModal'
 
-const CARD_SHADOW = '0 1px 4px rgba(15,23,42,0.08), 0 0 0 1px rgba(15,23,42,0.04)'
+const CARD_SHADOW = '0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05)'
 
 export default function PurchaseRequisitionListPage() {
   const {
-    rows, total, loading,
+    rows, total, page, loading,
     departments, employees,
     viewOpen, viewPr, viewLoading,
     downloading,
     deleteOpen, deletingPrNo, deleteReasons, deleteReason, deleteSubmitting,
     setDeleteReason,
-    handleSearch, handleReset,
+    handleSearch, handleReset, handlePageChange,
     handleView, handleCloseView, handleDownload,
     handleOpenDelete, handleCancelDelete, handleConfirmDelete,
   } = usePurchaseRequisitionList()
@@ -38,7 +38,7 @@ export default function PurchaseRequisitionListPage() {
         alignItems:     'flex-start',
         justifyContent: 'space-between',
         paddingBottom:  16,
-        borderBottom:   '1px solid #f1f5f9',
+        borderBottom:   '1px solid #f0f0f0',
       }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
           <div style={{
@@ -123,14 +123,15 @@ export default function PurchaseRequisitionListPage() {
           <Col xs={12} sm={6} key={kpi.label}>
             <div style={{
               borderRadius: 12,
-              border:       `1px solid #e5e7eb`,
+              background:   '#ffffff',
+              border:       '1px solid #f0f0f0',
               borderLeft:   `4px solid ${kpi.accent}`,
-              boxShadow:    '0 1px 3px rgba(0,0,0,0.06), 0 6px 16px rgba(0,0,0,0.08)',
+              boxShadow:    '0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05)',
               padding:      '16px 20px',
               display:      'flex',
               alignItems:   'center',
               gap:          14,
-              background:   '#ffffff',
+              transition:   'box-shadow 0.2s ease, transform 0.2s ease',
             }}>
               <div style={{
                 width:          40,
@@ -148,18 +149,12 @@ export default function PurchaseRequisitionListPage() {
                 {kpi.icon}
               </div>
               <div>
-                <div style={{
-                  fontSize:    26,
-                  fontWeight:  700,
-                  lineHeight:  1.1,
-                  color:       '#0f172a',
-                  fontVariantNumeric: 'tabular-nums',
-                }}>
+                <div style={{ fontSize: 26, fontWeight: 700, lineHeight: 1.1, fontVariantNumeric: 'tabular-nums' }}>
                   {loading ? '—' : kpi.value.toLocaleString()}
                 </div>
-                <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2, fontWeight: 500 }}>
+                <Typography.Text type="secondary" style={{ fontSize: 12, marginTop: 2, fontWeight: 500 }}>
                   {kpi.label}
-                </div>
+                </Typography.Text>
               </div>
             </div>
           </Col>
@@ -192,6 +187,9 @@ export default function PurchaseRequisitionListPage() {
           deletingPrNo={deletingPrNo}
           departments={departments}
           employees={employees}
+          page={page}
+          total={total}
+          onPageChange={(pg) => void handlePageChange(pg)}
           onView={(prNo) => void handleView(prNo)}
           onDelete={(prNo) => void handleOpenDelete(prNo)}
           onDownload={(record) => void handleDownload(record)}
@@ -222,11 +220,11 @@ export default function PurchaseRequisitionListPage() {
         width={440}
         destroyOnClose
         styles={{
-          header: { borderBottom: '1px solid #f1f5f9', paddingBottom: 12 },
+          header: { borderBottom: '1px solid #f0f0f0', paddingBottom: 12 },
           body:   { paddingTop: 16 },
         }}
       >
-        <Typography.Paragraph style={{ marginBottom: 16, color: '#374151' }}>
+        <Typography.Paragraph style={{ marginBottom: 16 }}>
           You are about to cancel{' '}
           <Typography.Text strong>PR #{deletingPrNo}</Typography.Text>.
           This action cannot be undone. Please select a reason to proceed.

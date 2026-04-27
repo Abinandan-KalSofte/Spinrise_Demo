@@ -26,10 +26,14 @@ export const api: AxiosInstance = axios.create({
 
 // Request interceptor
 api.interceptors.request.use((config) => {
-  const token = useAuthStore.getState().tokens?.accessToken
+  const state = useAuthStore.getState()
 
-  if (token && config.headers) {
-    config.headers.Authorization = `Bearer ${token}`
+  if (state.tokens?.accessToken && config.headers) {
+    config.headers.Authorization = `Bearer ${state.tokens.accessToken}`
+  }
+
+  if (state.processingDate && config.headers) {
+    config.headers['X-Processing-Date'] = state.processingDate
   }
 
   return config
@@ -45,14 +49,6 @@ api.interceptors.response.use(
         void api.post('auth/logout', { refreshToken }).catch(() => { /* best-effort */ })
       }
       useAuthStore.getState().clearAuthSession()
-    }
-
-    const correlationId = error.response?.headers['x-correlation-id'] as string
-    const apiError: ApiErrorDetail = {
-      message: error.response?.data?.message || error.message || 'An unexpected error occurred',
-      errors: error.response?.data?.errors,
-      correlationId,
-      status: error.response?.status,
     }
 
     return Promise.reject(handleApiError(error))

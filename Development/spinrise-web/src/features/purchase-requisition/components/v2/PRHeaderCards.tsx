@@ -1,7 +1,8 @@
-import { App, Col, DatePicker, Form, Input, Row, Select, Tag, Typography } from 'antd'
+import { App, Col, DatePicker, Form, Input, Row, Select, Tag, Tooltip, Typography } from 'antd'
 import type { FormInstance } from 'antd'
 import dayjs from 'dayjs'
 import { prefixFilterOption, priorityFilterSort } from '@/shared/utils/selectUtils'
+import { useAuthStore } from '@/features/auth/store/useAuthStore'
 import type { DepartmentLookup, EmployeeLookup, POTypeLookup, PRHeaderFormValues } from '../../types'
 
 interface PRHeaderCardsProps {
@@ -28,7 +29,7 @@ interface PRHeaderCardsProps {
   finalApprovedAt?:          string | null
 }
 
-const LABEL: React.CSSProperties = { fontSize: 12, fontWeight: 500, color: '#374151' }
+const LABEL: React.CSSProperties = { fontSize: 12, fontWeight: 500 }
 function FL({ text }: { text: string }) {
   return <span style={LABEL}>{text}</span>
 }
@@ -55,6 +56,8 @@ export function PRHeaderCards({
   finalApprovedAt       = null,
 }: PRHeaderCardsProps) {
   const { message } = App.useApp()
+  const processingDate = useAuthStore((s) => s.processingDate)
+  const procDay        = processingDate ? dayjs(processingDate) : dayjs()
 
   const deptOptions      = departments.map((d) => ({ value: d.depCode, label: `${d.depCode} – ${d.depName}` }))
   const empOptions       = employees.map((e)   => ({ value: e.empNo,   label: `${e.empNo} – ${e.eName}` }))
@@ -73,38 +76,15 @@ export function PRHeaderCards({
   return (
     <div style={{
       background:   '#ffffff',
-      border:       '1px solid #e5e7eb',
+      border:       '1px solid #f0f0f0',
       borderRadius: 12,
       padding:      '20px 24px 8px',
-      boxShadow:    '0 2px 10px rgba(0,0,0,0.05)',
+      boxShadow:    '0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05)',
     }}>
-      <style>{`
-        .pr-header-form .ant-input,
-        .pr-header-form .ant-input-number,
-        .pr-header-form .ant-picker,
-        .pr-header-form .ant-select:not(.ant-select-disabled) .ant-select-selector {
-          background: #f8fafc !important;
-          border: 1px solid #d1d5db !important;
-          border-radius: 6px !important;
-        }
-        .pr-header-form .ant-input:focus,
-        .pr-header-form .ant-input-number-focused,
-        .pr-header-form .ant-picker-focused,
-        .pr-header-form .ant-select-focused .ant-select-selector {
-          border-color: #1677ff !important;
-          box-shadow: 0 0 0 2px rgba(22,119,255,0.15) !important;
-        }
-        .pr-header-form .ant-input[disabled],
-        .pr-header-form .ant-input-disabled {
-          background: #f1f5f9 !important;
-          color: #64748b !important;
-          border-color: #e2e8f0 !important;
-        }
-      `}</style>
 
       {/* Section title + PR number badge */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-        <Typography.Text strong style={{ fontSize: 13, color: '#1e293b' }}>
+        <Typography.Text strong style={{ fontSize: 13 }}>
           Requisition Details
         </Typography.Text>
         {/* H2: PR Number as clickable badge — replaces disabled Input */}
@@ -127,29 +107,45 @@ export function PRHeaderCards({
         className="pr-header-form"
         form={form}
         layout="vertical"
-        initialValues={{ prDate: dayjs() }}
+        initialValues={{ prDate: procDay }}
         disabled={disabled}
         size="middle"
       >
         {/* H3 Row 1: PR Date | Department */}
         <Row gutter={[16, 0]}>
-          <Col xs={24} sm={12} md={12}>
+          <Col xs={24} sm={8} md={8}>
             <Form.Item
               name="prDate"
               label={<FL text="PR Date" />}
-              rules={[{ required: true, message: 'Required' }]}
+              rules={[
+                { required: true, message: 'Required' },
+                {
+                  validator: (_, value) => {
+                    if (!value) return Promise.resolve()
+                    if (!value.isSame(procDay, 'day'))
+                      return Promise.reject(new Error(`Date must be ${procDay.format('DD-MM-YYYY')} (processing date)`))
+                    return Promise.resolve()
+                  },
+                },
+              ]}
               style={ITEM}
+              extra={
+                <Tooltip title="Set at login">
+                  <Typography.Text type="secondary" style={{ fontSize: 11 }}>
+                    Processing date: {procDay.format('DD-MM-YYYY')}
+                  </Typography.Text>
+                </Tooltip>
+              }
             >
               <DatePicker
                 style={{ width: '100%' }}
                 format="DD-MM-YYYY"
-                disabledDate={(d) =>
-                  backDateAllowed ? d.isAfter(dayjs(), 'day') : !d.isSame(dayjs(), 'day')
-                }
+                disabledDate={(d) => !d.isSame(procDay, 'day')}
+                allowClear={false}
               />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={12} md={12}>
+          <Col xs={24} sm={8} md={8}>
             <Form.Item
               name="depCode"
               label={<FL text="Department" />}
@@ -166,11 +162,7 @@ export function PRHeaderCards({
               />
             </Form.Item>
           </Col>
-        </Row>
-
-        {/* H3 Row 2: Requested By | Order Type — H1: merged into single row */}
-        <Row gutter={[16, 0]}>
-          <Col xs={24} sm={12} md={12}>
+          <Col xs={24} sm={8} md={8}>
             <Form.Item
               name="reqName"
               label={<FL text="Requested By" />}
@@ -187,7 +179,12 @@ export function PRHeaderCards({
               />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={12} md={12}>
+        </Row>
+
+        {/* H3 Row 2: Requested By | Order Type — H1: merged into single row */}
+        <Row gutter={[16, 0]}>
+          
+          <Col xs={24} sm={8} md={8}>
             <Form.Item
               name="iType"
               label={<FL text="Order Type" />}
@@ -204,16 +201,12 @@ export function PRHeaderCards({
               />
             </Form.Item>
           </Col>
-        </Row>
-
-        {/* H3 Row 3: Section | Reference No */}
-        <Row gutter={[16, 0]}>
-          <Col xs={24} sm={12} md={12}>
+          <Col xs={24} sm={8} md={8}>
             <Form.Item name="section" label={<FL text="Section" />} style={ITEM}>
               <Input placeholder="e.g. Infrastructure" maxLength={100} />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={12} md={12}>
+          <Col xs={24} sm={8} md={8}>
             <Form.Item
               name="refNo"
               label={<FL text="Reference No." />}
@@ -229,12 +222,17 @@ export function PRHeaderCards({
             </Form.Item>
           </Col>
         </Row>
+
+        {/* H3 Row 3: Section | Reference No */}
+        <Row gutter={[16, 0]}>
+          
+        </Row>
       </Form>
 
       {/* Budget balance */}
       {budgetValidationEnabled && budgetBalance != null && (
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 4, marginBottom: 4 }}>
-          <Typography.Text style={{ fontSize: 12, color: '#6b7280' }}>Budget Balance:</Typography.Text>
+          <Typography.Text type="secondary" style={{ fontSize: 12 }}>Budget Balance:</Typography.Text>
           <Tag color={budgetBalance > 0 ? 'green' : 'red'}>
             ₹ {budgetBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </Tag>

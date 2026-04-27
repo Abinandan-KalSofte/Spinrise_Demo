@@ -80,7 +80,6 @@ export default function PurchaseRequisitionV2Page() {
   const [prStatus,   setPrStatus]   = useState<string | null>(null)
   const [saving,     setSaving]     = useState(false)
   const [deleting,   setDeleting]   = useState(false)
-  const [submitMode, setSubmitMode] = useState<'draft' | 'submit'>('draft')  // G19: Differentiate submit vs save
 
   const [preCheckResult,  setPreCheckResult]  = useState<PreCheckResult | null>(null)
   const [preCheckMsg,     setPreCheckMsg]     = useState<string | null>(null)

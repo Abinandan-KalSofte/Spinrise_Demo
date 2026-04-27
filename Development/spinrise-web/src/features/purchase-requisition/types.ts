@@ -26,6 +26,8 @@ export interface ItemLookup {
   pendingPoQty?: number
   minLevel?: number
   itemGroup?: string
+  drawNo?: string
+  catNo?:  string
 }
 
 export interface MachineLookup {

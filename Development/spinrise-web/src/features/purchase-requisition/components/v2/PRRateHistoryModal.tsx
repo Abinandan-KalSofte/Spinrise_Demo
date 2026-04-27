@@ -35,7 +35,7 @@ export function PRRateHistoryModal({ open, onClose, itemCode, itemName }: PRRate
       title:     'Supplier',
       dataIndex: 'supplierName',
       key:       'supplierName',
-      ellipsis:  true,
+      minWidth:  160,
       render:    (v?: string) => v || <Typography.Text type="secondary">—</Typography.Text>,
     },
     {
@@ -63,17 +63,6 @@ export function PRRateHistoryModal({ open, onClose, itemCode, itemName }: PRRate
       key:       'receivedQty',
       width:     85,
       align:     'right',
-    },
-    {
-      title:     'Pending',
-      dataIndex: 'pendingQty',
-      key:       'pendingQty',
-      width:     80,
-      align:     'right',
-      render:    (v: number) =>
-        v > 0
-          ? <Tag color="orange" style={{ fontVariantNumeric: 'tabular-nums' }}>{v}</Tag>
-          : <Typography.Text type="secondary">—</Typography.Text>,
     },
   ], [])
 
@@ -111,7 +100,7 @@ export function PRRateHistoryModal({ open, onClose, itemCode, itemName }: PRRate
         loading={loading}
         size="small"
         pagination={false}
-        scroll={{ x: 640 }}
+        scroll={{ x: 'max-content' }}
         locale={{ emptyText: 'No purchase history found.' }}
       />
     </Modal>

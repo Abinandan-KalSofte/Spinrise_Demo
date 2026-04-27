@@ -49,10 +49,11 @@ export function usePurchaseRequisitionList() {
 
   // ── Core fetch ──────────────────────────────────────────────────────────────
   const fetchPage = useCallback(async (pg: number, filters: PRPaginatedFilters) => {
+    setRows([])
     setLoading(true)
     try {
       const result = await prListService.getPaginated({ ...filters, page: pg, pageSize: PAGE_SIZE })
-      setRows(result.items)
+      setRows((result.items ?? []).filter((item): item is PRSummaryResponse => item != null && !!item.prNo))
       setTotal(result.totalCount)
       setPage(pg)
       activeFilters.current = filters
@@ -94,6 +95,10 @@ export function usePurchaseRequisitionList() {
     _sorter: SorterResult<PRSummaryResponse> | SorterResult<PRSummaryResponse>[],
   ) => {
     await fetchPage(pagination.current ?? 1, activeFilters.current)
+  }, [fetchPage])
+
+  const handlePageChange = useCallback(async (pg: number) => {
+    await fetchPage(pg, activeFilters.current)
   }, [fetchPage])
 
   const handleView = useCallback(async (prNo: number) => {
@@ -188,7 +193,7 @@ export function usePurchaseRequisitionList() {
     deleteOpen, deletingPrNo, deleteReasons, deleteReason, deleteSubmitting,
     setDeleteReason,
     // handlers
-    handleSearch, handleReset, handleTableChange,
+    handleSearch, handleReset, handleTableChange, handlePageChange,
     handleView, handleCloseView, handleDownload,
     handleOpenDelete, handleCancelDelete, handleConfirmDelete,
   }

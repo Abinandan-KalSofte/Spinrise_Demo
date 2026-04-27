@@ -18,3 +18,7 @@ global using Spinrise.Infrastructure.Areas.Purchase.Reports;
 global using Spinrise.Application.Areas.Common.Lookup.DTOs;
 global using Spinrise.Application.Areas.Common.Lookup.Interfaces;
 global using Spinrise.Application.Areas.Common.Lookup.Services;
+global using Spinrise.Application.Areas.Purchase.PurchaseOrder.DTOs;
+global using Spinrise.Application.Areas.Purchase.PurchaseOrder.Interfaces;
+global using Spinrise.Application.Areas.Purchase.PurchaseOrder.Services;
+global using Spinrise.Infrastructure.Areas.Purchase.PurchaseOrder;

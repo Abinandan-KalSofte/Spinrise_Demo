@@ -98,6 +98,10 @@ export function PRItemFormV2({
   const [lastPoSupplierCode,  setLastPoSupplierCode]  = useState<string | null>(null)
   const [lastPoSupplierName,  setLastPoSupplierName]  = useState<string | null>(null)
 
+  // item master reference fields (read-only, auto-filled on item select)
+  const [itemDrawNo, setItemDrawNo] = useState<string | null>(null)
+  const [itemCatNo,  setItemCatNo]  = useState<string | null>(null)
+
   // pending indent / PR warning for the currently selected item
   const [pendingWarning, setPendingWarning] = useState<string | null>(null)
 
@@ -122,7 +126,11 @@ export function PRItemFormV2({
         itemCode: editingItem.itemCode,
         itemName: editingItem.itemName,
         uom:      editingItem.uom,
+        drawNo:   editingItem.drawNo,
+        catNo:    editingItem.catNo,
       })
+      setItemDrawNo(editingItem.drawNo || null)
+      setItemCatNo(editingItem.catNo   || null)
       // Reverse-calculate days from today (0 if date has passed)
       const days = editingItem.requiredDate
         ? Math.max(0, dayjs(editingItem.requiredDate).diff(dayjs().startOf('day'), 'day'))
@@ -163,6 +171,8 @@ export function PRItemFormV2({
     setLastPoSupplierCode(null)
     setLastPoSupplierName(null)
     setPendingWarning(null)
+    setItemDrawNo(null)
+    setItemCatNo(null)
   }
 
   // ── Item search (debounced, stale-safe) ──────────────────────────────────
@@ -204,6 +214,8 @@ export function PRItemFormV2({
   const handleItemSelect = async (itemCode: string) => {
     const found = rawResults.find((i) => i.itemCode === itemCode) ?? null
     setSelectedInfo(found)
+    setItemDrawNo(found?.drawNo || null)
+    setItemCatNo(found?.catNo   || null)
 
     // Fetch current stock and other info
     setPendingWarning(null)
@@ -281,6 +293,8 @@ export function PRItemFormV2({
       lastPoDate:         lastPoDate,
       lastPoSupplierCode: lastPoSupplierCode,
       lastPoSupplierName: lastPoSupplierName,
+      drawNo:             itemDrawNo ?? editingItem?.drawNo ?? '',
+      catNo:              itemCatNo  ?? editingItem?.catNo  ?? '',
       // carry-over fields not in V2 form
       place:              editingItem?.place           ?? '',
       costCentreCode:     editingItem?.costCentreCode  ?? '',
@@ -345,7 +359,7 @@ export function PRItemFormV2({
           {/* ── Row 1: Item + UOM + Current Stock + Qty + Required in Days ── */}
           <Row gutter={[16, 0]} align="bottom">
             {/* Item search */}
-            <Col xs={24} sm={24} md={10} lg={8}>
+            <Col xs={24} sm={24} md={11} lg={12}>
               <Form.Item
                 name="itemCode"
                 label="Item"
@@ -359,6 +373,16 @@ export function PRItemFormV2({
                   form.getFieldValue('itemCode') &&
                   isDuplicate(form.getFieldValue('itemCode') as string)
                     ? 'Already in list' : undefined
+                }
+                extra={
+                  <Space size={6} style={{ marginTop: 3, flexWrap: 'wrap' }}>
+                    <Tag color="purple" style={{ fontSize: 11, margin: 0 }}>
+                      Cat No: {itemCatNo || '—'}
+                    </Tag>
+                    <Tag color="geekblue" style={{ fontSize: 11, margin: 0 }}>
+                      Drg No: {itemDrawNo || '—'}
+                    </Tag>
+                  </Space>
                 }
               >
                 <Select
@@ -425,28 +449,7 @@ export function PRItemFormV2({
             </Col>
 
             {/* Qty Required */}
-            <Col xs={24} sm={6} md={4} lg={4}>
-              <Form.Item
-                name="qtyRequired"
-                label="Qty Required"
-                rules={[
-                  { required: true, message: 'Required' },
-                  {
-                    validator: (_, val) =>
-                      val > 0
-                        ? Promise.resolve()
-                        : Promise.reject(new Error('Must be > 0')),
-                  },
-                ]}
-              >
-                <InputNumber
-                  style={{ width: '100%' }}
-                  min={0.0001}
-                  precision={4}
-                  placeholder="0.0000"
-                />
-              </Form.Item>
-            </Col>
+            
 
             {/* Required in Days + calculated date */}
             <Col xs={24} sm={12} md={7} lg={6}>

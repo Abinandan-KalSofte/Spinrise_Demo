@@ -1,5 +1,5 @@
 # ============================================================
-# Spinrise ERP — .gitignore
+# Spinrise ERP — .gitignore (production-ready)
 # ============================================================
 
 # ------------------------------------------------------------
@@ -10,11 +10,6 @@
 **/artifacts/
 **/*.pdb
 **/*.publish.xml
-
-# ------------------------------------------------------------
-# Other Files to ignore
-# ------------------------------------------------------------
-**/*.rar
 
 # ------------------------------------------------------------
 # .NET — generated / user-specific
@@ -30,7 +25,6 @@
 # Visual Studio IDE
 # ------------------------------------------------------------
 .vs/
-**/. vs/
 **/.vs/
 
 # ------------------------------------------------------------
@@ -42,6 +36,11 @@
 **/appsettings.local.json
 
 # ------------------------------------------------------------
+# Compiled binary artifacts / old Builds folder
+# ------------------------------------------------------------
+Development/Builds/
+
+# ------------------------------------------------------------
 # Node / Frontend (Development/spinrise-web)
 # ------------------------------------------------------------
 **/node_modules/
@@ -50,12 +49,21 @@
 **/.vite/
 **/.cache/
 
-# Frontend env files (all environments)
+# Frontend env files — never commit any environment config
 Development/spinrise-web/.env
 Development/spinrise-web/.env.*
 !Development/spinrise-web/.env.example
 
-# Frontend debug logs
+# Frontend build output log
+Development/spinrise-web/build-output.txt
+
+# Frontend runtime process logs
+Development/spinrise-web/.runtime/
+
+# ------------------------------------------------------------
+# Log files — all environments
+# ------------------------------------------------------------
+**/*.log
 **/npm-debug.log*
 **/yarn-debug.log*
 **/yarn-error.log*
@@ -70,11 +78,16 @@ Development/spinrise-web/.env.*
 Development/Backend/Spinrise.DBScripts/merged.sql
 
 # ------------------------------------------------------------
+# Deployment export packages (local staging area, never commit)
+# ------------------------------------------------------------
+Exports/
+
+# ------------------------------------------------------------
 # Claude Code — local (machine-specific) settings only
 # ------------------------------------------------------------
 .claude/settings.local.json
 
-# Claude session memory stored at repo root (personal, not shared)
+# Claude session memory — personal, not shared
 memory/
 
 # ------------------------------------------------------------
@@ -93,6 +106,23 @@ prompts/
 Thumbs.db
 desktop.ini
 ehthumbs.db
+
+# ------------------------------------------------------------
+# Microsoft Office temp files
+# ------------------------------------------------------------
+~$*
+**/*.tmp
+
+# ------------------------------------------------------------
+# Email archive files (project comms, not source code)
+# ------------------------------------------------------------
+**/*.eml
+
+# ------------------------------------------------------------
+# Archive files
+# ------------------------------------------------------------
+**/*.rar
+**/*.zip
 
 # ------------------------------------------------------------
 # JetBrains IDEs

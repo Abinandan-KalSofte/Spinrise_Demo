@@ -26,6 +26,12 @@ public static class ApiRoutes
         public const string BaseRoute = $"{ApiVersionPrefix}/lookups";
     }
 
+    public static class Divisions
+    {
+        public const string BaseRoute  = $"{ApiVersionPrefix}/divisions";
+        public const string GetActive  = $"{ApiVersionPrefix}/divisions/active";
+    }
+
     /// <summary>
     /// Report endpoints follow the pattern:
     ///   GET api/v1/{module}/reports/{resource}/{id}/{format}
@@ -115,14 +121,15 @@ public static class StoredProcedures
 
     public static class Lookup
     {
-        public const string GetDepartments = "ksp_GetDepartments";
-        public const string GetEmployees   = "ksp_GetEmployees";
-        public const string GetPOTypes     = "ksp_GetPOType";
-        public const string GetItems         = "ksp_GetItems";
-        public const string GetItemsEnriched = "ksp_GetItemsEnriched";
-        public const string GetMachines    = "ksp_GetMachines";
-        public const string GetSubCosts    = "ksp_GetSubCosts";
+        public const string GetDepartments     = "ksp_GetDepartments";
+        public const string GetEmployees       = "ksp_GetEmployees";
+        public const string GetPOTypes         = "ksp_GetPOType";
+        public const string GetItems           = "ksp_GetItems";
+        public const string GetItemsEnriched   = "ksp_GetItemsEnriched";
+        public const string GetMachines        = "ksp_GetMachines";
+        public const string GetSubCosts        = "ksp_GetSubCosts";
         public const string GetDivisionDetails = "ksp_GetDivisionDetails";
+        public const string GetActiveDivisions = "ksp_GetActiveDivisions";
     }
 
     public static class Stock
@@ -133,6 +140,30 @@ public static class StoredProcedures
     public static class PurchaseReport
     {
         public const string GetDatewiseRequisitionReport = "ksp_PO_RequisitionReport_DateWise";
+    }
+
+    public static class PurchaseOrder
+    {
+        public const string GenerateNumber       = "ksp_RMI_PO_GenerateNumber";
+        public const string PreChecks            = "ksp_RMI_PO_PreChecks";
+        public const string GetParam             = "ksp_RMI_PO_GetParam";
+        public const string GetDefaultCurrency   = "ksp_RMI_PO_GetDefaultCurrency";
+        public const string GetGSTConfig         = "ksp_RMI_PO_GetGSTConfig";
+        public const string GetDeleteReasons     = "ksp_RMI_PO_GetDeleteReasons";
+        public const string GetPaginated         = "ksp_RMI_PO_GetPaginated";
+        public const string GetById              = "ksp_RMI_PO_GetById";
+        public const string GetPendingPRLines    = "ksp_RMI_PO_GetPendingPRLines";
+        public const string FilterPRLines        = "ksp_RMI_PO_FilterPRLines";
+        public const string InsertLine           = "ksp_RMI_PO_InsertLine";
+        public const string InsertDiscountRate   = "ksp_RMI_PO_InsertDiscountRate";
+        public const string InsertDeliverySchedule = "ksp_RMI_PO_InsertDeliverySchedule";
+        public const string UpdatePRBalance      = "ksp_RMI_PO_UpdatePRBalance";
+        public const string InsertSlotNo         = "ksp_RMI_PO_InsertSlotNo";
+        public const string UpdateLine           = "ksp_RMI_PO_UpdateLine";
+        public const string Delete               = "ksp_RMI_PO_Delete";
+        public const string InsertAuditLog       = "ksp_RMI_PO_InsertAuditLog";
+        public const string GetApprovalStatus    = "ksp_RMI_PO_GetApprovalStatus";
+        public const string UpdateApproval       = "ksp_RMI_PO_UpdateApproval";
     }
 }
 

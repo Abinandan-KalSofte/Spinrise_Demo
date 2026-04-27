@@ -4,6 +4,11 @@ export interface LoginDto {
   password: string
 }
 
+export interface ActiveDivisionDto {
+  divCode: string
+  divName: string
+}
+
 export type UserRole = 'Admin' | 'Manager' | 'User'
 
 export interface AuthUser {

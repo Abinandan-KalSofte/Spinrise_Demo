@@ -1,18 +1,22 @@
-import { App as AntApp, Button, Col, Form, Input, Row, Typography } from 'antd'
+import { useEffect, useState } from 'react'
+import { App as AntApp, Button, Col, DatePicker, Form, Input, Row, Select, Typography } from 'antd'
 import {
   BankOutlined,
+  BarChartOutlined,
+  CalendarOutlined,
   LockOutlined,
-  UserOutlined,
   SafetyCertificateOutlined,
   ThunderboltOutlined,
-  BarChartOutlined,
+  UserOutlined,
 } from '@ant-design/icons'
+import dayjs from 'dayjs'
 import { useAsync } from '@/shared/hooks/useAsync'
 import { getErrorMessage } from '@/shared/lib/errorHandler'
 import { useNavigate } from 'react-router-dom'
+import { authApi } from '../api/authApi'
 import { authService } from '../services/authService'
 import { useAuthStore } from '../store/useAuthStore'
-import type { LoginDto } from '../types'
+import type { ActiveDivisionDto, LoginDto } from '../types'
 
 const FEATURES = [
   { icon: <SafetyCertificateOutlined />, text: 'Role-based access control' },
@@ -20,17 +24,37 @@ const FEATURES = [
   { icon: <BarChartOutlined />,          text: 'Live procurement analytics' },
 ]
 
+interface LoginFormValues extends LoginDto {
+  processingDate: ReturnType<typeof dayjs>
+}
+
 export default function LoginPage() {
   const { message } = AntApp.useApp()
-  const [form] = Form.useForm<LoginDto>()
-  const setAuthSession = useAuthStore((state) => state.setAuthSession)
-  const navigate = useNavigate()
+  const [form]      = Form.useForm<LoginFormValues>()
+  const setAuthSession    = useAuthStore((s) => s.setAuthSession)
+  const setProcessingDate = useAuthStore((s) => s.setProcessingDate)
+  const navigate          = useNavigate()
   const { execute, loading } = useAsync(authService.login)
 
-  const onFinish = async (values: LoginDto) => {
+  const [divisions,      setDivisions]      = useState<ActiveDivisionDto[]>([])
+  const [divsLoading,    setDivsLoading]    = useState(false)
+  const [divsFailed,     setDivsFailed]     = useState(false)
+
+  useEffect(() => {
+    setDivsLoading(true)
+    authApi.getActiveDivisions()
+      .then((divisions) => { setDivisions(divisions ?? []) })
+      .catch(() => { setDivsFailed(true) })
+      .finally(() => setDivsLoading(false))
+  }, [])
+
+  const onFinish = async (values: LoginFormValues) => {
     try {
-      const session = await execute(values)
+      const procDate = values.processingDate.format('YYYY-MM-DD')
+      const { processingDate: _pd, ...loginPayload } = values
+      const session = await execute(loginPayload)
       setAuthSession(session)
+      setProcessingDate(procDate)
       message.success('Login successful')
       navigate('/purchase/requisition', { replace: true })
     } catch (error) {
@@ -45,7 +69,6 @@ export default function LoginPage() {
         {/* ── Left panel — branding ─────────────────────────────────────── */}
         <Col xs={0} md={12} className="login-left">
 
-          {/* Decorative background blobs */}
           <div style={{
             position: 'absolute', top: -80, right: -80,
             width: 320, height: 320, borderRadius: '50%',
@@ -62,10 +85,7 @@ export default function LoginPage() {
             background: 'rgba(22,119,255,0.18)', pointerEvents: 'none',
           }} />
 
-          {/* Content */}
           <div style={{ position: 'relative', zIndex: 1, maxWidth: 420, textAlign: 'center' }}>
-
-            {/* Logo mark */}
             <div style={{
               width: 72, height: 72, borderRadius: 20,
               background: 'rgba(255,255,255,0.12)',
@@ -78,15 +98,12 @@ export default function LoginPage() {
             }}>
               S
             </div>
-
             <Typography.Title level={2} style={{ color: '#ffffff', margin: '0 0 8px', fontSize: 28, fontWeight: 700 }}>
               Spinrise ERP
             </Typography.Title>
             <Typography.Text style={{ color: 'rgba(255,255,255,0.65)', fontSize: 15, display: 'block', marginBottom: 48 }}>
               Enterprise Resource Planning Platform
             </Typography.Text>
-
-            {/* Feature pills */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               {FEATURES.map((f, i) => (
                 <div key={i} style={{
@@ -94,8 +111,7 @@ export default function LoginPage() {
                   background: 'rgba(255,255,255,0.07)',
                   border: '1px solid rgba(255,255,255,0.10)',
                   borderRadius: 12, padding: '12px 18px',
-                  backdropFilter: 'blur(8px)',
-                  textAlign: 'left',
+                  backdropFilter: 'blur(8px)', textAlign: 'left',
                 }}>
                   <div style={{
                     width: 36, height: 36, borderRadius: 10, flexShrink: 0,
@@ -111,7 +127,6 @@ export default function LoginPage() {
                 </div>
               ))}
             </div>
-
             <Typography.Text style={{ color: 'rgba(255,255,255,0.30)', fontSize: 12, display: 'block', marginTop: 48 }}>
               © {new Date().getFullYear()} Spinrise · All rights reserved
             </Typography.Text>
@@ -133,47 +148,84 @@ export default function LoginPage() {
               }}>
                 S
               </div>
-              <Typography.Text style={{ fontSize: 18, fontWeight: 700, color: '#111827' }}>
+              <Typography.Text style={{ fontSize: 18, fontWeight: 700 }}>
                 Spinrise ERP
               </Typography.Text>
             </div>
 
-            {/* Heading */}
             <div style={{ marginBottom: 32 }}>
-              <Typography.Title level={3} style={{ margin: '0 0 6px', fontSize: 24, fontWeight: 700, color: '#111827' }}>
+              <Typography.Title level={3} style={{ margin: '0 0 6px', fontSize: 24, fontWeight: 700 }}>
                 Welcome back
               </Typography.Title>
-              <Typography.Text style={{ color: '#6b7280', fontSize: 14 }}>
+              <Typography.Text type="secondary" style={{ fontSize: 14 }}>
                 Sign in to your workspace to continue
               </Typography.Text>
             </div>
 
-            {/* Form */}
             <Form
               form={form}
               layout="vertical"
               onFinish={onFinish}
-              initialValues={{ divCode: '', userName: '', password: '' }}
+              initialValues={{ processingDate: dayjs() }}
               requiredMark={false}
             >
+              {/* Division */}
               <Form.Item
-                label={<span style={{ fontSize: 12, fontWeight: 500, color: '#6b7280' }}>Division Code</span>}
+                label={<span style={{ fontSize: 12, fontWeight: 500 }}>Division</span>}
                 name="divCode"
-                rules={[{ required: true, message: 'Please enter your division code' }]}
+                rules={[{ required: true, message: 'Please select your division' }]}
                 style={{ marginBottom: 16 }}
               >
-                <Input
+                {divsFailed ? (
+                  <Input
+                    className="login-input"
+                    prefix={<BankOutlined style={{ color: '#9ca3af' }} />}
+                    placeholder="Enter division code"
+                    maxLength={4}
+                    size="large"
+                    style={{ textTransform: 'uppercase' }}
+                  />
+                ) : (
+                  <Select
+                    showSearch
+                    size="large"
+                    loading={divsLoading}
+                    placeholder="Select division"
+                    optionFilterProp="label"
+                    suffixIcon={<BankOutlined style={{ color: '#9ca3af' }} />}
+                    options={divisions.map((d) => ({
+                      value: d.divCode,
+                      label: `${d.divCode} – ${d.divName}`,
+                    }))}
+                    filterOption={(input, option) =>
+                      (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                    }
+                    style={{ width: '100%' }}
+                  />
+                )}
+              </Form.Item>
+
+              {/* Processing Date */}
+              <Form.Item
+                label={<span style={{ fontSize: 12, fontWeight: 500 }}>Processing Date</span>}
+                name="processingDate"
+                rules={[{ required: true, message: 'Please select processing date' }]}
+                style={{ marginBottom: 16 }}
+              >
+                <DatePicker
                   className="login-input"
-                  prefix={<BankOutlined style={{ color: '#9ca3af' }} />}
-                  placeholder="e.g. SP"
-                  maxLength={2}
                   size="large"
-                  style={{ textTransform: 'uppercase' }}
+                  style={{ width: '100%' }}
+                  format="DD-MM-YYYY"
+                  suffixIcon={<CalendarOutlined style={{ color: '#9ca3af' }} />}
+                  disabledDate={(d) => d.isAfter(dayjs(), 'day')}
+                  allowClear={false}
                 />
               </Form.Item>
 
+              {/* Username */}
               <Form.Item
-                label={<span style={{ fontSize: 12, fontWeight: 500, color: '#6b7280' }}>Username</span>}
+                label={<span style={{ fontSize: 12, fontWeight: 500 }}>Username</span>}
                 name="userName"
                 rules={[{ required: true, message: 'Please enter your username' }]}
                 style={{ marginBottom: 16 }}
@@ -187,8 +239,9 @@ export default function LoginPage() {
                 />
               </Form.Item>
 
+              {/* Password */}
               <Form.Item
-                label={<span style={{ fontSize: 12, fontWeight: 500, color: '#6b7280' }}>Password</span>}
+                label={<span style={{ fontSize: 12, fontWeight: 500 }}>Password</span>}
                 name="password"
                 rules={[{ required: true, message: 'Please enter your password' }]}
                 style={{ marginBottom: 24 }}
@@ -215,8 +268,7 @@ export default function LoginPage() {
               </Form.Item>
             </Form>
 
-            {/* Footer */}
-            <Typography.Text style={{ display: 'block', textAlign: 'center', marginTop: 28, fontSize: 12, color: '#9ca3af' }}>
+            <Typography.Text type="secondary" style={{ display: 'block', textAlign: 'center', marginTop: 28, fontSize: 12 }}>
               Having trouble? Contact your system administrator
             </Typography.Text>
           </div>

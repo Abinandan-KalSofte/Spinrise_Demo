@@ -1,7 +1,38 @@
-import { Button, Card, Descriptions, Modal, Skeleton, Space, Table, Tag, Tooltip, Typography } from 'antd'
+import React from 'react'
+import { Button, Card, Modal, Skeleton, Table, Tag, Typography } from 'antd'
+import {
+  BankOutlined,
+  CalendarOutlined,
+  CheckCircleOutlined,
+  EditOutlined,
+  FileTextOutlined,
+  NumberOutlined,
+  TagOutlined,
+  UserOutlined,
+} from '@ant-design/icons'
 import dayjs from 'dayjs'
-import type { PRHeaderResponse } from '../../types'
+import type { PRHeaderResponse, PRLineResponse } from '../../types'
 import { STATUS_TAG } from './prListConfig'
+
+// ── Status accent colours ──────────────────────────────────────────────────────
+
+const STATUS_BORDER: Record<string, string> = {
+  OPEN:      '#1d4ed8',
+  APPROVED:  '#7c3aed',
+  RECEIVED:  '#0284c7',
+  CONVERTED: '#16a34a',
+  CANCELLED: '#dc2626',
+}
+
+const STATUS_BG: Record<string, string> = {
+  OPEN:      'rgba(29,78,216,0.04)',
+  APPROVED:  'rgba(124,58,237,0.04)',
+  RECEIVED:  'rgba(2,132,199,0.04)',
+  CONVERTED: 'rgba(22,163,74,0.04)',
+  CANCELLED: 'rgba(220,38,38,0.04)',
+}
+
+// ── Props ──────────────────────────────────────────────────────────────────────
 
 interface PRViewModalProps {
   open:    boolean
@@ -10,157 +41,366 @@ interface PRViewModalProps {
   onClose: () => void
 }
 
+// ── Modal shell ────────────────────────────────────────────────────────────────
+
 export function PRViewModal({ open, pr, loading, onClose }: PRViewModalProps) {
   return (
     <Modal
       open={open}
       centered
       onCancel={onClose}
-      width={960}
-      title={
-        pr ? (
-          <Space size={10}>
-            <Typography.Text strong style={{ fontSize: 16 }}>PR #{pr.prNo}</Typography.Text>
-            <Tag
-              color={STATUS_TAG[pr.prStatus]?.color ?? 'default'}
-              style={{ fontWeight: 600, fontSize: 12 }}
-            >
-              {STATUS_TAG[pr.prStatus]?.label ?? pr.prStatus}
-            </Tag>
-          </Space>
-        ) : 'Purchase Requisition'
-      }
-      footer={<Button type="primary" onClick={onClose}>Close</Button>}
-      styles={{ body: { maxHeight: '70vh', overflowY: 'auto', paddingTop: 8 } }}
+      width="90vw"
+      title={null}
+      footer={null}
+      closable={false}
+      styles={{
+        content: { borderRadius: 12, overflow: 'hidden', padding: 0 },
+        body:    { padding: 0 },
+      }}
       destroyOnClose
     >
       {loading ? (
-        <Skeleton active paragraph={{ rows: 8 }} />
+        <div style={{ padding: 28 }}>
+          <Skeleton active paragraph={{ rows: 10 }} />
+        </div>
       ) : pr ? (
-        <PRViewContent pr={pr} />
+        <PRViewContent
+          pr={pr}
+          accentColor={STATUS_BORDER[pr.prStatus] ?? '#1677ff'}
+          accentBg={STATUS_BG[pr.prStatus]    ?? 'rgba(22,119,255,0.04)'}
+          onClose={onClose}
+        />
       ) : null}
     </Modal>
   )
 }
 
-// ── Private sub-component ──────────────────────────────────────────────────────
+// ── Field pair ─────────────────────────────────────────────────────────────────
 
-function PRViewContent({ pr }: { pr: PRHeaderResponse }) {
+function Field({ icon, label, value }: { icon: React.ReactNode; label: string; value: React.ReactNode }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+        <span style={{ color: '#94a3b8', fontSize: 11, display: 'flex' }}>{icon}</span>
+        <Typography.Text style={{
+          fontSize:      11,
+          color:         '#94a3b8',
+          fontWeight:    700,
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em',
+        }}>
+          {label}
+        </Typography.Text>
+      </div>
+      <div style={{ fontSize: 13, color: '#1e293b', fontWeight: 500, paddingLeft: 17 }}>
+        {value}
+      </div>
+    </div>
+  )
+}
 
-      <Descriptions
-        size="small"
-        bordered
-        column={{ xs: 1, sm: 2 }}
-        labelStyle={{ fontWeight: 500, width: 130, background: '#fafafa' }}
-      >
-        <Descriptions.Item label="PR No">
-          <Typography.Text strong style={{ fontSize: 15 }}>#{pr.prNo}</Typography.Text>
-        </Descriptions.Item>
-        <Descriptions.Item label="PR Date">
-          {pr.prDate ? dayjs(pr.prDate).format('DD/MM/YYYY') : '—'}
-        </Descriptions.Item>
-        <Descriptions.Item label="Department">
-          {pr.depName ? `${pr.depCode} – ${pr.depName}` : (pr.depCode || '—')}
-        </Descriptions.Item>
-        <Descriptions.Item label="Section">{pr.section || '—'}</Descriptions.Item>
-        <Descriptions.Item label="Requested By">{pr.reqName || '—'}</Descriptions.Item>
-        <Descriptions.Item label="Reference No">{pr.refNo || '—'}</Descriptions.Item>
-        <Descriptions.Item label="Indent Type">{pr.iType || '—'}</Descriptions.Item>
-        <Descriptions.Item label="PO Group">{pr.poGroupCode || '—'}</Descriptions.Item>
-        <Descriptions.Item label="Sale Order No">{pr.saleOrderNo || '—'}</Descriptions.Item>
-        <Descriptions.Item label="Scope Code">{pr.scopeCode || '—'}</Descriptions.Item>
-        <Descriptions.Item label="Status">
-          <Tag color={STATUS_TAG[pr.prStatus]?.color ?? 'default'} style={{ fontWeight: 600 }}>
-            {STATUS_TAG[pr.prStatus]?.label ?? pr.prStatus}
-          </Tag>
-        </Descriptions.Item>
-        <Descriptions.Item label="Created By">{pr.createdBy}</Descriptions.Item>
-      </Descriptions>
+// ── Section heading ────────────────────────────────────────────────────────────
 
-      <Card
-        size="small"
-        bordered
-        style={{ borderRadius: 6 }}
-        title={
-          <Space size={6}>
-            <Typography.Text strong style={{ fontSize: 13 }}>Line Items</Typography.Text>
-            <Tag style={{ fontVariantNumeric: 'tabular-nums' }}>{pr.lines.length}</Tag>
-          </Space>
-        }
-        styles={{ body: { padding: 0 } }}
-      >
-        <Table
+function SectionHeading({ label, accentColor }: { label: string; accentColor: string }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+      <div style={{ width: 3, height: 14, borderRadius: 2, background: accentColor, flexShrink: 0 }} />
+      <Typography.Text style={{
+        fontSize:      11,
+        fontWeight:    700,
+        color:         '#64748b',
+        textTransform: 'uppercase',
+        letterSpacing: '0.06em',
+      }}>
+        {label}
+      </Typography.Text>
+    </div>
+  )
+}
+
+// ── Main content ───────────────────────────────────────────────────────────────
+
+function PRViewContent({ pr, accentColor, accentBg, onClose }: {
+  pr:          PRHeaderResponse
+  accentColor: string
+  accentBg:    string
+  onClose:     () => void
+}) {
+  const statusLabel = STATUS_TAG[pr.prStatus]?.label ?? pr.prStatus
+
+  const totalQty  = pr.lines.reduce((s, l) => s + (l.qtyRequired ?? 0), 0)
+  const totalCost = pr.lines.reduce((s, l) => {
+    const c = l.approxCost && l.approxCost > 0
+      ? l.approxCost
+      : (l.lastPoRate ?? 0) * (l.qtyRequired ?? 0)
+    return s + c
+  }, 0)
+
+  // Normalise empty-ish values to em-dash
+  const v = (x: string | number | undefined | null): string => {
+    if (x == null || x === '' || x === 0 || x === '0') return '—'
+    return String(x)
+  }
+
+  const infoGrid: React.CSSProperties = {
+    display:             'grid',
+    gridTemplateColumns: '1fr 1fr 1fr',
+    gap:                 '16px 28px',
+    background:          '#f8fafc',
+    borderRadius:        10,
+    padding:             '18px 22px',
+    border:              '1px solid #e2e8f0',
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+
+      {/* ── Status Banner ─────────────────────────────────────────────────── */}
+      <div style={{
+        borderTop:      `4px solid ${accentColor}`,
+        background:     accentBg,
+        padding:        '16px 24px 14px',
+        display:        'flex',
+        alignItems:     'flex-start',
+        justifyContent: 'space-between',
+        borderBottom:   '1px solid #e2e8f0',
+      }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 5 }}>
+            <Typography.Text strong style={{ fontSize: 20, color: '#0f172a', letterSpacing: '-0.3px' }}>
+              PR #{pr.prNo}
+            </Typography.Text>
+            <Tag style={{
+              background:   accentColor,
+              color:        '#fff',
+              border:       'none',
+              fontWeight:   700,
+              fontSize:     12,
+              borderRadius: 6,
+              padding:      '2px 10px',
+              margin:       0,
+            }}>
+              {statusLabel}
+            </Tag>
+          </div>
+          <Typography.Text style={{ fontSize: 13, color: '#64748b' }}>
+            <BankOutlined style={{ marginRight: 5 }} />
+            {pr.depName ? `${pr.depCode} – ${pr.depName}` : (pr.depCode || '—')}
+          </Typography.Text>
+        </div>
+
+        <Button
+          type="text"
           size="small"
-          rowKey="prSNo"
-          dataSource={pr.lines}
-          scroll={{ x: 760 }}
-          pagination={false}
-          columns={[
-            { title: '#', dataIndex: 'prSNo', key: 'prSNo', width: 40, align: 'center' },
-            {
-              title: 'Item Code', dataIndex: 'itemCode', key: 'itemCode', width: 88,
-              render: (v: string) => (
-                <Typography.Text code style={{ fontSize: 11 }}>{v}</Typography.Text>
-              ),
-            },
-            {
-              title: 'Description', dataIndex: 'itemName', key: 'itemName', ellipsis: true,
-              render: (v: string | undefined) => v
-                ? <Tooltip title={v}><span style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{v}</span></Tooltip>
-                : '—',
-            },
-            {
-              title: 'UOM', dataIndex: 'uom', key: 'uom', width: 52, align: 'center',
-              render: (v: string | undefined) => v || '—',
-            },
-            {
-              title: 'Qty', dataIndex: 'qtyRequired', key: 'qtyRequired', width: 60, align: 'right',
-              render: (v: number) => <strong>{v}</strong>,
-            },
-            {
-              title: 'Stock', dataIndex: 'currentStock', key: 'currentStock', width: 68, align: 'right',
-              render: (v: number | undefined) =>
-                v != null ? v : <Typography.Text type="secondary">—</Typography.Text>,
-            },
-            {
-              title: 'Last Rate', dataIndex: 'lastPoRate', key: 'lastPoRate', width: 88, align: 'right',
-              render: (v: number | undefined) =>
-                v != null
-                  ? `₹${v.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
-                  : <Typography.Text type="secondary">—</Typography.Text>,
-            },
-            {
-              title: 'Reqd. Date', dataIndex: 'requiredDate', key: 'requiredDate', width: 86,
-              render: (v: string | undefined) =>
-                v ? dayjs(v).format('DD/MM/YYYY') : <Typography.Text type="secondary">—</Typography.Text>,
-            },
-            {
-              title: 'Approx. Cost', dataIndex: 'approxCost', key: 'approxCost', width: 98, align: 'right' as const,
-              render: (val: number | undefined, row: { lastPoRate?: number; qtyRequired: number }) => {
-                const v = val && val > 0 ? val : (row.lastPoRate ?? 0) * (row.qtyRequired ?? 0)
-                return v > 0
-                  ? `₹ ${v.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
-                  : <Typography.Text type="secondary">—</Typography.Text>
-              },
-            },
-            {
-              title: 'Machine', dataIndex: 'machineNo', key: 'machineNo', width: 70,
-              render: (v: string | undefined) => v || <Typography.Text type="secondary">—</Typography.Text>,
-            },
-            {
-              title: 'Draw No', dataIndex: 'drawNo', key: 'drawNo', width: 72,
-              render: (v: string | undefined) => v || <Typography.Text type="secondary">—</Typography.Text>,
-            },
-            {
-              title: 'Cat', dataIndex: 'categoryCode', key: 'categoryCode', width: 46, align: 'center' as const,
-              render: (v: string | undefined) => v || <Typography.Text type="secondary">—</Typography.Text>,
-            },
-          ]}
-        />
-      </Card>
+          onClick={onClose}
+          style={{ color: '#94a3b8', fontSize: 16, marginTop: 2 }}
+        >
+          ✕
+        </Button>
+      </div>
 
+      {/* ── Body ──────────────────────────────────────────────────────────── */}
+      <div style={{
+        padding:       '22px 24px',
+        display:       'flex',
+        flexDirection: 'column',
+        gap:           22,
+        maxHeight:     '80vh',
+        overflowY:     'auto',
+      }}>
+
+        {/* Section 1 — Requisition Details */}
+        <div>
+          <SectionHeading label="Requisition Details" accentColor={accentColor} />
+          <div style={infoGrid}>
+            <Field icon={<FileTextOutlined />} label="PR No"
+              value={<span style={{ fontWeight: 700, color: accentColor, fontSize: 14 }}>#{pr.prNo}</span>} />
+            <Field icon={<CalendarOutlined />} label="PR Date"
+              value={pr.prDate ? dayjs(pr.prDate).format('DD/MM/YYYY') : '—'} />
+            <Field icon={<BankOutlined />}     label="Department"
+              value={pr.depName ? `${pr.depCode} – ${pr.depName}` : v(pr.depCode)} />
+            <Field icon={<TagOutlined />}      label="Indent Type"  value={v(pr.iType)}   />
+            <Field icon={<NumberOutlined />}   label="Reference No" value={v(pr.refNo)}   />
+            <Field icon={<NumberOutlined />}   label="Section"      value={v(pr.section)} />
+          </div>
+        </div>
+
+        {/* Section 2 — Parties & Classification */}
+        <div>
+          <SectionHeading label="Parties & Classification" accentColor={accentColor} />
+          <div style={infoGrid}>
+            <Field icon={<UserOutlined />}       label="Requested By"  value={v(pr.reqName)}    />
+            <Field icon={<EditOutlined />}        label="Created By"    value={v(pr.createdBy)}  />
+            <Field icon={<CheckCircleOutlined />} label="Status"
+              value={
+                <Tag style={{
+                  background:   accentColor,
+                  color:        '#fff',
+                  border:       'none',
+                  fontWeight:   700,
+                  fontSize:     11,
+                  borderRadius: 4,
+                  padding:      '0 8px',
+                  margin:       0,
+                }}>
+                  {statusLabel}
+                </Tag>
+              } />
+            <Field icon={<NumberOutlined />} label="PO Group"      value={v(pr.poGroupCode)} />
+            <Field icon={<NumberOutlined />} label="Sale Order No" value={v(pr.saleOrderNo)} />
+            <Field icon={<NumberOutlined />} label="Scope Code"    value={v(pr.scopeCode)}   />
+          </div>
+        </div>
+
+        {/* Section 3 — Line Items */}
+        <div>
+          <SectionHeading label="Line Items" accentColor={accentColor} />
+          <Card
+            size="small"
+            bordered
+            style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid #e2e8f0' }}
+            styles={{ body: { padding: 0 } }}
+            title={
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <FileTextOutlined style={{ color: accentColor }} />
+                <Typography.Text strong style={{ fontSize: 13 }}>Items</Typography.Text>
+                <Tag style={{ fontVariantNumeric: 'tabular-nums', borderRadius: 10, margin: 0 }}>
+                  {pr.lines.length}
+                </Tag>
+              </div>
+            }
+          >
+            <Table
+              size="small"
+              rowKey="prSNo"
+              dataSource={pr.lines}
+              scroll={{ x: 'max-content' }}
+              pagination={false}
+              components={{
+                header: {
+                  cell: (props: React.HTMLAttributes<HTMLElement>) => (
+                    <th
+                      {...props}
+                      style={{
+                        ...props.style,
+                        background:  '#1e293b',
+                        color:       '#f8fafc',
+                        fontWeight:  700,
+                        fontSize:    12,
+                        borderColor: '#334155',
+                      }}
+                    />
+                  ),
+                },
+              }}
+              summary={() => (
+                <Table.Summary.Row style={{ background: '#f1f5f9' }}>
+                  <Table.Summary.Cell index={0} colSpan={4}>
+                    <Typography.Text strong style={{ fontSize: 12, color: '#475569' }}>
+                      Total
+                    </Typography.Text>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={4} align="right">
+                    <Typography.Text strong style={{ fontVariantNumeric: 'tabular-nums' }}>
+                      {totalQty}
+                    </Typography.Text>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={5} />
+                  <Table.Summary.Cell index={6} />
+                  <Table.Summary.Cell index={7} />
+                  <Table.Summary.Cell index={8} align="right">
+                    <Typography.Text strong style={{ color: accentColor, fontVariantNumeric: 'tabular-nums' }}>
+                      {totalCost > 0
+                        ? `₹ ${totalCost.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
+                        : '—'}
+                    </Typography.Text>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={9} colSpan={3} />
+                </Table.Summary.Row>
+              )}
+              columns={[
+                {
+                  title: '#', dataIndex: 'prSNo', key: 'prSNo', width: 40, align: 'center',
+                },
+                {
+                  title: 'Item Code', dataIndex: 'itemCode', key: 'itemCode', width: 100,
+                  render: (val: string) => (
+                    <Typography.Text code style={{ fontSize: 11 }}>{val}</Typography.Text>
+                  ),
+                },
+                {
+                  title: 'Description', dataIndex: 'itemName', key: 'itemName', minWidth: 200,
+                  render: (val: string | undefined) => val || '—',
+                },
+                {
+                  title: 'UOM', dataIndex: 'uom', key: 'uom', width: 52, align: 'center',
+                  render: (val: string | undefined) => val || '—',
+                },
+                {
+                  title: 'Qty', dataIndex: 'qtyRequired', key: 'qtyRequired', width: 65, align: 'right',
+                  render: (val: number) => <strong>{val}</strong>,
+                },
+                {
+                  title: 'Stock', dataIndex: 'currentStock', key: 'currentStock', width: 68, align: 'right',
+                  render: (val: number | undefined) =>
+                    val != null ? val : <Typography.Text type="secondary">—</Typography.Text>,
+                },
+                {
+                  title: 'Last Rate', dataIndex: 'lastPoRate', key: 'lastPoRate', width: 95, align: 'right',
+                  render: (val: number | undefined) =>
+                    val != null
+                      ? `₹${val.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
+                      : <Typography.Text type="secondary">—</Typography.Text>,
+                },
+                {
+                  title: 'Reqd. Date', dataIndex: 'requiredDate', key: 'requiredDate', width: 90,
+                  render: (val: string | undefined) =>
+                    val ? dayjs(val).format('DD/MM/YYYY') : <Typography.Text type="secondary">—</Typography.Text>,
+                },
+                {
+                  title: 'Approx. Cost', dataIndex: 'approxCost', key: 'approxCost', width: 110, align: 'right' as const,
+                  render: (val: number | undefined, row: PRLineResponse) => {
+                    const cost = val && val > 0 ? val : (row.lastPoRate ?? 0) * (row.qtyRequired ?? 0)
+                    return cost > 0
+                      ? `₹ ${cost.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
+                      : <Typography.Text type="secondary">—</Typography.Text>
+                  },
+                },
+                {
+                  title: 'Machine', dataIndex: 'machineNo', key: 'machineNo', width: 76,
+                  render: (val: string | undefined) => val || <Typography.Text type="secondary">—</Typography.Text>,
+                },
+                {
+                  title: 'Draw No', dataIndex: 'drawNo', key: 'drawNo', width: 76,
+                  render: (val: string | undefined) => val || <Typography.Text type="secondary">—</Typography.Text>,
+                },
+                {
+                  title: 'Cat', dataIndex: 'categoryCode', key: 'categoryCode', width: 48, align: 'center' as const,
+                  render: (val: string | undefined) => val || <Typography.Text type="secondary">—</Typography.Text>,
+                },
+              ]}
+            />
+          </Card>
+        </div>
+
+        {/* Footer action */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button
+            type="primary"
+            onClick={onClose}
+            style={{
+              borderRadius:  8,
+              paddingInline: 28,
+              fontWeight:    600,
+              background:    accentColor,
+              borderColor:   accentColor,
+            }}
+          >
+            Close
+          </Button>
+        </div>
+
+      </div>
     </div>
   )
 }

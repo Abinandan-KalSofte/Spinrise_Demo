@@ -86,4 +86,13 @@ public class LookupRepository : ILookupRepository
             commandType: CommandType.StoredProcedure);
     }
 
+    public async Task<IEnumerable<ActiveDivisionDto>> GetActiveDivisionsAsync()
+    {
+        var connection = _uow.Connection ?? throw new InvalidOperationException(ConnectionNotInitializedMessage);
+        return await connection.QueryAsync<ActiveDivisionDto>(
+            StoredProcedures.Lookup.GetActiveDivisions,
+            transaction: _uow.Transaction,
+            commandType: CommandType.StoredProcedure);
+    }
+
 }

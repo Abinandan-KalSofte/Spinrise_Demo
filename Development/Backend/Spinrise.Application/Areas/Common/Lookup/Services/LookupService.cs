@@ -136,4 +136,21 @@ public class LookupService : ILookupService
         }
     }
 
+    public async Task<IEnumerable<ActiveDivisionDto>> GetActiveDivisionsAsync()
+    {
+        await _uow.BeginAsync();
+        try
+        {
+            var data = await _repo.GetActiveDivisionsAsync();
+            await _uow.CommitAsync();
+            return data;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to get active divisions list");
+            await _uow.RollbackAsync();
+            throw;
+        }
+    }
+
 }

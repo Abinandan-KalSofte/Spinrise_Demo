@@ -40,7 +40,7 @@ const COLUMNS: ColumnsType<RecentPO> = [
     title:     'Vendor',
     dataIndex: 'vendor',
     key:       'vendor',
-    ellipsis:  true,
+    minWidth:  160,
   },
   {
     title:     'Amount',
@@ -97,6 +97,7 @@ export function RecentTable({ data, loading }: RecentTableProps) {
         loading={loading}
         size="small"
         pagination={false}
+        scroll={{ x: 'max-content' }}
         onRow={() => ({
           onMouseEnter: (e) => { (e.currentTarget as HTMLElement).style.background = '#fafafa' },
           onMouseLeave: (e) => { (e.currentTarget as HTMLElement).style.background = '' },
