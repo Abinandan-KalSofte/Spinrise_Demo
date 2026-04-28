@@ -1324,6 +1324,20 @@ BEGIN
 END;
 GO
 
+-- ksp_PR_GetMaxPrSNo
+CREATE OR ALTER PROCEDURE dbo.ksp_PR_GetMaxPrSNo
+    @DivCode VARCHAR(2),
+    @PrNo    NUMERIC(6,0)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT ISNULL(MAX(prsno), 0)
+    FROM   dbo.po_prl
+    WHERE  divcode = @DivCode
+      AND  prno    = @PrNo;
+END;
+GO
+
 -- ksp_PR_Delete
 CREATE OR ALTER PROCEDURE dbo.ksp_PR_Delete
     @DivCode      VARCHAR(2),

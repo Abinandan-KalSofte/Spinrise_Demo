@@ -17,13 +17,11 @@ public class PurchaseRequisitionController : BaseApiController
         _service = service;
     }
 
-    // Extracts the authenticated user's division code from the JWT claim.
-    // Throws 401 if the claim is missing — prevents any cross-division access.
+    // Throws 401 if the claim is missing — prevents cross-division access.
     private string RequireDivCode() =>
         User.FindFirst(SpinriseClaims.DivCode)?.Value?.Trim()
         ?? throw new UnauthorizedAccessException("Division code not found in token. Access denied.");
 
-    // Creates audit context from current request and user claims.
     private AuditContext CreateAuditContext()
     {
         var userId    = User.FindFirst(SpinriseClaims.UserId)?.Value

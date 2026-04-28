@@ -61,8 +61,7 @@ export function PRHeaderCards({
 
   const deptOptions      = departments.map((d) => ({ value: d.depCode, label: `${d.depCode} – ${d.depName}` }))
   const empOptions       = employees.map((e)   => ({ value: e.empNo,   label: `${e.empNo} – ${e.eName}` }))
-  const typeOptions      = poTypes.map((p)     => ({ value: p.typeCode, label: `${p.typeCode} – ${p.typName}` }))
-  const orderTypeOptions = typeOptions.filter((o) => ['E', 'O', 'U'].includes(o.value))
+  const orderTypeOptions = poTypes.map((p) => ({ value: p.typeCode, label: `${p.typeCode} – ${p.typName}` }))
 
   const prNoText = savedPrNo ? String(savedPrNo) : ''
 

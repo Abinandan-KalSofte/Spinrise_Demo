@@ -16,9 +16,8 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
     public async Task<PreCheckResult> RunPreChecksAsync(string divCode)
     {
         await _uow.BeginAsync();
-        var result = await _repo.RunPreChecksAsync(divCode.Trim());
-        await _uow.CommitAsync();
-        return result;
+        try { return await _repo.RunPreChecksAsync(divCode.Trim()); }
+        finally { await _uow.CommitAsync(); }
     }
 
     // ── List / Get ────────────────────────────────────────────────────────────
@@ -28,35 +27,38 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
         string? depCode, string? status)
     {
         await _uow.BeginAsync();
-        var result = await _repo.GetAllAsync(
-            divCode.Trim(), prNo?.Trim(), fromDate, toDate,
-            depCode?.Trim(), status?.Trim());
-        await _uow.CommitAsync();
-        return result;
+        try
+        {
+            return await _repo.GetAllAsync(
+                divCode.Trim(), prNo?.Trim(), fromDate, toDate,
+                depCode?.Trim(), status?.Trim());
+        }
+        finally { await _uow.CommitAsync(); }
     }
 
     public async Task<PRStatusSummaryDto> GetStatusSummaryAsync(string divCode, PRListQueryDto query)
     {
         await _uow.BeginAsync();
-        var result = await _repo.GetStatusSummaryAsync(divCode.Trim(), query);
-        await _uow.CommitAsync();
-        return result;
+        try { return await _repo.GetStatusSummaryAsync(divCode.Trim(), query); }
+        finally { await _uow.CommitAsync(); }
     }
 
     public async Task<PagedResult<PRSummaryResponseDto>> GetPaginatedAsync(string divCode, PRListQueryDto query)
     {
         await _uow.BeginAsync();
-        var result = await _repo.GetPaginatedAsync(divCode.Trim(), query);
-        await _uow.CommitAsync();
-        return result;
+        try { return await _repo.GetPaginatedAsync(divCode.Trim(), query); }
+        finally { await _uow.CommitAsync(); }
     }
 
     public async Task<PRHeaderResponseDto?> GetByIdAsync(string divCode, long prNo, DateTime? startDate = null, DateTime? endDate = null)
     {
         await _uow.BeginAsync();
-        var header = await _repo.GetByIdAsync(divCode.Trim(), prNo, startDate, endDate);
-        await _uow.CommitAsync();
-        return header?.ToResponseDto();
+        try
+        {
+            var header = await _repo.GetByIdAsync(divCode.Trim(), prNo, startDate, endDate);
+            return header?.ToResponseDto();
+        }
+        finally { await _uow.CommitAsync(); }
     }
 
     // ── Item info (rate, stock, last PO, pending warnings) ───────────────────
@@ -142,9 +144,8 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
     public async Task<IEnumerable<PRDeleteReasonDto>> GetDeleteReasonsAsync()
     {
         await _uow.BeginAsync();
-        var result = await _repo.GetDeleteReasonsAsync();
-        await _uow.CommitAsync();
-        return result;
+        try { return await _repo.GetDeleteReasonsAsync(); }
+        finally { await _uow.CommitAsync(); }
     }
 
     // ── Create ────────────────────────────────────────────────────────────────
@@ -276,7 +277,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
         await _uow.BeginAsync();
         try
         {
-            var fetched = await _repo.GetByIdAsync(divCode, dto.PrNo);
+            var fetched = await _repo.GetByIdAsync(divCode, dto.PrNo, dto.PrDate.Date, dto.PrDate.Date);
             if (fetched is null)
             {
                 await _uow.CommitAsync();
@@ -348,12 +349,16 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
                 return (false, PRMessages.PrNotFound, []);
             }
 
-            // Soft-delete existing lines then re-insert (VB6 pattern)
+            // Soft-delete existing lines then re-insert (VB6 pattern).
+            // Read max prsno BEFORE soft-deleting — soft-delete keeps rows physically in PO_PRL
+            // (sets AmdFlg='Y'), so new inserts must continue the sequence past the current max
+            // to avoid PK collision on (divcode, prno, prdate, prsno).
+            var maxPrSNo = await _repo.GetMaxPrSNoAsync(divCode, dto.PrNo);
             await _repo.SoftDeleteLinesAsync(divCode, dto.PrNo);
 
             for (var i = 0; i < dto.Lines.Count; i++)
             {
-                var line = dto.Lines[i].ToEntity(divCode, dto.PrNo, i + 1);
+                var line = dto.Lines[i].ToEntity(divCode, dto.PrNo, maxPrSNo + i + 1);
                 await _repo.InsertLineAsync(line);
                 await _repo.InsertAuditLogAsync(header, line, AuditMod.Modify, audit);
             }

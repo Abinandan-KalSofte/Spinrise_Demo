@@ -10,6 +10,10 @@ public class UpdatePRHeaderDto
     [Range(1, long.MaxValue, ErrorMessage = "A valid PR number is required.")]
     public long PrNo { get; set; }
 
+    // Part of the composite key (PrNo + PrDate) — required to fetch the exact record.
+    [Required]
+    public DateTime PrDate { get; set; }
+
     [Required]
     [StringLength(10)]
     public string DepCode { get; set; } = string.Empty;

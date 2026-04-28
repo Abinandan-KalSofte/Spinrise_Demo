@@ -65,7 +65,7 @@ export function PRDataTable({
     {
       headerName: 'PR Date',
       field:      'prDate',
-      width:      112,
+      width:      160,
       sortable:   true,
       sort:       'desc',
       cellStyle:  CELL_BASE,
@@ -101,7 +101,7 @@ export function PRDataTable({
     {
       headerName:  'Items',
       field:       'lineCount',
-      width:       76,
+      width:       100,
       sortable:    true,
       headerClass: 'ag-header-center',
       cellStyle:   { ...CELL_BASE, justifyContent: 'center' },

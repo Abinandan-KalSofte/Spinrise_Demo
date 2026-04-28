@@ -18,7 +18,7 @@ import type { Dayjs } from 'dayjs'
 import { lookupApi } from '../../api/lookupApi'
 import { purchaseRequisitionApi } from '../../api/purchaseRequisitionApi'
 import { useLookupStore } from '../../store/useLookupStore'
-import type { ItemLookup, MachineLookup, PRItemHistoryDto, PRLineFormItem } from '../../types'
+import type { ItemLookup, MachineLookup, PRItemHistoryDto, PRLineFormItem, PreCheckResult } from '../../types'
 
 ModuleRegistry.registerModules([AllCommunityModule])
 
@@ -45,7 +45,7 @@ interface PRLineItemsTableProps {
   machines:       MachineLookup[]
   depCode:        string
   prDate?:        string
-  preCheckResult?: any
+  preCheckResult?: PreCheckResult | null
   disabled:       boolean
   savedPrNo?:     number
   deleteReasons?: { reasonCode: string; reasonDesc: string }[]
@@ -507,14 +507,6 @@ export function PRLineItemsTable({
                 onClick={() => startEdit(data)}
               />
             </Tooltip>
-            {/* <Tooltip title="Advanced">
-              <Button
-                type="text" size="small"
-                icon={<SettingOutlined style={{ color: '#6b7280' }} />}
-                disabled={disabled}
-                onClick={() => openDrawer(data)}
-              />
-            </Tooltip> */}
             {savedPrNo && data.prSNo ? (
               <Tooltip title="Delete line">
                 <Button
@@ -796,7 +788,7 @@ export function PRLineItemsTable({
             </Col>
 
             <Col xs={12} sm={2} md={2} style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: 10 }}>
-              <Form.Item name="isSample"  initialValue={true} style={{ marginBottom: 0 }}>
+              <Form.Item name="isSample" valuePropName="checked" initialValue={true} style={{ marginBottom: 0 }}>
                 <Checkbox>Sample</Checkbox>
               </Form.Item>
             </Col>

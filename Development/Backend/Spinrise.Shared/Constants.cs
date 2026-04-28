@@ -96,6 +96,7 @@ public static class StoredProcedures
         public const string InsertLine                = "ksp_PR_InsertLine";
         public const string Update                    = "ksp_PR_Update";
         public const string SoftDeleteLines           = "ksp_PR_SoftDeleteLines";
+        public const string GetMaxPrSNo               = "ksp_PR_GetMaxPrSNo";
         public const string Delete                    = "ksp_PR_Delete";
         public const string DeleteLine                = "ksp_PR_DeleteLine";
         public const string PreChecks                 = "ksp_PR_PreChecks";

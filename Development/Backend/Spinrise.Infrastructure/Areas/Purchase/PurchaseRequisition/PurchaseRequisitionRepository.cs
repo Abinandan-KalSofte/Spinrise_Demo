@@ -244,6 +244,15 @@ public class PurchaseRequisitionRepository : IPurchaseRequisitionRepository
             commandType: CommandType.StoredProcedure);
     }
 
+    public async Task<int> GetMaxPrSNoAsync(string divCode, long prNo)
+    {
+        return await _uow.Connection!.ExecuteScalarAsync<int>(
+            StoredProcedures.PurchaseRequisition.GetMaxPrSNo,
+            new { DivCode = divCode, PrNo = prNo },
+            transaction: _uow.Transaction,
+            commandType: CommandType.StoredProcedure);
+    }
+
     public async Task<int> UpdateHeaderAsync(PurchaseRequisitionHeader header)
     {
         return await _uow.Connection!.ExecuteScalarAsync<int>(

@@ -15,8 +15,8 @@ const DatewisePrReportPage = lazy(
 const PurchaseRequisitionListPage = lazy(
   () => import('@/features/purchase-requisition/pages/PurchaseRequisitionListPage'),
 )
-const PurchaseRequisitionV2Page = lazy(
-  () => import('@/features/purchase-requisition/pages/PurchaseRequisitionV2Page'),
+const PurchaseRequisitionNewPage = lazy(
+  () => import('@/features/purchase-requisition/pages/PurchaseRequisitionNewPage'),
 )
 const PurchaseRequisitionEditPage = lazy(
   () => import('@/features/purchase-requisition/pages/PurchaseRequisitionEditPage'),
@@ -55,8 +55,8 @@ export const dashboardRoutes: RouteObject[] = [
         element: <PurchaseRequisitionListPage />,
       },
       {
-        path: 'purchase/requisition/new-v2',
-        element: <PurchaseRequisitionV2Page />,
+        path: 'purchase/requisition/new',
+        element: <PurchaseRequisitionNewPage />,
       },
       {
         path: 'purchase/requisition/edit/:prNo',

@@ -64,7 +64,7 @@ function statusToStep(status: string | null): number {
 
 // ── Page ─────────────────────────────────────────────────────────────────────
 
-export default function PurchaseRequisitionV2Page() {
+export default function PurchaseRequisitionNewPage() {
   const { message } = App.useApp();
   const navigate = useNavigate();
   const [headerForm] = Form.useForm<PRHeaderFormValues>();
@@ -231,8 +231,7 @@ export default function PurchaseRequisitionV2Page() {
     setSaving(true);
     try {
       const payload = buildPayload(values);
-      // G19: Include submit mode in payload for backend to set status appropriately
-      (payload as any).submitForApproval = mode === "submit";
+      payload.submitForApproval = mode === "submit";
 
       const result = await purchaseRequisitionApi.create(payload);
       setSavedPrNo(result.prNo);

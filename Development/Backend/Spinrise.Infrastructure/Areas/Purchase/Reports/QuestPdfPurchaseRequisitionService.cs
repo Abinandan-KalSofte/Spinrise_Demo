@@ -603,11 +603,11 @@ public sealed class QuestPdfPurchaseRequisitionService : IPurchaseReportService
                 ItemName                = line.ItemName  ?? string.Empty,
                 Unit                    = line.Uom       ?? string.Empty,
                 RequiredQuantity        = line.QtyRequired,
-                RequiredDate            = line.RequiredDate?.ToString("dd-MMM-yyyy") ?? string.Empty,
+                RequiredDate            = line.RequiredDate?.ToString("dd/MMM/yyyy") ?? string.Empty,
                 CurrentStockQuantity    = line.CurrentStock ?? 0m,
                 PreviousPurchaseRate    = lastPoRate,
                 PreviousPurchaseValue   = lastPoRate * line.QtyRequired,
-                PreviousPurchaseDate    = line.LastPoDate?.ToString("dd-MMM-yyyy") ?? string.Empty,
+                PreviousPurchaseDate    = line.LastPoDate?.ToString("dd/MMM/yyyy") ?? string.Empty,
                 ApproxCostValue         = approxCost,
                 Remarks                 = line.Remarks   ?? string.Empty,
             };

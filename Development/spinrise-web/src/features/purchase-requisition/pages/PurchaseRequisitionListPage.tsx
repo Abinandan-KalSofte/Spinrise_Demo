@@ -68,7 +68,7 @@ export default function PurchaseRequisitionListPage() {
           </div>
         </div>
 
-        <Link to="/purchase/requisition/new-v2">
+        <Link to="/purchase/requisition/new">
           <Button
             type="primary"
             icon={<PlusOutlined />}
