@@ -1,0 +1,130 @@
+
+alter table Rm_baletemp add ArrivalDate datetime
+go
+
+alter table rm_param add Rate_ROff tinyint
+go
+alter table rm_param add DutyInsurance_GST tinyint
+go
+alter table rm_param add StkTransferAccess varchar(10)
+go
+alter table rm_param add AccessPath varchar(10)
+go
+alter table rm_param add Tds_Rndnextrs tinyint
+go
+alter table rm_param add TDSCalcFlag char(1)
+go
+alter table rm_param add RInvASSVAL_ROFF tinyint
+go
+alter table rm_param add EInvoicePath varchar(10)
+go
+alter table rm_param add OutpassFromInvoice tinyint
+go
+create Proc KSP_TXNPendingOutPass
+(
+@Divcode Varchar(2),
+@IssueTypeCode varchar(4),
+@IssueType varchar(2),
+@Slcode varchar(8),
+@Yfdate varchar(10),
+@Yldate varchar(10),
+@OutpassFromInvoice varchar(1)
+)
+as
+Declare @SqlQr as varchar(30)
+set @SqlQr=''
+if @IssueType='T'
+begin 
+	set @SqlQr = ' b.RDIVCODE = '''+ @Slcode +''' '
+
+end
+else
+begin
+	set @SqlQr = ' a.slcode = '''+ @Slcode +''' '
+end
+if @OutpassFromInvoice='0' 
+begin
+SELECT a.DOCNO,a.DOCDT,CASE WHEN isnull(a.slcode,'')='' THEN a.RDIVCODE ELSE a.slcode END  AS code, 
+                CASE WHEN isnull(a.slcode,'')='' THEN d.divname ELSE S.Slname END  AS Name,COUNT(BaleNo)IssQty
+				,SUM(ISNULL(ISSKGS,0))IssKgs FROM RM_ISSH a
+				inner join RM_ISSB B on a.DOCNO=b.DOCNO and a.DIVCODE=b.DIVCODE AND a.DOCDT =b.DOCDT AND a.ISSTYPE=b.ISSTYPE
+				inner join RM_VAR V on b.VARCODE=v.VARCODE 
+				inner join PP_DIVMAS D on a.DIVCODE = d.DIVCODE 
+				left join FA_SLMAS S on a.slcode = S.slcode  
+                where 
+                a.DIVCODE=@Divcode AND a.ISSTYPE=@IssueType
+				AND a.DOCDT BETWEEN @Yfdate AND @Yldate 
+				and Isnull(OUTPASSFLG,'N')='N' and ((@IssueType='T' and a.RDIVCODE=@Slcode ) or (@IssueType<>'T' and a.slcode=@Slcode ))
+                GROUP BY a.DOCNO,a.DOCDt,a.RDIVCODE,a.slcode,d.DIVNAME,s.slname
+end
+else
+begin
+	
+SELECT h.docno DOCNO,h.docdt DOCDT, a.cust_code   AS code, 
+                CASE WHEN isnull(a.cust_code,'')='' THEN d.divname ELSE S.Slname END  AS Name,COUNT(bales)IssQty,SUM(ISNULL(inv_kgs,0))IssKgs FROM RM_cinvhd a
+				inner join rm_cinvdt B on a.INV_NO=b.INV_NO and a.DIVCODE=b.DIVCODE AND a.INV_TYPE  =b.INV_TYPE 
+				inner join RM_VAR V on b.VARCODE=v.VARCODE 
+				inner join RM_ISSH h on a.bo_no=h.docno and a.DIVCODE=h.DIVCODE and a.bo_dt =h.docdt
+				inner join (select count(baleno) BAles ,docno,docdt,divcode from RM_ISSB group by docno,docdt,divcode  ) l on l.docno=h.docno and l.docdt=h.docdt and l.DIVCODE=h.DIVCODE
+				inner join PP_DIVMAS D on a.DIVCODE = d.DIVCODE 
+				left join FA_SLMAS S on a.cust_code = S.slcode  
+                where 
+                a.DIVCODE=@Divcode and isnull(a.cancelled,'')<>'Y'
+				AND a.date BETWEEN @Yfdate AND @Yldate 
+				and Isnull(OUTPASSFLG,'N')='N'  and ( a.cust_code=@Slcode ) 
+                GROUP BY h.DOCNO,h.DOCDt,h.RDIVCODE,a.cust_code,d.DIVNAME,s.slname
+end
+go
+
+
+
+create Proc KSP_TXNPendingOutPassLoad
+(
+@Divcode Varchar(2),
+@IssueTypeCode varchar(4),
+@IssueType varchar(2),
+@Slcode varchar(8),
+@Yfdate varchar(10),
+@Yldate varchar(10),
+@OutpassFromInvoice varchar(1),
+@IssueNo varchar(8),
+@Issuedate varchar(10)
+)
+as
+if @OutpassFromInvoice='0' 
+begin
+SELECT a.DOCNO,a.DOCDT,CASE WHEN isnull(a.slcode,'')='' THEN a.RDIVCODE ELSE a.slcode END  AS code, 
+                CASE WHEN isnull(a.slcode,'')='' THEN d.divname ELSE S.Slname END  AS Name,COUNT(b.BaleNo)IssQty
+				,SUM(ISNULL(ISSKGS,0))IssKgs,b.varcode,v.VARNAME,b.lotno,b.lotdt ,SUM(ISNULL(bl.GRWT,0)) GROSS_KGS FROM RM_ISSH a
+				inner join RM_ISSB B on a.DOCNO=b.DOCNO and a.DIVCODE=b.DIVCODE AND a.DOCDT =b.DOCDT AND a.ISSTYPE=b.ISSTYPE
+				inner join rm_bale bl on bl.baleno=b.baleno and bl.varcode=b.varcode and bl.lotno=b.lotno and bl.lotdt=b.lotdt and bl.Divcode=b.divcode and b.lottype=bl.lottype
+				inner join RM_VAR V on b.VARCODE=v.VARCODE 
+				inner join PP_DIVMAS D on a.DIVCODE = d.DIVCODE 
+				left join FA_SLMAS S on a.slcode = S.slcode  
+                where 
+                a.DIVCODE=@Divcode AND a.ISSTYPE=@IssueType and a.DOCNO =@IssueNo and a.DOCDT=@Issuedate
+				AND a.DOCDT BETWEEN @Yfdate AND @Yldate 
+				and Isnull(OUTPASSFLG,'N')='N' and ((@IssueType='T' and a.RDIVCODE=@Slcode ) or (@IssueType<>'T' and a.slcode=@Slcode ))
+                GROUP BY a.DOCNO,a.DOCDt,a.RDIVCODE,a.slcode,d.DIVNAME,s.slname,b.varcode,v.VARNAME,b.lotno,b.lotdt
+end
+else
+begin
+	
+SELECT h.docno DOCNO,h.docdt DOCDT, a.cust_code   AS code, 
+                CASE WHEN isnull(a.cust_code,'')='' THEN d.divname ELSE S.Slname END  AS Name,COUNT(bales)IssQty
+				,SUM(ISNULL(inv_kgs,0))IssKgs,b.varcode,v.VARNAME,l.lotno,l.lotdt,SUM(ISNULL(b.GROSS_KGS,0)) GROSS_KGS FROM RM_cinvhd a
+				inner join rm_cinvdt B on a.INV_NO=b.INV_NO and a.DIVCODE=b.DIVCODE AND a.INV_TYPE  =b.INV_TYPE 
+				inner join RM_VAR V on b.VARCODE=v.VARCODE 
+				inner join RM_ISSH h on a.bo_no=h.docno and a.DIVCODE=h.DIVCODE and a.bo_dt =h.docdt
+				inner join (select count(baleno) BAles ,docno,docdt,divcode ,lotno,lotdt,varcode
+				from RM_ISSB group by docno,docdt,divcode  ,lotno,lotdt,varcode 
+				) l on l.docno=h.docno and l.docdt=h.docdt and l.DIVCODE=h.DIVCODE and l.lotno=b.PRODUCT_CODE
+				and l.lotdt =b.LotDt and l.VARCODE=b.varcode
+				inner join PP_DIVMAS D on a.DIVCODE = d.DIVCODE 
+				left join FA_SLMAS S on a.cust_code = S.slcode  
+                where 
+                a.DIVCODE=@Divcode and isnull(a.cancelled,'')<>'Y' and h.DOCNO =@IssueNo and h.DOCDT=@Issuedate
+				AND a.date BETWEEN @Yfdate AND @Yldate 
+				and Isnull(OUTPASSFLG,'N')='N' and a.CUST_CODE=@Slcode
+                GROUP BY h.DOCNO,h.DOCDt,h.RDIVCODE,a.cust_code,d.DIVNAME,s.slname,b.varcode,v.VARNAME,l.lotno,l.lotdt
+end

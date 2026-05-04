@@ -25,8 +25,9 @@ public class CreatePRHeaderDto
     public string? IType { get; set; }
 
     // po_prh.ReqName VARCHAR(100) — stores pr_emp.ename (full employee name)
+    [Required]
     [StringLength(100)]
-    public string? ReqName { get; set; }
+    public string ReqName { get; set; } = string.Empty;
 
     // po_prh.RefNo VARCHAR(50)
     [StringLength(50)]

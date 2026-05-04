@@ -1,0 +1,8 @@
+Alter table rm_param add PO_Approval char
+
+
+alter table rm_param alter column PortSelection varchar(2)
+
+alter table RM_CONT ADD APPFLG CHAR,APPUSERID VARCHAR(10),APPIP VARCHAR(15),APPDATE DATETIME
+alter table RM_CONT ADD FIRST_APPFLG CHAR,FIRST_APPUSERID VARCHAR(10),FIRST_APPIP VARCHAR(15),FIRST_APPDATE DATETIME
+

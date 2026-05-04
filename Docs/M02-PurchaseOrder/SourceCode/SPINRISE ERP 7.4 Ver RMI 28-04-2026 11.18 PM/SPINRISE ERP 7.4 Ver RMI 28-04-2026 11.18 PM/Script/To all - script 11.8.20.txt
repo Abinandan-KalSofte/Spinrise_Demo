@@ -1,0 +1,93 @@
+
+--select * FROM RM_PRH a     
+--INNER JOIN RM_PRL b ON a.divcode = b.divcode AND a.prno = b.prno AND a.prdate = b.prdate  
+--where a.prno=32 and a.prdate='2020-08-10'
+CREATE PROCEDURE KSP_RMIPurchaseReq                   
+(                    
+ @Divcode varchar(2),               
+ @Docno VARCHAR(15),                    
+ @Docdt VARCHAR(15)                                   
+)                    
+AS                    
+BEGIN     
+SELECT a.prno,a.prdate,a.refno,b.qtyind,b.reqddate,b.remarks,
+b.curstock,b.curbale ,
+--b.LPO_RATE,b.LPO_DATE,
+--b.FirstappUser,b.FinalAppUser,c.DEPNAME,
+d.ename,e.varcode ITEMCODE,    
+e.varname ITEMNAME , case when   b.Packtype='B' then 'BALE' 
+when   b.Packtype='H' then 'HALF PRESS' 
+else
+'BROACH' end
+  UOM,e.DRAWNO,f.DIVNAME,    
+f.ADD1,f.ADD2,f.ADD3,f.CITY,f.PINCODE,f.PHONE1,f.FAX,f.EMAIL,f.STATENAME,f.CUST_ID,    
+f.DIV_PRINTNAME,f.DIV_UNITNAME,f.DIV_LOGO,b.qtyindKG ,a.appUSRID Firstappuser,convert(varchar, a.appdate, 22)app3date
+,case when itype='K' then 'Kgswise' else 'Packwise' end Arrivaltype,isnull(s.user_name,'') 'RequestedBy', convert(varchar,a.PREntryDate,22) PREntryDate
+,f.cinno,f.webaddr,f.gstinno
+FROM RM_PRH a     
+INNER JOIN RM_PRL b ON a.divcode = b.divcode AND a.prno = b.prno AND a.prdate = b.prdate    
+--LEFT OUTER JOIN IN_DEP c ON a.depcode = c.DEPCODE AND a.divcode = c.divcode    
+LEFT OUTER JOIN PR_EMP d ON a.REQNAME =  convert (varchar ,d.empno) and a.divcode = d.divcode    
+left JOIN RM_var e ON b.varcode = e.varcode    
+left JOIN PP_DIVMAS f ON b.divcode = f.DIVCODE    
+left join pp_passwd s on s.divcode=a.divcode and s.module=6 and s.user_id=a.userId
+--LEFT OUTER JOIN mm_macmas g ON b.divcode = g.DIVCODE     
+--AND b.macno = g.MAC_NO and a.depcode= g.DEPCODE    
+Where a.divcode = @Divcode  and a.prno = @Docno and a.prdate = @Docdt    
+ORDER BY a.prno ASC    
+End
+
+
+
+
+go
+
+alter table rm_prh add PREntryDate datetime
+
+go
+
+drop table [RM_TransportRate]
+GO
+
+/****** Object:  Table [dbo].[RM_TransportRate]    Script Date: 15/08/2020 9:49:32 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[RM_TransportRate](
+	[Divcode] [varchar](2) NULL,
+	[Docno] [numeric](9, 0) NOT NULL,
+	[Docdate] [datetime] NOT NULL,
+	[SUPCD] [varchar](8) NOT NULL,
+	[plant] [varchar](10) NOT NULL,
+	[Vslcode] [varchar](8) NOT NULL,
+	[VslCapacity] [numeric](15, 3) NULL,
+	[MinQty] [numeric](15, 3) NULL,
+	[Bales] [numeric](6, 0) NULL,
+	[Freight_Amt] [numeric](15, 2) NULL,
+	[TransitDays] [numeric](3, 0) NULL,
+	[Transporter] [varchar](8) NULL,
+	[carcode] [varchar](15) NULL,
+	[AppFileName] [varchar](50) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Docno] ASC,
+	[Docdate] ASC,
+	[SUPCD] ASC,
+	[plant] ASC,
+	[Vslcode] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+
+

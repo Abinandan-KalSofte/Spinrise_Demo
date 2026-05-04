@@ -1,0 +1,536 @@
+
+alter table rm_param add BValInLotFlg  varchar(1)
+go
+
+
+
+SET ANSI_PADDING ON
+
+CREATE TABLE [dbo].[RM_LOT_DET](
+	[DIVCODE] [varchar](2) NOT NULL,
+	[CATCD] [char](1) NOT NULL,
+	[LOTNO] [numeric](5, 0) NOT NULL,
+	[LOTDT] [datetime] NOT NULL,
+	[LOTTYPE] [char](1) NOT NULL,
+	[SUPCD] [varchar](8) NULL,
+	[BRKCD] [varchar](8) NULL,
+	[AREACD] [varchar](8) NULL,
+	[VARCODE] [varchar](10) NULL,
+	[CNTCODE] [varchar](10) NULL,
+	[ARRNO] [int] NOT NULL,
+	[BILLNO] [varchar](15) NULL,
+	[BILLDT] [datetime] NULL,
+	[PTYWGT] [decimal](10, 3) NULL,
+	[TAXAMT] [decimal](8, 2) NULL,
+	[BNKCHG] [decimal](9, 2) NULL,
+	[ODINT] [decimal](9, 2) NULL,
+	[FPARTY] [varchar](6) NULL,
+	[FREGHT] [decimal](8, 2) NULL,
+	[RLYFRT] [decimal](8, 2) NULL,
+	[LDGULG] [decimal](8, 2) NULL,
+	[BRKRRT] [decimal](6, 2) NULL,
+	[BRKCOM] [decimal](9, 2) NULL,
+	[CARCHG] [decimal](8, 2) NULL,
+	[DNAMT1] [decimal](8, 2) NULL,
+	[DNAMT2] [decimal](8, 2) NULL,
+	[SPOTEXP] [decimal](8, 2) NULL,
+	[INSAMT] [decimal](8, 2) NULL,
+	[BEDAMT] [decimal](8, 2) NULL,
+	[AEDAMT] [decimal](8, 2) NULL,
+	[TOTLANDCOST] [decimal](11, 2) NULL,
+	[GRSWGT] [decimal](10, 3) NULL,
+	[TAREWT] [decimal](9, 3) NULL,
+	[SAMPWT] [decimal](9, 3) NULL,
+	[NETWT] [decimal](10, 3) NULL,
+	[BBLFLG] [char](1) NULL,
+	[BALES] [decimal](6, 0) NULL,
+	[RATEKG] [numeric](15, 4) NULL,
+	[RATECY] [numeric](10, 4) NULL,
+	[GODOWN] [varchar](2) NULL,
+	[LGROUP] [varchar](2) NULL,
+	[STAPLEN] [numeric](15, 2) NULL,
+	[SHORT_FIBRE] [numeric](15, 2) NULL,
+	[MICRONAIRE] [decimal](5, 2) NOT NULL,
+	[TRASH_PER] [decimal](7, 2) NULL,
+	[ISSBAL] [decimal](6, 0) NULL,
+	[ISSWT] [decimal](10, 3) NULL,
+	[PJTC] [numeric](2, 0) NULL,
+	[PJNO] [decimal](6, 0) NULL,
+	[PJDT] [datetime] NULL,
+	[PJAMT] [decimal](11, 2) NULL,
+	[PTYPE] [char](2) NULL,
+	[RG23A] [char](1) NULL,
+	[dutydocno] [varchar](8) NULL,
+	[PLOTNO] [varchar](10) NULL,
+	[OPFLG] [char](1) NULL,
+	[STAPLEN50] [numeric](15, 2) NULL,
+	[UNIRATIO] [numeric](15, 2) NULL,
+	[MCOEFF] [numeric](15, 2) NULL,
+	[STRENGTH] [numeric](12, 3) NULL,
+	[actisskgs] [decimal](9, 3) NULL,
+	[MODUSERID] [varchar](5) NULL,
+	[MODUSRID] [varchar](5) NULL,
+	[MODDATE] [datetime] NULL,
+	[ARRDT] [datetime] NULL,
+	[FQI] [numeric](28, 3) NULL,
+	[SCI] [numeric](20, 3) NULL,
+	[MATURE] [numeric](9, 3) NULL,
+	[HMATURE] [numeric](9, 3) NULL,
+	[IMATURE] [numeric](9, 3) NULL,
+	[reason] [varchar](30) NULL,
+	[REJFLG] [char](1) NULL,
+	[REJDT] [datetime] NULL,
+	[LOTYEAR] [decimal](5, 0) NOT NULL,
+	[adjwt] [decimal](9, 2) NULL,
+	[adjust] [char](1) NULL,
+	[adjreason] [varchar](20) NULL,
+	[adjdt] [datetime] NULL,
+	[PBALENO] [decimal](5, 0) NULL,
+	[PGRSWT] [decimal](9, 3) NULL,
+	[PTAREWT] [decimal](9, 3) NULL,
+	[PNETWT] [decimal](9, 3) NULL,
+	[INDENTNO] [decimal](5, 0) NULL,
+	[moisture] [decimal](6, 2) NULL,
+	[pono] [decimal](5, 0) NULL,
+	[podt] [datetime] NULL,
+	[NCPFLG] [char](1) NULL,
+	[SNO] [numeric](5, 0) NULL,
+	[FBILLVALUE] [decimal](10, 2) NULL,
+	[FNETWT] [decimal](15, 3) NULL,
+	[FTAREWT] [decimal](15, 3) NULL,
+	[FGROSSWT] [decimal](15, 3) NULL,
+	[FBILLWT] [decimal](15, 3) NULL,
+	[FBILLNO] [varchar](15) NULL,
+	[FBILLDT] [datetime] NULL,
+	[AdjValue] [numeric](10, 2) NULL,
+	[DBNO] [decimal](7, 0) NULL,
+	[DBAMT] [numeric](15, 2) NULL,
+	[BANK] [varchar](1) NULL,
+	[MOITURE] [numeric](9, 3) NULL,
+	[TAX_CODE] [varchar](3) NULL,
+	[TAX_PER] [numeric](5, 2) NULL,
+	[LANDCOSTWITHTAX] [numeric](12, 2) NULL,
+	[VATAMT] [numeric](12, 2) NULL,
+	[quality] [decimal](12, 2) NULL,
+	[BillValue] [decimal](15, 2) NULL,
+	[COLORCODE] [varchar](20) NULL,
+	[BEDPER] [numeric](10, 2) NULL,
+	[SEDPER] [numeric](10, 2) NULL,
+	[SEDAMT] [numeric](12, 2) NULL,
+	[AEDPER] [numeric](10, 2) NULL,
+	[CESSPER] [numeric](10, 2) NULL,
+	[CESSAMT] [numeric](12, 2) NULL,
+	[OCTROIPER] [numeric](10, 2) NULL,
+	[OCTROIAMT] [numeric](12, 2) NULL,
+	[VATPER] [numeric](10, 2) NULL,
+	[CSTPER] [numeric](10, 2) NULL,
+	[CSTAMT] [numeric](12, 2) NULL,
+	[TNGSTPER] [numeric](10, 2) NULL,
+	[TNGSTAMT] [numeric](12, 2) NULL,
+	[SCPER] [numeric](10, 2) NULL,
+	[SCAMT] [numeric](12, 2) NULL,
+	[OTHTAXPER] [numeric](10, 2) NULL,
+	[OTHTAXAMT] [numeric](12, 2) NULL,
+	[LRFRTPER] [numeric](10, 2) NULL,
+	[LRFRTAMT] [numeric](12, 2) NULL,
+	[RLYFRTPER] [numeric](10, 2) NULL,
+	[RLYFRTAMT] [numeric](12, 2) NULL,
+	[INSPER] [numeric](10, 2) NULL,
+	[COMMPER] [numeric](10, 2) NULL,
+	[COMMAMT] [numeric](12, 2) NULL,
+	[LCINTPER] [numeric](10, 2) NULL,
+	[LCINTAMT] [numeric](12, 2) NULL,
+	[CHARITYAMT] [numeric](12, 2) NULL,
+	[DAMAGEAMT] [numeric](12, 2) NULL,
+	[WARPAGEAMT] [numeric](12, 2) NULL,
+	[CLEARANCEAMT] [numeric](12, 2) NULL,
+	[OTHERSAMT] [numeric](12, 2) NULL,
+	[ALLOWANCEAMT] [numeric](12, 2) NULL,
+	[CUSTOMSDUTYAMT] [numeric](12, 2) NULL,
+	[RATE] [numeric](10, 2) NULL,
+	[moisture_et] [numeric](6, 2) NULL,
+	[awt_flg] [char](1) NULL,
+	[ARATECY] [numeric](15, 2) NULL,
+	[ARATEKG] [numeric](15, 4) NULL,
+	[DBDT] [datetime] NULL,
+	[DBNARR] [varchar](100) NULL,
+	[ABales] [numeric](12, 0) NULL,
+	[ADate] [datetime] NULL,
+	[AFRatekg] [numeric](15, 4) NULL,
+	[DBTC] [decimal](7, 0) NULL,
+	[STIME] [varchar](10) NULL,
+	[ETIME] [varchar](10) NULL,
+	[TOTHRS] [numeric](5, 2) NULL,
+	[ALLOWANCE] [numeric](9, 3) NULL,
+	[ASno] [numeric](7, 0) NULL,
+	[CashDisper] [numeric](5, 2) NULL,
+	[CashDisAmt] [numeric](10, 2) NULL,
+	[TradeDisper] [numeric](5, 2) NULL,
+	[TradeDisAmt] [numeric](10, 2) NULL,
+	[Rebet] [numeric](10, 2) NULL,
+	[rebate] [numeric](10, 2) NULL,
+	[alert_raised] [varchar](1) NULL,
+	[LOT_YEAR] [numeric](5, 0) NULL,
+	[TAX_CHOICE] [varchar](10) NULL,
+	[TransferType] [varchar](2) NULL,
+	[ins_flg] [varchar](1) NULL,
+	[SFI] [numeric](9, 3) NULL,
+	[ELG] [numeric](9, 3) NULL,
+	[TRCNT] [numeric](9, 3) NULL,
+	[TRArea] [numeric](9, 3) NULL,
+	[TRGrade] [numeric](9, 3) NULL,
+	[LINT] [numeric](9, 3) NULL,
+	[IVC] [numeric](9, 3) NULL,
+	[SCNeps_g] [numeric](9, 3) NULL,
+	[SCNeps_Micm] [numeric](9, 3) NULL,
+	[TotSCNeps_g] [numeric](9, 3) NULL,
+	[AVGSCNeps_Micm] [numeric](9, 3) NULL,
+	[EXNoils] [numeric](9, 3) NULL,
+	[GTEX] [numeric](9, 3) NULL,
+	[RD] [numeric](9, 3) NULL,
+	[bb] [numeric](9, 3) NULL,
+	[Grade] [numeric](9, 3) NULL,
+	[csp] [numeric](15, 3) NULL,
+	[Remarks] [varchar](100) NULL,
+	[Rej_Qty] [numeric](15, 3) NULL,
+	[Rej_Kgs] [numeric](15, 3) NULL,
+	[Rec_Bales] [numeric](15, 3) NULL,
+	[Rec_Kgs] [numeric](15, 3) NULL,
+	[vcatcd] [char](1) NULL,
+	[ASSVALUE] [numeric](12, 2) NULL,
+	[shipchrg] [numeric](12, 2) NULL,
+	[weighbridgewt] [decimal](10, 3) NULL,
+	[Form_type] [varchar](2) NULL,
+	[FIssue_flg] [char](1) NULL,
+	[inwardno] [numeric](18, 0) NULL,
+	[inwarddate] [datetime] NULL,
+	[dutyclaimable] [char](1) NULL,
+	[risi] [numeric](9, 3) NULL,
+	[IM_IND] [nvarchar](10) NULL,
+	[ALLMIXCOUNT] [varchar](10) NULL,
+	[RECMIXCOUNT] [varchar](10) NULL,
+	[issflg] [char](1) NULL,
+	[YarnAppearance] [varchar](50) NULL,
+	[CorrectedStrength] [numeric](8, 0) NULL,
+	[TPI] [numeric](8, 3) NULL,
+	[YarnStrength] [numeric](8, 0) NULL,
+	[YarnCount] [numeric](8, 0) NULL,
+	[Staple_Hand] [numeric](8, 3) NULL,
+	[nepspergm] [numeric](9, 3) NULL,
+	[nepsize] [numeric](9, 3) NULL,
+	[scnsize] [numeric](9, 3) NULL,
+	[lw] [numeric](9, 3) NULL,
+	[sfcw] [numeric](9, 3) NULL,
+	[uqlw] [numeric](9, 3) NULL,
+	[ln] [numeric](9, 3) NULL,
+	[sfcn] [numeric](9, 3) NULL,
+	[fiveper] [numeric](9, 3) NULL,
+	[fine] [numeric](9, 3) NULL,
+	[ifc] [numeric](9, 3) NULL,
+	[mr] [numeric](9, 3) NULL,
+	[plusb] [numeric](20, 0) NULL,
+	[OtherTaxableAmt] [numeric](10, 2) NULL,
+	[RATEUNIT] [varchar](20) NULL,
+	[LOTRECTYPE] [varchar](1) NULL,
+	[DutyPer] [numeric](4, 0) NULL,
+	[DiscountFlg] [varchar](1) NULL,
+	[ADDTAXCODE] [varchar](3) NULL,
+	[ADDTAXPER] [numeric](9, 2) NULL,
+	[ADDTAXAMOUNT] [numeric](9, 2) NULL,
+	[InsApprovalFlg] [varchar](1) NULL,
+	[favaourablewgt] [numeric](20, 3) NOT NULL,
+	[weightflg] [char](1) NOT NULL,
+	[pinvval] [numeric](15, 3) NULL
+) ON [PRIMARY]
+SET ANSI_PADDING OFF
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [SPOTPasser] [varchar](10) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [uhml] [varchar](10) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [ml] [varchar](10) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [ui] [varchar](10) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [nepcv] [varchar](10) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [scncv] [varchar](10) NULL
+SET ANSI_PADDING ON
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [faflag] [varchar](2) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [STAPLEN5] [decimal](5, 3) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [TDSAMT] [numeric](18, 2) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [TDSFLG] [char](1) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [TDSJVNO] [numeric](10, 0) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [MR1] [numeric](9, 3) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [MCOEFF1] [numeric](15, 2) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [brkcomPer] [numeric](5, 2) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [tcs_amt] [numeric](15, 2) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [AppFlg] [char](1) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [ADDUSERNAME] [varchar](35) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [ADDDATE] [datetime] NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [MODUSERNAME] [varchar](35) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [Fappflg] [varchar](1) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [FADDUSERNAME] [varchar](35) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [FADDDATE] [datetime] NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [trash_et] [numeric](6, 2) NULL
+SET ANSI_PADDING OFF
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [HSN] [varchar](8) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [cgstper] [numeric](5, 2) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [cgstamt] [numeric](10, 2) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [sgstper] [numeric](5, 2) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [sgstamt] [numeric](10, 2) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [igstper] [numeric](5, 2) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [igstamt] [numeric](10, 2) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [SICAAmt] [numeric](15, 2) NULL
+SET ANSI_PADDING ON
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [Line_No] [varchar](18) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [PlCode] [varchar](5) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [ComWt_Flg] [int] NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [Comm_Wt] [numeric](9, 3) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [ExchangeRate] [numeric](9, 2) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [BillCurrency] [varchar](15) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [gdivcode] [varchar](5) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [SuppBillValue] [numeric](9, 2) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [tpjtc] [numeric](5, 0) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [tpjdt] [datetime] NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [tpjno] [numeric](5, 0) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [premAmt] [numeric](15, 2) NULL
+SET ANSI_PADDING OFF
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [CertificateNo] [varchar](30) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [welfareamt] [numeric](9, 2) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [welfareper] [numeric](5, 2) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [IDAmt] [numeric](9, 2) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [IDPer] [numeric](5, 2) NULL
+SET ANSI_PADDING ON
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [be_no] [varchar](20) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [be_date] [datetime] NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [duty_wt] [numeric](15, 3) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [dutyvalue] [numeric](15, 3) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [POTYPE] [varchar](3) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [ACGSTAMT] [numeric](8, 2) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [ASGSTAMT] [numeric](8, 2) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [AIGSTAMT] [numeric](8, 2) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [Advance_amt] [numeric](15, 2) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [purappruser] [varchar](18) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [purappdate] [varchar](29) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [purappflg] [varchar](3) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [purpreparedby] [varchar](18) NULL
+ALTER TABLE [dbo].[RM_LOT_DET] ADD [purpredate] [varchar](29) NULL
+/****** Object:  Index [PK_RM_LOT_DET]    Script Date: 10/14/2019 12:29:18 ******/
+ALTER TABLE [dbo].[RM_LOT_DET] ADD  CONSTRAINT [PK_RM_LOT_DET] PRIMARY KEY CLUSTERED 
+(
+	[DIVCODE] ASC,
+	[CATCD] ASC,
+	[LOTNO] ASC,
+	[LOTDT] ASC,
+	[LOTYEAR] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET]  WITH NOCHECK ADD  CONSTRAINT [FK_RM_LOT_DET_RM_AREA] FOREIGN KEY([AREACD])
+REFERENCES [dbo].[RM_AREA] ([AREACODE])
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET] CHECK CONSTRAINT [FK_RM_LOT_DET_RM_AREA]
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET]  WITH NOCHECK ADD  CONSTRAINT [FK_RM_LOT_DET_RM_CAT] FOREIGN KEY([CATCD])
+REFERENCES [dbo].[RM_CAT] ([CATCD])
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET] CHECK CONSTRAINT [FK_RM_LOT_DET_RM_CAT]
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET]  WITH NOCHECK ADD  CONSTRAINT [FK_RM_LOT_DET_RM_COUNT] FOREIGN KEY([CNTCODE])
+REFERENCES [dbo].[RM_COUNT] ([cntcd])
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET] CHECK CONSTRAINT [FK_RM_LOT_DET_RM_COUNT]
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET]  WITH NOCHECK ADD  CONSTRAINT [FK_RM_LOT_DET_RM_GOD] FOREIGN KEY([GODOWN])
+REFERENCES [dbo].[RM_GOD] ([GCODE])
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET] CHECK CONSTRAINT [FK_RM_LOT_DET_RM_GOD]
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET]  WITH NOCHECK ADD  CONSTRAINT [RM_LOT_DET_g23a] CHECK  (([rg23a] = 'N' or [rg23a] = 'Y'))
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET] CHECK CONSTRAINT [RM_LOT_DET_g23a]
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET] ADD  CONSTRAINT [DF_RM_LOT_DET_STAPLEN]  DEFAULT ('0') FOR [STAPLEN]
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET] ADD  CONSTRAINT [DF_RM_LOT_DET_SHORT_FIBRE]  DEFAULT ('0') FOR [SHORT_FIBRE]
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET] ADD  CONSTRAINT [DF_RM_LOT_DET_MICRONAIRE]  DEFAULT (0) FOR [MICRONAIRE]
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET] ADD  CONSTRAINT [DF_RM_LOT_DET_TRASH_PER]  DEFAULT (0) FOR [TRASH_PER]
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET] ADD  CONSTRAINT [DF_RM_LOT_DET_BillValue]  DEFAULT ((0)) FOR [BillValue]
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET] ADD  CONSTRAINT [DF__RM_LOT_DET__Rebet__669A0399]  DEFAULT (0) FOR [Rebet]
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET] ADD  CONSTRAINT [DF__RM_LOT_DET__alert_ra__00AEDB57]  DEFAULT ('N') FOR [alert_raised]
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET] ADD  CONSTRAINT [DF__RM_LOT_DET__TAX_CHOI__4AC89749]  DEFAULT ('SINGLE') FOR [TAX_CHOICE]
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET] ADD  CONSTRAINT [DF__RM_LOT_DET__Transfer__39E8EF61]  DEFAULT ('') FOR [TransferType]
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET] ADD  CONSTRAINT [DF__RM_LOT_DET__ALLMIXCO__4A16CC37]  DEFAULT (null) FOR [ALLMIXCOUNT]
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET] ADD  CONSTRAINT [DF__RM_LOT_DET__RECMIXCO__4B0AF070]  DEFAULT (null) FOR [RECMIXCOUNT]
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET] ADD  CONSTRAINT [DF_RM_LOT_DET_issflg]  DEFAULT ('Y') FOR [issflg]
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET] ADD  CONSTRAINT [DF_RM_LOT_DET_InsApprovalFlg]  DEFAULT ('N') FOR [InsApprovalFlg]
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET] ADD  DEFAULT ((0)) FOR [favaourablewgt]
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET] ADD  DEFAULT ('M') FOR [weightflg]
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET] ADD  DEFAULT ((0)) FOR [brkcomPer]
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET] ADD  DEFAULT (getdate()) FOR [ADDDATE]
+GO
+
+ALTER TABLE [dbo].[RM_LOT_DET] ADD  DEFAULT ('N') FOR [Fappflg]
+GO
+
+
+
+
+
+GO
+/****** Object:  Trigger [dbo].[TRG_INS_RM_LOT_TO_DETAIL]    Script Date: 10/14/2019 12:28:30 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+create TRIGGER [dbo].[TRG_INS_RM_LOT_TO_DETAIL]
+   ON  [dbo].[RM_LOT]
+   FOR INSERT
+AS 
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for trigger here
+		   DECLARE @divcode AS VARCHAR(2)
+		   DECLARE @LOTNO AS NUMERIC(8)
+           DECLARE @LOTDT AS DATETIME
+           DECLARE @VARCODE AS VARCHAR(20)
+           
+      SELECT @divcode=DIVCODE,@divcode=DIVCODE ,@LOTNO=LOTNO,@LOTDT=LOTDT ,@VARCODE=VARCODE
+      FROM INSERTED
+          
+          
+        INSERT INTO RM_LOT_DET  ( DIVCODE,CATCD,LOTNO,LOTDT,LOTTYPE,SUPCD,BRKCD,AREACD,VARCODE,CNTCODE,ARRNO,BILLNO,BILLDT,PTYWGT,TAXAMT,BNKCHG,ODINT,FPARTY,FREGHT
+,RLYFRT,LDGULG,BRKRRT,BRKCOM,CARCHG,DNAMT1,DNAMT2,SPOTEXP,INSAMT,BEDAMT,AEDAMT,TOTLANDCOST,GRSWGT,TAREWT,SAMPWT,NETWT,BBLFLG,BALES,RATEKG
+,RATECY,GODOWN,LGROUP,STAPLEN,SHORT_FIBRE,MICRONAIRE,TRASH_PER,ISSBAL,ISSWT,PJTC,PJNO,PJDT,PJAMT,PTYPE,RG23A,dutydocno,PLOTNO,OPFLG,STAPLEN50
+,UNIRATIO,MCOEFF,STRENGTH,actisskgs,MODUSERID,MODUSRID,MODDATE,ARRDT,FQI,SCI,MATURE,HMATURE,IMATURE,reason,REJFLG,REJDT,LOTYEAR,adjwt,adjust,adjreason,adjdt
+,PBALENO,PGRSWT,PTAREWT,PNETWT,INDENTNO,moisture,pono,podt,NCPFLG,SNO,FBILLVALUE,FNETWT,FTAREWT,FGROSSWT,FBILLWT,FBILLNO,FBILLDT,AdjValue,DBNO
+,DBAMT,BANK,MOITURE,TAX_CODE,TAX_PER,LANDCOSTWITHTAX,VATAMT,quality,BillValue,COLORCODE,BEDPER,SEDPER,SEDAMT,AEDPER,CESSPER,CESSAMT,OCTROIPER
+,OCTROIAMT,VATPER,CSTPER,CSTAMT,TNGSTPER,TNGSTAMT,SCPER,SCAMT,OTHTAXPER,OTHTAXAMT,LRFRTPER,LRFRTAMT,RLYFRTPER,RLYFRTAMT,INSPER,COMMPER
+,COMMAMT,LCINTPER,LCINTAMT,CHARITYAMT,DAMAGEAMT,WARPAGEAMT,CLEARANCEAMT,OTHERSAMT,ALLOWANCEAMT,CUSTOMSDUTYAMT,RATE,moisture_et,awt_flg
+,ARATECY,ARATEKG,DBDT,DBNARR,ABales,ADate,AFRatekg,DBTC,STIME,ETIME,TOTHRS,ALLOWANCE,ASno,CashDisper,CashDisAmt,TradeDisper,TradeDisAmt
+,Rebet,rebate,alert_raised,LOT_YEAR,TAX_CHOICE,TransferType,ins_flg,SFI,ELG,TRCNT,TRArea,TRGrade,LINT,IVC,SCNeps_g,SCNeps_Micm,TotSCNeps_g
+,AVGSCNeps_Micm,EXNoils,GTEX,RD,bb,Grade,csp,Remarks,Rej_Qty,Rej_Kgs,Rec_Bales,Rec_Kgs,vcatcd,ASSVALUE,shipchrg,weighbridgewt,Form_type,FIssue_flg
+,inwardno,inwarddate,dutyclaimable,risi,IM_IND,ALLMIXCOUNT,RECMIXCOUNT,issflg,YarnAppearance,CorrectedStrength,TPI,YarnStrength,YarnCount,Staple_Hand
+,nepspergm,nepsize,scnsize,lw,sfcw,uqlw,ln,sfcn,fiveper,fine,ifc,mr,plusb,OtherTaxableAmt,RATEUNIT,LOTRECTYPE,DutyPer,DiscountFlg,ADDTAXCODE,ADDTAXPER
+,ADDTAXAMOUNT,InsApprovalFlg,favaourablewgt,weightflg,pinvval,SPOTPasser,uhml,ml,ui,nepcv,scncv,faflag,STAPLEN5,TDSAMT,TDSFLG,TDSJVNO,MR1
+,MCOEFF1,brkcomPer,tcs_amt,AppFlg,ADDUSERNAME,ADDDATE,MODUSERNAME,Fappflg,FADDUSERNAME,FADDDATE,trash_et,HSN,cgstper,cgstamt,sgstper,sgstamt,igstper
+,igstamt,SICAAmt,Line_No,PlCode,ComWt_Flg,Comm_Wt,ExchangeRate,BillCurrency,gdivcode,SuppBillValue,tpjtc,tpjdt,tpjno,premAmt,CertificateNo,welfareamt
+,welfareper,IDAmt,IDPer,be_no,be_date,duty_wt,dutyvalue,POTYPE,ACGSTAMT,ASGSTAMT,AIGSTAMT,Advance_amt,purappruser,purappdate,purappflg,purpreparedby,purpredate
+   )
+
+SELECT DIVCODE,CATCD,LOTNO,LOTDT,LOTTYPE,SUPCD,BRKCD,AREACD,VARCODE,CNTCODE,ARRNO,BILLNO,BILLDT,PTYWGT,TAXAMT,BNKCHG,ODINT,FPARTY,FREGHT
+,RLYFRT,LDGULG,BRKRRT,BRKCOM,CARCHG,DNAMT1,DNAMT2,SPOTEXP,INSAMT,BEDAMT,AEDAMT,TOTLANDCOST,GRSWGT,TAREWT,SAMPWT,NETWT,BBLFLG,BALES,RATEKG
+,RATECY,GODOWN,LGROUP,STAPLEN,SHORT_FIBRE,MICRONAIRE,TRASH_PER,ISSBAL,ISSWT,PJTC,PJNO,PJDT,PJAMT,PTYPE,RG23A,dutydocno,PLOTNO,OPFLG,STAPLEN50
+,UNIRATIO,MCOEFF,STRENGTH,actisskgs,MODUSERID,MODUSRID,MODDATE,ARRDT,FQI,SCI,MATURE,HMATURE,IMATURE,reason,REJFLG,REJDT,LOTYEAR,adjwt,adjust,adjreason,adjdt
+,PBALENO,PGRSWT,PTAREWT,PNETWT,INDENTNO,moisture,pono,podt,NCPFLG,SNO,FBILLVALUE,FNETWT,FTAREWT,FGROSSWT,FBILLWT,FBILLNO,FBILLDT,AdjValue,DBNO
+,DBAMT,BANK,MOITURE,TAX_CODE,TAX_PER,LANDCOSTWITHTAX,VATAMT,quality,BillValue,COLORCODE,BEDPER,SEDPER,SEDAMT,AEDPER,CESSPER,CESSAMT,OCTROIPER
+,OCTROIAMT,VATPER,CSTPER,CSTAMT,TNGSTPER,TNGSTAMT,SCPER,SCAMT,OTHTAXPER,OTHTAXAMT,LRFRTPER,LRFRTAMT,RLYFRTPER,RLYFRTAMT,INSPER,COMMPER
+,COMMAMT,LCINTPER,LCINTAMT,CHARITYAMT,DAMAGEAMT,WARPAGEAMT,CLEARANCEAMT,OTHERSAMT,ALLOWANCEAMT,CUSTOMSDUTYAMT,RATE,moisture_et,awt_flg
+,ARATECY,ARATEKG,DBDT,DBNARR,ABales,ADate,AFRatekg,DBTC,STIME,ETIME,TOTHRS,ALLOWANCE,ASno,CashDisper,CashDisAmt,TradeDisper,TradeDisAmt
+,Rebet,rebate,alert_raised,LOT_YEAR,TAX_CHOICE,TransferType,ins_flg,SFI,ELG,TRCNT,TRArea,TRGrade,LINT,IVC,SCNeps_g,SCNeps_Micm,TotSCNeps_g
+,AVGSCNeps_Micm,EXNoils,GTEX,RD,bb,Grade,csp,Remarks,Rej_Qty,Rej_Kgs,Rec_Bales,Rec_Kgs,vcatcd,ASSVALUE,shipchrg,weighbridgewt,Form_type,FIssue_flg
+,inwardno,inwarddate,dutyclaimable,risi,IM_IND,ALLMIXCOUNT,RECMIXCOUNT,issflg,YarnAppearance,CorrectedStrength,TPI,YarnStrength,YarnCount,Staple_Hand
+,nepspergm,nepsize,scnsize,lw,sfcw,uqlw,ln,sfcn,fiveper,fine,ifc,mr,plusb,OtherTaxableAmt,RATEUNIT,LOTRECTYPE,DutyPer,DiscountFlg,ADDTAXCODE,ADDTAXPER
+,ADDTAXAMOUNT,InsApprovalFlg,favaourablewgt,weightflg,pinvval,SPOTPasser,uhml,ml,ui,nepcv,scncv,faflag,STAPLEN5,TDSAMT,TDSFLG,TDSJVNO,MR1
+,MCOEFF1,brkcomPer,tcs_amt,AppFlg,ADDUSERNAME,ADDDATE,MODUSERNAME,Fappflg,FADDUSERNAME,FADDDATE,trash_et,HSN,cgstper,cgstamt,sgstper,sgstamt,igstper
+,igstamt,SICAAmt,Line_No,PlCode,ComWt_Flg,Comm_Wt,ExchangeRate,BillCurrency,gdivcode,SuppBillValue,tpjtc,tpjdt,tpjno,premAmt,CertificateNo,welfareamt
+,welfareper,IDAmt,IDPer,be_no,be_date,duty_wt,dutyvalue,POTYPE,ACGSTAMT,ASGSTAMT,AIGSTAMT,Advance_amt,purappruser,purappdate,purappflg,purpreparedby,purpredate
+   FROM INSERTED  WHERE DIVCODE=@divcode AND DIVCODE=@divcode AND LOTNO=@LOTNO AND LOTDT =@LOTDT AND VARCODE=@VARCODE 
+          
+END
+
+
+
+
+
+
+GO
+/****** Object:  Trigger [dbo].[TRG_DEL_RM_LOT_DET]    Script Date: 10/14/2019 12:36:47 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+create TRIGGER [dbo].[TRG_DEL_RM_LOT_DET]
+   ON  [dbo].[RM_LOT]
+   AFTER DELETE
+AS 
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+   	   DECLARE @divcode AS VARCHAR(2)
+		   DECLARE @LOTNO AS NUMERIC(8)
+           DECLARE @LOTDT AS DATETIME
+           DECLARE @VARCODE AS VARCHAR(20)
+           
+      SELECT @divcode=DIVCODE,@divcode=DIVCODE ,@LOTNO=LOTNO,@LOTDT=LOTDT ,@VARCODE=VARCODE
+      FROM DELETED
+
+    DELETE
+    FROM RM_LOT_DET
+    WHERE  DIVCODE=@divcode AND DIVCODE=@divcode AND LOTNO=@LOTNO AND LOTDT =@LOTDT AND VARCODE=@VARCODE
+    
+END
+
+go
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,126 @@
+alter table rm_lot add Bill_Rate numeric(15,7)
+go
+
+
+
+	alter table rm_lot add Entryuser varchar(10)
+	go
+	alter table rm_lot add App_Date datetime
+  
+    go
+-- Ksp_RMI_Purchasedaybooklist '01','2017-11-01','2017-11-30'                          
+ ALTER PROCEDURE Ksp_RMI_Purchasedaybooklist                          
+  (                          
+ @divcode AS varchar(10),                          
+  @fdate AS varchar(10),                          
+   @tdate AS varchar(10)                          
+  )                            
+ AS                          
+ BEGIN                          
+                         
+                        
+SELECT a.PJNO AS vno,a.PJDT AS vdate,a.BILLNO AS inv,a.BILLDT AS inv_dt,a.LOTNO,fs.OLDSLCODE AS pc,fs.slname                          
+ ,v.VARNAME AS vac,v.VARNAME,CASE WHEN (pd.STATE_CODE=fs.state_code) THEN '1' ELSE '2' END tp,a.BALES AS qty,a.SICAAmt AS sl                        
+ ,a.CHARITYAMT AS ch,a.NETWT AS qtl,a.PJAMT AS basic_val,a.VATAMT AS vat,a.CashDisAmt AS discount,                        
+ a.BillValue AS val,a.TOTLANDCOST AS camt,a.OTHERSAMT AS ulc,0 AS acno,0 AS rc,pd2.DIV_PRINTNAME,pd2.DIV_UNITNAME              
+ ,a.HSN,a.cgstper,a.cgstamt,a.sgstper,a.sgstamt,a.igstper,a.igstamt,fs.gstinno as supp_gstinno  ,arr.contno pono,arr.contdt podt            
+     ,A.ARRNO,A.ARRDT ARRDATE  ,A.COMM_WT COMMWT, A.GRSWGT    GROSSWT  ,be_no BENO,be_date BEDT             
+  FROM RM_LOT a                          
+ LEFT OUTER JOIN FA_SLMAS fs ON fs.slcode = a.SUPCD             
+ inner join  rm_arrival arr on arr.divcode=a.divcode and arr.arrno=a.arrno and a.arrdt=arr.arrdate  and a.varcode=arr.varcode   and a.supcd=arr.supcd            
+ LEFT OUTER JOIN PP_DIVMAS pd ON pd.DIVCODE = a.DIVCODE AND fs.state_code=pd.STATE_CODE                        
+ LEFT OUTER JOIN PP_DIVMAS pd2 ON a.DIVCODE=pd2.DIVCODE                        
+ LEFT OUTER JOIN RM_VAR v ON a.VARCODE=v.VARCODE                        
+ WHERE a.DIVCODE=@divcode and a.LOTDT BETWEEN @fdate AND @tdate   and isnull(a.opflg,'N')<>'Y'                      
+ --AND a.PJDT BETWEEN @fdate AND @tdate                         
+ END        
+ 
+                  
+
+go
+
+            
+         -- select *from fa_purhd where pjvno=458 and pjvdt>='2019-10-01'                            
+         --select FBILLVALUE ,BillValue , *from rm_lot where pjno=458 and pjdt>='2019-10-01'                            
+                                      
+                        
+                                      
+/*                                                  
+KSP_RMI_Purchasebill  '02','2019-10-04','532','532'                                                  
+*/                                                  
+                                                  
+alter PROC [dbo].[KSP_RMI_Purchasebill]                                                                                                            
+(                                                                                                                  
+ @Divcode VARCHAR(2),                                                                                                                  
+ @Date VARCHAR(25),                                                                                                          
+ @FMRNo VARCHAR(10),                                                                                                                               
+ @TMRNo VARCHAR(25)                                                                             
+)                                                                                                                  
+AS                                                                                               
+Begin                                                                                                             
+SELECT a."ARRNO",a."ARRDATE",a."LORRYNOS",case when b.bill_rate=0 then  b.RATECY else b.bill_rate end RATECY,b."LOTNO",b."BILLNO",b."BILLDT",hh.insuranceamt "INSAMT",                                                  
+b."BEDAMT",b."GRSWGT",b."NETWT",b."BALES",b.assvalue "PJAMT",b."PLOTNO",                           
+case when b.ComWt_Flg=1 and Comm_Wt>0 then Comm_Wt else                           
+b."PNETWT" end "PNETWT",b."DBAMT",                                                  
+b."VATAMT",ll."CESSAMT",ll."COMMAMT",b."ADDTAXAMOUNT",c."CONTNO",                                                  
+c."CONTDT",d."CARNAME",e."VARNAME",p."ADD1",p."ADD2",p."ADD3",p."CITY",p."PINCODE",p."PHONE1",                                                  
+p."FAX",p."EMAIL",p."WEBADDR",p."HOState",p."DIV_PRINTNAME",p."DIV_UNITNAME",p."DIV_LOGO",ff."slname" as slname1,                                                  
+g."slname",g."add1" as sadd1,g."add2" as sadd2,g."add3" as sadd3,g."city" as scity,g."pin" as spin,                                                  
+g."state" as sstate,g."country" as scountry    
+,g.gstinno as sgstinno,g.GSTSTATECODE as sgststcode    
+,p.gstinno,p.cinno,g.phone1 as sphone,g.email as semail,                          
+case when ll.cgstamt >0 then b.cgstper else 0 end cgstper                              
+,case when ll.sgstamt >0 then b.sgstper else 0 end  sgstper, case when ll.igstamt >0 then b.igstper else 0 end igstper,                                                  
+--((((ISNULL(ORDKGS,0.00)*ISNULL(c.RATEKG,0.00)))+( ((ISNULL(ORDKGS,0.00)*ISNULL(c.RATEKG,0.00)*isnull(c.CESSPER,0.00))/100) ))*isnull(c.cgstper,0.00))/100 AS cgstamt,                                                                      
+--((((ISNULL(ORDKGS,0.00)*ISNULL(c.RATEKG,0.00)))+( ((ISNULL(ORDKGS,0.00)*ISNULL(c.RATEKG,0.00)*isnull(c.CESSPER,0.00))/100) ))*isnull(c.sgstper,0.00))/100 AS sgstamt,                                                                      
+--((((ISNULL(ORDKGS,0.00)*ISNULL(c.RATEKG,0.00)))+( ((ISNULL(ORDKGS,0.00)*ISNULL(c.RATEKG,0.00)*isnull(c.CESSPER,0.00))/100) ))*isnull(c.igstper,0.00))/100 AS igstamt                                                    
+ll.cgstamt,ll.sgstamt,ll.igstamt,c.DLYTYPE,purpreparedby Prepby,purappruser appby,                                      
+purappdate first_appdate,purpredate appdate ,b."PJNO",b."PJDT",                                
+--case when c.DLYTYPE ='S' then 0 else b."LRFRTAMT" end LRFRTAMT,        
+--case when c.DLYTYPE ='S' then (b."SuppBillvalue" - b."LRFRTAMT") else b."SuppBillvalue" end                                     
+  --round(ll.LANDCOSTWITHTAX ,0)                
+ case when c.dlytype='S' then hh.billamt+LryFrieghtAmt else hh.billamt end            
+   SuppBillvalue   ,ISNULL(ll.AdjValue,0)  Roff                 
+  ,ll..LRFRTAMT  ,   hh..othersamt+isnull(hh.othertaxamt,0) Otheramt,                   
+                        
+  isnull(case when b.ComWt_Flg=1 and Comm_Wt>0 then Comm_Wt else                           
+b."PNETWT" end,0) -  b.netwt excesswt   ,hh.billamt,              
+--isnull(ll.pjamt,0)              
+AssessableAmt               
+,hh.AdjustAmt  ,case when c.dlytype='S' then 'SPOT' else 'FOR' end Dlytype  ,      
+      
+(select upper(user_name) from pp_passwd s  where user_id=b.purSecondappruser and a.divcode=s.divcode and s.module=6)purSecondappruser,purSecondappdate                      
+                            
+FROM RM_ARRIVAL a                                                   
+inner JOIN RM_LOT b ON a."DIVCODE" = b."DIVCODE" AND a."LOTNO" = b."LOTNO" AND                                      
+a."lotdt" = b."LOTDT" AND a."lottype" = b."LOTTYPE" AND a."SUPCD" = b."SUPCD" AND                                                  
+a."VARCODE" = b."VARCODE" AND a."ARRNO" = b."ARRNO" AND a."ARRDATE" = b."ARRDT"                   
+inner join fa_purhd hh on hh.pjvno=b.pjno and hh.pjvdt=b.pjdt  and hh.tc=b.pjtc and hh.divcode=b.divcode                        
+left join (select divcode,pjno,pjdt,supcd,SUM(LANDCOSTWITHTAX ) LANDCOSTWITHTAX ,sum(ASSVALUE )  assval,SUM(cgstamt ) cgstamt,SUM(sgstamt ) sgstamt,                          
+SUM(igstamt ) igstamt,SUM(LRFRTAMT) LRFRTAMT,SUM(COMMAMT) COMMAMT,SUM(CESSAMT) CESSAMT,sum(INSAMT ) INSAMT ,              
+SUM(pjamt) pjamt  ,sum(iSNULL(b.AdjValue ,0)) AdjValue ,sum(othersamt) othersamt           
+from rm_lot b where  b.DIVCODE=@Divcode AND b.PJDT =@Date  AND b.PJNO > = @FMRNo AND b.PJNO<= @TMRNo  and ISNULL(b.OPFLG ,'N')<>'Y'                           
+group by divcode,pjno,pjdt,supcd                             
+) ll on  ll.DIVCODE =b.DIVCODE and ll.pjno =b.pjno and ll.pjdt =b.pjdt                             
+ and ll.SUPCD =b.SUPCD                             
+                                                 
+inner JOIN rm_cont c ON a."CONTNO" = c."CONTNO" AND a."CONTDT" = c."CONTDT" AND                                                  
+a."SUPCD" = c."SUPCD" AND a."VARCODE" = c."VARCODE"                                   
+AND (a."DIVCODE" = c."DIVCODE"  or (c.DIVCODE=(select max(isnull(poimportdivision,'01')) from rm_param) and c.im_ind='I'))                                
+            --select *from fa_purhd where pjvno=739 and pjvdt>='2019-04-01'                
+                                                  
+LEFT OUTER JOIN PO_CAR d ON a."CARCODE" = d."CARCODE"                                                  
+left JOIN rm_var e ON b."VARCODE" = e."VARCODE" AND b."CATCD" = e."CATCD"                                                  
+LEFT OUTER JOIN FA_SLMAS_1 ff ON c."BRKCD" = ff."slcode"                                                  
+INNER JOIN PP_DIVMAS p ON b."DIVCODE" = p."DIVCODE"                                                  
+INNER JOIN FA_SLMAS g ON b."SUPCD" = g."slcode"                                 
+WHERE b.DIVCODE=@Divcode AND b.PJDT =@Date  AND b.PJNO > = @FMRNo AND b.PJNO<= @TMRNo     and ISNULL(b.OPFLG ,'N')<>'Y'                                                
+ORDER BY b."LOTNO" ASC                                                                   
+END         
+        
+        
+--select othersamt, *from RM_LOT where purSecondappruser is not null       
+      
+--select *from pp_passwd where user_id='am'      
+        
+--select insuranceamt, *from fa_purhd where pjvno=516 and pjvdt='2019-12-27'

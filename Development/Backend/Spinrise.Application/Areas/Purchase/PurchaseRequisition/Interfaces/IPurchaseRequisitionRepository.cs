@@ -37,10 +37,10 @@ public interface IPurchaseRequisitionRepository
     Task<int> InsertHeaderAsync(PurchaseRequisitionHeader header);
     Task<int> InsertLineAsync(PurchaseRequisitionLine line);
     Task<int> UpdateHeaderAsync(PurchaseRequisitionHeader header);
-    Task<int> GetMaxPrSNoAsync(string divCode, long prNo);
-    Task      SoftDeleteLinesAsync(string divCode, long prNo);
-    Task<int> DeleteAsync(string divCode, long prNo, string deleteReasonCode);
-    Task<int> DeleteLineAsync(string divCode, long prNo, int prSNo, string deleteReasonCode);
+    Task<int> GetMaxPrSNoAsync(string divCode, long prNo, DateTime prDate);
+    Task      SoftDeleteLinesAsync(string divCode, long prNo, DateTime prDate);
+    Task<int> DeleteAsync(string divCode, long prNo, DateTime prDate, string deleteReasonCode);
+    Task<int> DeleteLineAsync(string divCode, long prNo, DateTime prDate, int prSNo, string deleteReasonCode);
 
     // ── Audit log ─────────────────────────────────────────────────────────────
     Task InsertAuditLogAsync(PurchaseRequisitionHeader header, PurchaseRequisitionLine line,

@@ -1,0 +1,38 @@
+  alter table rm_param add WasteissType varchar(4)
+Go
+
+
+ -- Ksp_sp_outpassrep_new '01','1','2018-07-30','RE','2018'       
+   CREATE PROCEDURE Ksp_sp_outpassrep_new      
+   (      
+   @divcode varchar(5),      
+   @docno varchar(10),      
+   @date varchar(15),      
+   @Isstype varchar(10),      
+   @Lotyr varchar(15)      
+   )      
+   as      
+   BEGIN      
+    SELECT a.Docno,a.Docdate,b.BBLFLG,V.VarName,A.Quantity Quantity,A.NetWeight NetWeight,      
+    rmhd.VechicleNo,rmhd.Destination,fa.slname, PP_DIVMAS.ADD1 ,PP_DIVMAS.ADD2 ,PP_DIVMAS.ADD3,                                                                          
+       PP_DIVMAS.CITY,PP_DIVMAS.PINCODE,PP_DIVMAS.PHONE1,PP_DIVMAS.PHONE2,PP_DIVMAS.FAX,PP_DIVMAS.EMAIL,pd.CINNO,                                                                         
+       PP_DIVMAS.WEBADDR,PP_DIVMAS.DIV_PRINTNAME,PP_DIVMAS.DIV_UNITNAME,PP_DIVMAS.gstinno,pd.DIV_LOGO,      
+       fa.add1 as sadd1,fa.add2 as sadd2,fa.add3 as sadd3,fa.city as scity,fa.pin as spin,fa.state as sstate,      
+       fa.Country as scountry,fa.phone1 as sphone1,fa.phone2 as sphone2,fa.gstinno as suppgstinno,      
+       fa.gststatecode as suppgststcode,a.LotNo,a.Lotdate,a.IssueDate,a.IssueNo,v.HSN,CarNAME as transportname         
+    FROM       
+    RM_OutpassDt a inner join RM_Outpasshd Rmhd on a.Docno=rmhd.Docno and       
+    a.Docdate=rmhd.Docdate and a.Divcode=rmhd.Divcode and a.Issuetype=Rmhd.Issuetype      
+    inner join RM_LOT B on a.LotNo=b.LOTNO AND a.Divcode=b.DIVCODE aND a.Lotdate=b.LOTDT    
+    left join rm_cinvhd  in1 on in1.BO_NO=a.IssueNo and in1.BO_TYPE=a.Issuetype  
+    inner join Rm_Var V on  A.VarCode=V.VarCode      
+    inner join fa_slmas fa on rmhd.Slcode=fa.slcode       
+    inner join PP_DIVMAS PP_DIVMAS on rmhd.Divcode=PP_DIVMAS.divcode      
+    LEFT OUTER JOIN PP_DIVMAS pd ON pd.DIVCODE=@Divcode     
+    left OUTER join PO_Car igcar on  igcar.cARCODE=in1.CARRIER_CODE  
+    WHERE        
+   A.Divcode =@divcode and b.lotyear=@Lotyr And A.Docno =@docno And a.DocDate=@date      
+  And A.IssueType=@Isstype      
+   END 
+
+Go  

@@ -79,13 +79,11 @@ export function usePurchaseRequisitionList() {
   const handleSearch = useCallback(async (values: SearchFormValues) => {
     const { yfDate, ylDate } = getFYBounds()
     await fetchPage(1, {
-      prNo:       values.prNo ? String(values.prNo) : undefined,
-      startDate:  values.dateRange?.[0]?.format('YYYY-MM-DD') ?? yfDate,
-      endDate:    values.dateRange?.[1]?.format('YYYY-MM-DD') ?? ylDate,
-      depCode:    values.depCode    || undefined,
-      reqName:    values.reqName    || undefined,
-      status:     values.status     || undefined,
-      searchText: values.searchText || undefined,
+      prNo:      values.prNo?.trim() || undefined,
+      startDate: values.dateRange?.[0]?.format('YYYY-MM-DD') ?? yfDate,
+      endDate:   values.dateRange?.[1]?.format('YYYY-MM-DD') ?? ylDate,
+      depCode:   values.depCode || undefined,
+      status:    values.status  || undefined,
     })
   }, [fetchPage])
 

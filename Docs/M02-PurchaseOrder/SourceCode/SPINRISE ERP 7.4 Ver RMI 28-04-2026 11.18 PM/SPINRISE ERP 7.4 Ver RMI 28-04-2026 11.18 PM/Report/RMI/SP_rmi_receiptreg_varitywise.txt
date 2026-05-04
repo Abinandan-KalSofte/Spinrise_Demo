@@ -1,0 +1,15 @@
+Create proc SP_rmi_receiptreg_varitywise  
+@Divcode as varchar(5),  
+@FromDate as varchar(10),  
+@Todate as varchar(10),  
+@Lotyear as varchar(5)  
+as  
+SELECT a.varcode,B.VARNAME,A.ARRDT,A.LOTNO,C.SLNAME,sum(A.BALES) as Bales_qty,UNIT =CASE WHEN A.BBLFLG='B'   
+THEN 'Bales' else 'Borah' end,round(sum(A.NETWT),2) AS KGS,avg(a.RATEKG) AS 'RATE/CANDY',  
+sum(a.NETWT)*round((isnull(a.ratecy,0)/355.6187),2) AS 'VALUE',isnull(a.ratecy,0) as ratecy,  
+sum(a.totlandcost) as totlandcost FROM RM_LOT A,RM_VAR B,FA_SLMAS C,rm_arrival d,rm_cont e   
+WHERE a.arrno=d.arrno and a.divcode = d.divcode and d.contno=e.contno and d.contdt=e.contdt and   
+d.divcode=e.divcode and a.supcd=e.supcd and  a.divcode=e.divcode and A.VARCODE=B.VARCODE AND   
+A.SUPCD=C.SLCODE AND A.arrdt BETWEEN @FromDate AND @ToDate and opflg='N' and a.rejflg='N' and   
+a.lotyear=@Lotyear and a.divcode=@Divcode   
+group by a.varcode,B.VARNAME,A.ARRDT,A.LOTNO,C.SLNAME,a.bblflg,a.ratecy order by a.lotno

@@ -1,0 +1,317 @@
+alter table RM_DespatchDT add Line_No Varchar(18)
+go
+Create View Vw_CompanyDBList
+as
+select  'PALLAVA TEXTILES (P) LIMITED' Company_Name,DATABASE_NAME  DATABASE_NAME  from Pallavaa..pp_Divmas where DIVCODE= '01'
+union all
+select  'Sri Cheran Synthetics India Private Limited' Company_Name,DATABASE_NAME  DATABASE_NAME from Sricheran..pp_Divmas where DIVCODE= '01'
+go
+create View Vw_DivisonList
+as
+select  DIVNAME Division_Name,Divcode  Divsion_ID,Abbr from pp_Divmas
+go
+
+  
+-- sricheran..ksp_FibreDiscount '01','2021-07-01','2021-07-02','192.16' ,'01' ,'01'    
+alter proc ksp_FibreDiscount      
+(      
+@Divcode VArchar(25),      
+@Fdate Varchar(15),      
+@Tdate Varchar(15),      
+@IPADD Varchar(15) ,
+@Abbr varchar(50),
+@RptDivcode varchar(3)
+)      
+as  
+if object_ID('RPT_Fibre_CreditNote') is not null drop table RPT_Fibre_CreditNote 
+select row_number() over (order by a.BILLNO ) SNo, pp.ABBR unit,d.VARNAME ,'' FSCnonfsc,c.slname,--a.lotno,a.pjno,    
+a.ContNum,a.BILLNO ,      
+case when cn.im_ind='I' then 'Import'       
+when cn.im_ind='L' then 'Domestic'      
+when cn.im_ind='U' then 'Interstate' End InvoiceType,      
+a.BILLDT ,a.Comm_Wt ,CurrCode,e.PLName 'Plant',a.Line_No,'' Color ,a.Bill_Rate ,      
+--BDType1,BDType2,BDType3,BDType4,BDType5,BDType6,BDType7,BDType8,      
+BDRate1,BDRate2,BDRate3,BDRate4,BDRate5,BDRate6,BDRate7,BDRate8      
+,a.RATECY,      
+--DType1,DType2,DType3,DType4,DType5,DType6,DType7,DType8,      
+DRate1,DRate2,DRate3,DRate4,DRate5,DRate6,DRate7,DRate8      
+,a.Bill_Rate - a.RATECY Elig_Diff_Inv_Rate,      
+---- Difference in invoice       
+(BDRate1-DRate1) Elig_Diff_Inv_Rate1 ,      
+(BDRate2-DRate2) Elig_Diff_Inv_Rate2 ,      
+(BDRate3-DRate3) Elig_Diff_Inv_Rate3 ,      
+(BDRate4-DRate4) Elig_Diff_Inv_Rate4 ,      
+(BDRate5-DRate5) Elig_Diff_Inv_Rate5 ,      
+(BDRate6-DRate6) Elig_Diff_Inv_Rate6 ,      
+(BDRate7-DRate7) Elig_Diff_Inv_Rate7 ,      
+(BDRate8-DRate8) Elig_Diff_Inv_Rate8 ,      
+      
+--CNDType1,CNDType2,CNDType3,CNDType4,CNDType5,CNDType6,CNDType7,CNDType8,      
+CNDRate1,CNDRate2,CNDRate3,CNDRate4,CNDRate5,CNDRate6,CNDRate7,CNDRate8,      
+--- invoice Receivable      
+round(a.Comm_Wt*(a.Bill_Rate - a.RATECY) ,0) Diff_Inv_Price_Receivable,    
+round(a.Comm_Wt*(BDRate1-DRate1) ,0)  Diff_Inv_Receivable1,      
+round(a.Comm_Wt*(BDRate2-DRate2) ,0)  Diff_Inv_Receivable2,      
+round(a.Comm_Wt*(BDRate3-DRate3) ,0)  Diff_Inv_Receivable3,      
+round(a.Comm_Wt*(BDRate4-DRate4) ,0)  Diff_Inv_Receivable4,      
+round(a.Comm_Wt*(BDRate5-DRate5) ,0)  Diff_Inv_Receivable5,      
+round(a.Comm_Wt*(BDRate6-DRate6) ,0)  Diff_Inv_Receivable6,      
+round(a.Comm_Wt*(BDRate7-DRate7) ,0)  Diff_Inv_Receivable7,      
+round(a.Comm_Wt*(BDRate8-DRate8) ,0)  Diff_Inv_Receivable8,      
+-----Credit Note      
+round(a.Comm_Wt*(CNDRate1) ,0)  CreditNote_Receivable1,      
+round(a.Comm_Wt*(CNDRate2) ,0)  CreditNote_Receivable2,      
+round(a.Comm_Wt*(CNDRate3) ,0)  CreditNote_Receivable3,      
+round(a.Comm_Wt*(CNDRate4) ,0)  CreditNote_Receivable4,      
+round(a.Comm_Wt*(CNDRate5) ,0)  CreditNote_Receivable5,      
+round(a.Comm_Wt*(CNDRate6) ,0)  CreditNote_Receivable6,      
+round(a.Comm_Wt*(CNDRate7) ,0)  CreditNote_Receivable7,      
+round(a.Comm_Wt*(CNDRate8) ,0)  CreditNote_Receivable8,      
+    
+------Received    
+basic_Received_Amt Diff_Inv_Price_Received,    
+contRec.ReceivedAmt1 Diff_Inv_Received1,      
+contRec.ReceivedAmt2 Diff_Inv_Received2,      
+contRec.ReceivedAmt3  Diff_Inv_Received3,      
+contRec.ReceivedAmt4  Diff_Inv_Received4,      
+contRec.ReceivedAmt5  Diff_Inv_Received5,      
+contRec.ReceivedAmt6  Diff_Inv_Received6,      
+contRec.ReceivedAmt7  Diff_Inv_Received7,      
+contRec.ReceivedAmt8  Diff_Inv_Received8,      
+-----Credit Note      
+CRRec.CNDRecRate1  CreditNote_Received1,      
+CRRec.CNDRecRate2 CreditNote_Received2,      
+CRRec.CNDRecRate3  CreditNote_Received3,      
+CRRec.CNDRecRate4 CreditNote_Received4,      
+CRRec.CNDRecRate5 CreditNote_Received5,      
+CRRec.CNDRecRate6  CreditNote_Received6,      
+CRRec.CNDRecRate7  CreditNote_Received7,      
+CRRec.CNDRecRate8 CreditNote_Received8,      
+    
+    
+-------- Blaance To be Received        
+round(a.Comm_Wt*(a.Bill_Rate - a.RATECY) ,0)- ISNULL(basic_Received_Amt ,0) Price_Balance_Receivable1,    
+round(a.Comm_Wt*(BDRate1-DRate1) ,0)- ISNULL(ReceivedAmt1 ,0)  Balance_Receivable1,      
+round(a.Comm_Wt*(BDRate2-DRate2) ,0)- ISNULL(ReceivedAmt2 ,0)  Balance_Receivable2,      
+round(a.Comm_Wt*(BDRate3-DRate3) ,0)- ISNULL(ReceivedAmt3 ,0)  Balance_Receivable3,      
+round(a.Comm_Wt*(BDRate4-DRate4) ,0)- ISNULL(ReceivedAmt4 ,0)  Balance_Receivable4,      
+round(a.Comm_Wt*(BDRate5-DRate5) ,0)- ISNULL(ReceivedAmt5 ,0)  Balance_Receivable5,      
+round(a.Comm_Wt*(BDRate6-DRate6) ,0)- ISNULL(ReceivedAmt6 ,0)  Balance_Receivable6,      
+round(a.Comm_Wt*(BDRate7-DRate7) ,0)- ISNULL(ReceivedAmt7 ,0)  Balance_Receivable7,      
+round(a.Comm_Wt*(BDRate8-DRate8) ,0)- ISNULL(ReceivedAmt8 ,0)  Balance_Receivable8,      
+-----Balcne Credit Note To be Received      
+round(a.Comm_Wt*(CNDRate1) ,0)-ISNULL(CRRec.CNDRecRate1,0)  Balance_CR_Receivable1,      
+round(a.Comm_Wt*(CNDRate2) ,0)-ISNULL(CRRec.CNDRecRate2,0)   Balance_CR_Receivable2,      
+round(a.Comm_Wt*(CNDRate3) ,0)-ISNULL(CRRec.CNDRecRate3,0)   Balance_CR_Receivable3,      
+round(a.Comm_Wt*(CNDRate4) ,0)-ISNULL(CRRec.CNDRecRate4,0)   Balance_CR_Receivable4,      
+round(a.Comm_Wt*(CNDRate5) ,0)-ISNULL(CRRec.CNDRecRate5,0)   Balance_CR_Receivable5,      
+round(a.Comm_Wt*(CNDRate6) ,0)-ISNULL(CRRec.CNDRecRate6,0)   Balance_CR_Receivable6,      
+round(a.Comm_Wt*(CNDRate7) ,0)-ISNULL(CRRec.CNDRecRate7,0)   Balance_CR_Receivable7,      
+round(a.Comm_Wt*(CNDRate8) ,0)-ISNULL(CRRec.CNDRecRate8,0)   Balance_CR_Receivable8   
+into  RPT_Fibre_CreditNote
+      
+from RM_LOT a       
+inner join fa_slmas c on a.supcd=c.slcode       
+inner join RM_CONT cn on cn.CONTNO =a.ContNum and a.Contdate =cn.CONTDT and a.VARCODE =cn.VARCODE and cn.SUPCD =a.SUPCD       
+inner join rm_var d on d.varcode=a.varcode         
+left join rm_plant e on e.PLCode=a.PlCode        
+inner join pp_Divmas pp on pp.divcode=a.divcode       
+      
+--------------------------------Agreed Discount Note      
+left join       
+(      
+select a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate, supcd      
+,MAX(DType1) DType1 ,MAX(DType2) DType2 ,MAX(DType3) DType3 ,MAX(DType4) DType4      
+,MAX(DType5) DType5 ,MAX(DType6) DType6 ,MAX(DType7) DType7 ,MAX(DType8) DType8,      
+isnull(SUM(DRate1),0) DRate1,isnull(SUM(DRate2),0) DRate2      
+,isnull(SUM(DRate3),0) DRate3,isnull(SUM(DRate4),0) DRate4,isnull(SUM(DRate5),0) DRate5      
+,isnull(SUM(DRate6),0) DRate6,isnull(SUM(DRate7),0) DRate7,isnull(SUM(DRate8),0) DRate8      
+from      
+(      
+select  a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,supcd,      
+case when SNo=1 then a.DType  end DType1 ,case when SNo=2 then a.DType  end DType2,       
+case when SNo=3 then a.DType  end DType3 ,case when SNo=4 then a.DType  end DType4,       
+case when SNo=5 then a.DType  end DType5 ,case when SNo=6 then a.DType  end DType6 ,      
+case when SNo=7 then a.DType  end DType7, case when SNo=8 then a.DType  end DType8,       
+case when SNo=9 then a.DType  end DType9,       
+      
+case when SNo=1 then a.DRate  end DRate1 ,case when SNo=2 then a.DRate  end DRate2,       
+case when SNo=3 then a.DRate  end DRate3 ,case when SNo=4 then a.DRate  end DRate4,       
+case when SNo=5 then a.DRate  end DRate5 ,case when SNo=6 then a.DRate  end DRate6 ,      
+case when SNo=7 then a.DRate  end DRate7, case when SNo=8 then a.DRate  end DRate8,       
+case when SNo=9 then a.DRate  end DRate9      
+from      
+(      
+select  a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,a.DType ,a.DRate,supcd,      
+ROW_NUMBER() over (partition by contno,contdt,Divcode,varcode order by contno,contdt,Divcode,varcode)  SNo      
+from RM_ContDiscntRate a       
+inner join RM_DiscountType f on f.Code =a.DType and RPTFLG='N'        
+)a      
+)a group by  a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,supcd      
+) cdisc on  a.ContNum  =cdisc.ContNo and cdisc.Contdt=a.Contdate and a.Varcode=cdisc.Varcode and cdisc.supcd=a.supcd        
+      
+---------------------------------------------------invoiced Discount      
+left join       
+(      
+select a.Lotno,a.Lotdt, a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate, supcd      
+,MAX(DType1) BDType1 ,MAX(DType2) BDType2 ,MAX(DType3) BDType3 ,MAX(DType4) BDType4      
+,MAX(DType5) BDType5 ,MAX(DType6) BDType6 ,MAX(DType7) BDType7 ,MAX(DType8) BDType8,      
+isnull(SUM(DRate1),0) BDRate1,isnull(SUM(DRate2),0) BDRate2      
+,isnull(SUM(DRate3),0) BDRate3,isnull(SUM(DRate4),0) BDRate4,isnull(SUM(DRate5),0) BDRate5      
+,isnull(SUM(DRate6),0) BDRate6,isnull(SUM(DRate7),0) BDRate7,isnull(SUM(DRate8),0) BDRate8      
+from      
+(      
+select a.Lotno,a.Lotdt, a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,supcd,      
+case when SNo=1 then a.DType  end DType1 ,case when SNo=2 then a.DType  end DType2,       
+case when SNo=3 then a.DType  end DType3 ,case when SNo=4 then a.DType  end DType4,       
+case when SNo=5 then a.DType  end DType5 ,case when SNo=6 then a.DType  end DType6 ,      
+case when SNo=7 then a.DType  end DType7, case when SNo=8 then a.DType  end DType8,       
+case when SNo=9 then a.DType  end DType9,       
+      
+case when SNo=1 then a.DRate  end DRate1 ,case when SNo=2 then a.DRate  end DRate2,       
+case when SNo=3 then a.DRate  end DRate3 ,case when SNo=4 then a.DRate  end DRate4,       
+case when SNo=5 then a.DRate  end DRate5 ,case when SNo=6 then a.DRate  end DRate6 ,      
+case when SNo=7 then a.DRate  end DRate7, case when SNo=8 then a.DRate  end DRate8,       
+case when SNo=9 then a.DRate  end DRate9      
+from      
+(      
+select  a.Lotno,a.Lotdt,a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,a.DType ,a.DRate,supcd,      
+ROW_NUMBER() over (partition by contno,contdt,Divcode,varcode,lotno order by contno,contdt,Divcode,varcode,lotno)  SNo      
+from RM_lotDiscntRate  a       
+inner join RM_DiscountType f on f.Code =a.DType and RPTFLG='N'        
+)a      
+)a group by  a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,a.Lotno,a.Lotdt,supcd      
+) Lot on  a.ContNum  =Lot.ContNo and Lot.Contdt=a.Contdate and a.Varcode=Lot.Varcode and Lot.supcd=a.supcd       
+and a.LOTNO =Lot.lotno and Lot.lotdt=a.LOTDT       
+--------------------------------Credit Note      
+left join       
+(      
+      
+select a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate, supcd      
+,MAX(DType1) CNDType1 ,MAX(DType2) CNDType2 ,MAX(DType3) CNDType3 ,MAX(DType4) CNDType4      
+,MAX(DType5) CNDType5 ,MAX(DType6) CNDType6 ,MAX(DType7) CNDType7 ,MAX(DType8) CNDType8,      
+isnull(SUM(DRate1),0) CNDRate1,isnull(SUM(DRate2),0) CNDRate2      
+,isnull(SUM(DRate3),0) CNDRate3,isnull(SUM(DRate4),0) CNDRate4,isnull(SUM(DRate5),0) CNDRate5      
+,isnull(SUM(DRate6),0) CNDRate6,isnull(SUM(DRate7),0) CNDRate7,isnull(SUM(DRate8),0) CNDRate8       
+      
+from      
+(      
+select  a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,supcd,      
+case when SNo=1 then a.DType  end DType1 ,case when SNo=2 then a.DType  end DType2,       
+case when SNo=3 then a.DType  end DType3 ,case when SNo=4 then a.DType  end DType4,       
+case when SNo=5 then a.DType  end DType5 ,case when SNo=6 then a.DType  end DType6 ,      
+case when SNo=7 then a.DType  end DType7, case when SNo=8 then a.DType  end DType8,       
+case when SNo=9 then a.DType  end DType9,       
+      
+case when SNo=1 then a.DRate  end DRate1 ,case when SNo=2 then a.DRate  end DRate2,       
+case when SNo=3 then a.DRate  end DRate3 ,case when SNo=4 then a.DRate  end DRate4,       
+case when SNo=5 then a.DRate  end DRate5 ,case when SNo=6 then a.DRate  end DRate6 ,      
+case when SNo=7 then a.DRate  end DRate7, case when SNo=8 then a.DRate  end DRate8,       
+case when SNo=9 then a.DRate  end DRate9      
+from      
+(      
+select  c.ContNo ,c.Contdt ,a.Varcode ,a.Divcode ,b.refdocno Docno ,b.refdocdt Docdate ,a.DType ,a.DRate,c.supcd,      
+ROW_NUMBER() over (partition by contno,contdt,c.Divcode,c.varcode order by contno,contdt,c.Divcode,c.varcode)  SNo      
+from  RM_FibreDiscCNDRate a       
+inner join RM_FibreDiscCN b on a.Docno =b.docno and a.Docdate =b.docdate and a.Varcode =b.varcode and a.VSno=b.DocSno      
+inner join RM_Cont c on  c.MSDocno =b.refdocno and c.MSDocsno =a.VSno and  c.VARCODE =a.varcode and b.Supcd=c.supcd     
+inner join RM_DiscountType f on f.Code =a.DType and RPTFLG='Y'        
+)a      
+)a group by  a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,supcd      
+) CR on  a.ContNum  =CR.ContNo and CR.Contdt=a.Contdate and a.Varcode=CR.Varcode and CR.supcd=a.supcd     
+-------------------- credit  Note  Report 'Y' Received  
+left join       
+(      
+    
+  select a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate, supcd      
+,MAX(DType1) CNDRecType1 ,MAX(DType2) CNDRecType2 ,MAX(DType3) CNDRecType3 ,MAX(DType4) CNDRecType4      
+,MAX(DType5) CNDRecType5 ,MAX(DType6) CNDRecType6 ,MAX(DType7) CNDRecType7 ,MAX(DType8) CNDRecType8,      
+isnull(SUM(DRate1),0) CNDRecRate1,isnull(SUM(DRate2),0) CNDRecRate2      
+,isnull(SUM(DRate3),0) CNDRecRate3,isnull(SUM(DRate4),0) CNDRecRate4,isnull(SUM(DRate5),0) CNDRecRate5      
+,isnull(SUM(DRate6),0) CNDRecRate6,isnull(SUM(DRate7),0) CNDRecRate7,isnull(SUM(DRate8),0) CNDRecRate8      
+   
+from      
+(      
+select  a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,supcd,      
+case when SNo=1 then a.DType  end DType1 ,case when SNo=2 then a.DType  end DType2,       
+case when SNo=3 then a.DType  end DType3 ,case when SNo=4 then a.DType  end DType4,       
+case when SNo=5 then a.DType  end DType5 ,case when SNo=6 then a.DType  end DType6 ,      
+case when SNo=7 then a.DType  end DType7, case when SNo=8 then a.DType  end DType8,       
+case when SNo=9 then a.DType  end DType9,       
+      
+case when SNo=1 then a.DRate  end DRate1 ,case when SNo=2 then a.DRate  end DRate2,       
+case when SNo=3 then a.DRate  end DRate3 ,case when SNo=4 then a.DRate  end DRate4,       
+case when SNo=5 then a.DRate  end DRate5 ,case when SNo=6 then a.DRate  end DRate6 ,      
+case when SNo=7 then a.DRate  end DRate7, case when SNo=8 then a.DRate  end DRate8,       
+case when SNo=9 then a.DRate  end DRate9      
+from      
+(      
+select  c.ContNo ,c.Contdt ,a.Varcode ,a.Divcode ,b.refdocno Docno ,b.refdocdt Docdate ,a.DType ,a.DRate,c.supcd,      
+ROW_NUMBER() over (partition by c.contno,c.contdt,c.Divcode,c.varcode order by c.contno,c.contdt,c.Divcode,c.varcode)  SNo      
+from  RM_FibreDiscCNDRate a       
+inner join RM_FibreDiscCN b on a.Docno =b.docno and a.Docdate =b.docdate and a.Varcode =b.varcode and a.VSno=b.DocSno      
+inner join RM_Cont c on  c.MSDocno =b.refdocno and c.MSDocsno  =a.VSno and  c.VARCODE =a.varcode and b.Supcd=c.supcd     
+inner join RM_DiscountType f on f.Code =a.DType and RPTFLG='Y'   
+inner join rm_lot lot on lot.DIVCODE =c.Divcode  and lot.SUPCD=c.SUPCD and lot.VARCODE =c.Varcode      
+and lot.contnum=c.contno and lot.contdate=c.contdt    
+inner join ( select  DType,Divcode,Varcode ,ContNo,Contdt,Lotno,Lotdt ,SUPCD ,MDocno ,mdocdate,isnull(sum(Received_Amt),0) ReceivedAmt from  RM_CNReceived      
+group by DType,Divcode,Varcode ,ContNo,Contdt,Lotno,Lotdt ,SUPCD ,MDocno ,mdocdate      
+) rec on lot.DIVCODE =rec.Divcode and lot.LOTDT =rec.Lotdt and lot.LOTNO=rec.Lotno and lot.SUPCD=rec.SUPCD and lot.VARCODE =rec.Varcode       
+and lot.contnum=rec.contno and lot.contdate=rec.contdt and a.DType=rec.dtype  and rec.MDocno =a.Docno and rec.MDocdate =a.Docdate   
+)a      
+)a group by  a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,supcd      
+) CRRec on  a.ContNum  =CRRec.ContNo and CRRec.Contdt=a.Contdate and a.Varcode=CRRec.Varcode and CRRec.supcd=a.supcd     
+  
+--------------------------------------- Basic Rate Difference Received  
+left join       
+(      
+select a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate, supcd      
+,MAX(DType1) DType1 ,MAX(DType2) DType2 ,MAX(DType3) DType3 ,MAX(DType4) DType4      
+,MAX(DType5) DType5 ,MAX(DType6) DType6 ,MAX(DType7) DType7 ,MAX(DType8) DType8,      
+isnull(SUM(DRate1),0) ReceivedAmt1,isnull(SUM(DRate2),0) ReceivedAmt2      
+,isnull(SUM(DRate3),0) ReceivedAmt3,isnull(SUM(DRate4),0) ReceivedAmt4,isnull(SUM(DRate5),0) ReceivedAmt5      
+,isnull(SUM(DRate6),0) ReceivedAmt6,isnull(SUM(DRate7),0) ReceivedAmt7,isnull(SUM(DRate8),0) ReceivedAmt8    
+,basic_Received_Amt  
+from      
+(      
+select  a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,supcd,      
+case when SNo=1 then a.DType  end DType1 ,case when SNo=2 then a.DType  end DType2,       
+case when SNo=3 then a.DType  end DType3 ,case when SNo=4 then a.DType  end DType4,       
+case when SNo=5 then a.DType  end DType5 ,case when SNo=6 then a.DType  end DType6 ,      
+case when SNo=7 then a.DType  end DType7, case when SNo=8 then a.DType  end DType8,       
+case when SNo=9 then a.DType  end DType9,       
+      
+case when SNo=1 then a.ReceivedAmt  end DRate1 ,case when SNo=2 then a.ReceivedAmt   end DRate2,       
+case when SNo=3 then a.ReceivedAmt   end DRate3 ,case when SNo=4 then a.ReceivedAmt   end DRate4,       
+case when SNo=5 then a.ReceivedAmt  end DRate5 ,case when SNo=6 then a.ReceivedAmt   end DRate6 ,      
+case when SNo=7 then a.ReceivedAmt   end DRate7, case when SNo=8 then a.ReceivedAmt   end DRate8,       
+case when SNo=9 then a.ReceivedAmt   end DRate9   ,basic_Received_Amt  
+from      
+(      
+select  a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,a.DType ,a.DRate,a.supcd,   rec.ReceivedAmt,   
+ROW_NUMBER() over (partition by a.contno,a.contdt,a.Divcode,a.varcode order by a.contno,a.contdt,a.Divcode,a.varcode)  SNo ,  
+dt.basic_Received_Amt   
+from RM_ContDiscntRate a       
+inner join RM_DiscountType f on f.Code =a.DType and RPTFLG='N'   
+inner join rm_lot lot on lot.DIVCODE =a.Divcode and lot.SUPCD=a.SUPCD and lot.VARCODE =a.Varcode      
+and lot.contnum=a.contno and lot.contdate=a.contdt --and c.dtype=b.dtype    
+inner join (select lotno,lotdt,divcode ,varcode,CONTNO ,CONTDT ,PJVNO ,PJVDT ,PJVTC,isnull(SUM(Received_Amt),0) basic_Received_Amt from  
+RM_CNReceivedDT where Divcode  in (select items from  dbo.split(@Divcode,',')) and Docdt <=@Tdate  group by lotno,lotdt,divcode ,varcode,CONTNO ,CONTDT ,PJVNO ,PJVDT ,PJVTC ) dt  on dt.LOTNO =lot.LOTNO and lot.LOTDT =dt.LOTDT 
+and dt.Divcode =lot.DIVCODE and lot.VARCODE =dt.Varcode  
+and lot.Contdate =dt.CONTDT and lot.ContNum =dt.CONTNO  and dt.PJVNO =lot.PJNO and lot.PJDT =dt.PJVDT    
+left join ( select  DType,Divcode,Varcode ,ContNo,Contdt,Lotno,Lotdt ,SUPCD ,MDocno ,mdocdate,isnull(sum(Received_Amt),0) ReceivedAmt from  RM_CNReceived      
+group by DType,Divcode,Varcode ,ContNo,Contdt,Lotno,Lotdt ,SUPCD ,MDocno ,mdocdate      
+) rec on lot.DIVCODE =rec.Divcode and lot.LOTDT =rec.Lotdt and lot.LOTNO=rec.Lotno and lot.SUPCD=rec.SUPCD and lot.VARCODE =rec.Varcode       
+and lot.contnum=rec.contno and lot.contdate=rec.contdt and a.DType=rec.dtype    and rec.MDocno =a.Docno and rec.MDocdate =a.Docdate   
+  
+)a      
+)a group by  a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,supcd ,basic_Received_Amt     
+) contRec on  a.ContNum  =contRec.ContNo and contRec.Contdt=a.Contdate and a.Varcode=contRec.Varcode and contRec.supcd=a.supcd        
+  
+where a.Divcode in (select items from  dbo.split(@Divcode,','))  and cn.CONTDT between @Fdate and @Tdate   and a.pjno is not null    
+and a.SUPCD in (select supcd from RM_ProductprintDet where IPAdd=@IPADD and divcode=@RptDivcode)  
+and a.varcode in (select varcode from RM_ProductprintDet where IPAdd=@IPADD and divcode=@RptDivcode)  
+    
+  
+  
+  

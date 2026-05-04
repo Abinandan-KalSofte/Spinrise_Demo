@@ -1,0 +1,26 @@
+drop table TMP_RMIAgeing
+
+GO
+
+CREATE TABLE [dbo].[TMP_RMIAgeing](
+	[varcode] [varchar](10) NULL,
+	[VARNAME] [varchar](50) NULL,
+	[b1] [int] NOT NULL,
+	[v1] [numeric](38, 2) NOT NULL,
+	[b2] [int] NOT NULL,
+	[v2] [numeric](38, 2) NOT NULL,
+	[b3] [int] NOT NULL,
+	[v3] [numeric](38, 2) NOT NULL,
+	[b4] [int] NOT NULL,
+	[v4] [numeric](38, 2) NOT NULL,
+	[b5] [int] NOT NULL,
+	[v5] [numeric](38, 6) NOT NULL,
+	[b6] [int] NULL,
+	[v6] [numeric](38, 2) NULL,
+	[DIVCODE] [varchar](2) NOT NULL
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO

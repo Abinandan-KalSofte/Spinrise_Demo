@@ -1,0 +1,8 @@
+
+CREATE TABLE [dbo].[CountCodeTemp](
+	[Divcode] [varchar](3) NULL,
+	[CntCode] [varchar](3) NULL,
+	[SystemIP] [varchar](15) NULL
+) ON [PRIMARY]
+
+GO

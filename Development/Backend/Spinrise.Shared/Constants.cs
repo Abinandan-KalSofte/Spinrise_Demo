@@ -132,6 +132,11 @@ public static class StoredProcedures
         public const string GetSubCosts        = "ksp_GetSubCosts";
         public const string GetDivisionDetails = "ksp_GetDivisionDetails";
         public const string GetActiveDivisions = "ksp_GetActiveDivisions";
+        public const string GetSuppliers       = "ksp_RMI_GetSuppliers";
+        public const string GetVarieties       = "ksp_RMI_GetVarieties";
+        public const string GetAreas           = "ksp_RMI_GetAreas";
+        public const string GetPaymentModes    = "ksp_RMI_GetPaymentModes";
+        public const string GetCurrencies      = "ksp_RMI_GetCurrencies";
     }
 
     public static class Stock
@@ -146,26 +151,25 @@ public static class StoredProcedures
 
     public static class PurchaseOrder
     {
-        public const string GenerateNumber       = "ksp_RMI_PO_GenerateNumber";
-        public const string PreChecks            = "ksp_RMI_PO_PreChecks";
-        public const string GetParam             = "ksp_RMI_PO_GetParam";
-        public const string GetDefaultCurrency   = "ksp_RMI_PO_GetDefaultCurrency";
-        public const string GetGSTConfig         = "ksp_RMI_PO_GetGSTConfig";
-        public const string GetDeleteReasons     = "ksp_RMI_PO_GetDeleteReasons";
-        public const string GetPaginated         = "ksp_RMI_PO_GetPaginated";
-        public const string GetById              = "ksp_RMI_PO_GetById";
-        public const string GetPendingPRLines    = "ksp_RMI_PO_GetPendingPRLines";
-        public const string FilterPRLines        = "ksp_RMI_PO_FilterPRLines";
-        public const string InsertLine           = "ksp_RMI_PO_InsertLine";
-        public const string InsertDiscountRate   = "ksp_RMI_PO_InsertDiscountRate";
-        public const string InsertDeliverySchedule = "ksp_RMI_PO_InsertDeliverySchedule";
-        public const string UpdatePRBalance      = "ksp_RMI_PO_UpdatePRBalance";
-        public const string InsertSlotNo         = "ksp_RMI_PO_InsertSlotNo";
-        public const string UpdateLine           = "ksp_RMI_PO_UpdateLine";
-        public const string Delete               = "ksp_RMI_PO_Delete";
-        public const string InsertAuditLog       = "ksp_RMI_PO_InsertAuditLog";
-        public const string GetApprovalStatus    = "ksp_RMI_PO_GetApprovalStatus";
-        public const string UpdateApproval       = "ksp_RMI_PO_UpdateApproval";
+        public const string GenerateNumber        = "ksp_RMI_PO_GenerateNumber";
+        public const string GetParam              = "ksp_RMI_PO_GetParam";
+        public const string GetDefaultCurrency    = "ksp_RMI_PO_GetDefaultCurrency";
+        public const string GetDeleteReasons      = "ksp_RMI_PO_GetDeleteReasons";
+        public const string GetGSTConfig          = "ksp_RMI_PO_GetGSTConfig";
+        public const string PreChecks             = "ksp_RMI_PO_PreChecks";
+        public const string GetPaginated          = "ksp_RMI_PO_GetPaginated";
+        public const string GetById               = "ksp_RMI_PO_GetById";
+        public const string GetPendingPRLines     = "ksp_RMI_PO_GetPendingPRLines";
+        public const string FilterPRLines         = "ksp_RMI_PO_FilterPRLines";
+        public const string Insert                = "ksp_RMI_PO_Insert";
+        public const string InsertDiscountRate    = "ksp_RMI_PO_InsertDiscountRate";
+        public const string InsertDeliverySchedule= "ksp_RMI_PO_InsertDeliverySchedule";
+        public const string InsertSlotNo          = "ksp_RMI_PO_InsertSlotNo";
+        public const string Delete                = "ksp_RMI_PO_Delete";
+        public const string InsertAuditLog        = "ksp_RMI_PO_InsertAuditLog";
+        public const string GetApprovalStatus     = "ksp_RMI_PO_GetApprovalStatus";
+        public const string UpdateApproval        = "ksp_RMI_PO_UpdateApproval";
+        public const string GetSummary            = "ksp_RMI_PO_GetSummary";
     }
 }
 

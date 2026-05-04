@@ -1,0 +1,2 @@
+
+alter table rm_acceptqty add IPadd VArchar(16)

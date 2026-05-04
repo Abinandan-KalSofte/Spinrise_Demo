@@ -1,0 +1,30 @@
+/*    
+  SP_Mix_Qty '01','2019-03-11','org'  
+*/    
+    
+CREATE PROC SP_Mix_Qty           
+(    
+ @Divcode AS varchar(5),               
+ @docdt varchar(50),  
+ @mixgrp varchar(50)                                                 
+)    
+AS                
+Begin   
+Select a.LOTNO,a.lotdt,a.BALENO noofbales,c.varcode,c.AREACD,d.areaname,  
+(bales-isnull(c.ISSBAL,0)) as lotbale,isnull(c.STAPLEN,0) as s25,isnull(c.STAPLEN50,0) as s50,  
+isnull(c.UNIRATIO,0) as UFR ,isnull(c.SHORT_FIBRE,0) as SF,  isnull(c.MICRONAIRE,0) as mic,  
+isnull(c.STRENGTH,0) as st,isnull(c.TRASH_PER,0) as trash,c.RATECY,c.RATEKG,e.div_printname,  
+e.div_unitname,b.MIXGRP  
+From RM_issReqb a  
+Inner Join RM_issReqh b on a.DIVCODE=b.DIVCODE and a.docno=b.docno and a.docdt=b.docdt   
+and a.ISSTYPE = b.ISSTYPE   
+Inner Join RM_lot c on c.LOTNO =a.LOTNO and c.LOTDT =a.lotdt and c.DIVCODE = a.DIVCODE   
+Left join rm_area d on c.areacd =d.areacode  
+Left Join PP_DIVMAS e on b.DIVCODE =a.DIVCODE   
+Where a.divcode =@Divcode and a.DOCDT =@docdt and b.MIXGRP=@mixgrp  
+order by a.lotno  
+End  
+  
+--select * from RM_issReqh  
+--select * from RM_issReqb  
+--select * from RM_lot  

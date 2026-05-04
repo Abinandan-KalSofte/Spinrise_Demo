@@ -1,0 +1,23 @@
+ALTER TABLE QC_PARA ADD issuecontrolflag varchar(1)
+go
+update qc_para set issuecontrolflag='N'
+go
+
+
+CREATE TABLE [QC_ISSUEREQ] (
+	[RDATE] [DATETIME] NOT NULL ,
+	[DIVCODE] [varchar] (3) NOT NULL ,
+	[UNITCODE] [varchar] (3) NOT NULL ,
+	[MIXNO] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
+	[MINSPLEN] [numeric] (5,2) NOT NULL,
+	[MINSTR] [numeric] (5,2) NOT NULL,
+	[MINMIC] [numeric] (5,2) NOT NULL,
+	[MINRD] [numeric] (5,2) NOT NULL,
+	[MINB] [numeric] (5,2) NOT NULL,
+	[MAXSPLEN] [numeric] (5,2) NOT NULL,
+	[MAXSTR] [numeric] (5,2) NOT NULL,
+	[MAXMIC] [numeric] (5,2) NOT NULL,
+	[MAXRD] [numeric] (5,2) NOT NULL,
+	[MAXB] [numeric] (5,2) NOT NULL
+) ON [PRIMARY]
+GO

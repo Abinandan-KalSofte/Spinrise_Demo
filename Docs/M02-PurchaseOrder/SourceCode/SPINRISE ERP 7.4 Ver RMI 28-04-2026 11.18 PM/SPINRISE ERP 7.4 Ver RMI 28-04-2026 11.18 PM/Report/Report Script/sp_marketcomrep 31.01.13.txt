@@ -1,0 +1,24 @@
+ALTER PROCEDURE sp_marketcomrep    
+(    
+ @Divcode VARCHAR (3),    
+ @fdate VARCHAR(15),    
+ @tdate VARCHAR(15),    
+ @lotyear VARCHAR(5)    
+)    
+AS       
+BEGIN    
+select     
+a.arrdate,a.supcd,f.slname,ISNULL(a.areacode,'') AS AREACODE,ISNULL(b.areaname,'') as areaname,    
+a.varcode,c.VARNAME,bale=(case when a.bbflag = 'B' then a.quantity else 0 end),bora=(case when a.bbflag='R' then a.quantity  else 0 end),    
+unit=case when a.bbflag = 'B' then 'Bales' else 'Borahs' end, round(l.Favaourablewgt,2) as netwt,
+l.TOTLANDCOST AS VALUE ,
+L.LOTNO,L.BILLNO,L.BILLDT,L.PJDT,L.PJNO,FBILLNO ,FBILLDT,isnull(a.ratecy,0)as ratecy,
+ISNULL(TAXAMT,0) AS TAX,A.ARRNO,b.L_OR_U as LUI,    
+b.state,f.add1,f.add2,d.DLYTYPE,p.DIVNAME,P.ADD1,P.DIV_PRINTNAME,P.DIV_UNITNAME  
+From   rm_arrival a,fa_slmas f,rm_area b,rm_var c,rm_lot l,RM_CONT d,PP_DIVMAS P  
+Where a.supcd = f.slcode and a.areacode=b.areacode   and a.varcode=c.varcode 
+and a.arrdate between @fdate and @tdate and l.lotno=a.lotno     
+AND L.LOTDT =A.LOTDT  AND L.LOTTYPE=A.LOTTYPE and l.lotyear=@lotyear and a.divcode=l.divcode and a.divcode=@Divcode 
+AND     
+a.DIVCODE=d.DIVCODE AND a.CONTNO=d.CONTNO AND a.CONTDT=d.CONTDT AND a.SUPCD=d.SUPCD AND a.VARCODE=d.VARCODE      
+order by L.LOTNO    

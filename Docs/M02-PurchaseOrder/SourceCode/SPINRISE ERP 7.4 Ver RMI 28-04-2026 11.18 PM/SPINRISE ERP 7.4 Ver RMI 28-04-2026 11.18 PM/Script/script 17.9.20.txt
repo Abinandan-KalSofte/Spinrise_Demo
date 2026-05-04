@@ -1,0 +1,69 @@
+-- ksp_RMIStkVarAbsIssue '01','2020-06-01','2020-06-30','2020-04-01'  
+create procedure ksp_RMIStkVarISS_Abs  
+(  
+@divcode as varchar(10),  
+@Fdate as varchar(20),  
+@Tdate as varchar(20),  
+@Yfdate as varchar(20) ,
+@IpAdd varchar(15)  
+)  
+as  
+begin  
+select i.issue_desc, case when b.bblflg = 'B' then count(c.baleno) else 0 END issuebal ,sum((isnull(C.isskgs,0))) issusekgs   
+from rm_lot b
+inner join rm_issb c on B.DIVCODE=C.DIVCODE AND b.lotno=c.lotno and b.lotdt=c.lotdt and b.lottype=c.lottype and b.catcd=c.catcd  and b.varcode=c.varcode     
+inner join rm_issuetype i on I.issue_code=C.ISSTYPE
+inner join  RM_ProductprintDet Param on Param.SUPCD=b.supcd and Param.lotno=b.lotno and param.lotdt=b.lotdt and 
+Param.varcode=b.varcode and Param.lotyear=b.lotyear and Param.divcode=b.divcode and Param.lottype=b.lottype
+ and IPadd=@ipadd
+
+ where -- C.ISSUED='Y' AND             
+  B.DIVCODE=@divcode  AND BALES >0   
+ and docdt between @Fdate and @Tdate and b.lotyear=year(@Yfdate)              
+group by i.issue_desc,b.bblflg  order by i.issue_desc  
+end   
+  
+go
+
+
+-- ksp_RMIStkVarAbsRec '01','2020-06-01','2020-06-30','2020-04-01'  
+create procedure ksp_RMIStkVarRCAbs  
+(  
+@divcode as varchar(10),  
+@Fdate as varchar(20),  
+@Tdate as varchar(20),  
+@Yfdate as varchar(20),  
+@IpAdd varchar(15) 
+)  
+as  
+begin  
+select issue_desc ,sum(RECBAL) RECBAL,sum(RECKGS) RECKGS,sum(RECVALUE) RECVALUE  from (  
+SELECT  a.issue_desc,case when b.bblflg = 'B' then sum(isnull(b.bales,0)) else 0 end as RECBAL,                
+Case when 'N' = 'N' then sum(isnull(b.FAVAOURABLEWGT ,0)) else 0 end as RECKGS,  
+SUM(B.FAVAOURABLEWGT*RATEKG ) as RECVALUE  
+from rm_lot b  inner  join rm_issuetype a on a.issue_code=b.transfertype  
+inner join  RM_ProductprintDet Param on Param.SUPCD=b.supcd and Param.lotno=b.lotno and param.lotdt=b.lotdt and 
+Param.varcode=b.varcode and Param.lotyear=b.lotyear and Param.divcode=b.divcode and Param.lottype=b.lottype
+ and IPadd=@ipadd
+where B.DIVCODE=@divcode AND upper(opflg)='N' and (B.rejflg='N' or B.rejdt>@Tdate) and                
+B.lotyear=year(@Yfdate) AND B.LOTDT BETWEEN @Fdate and @Tdate and b.lottype<>'A'  
+
+group by  b.lottype,a.issue_desc, b.opflg, b.bblflg  
+  
+union all  
+  
+SELECT  'PURCHASE' issue_desc,case when b.bblflg = 'B' then sum(isnull(b.bales,0)) else 0 end as RECBAL,                
+Case when 'N' = 'N' then sum(isnull(b.FAVAOURABLEWGT,0)) else 0 end as RECKGS,  
+SUM(B.FAVAOURABLEWGT*RATEKG )as RECVALUE  
+from rm_lot b --- inner join rm_issuetype a on a.issue_code=b.transfertype  
+inner join  RM_ProductprintDet Param on Param.SUPCD=b.supcd and Param.lotno=b.lotno and param.lotdt=b.lotdt and 
+Param.varcode=b.varcode and Param.lotyear=b.lotyear and Param.divcode=b.divcode and Param.lottype=b.lottype
+ and IPadd=@ipadd
+where B.DIVCODE=@divcode AND upper(opflg)='N' and (B.rejflg='N' or B.rejdt> @Tdate ) and                
+B.lotyear=year(@Yfdate) AND B.LOTDT BETWEEN @Fdate and @Tdate and b.lottype='A'  
+group by                
+ b.lottype ,b.opflg, b.bblflg  
+) rec group by issue_desc order by  issue_desc  
+  
+end   
+  

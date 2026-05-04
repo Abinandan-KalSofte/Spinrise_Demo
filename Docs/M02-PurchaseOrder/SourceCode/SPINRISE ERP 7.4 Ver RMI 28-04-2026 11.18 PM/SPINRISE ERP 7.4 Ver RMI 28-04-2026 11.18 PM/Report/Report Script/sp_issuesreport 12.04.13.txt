@@ -1,0 +1,22 @@
+---EXEC sp_issuesreport '01','2013-03-04',72 
+alter PROC [dbo].[sp_issuesreport]         
+@Divcode AS varchar(5),         
+@date AS varchar(10),         
+@dcno AS varchar(10)         
+as         
+select  DISTINCT a.VARCODE,a.LotNo,a.LotDt,grwt,b.tarewt,isnull(b.moiSture_ET,0) as moiture,b.netwt,  
+isnull(b.IsQty,0)'IsQty',isnull(C.ActIssKgs,0) 'AIKgs',isnull(C.ActIssKgs,0)-isnull(b.IsQty,0) 'Excess',  
+c.Baleno,c.actisskgs,f.MIXGRPNAME,g.cntname,e.ordno,h.divname,h.ADD2,h.ADD3,h.CITY,h.PINCODE,h.HOState,  
+h.PHONE1,h.EMAIL,h.WEBADDR,h.FAX,v.VARNAME  
+from rm_lot a,rm_bale b,rm_issb c, rm_issuetype d ,RM_ISSH e,RM_MIXGRP f,RM_COUNT g ,pp_divmas h,  
+rm_var v            
+WHERE a.divcode=b.divcode AND a.LotNo=b.LotNo  AND A.LOTDT=B.LOTDT AND 
+e.DIVCODE=c.DIVCODE AND e.DOCNO=c.DOCNO AND e.DOCDT = c.DOCDT AND e.ISSTYPE = c.ISSTYPE        
+and a.divcode=c.divcode AND a.VARCODE=v.VARCODE  
+and a.divcode =@divcode    
+and c.docno = @dcno AND c.DOCDT= @date and  e.MIXGRP =f.MIXGRPCD AND e.DIVCODE=f.DIVCODE
+AND e.cntcd=g.cntcd AND a.DIVCODE=g.Divcode AND h.DIVCODE=a.DIVCODE AND     
+B.LOTDT=C.LOTDT and b.LotNo=c.LotNo and b.baleno=c.baleno   
+order by a.lotno   
+
+

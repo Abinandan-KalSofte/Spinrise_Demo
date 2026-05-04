@@ -1,0 +1,19 @@
+alter Procedure [dbo].[Sp_CottonSales_Print] @Divcode Varchar(2),@InvNo Varchar(10),@InvDt Varchar(10),  
+@Lotyear VARCHAR(10)     
+as    
+select Distinct Hd.Inv_No,Hd.date,Hd.Cust_Code,sl.SlName,Sl.Add1,Sl.Add2,    
+Sl.PIN,Dt.Cont_No as LotNo ,Sl.TINNO,Vr.VarName,Dt.Packs,Dt.InvSNo,    
+Dt.Nett_Kgs,Dt.RAte_ex,Dt.Nett_Kgs * Dt.RAte_ex as Value,HD.Cess_Amt,HD.Tax_Amt,isnull(HD.CHARITY,0)OTHERSAMT,    
+HD.AED_Amt,HD.BED_Amt,Hd.Carrier_code,Car.CARNAME,PRE_TIME,REM_TIME,LR_NO,VEHICLE_NO,hd.RND_OFF,
+pd.DIV_PRINTNAME,pd.DIV_UNITNAME
+   
+FROM RM_CinvHd hd     
+INNER JOIN RM_Cinvdt dt ON Hd.Divcode=dt.Divcode and Hd.Inv_Type=Dt.Inv_Type and Hd.Inv_No=dt.Inv_No    
+LEFT OUTER JOIN RM_Lot L ON L.LotNo=Dt.PRODUCT_CODE and L.Divcode=Dt.Divcode AND L.LOTYEAR=@Lotyear  
+INNER JOIN Fa_SlMas Sl ON Sl.SlCode=Hd.Cust_Code    
+INNER JOIN RM_Var Vr ON Vr.VarCode=L.VarCode    
+LEFT OUTER JOIN po_car Car ON Car.CARCODE=Hd.Carrier_Code    
+INNER JOIN PP_DIVMAS pd on hd.DIVCODE=pd.DIVCODE
+WHERE Hd.Inv_No=@InvNo and Hd.Date=@InvDt and Hd.Divcode=@Divcode  
+  
+  

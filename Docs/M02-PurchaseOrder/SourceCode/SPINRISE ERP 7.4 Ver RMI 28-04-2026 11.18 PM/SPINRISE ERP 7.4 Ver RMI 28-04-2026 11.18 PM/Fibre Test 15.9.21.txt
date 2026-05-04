@@ -1,0 +1,26 @@
+  
+  
+create View VW_ArrivalDetails    
+as    
+select distinct a.DIVCODE, a.arrno docno,a.ARRDATE docdt,lot.lotno,lot.lotdt, lot.ARRNO ,lot.arrdt, a.varcode,lot.Line_No,lot.SUPCD ,    
+sl.slname ,v.varname,bale.BALENO ,bale.PGRSWT PGRWT ,bale.GRWT,bale.GRWT-bale.PGRSWT Diffgrswt,    
+bale.MOITURE inv_MOI,lot.PlCode,pl.PLName ,lot.billno,lot.billdt,bale.favaourablewgt NETWT ,bale.Comm_Wt     
+from RM_ARRIVAL  a     
+ 
+inner join rm_lot lot on lot.lotno=a.lotno and lot.lotdt=a.lotdt and lot.divcode=a.divcode and a.varcode=lot.varcode and a.lottype=lot.lottype    
+inner join RM_BALE bale on  a.LOTNO=bale.lotno and a.lotdt =bale.lotdt  and a.VARCODE =bale.VARCODE     
+and a.DIVCODE =bale.DIVCODE and lot.lottype=bale.lottype    
+inner join FA_SLMAS sl on sl.slcode=lot.SUPCD     
+inner join RM_VAR v  on v.varcode=a.varcode    
+left join RM_Plant pl on pl.PLCode =lot.PlCode    
+left join (select IssDocno ,IssDocdt ,a.Divcode,baleno,a.lotno,a.lotdt,a.Varcode   from RM_FibreTestHD a
+inner join RM_FibreTestDT b on a.Docno =b.Docno and a.Docdt =b.Docdt and a.Divcode =b.Divcode 
+)ts on ts.divcode=a.divcode and ts.IssDocno=a.ARRNO and ts.IssDocdt=a.ARRDATE and lot.LOTNO =ts.LotNo and ts.LotDT =lot.LOTDT and lot.VARCODE =ts.Varcode 
+and ts.BaleNO =bale.BALENO  
+where a.ARRDATE >='2021-04-01'  and ts.IssDocno is null  
+    
+   
+   go
+   alter table RM_FibreTestHD alter column IssDocno smallint
+   go
+   alter table RM_FibreTestHD alter column IssDocdt date

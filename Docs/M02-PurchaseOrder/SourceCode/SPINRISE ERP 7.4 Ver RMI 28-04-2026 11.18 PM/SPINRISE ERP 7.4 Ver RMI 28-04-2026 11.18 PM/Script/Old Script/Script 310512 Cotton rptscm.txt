@@ -1,0 +1,6 @@
+
+go
+ALTER TABLE RM_ARRIVAL ADD LR_InDt datetime,LR_InTime datetime,LR_OutDt datetime,LR_OutTime datetime
+go
+ALTER TABLE RM_CONT ADD Terms1  varchar(50),Terms1Days Numeric(4),Terms2 varchar(50),Terms2Days Numeric(4)
+

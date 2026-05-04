@@ -1,0 +1,89 @@
+
+alter table rm_LotAllowance add EntUserUD varchar(10)
+go
+alter table rm_LotAllowance add EntDate datetime
+go
+    
+--Exec Sp_LotAllownce '01','59','2022-09-12','A' ,'4','2022-09-17'   
+    
+create Procedure Sp_LotAllownce(    
+@Divcode varchar(03),    
+@Lotno varchar(8),    
+@LotDT Varchar(15),    
+@LotType Varchar(03) ,
+@DBno varchar(8),    
+@DBDT Varchar(15)
+  )    
+AS    
+SELECT distinct     
+a.Lotno,a.LOTDT,a.BILLDT,a.BALES,a.GRSWGT,a.TAREWT,a.NETWT,b.slname,e.TRASHWeight,d.Moiture_Confirmation,d.ExMoisturePer,    
+b.slcode,pp.DIV_PRINTNAME,pp.DIV_UNITNAME,a.PGRSWT,a.PTAREWT,a.PNETWT ,a.TDSAMT,d.AllowanceDebit_Kgs,d.Allowance_Candyrate,  
+d.ExTrashPer,d.ExTrashWgt,d.ExMoistureWgt,d.WeightDiff,a.ALLOWANCEAMT,a.TotDiscAmt,a.PLOTNO SuppLotNo
+,a.BILLNO SuppBillNo,convert(varchar,a.BILLDT,103) SupplierBillDt,  
+DATEADD(day, isnull(b.crddays,0), a.lotdt) DueDt,d.Dbno  SettleNo,convert(varchar,d.DBdate ,103)   SettleDt,d.WeightDiff WeighShort,
+case when h.BILLAMT is null then a.FBILLVALUE else  h.BILLAMT end-isnull(d.Dbamt,0)-isnull(a.TDSAMT,0) Payable,
+isnull(d.Dbamt,0) TotalDebit
+,a.RD Rd75,a.STAPLEN Lengths,d.Mositure_Discper
+,d.TRASH_Confirmation,b1.slname AgentName ,ps.user_name EntUserUD  ,d.EntDate   
+FROM RM_LOT a      
+left join fa_purhd h on h.PJVNO=a.PJNO and a.PJDT =h.PJVDT and h.DIVCODE=a.DIVCODE and h.tc=a.PJTC and a.SUPCD=h.SLCODE
+Left join Fa_slmas b On b.slcode=a.supcd   
+Left join Fa_slmas b1 On b1.slcode=a.BRKCD  
+Inner join RM_VAR c On a.VARCODE=c.VARCODE   
+
+left join PP_DIVMAS pp on pp.DIVCODE=a.DIVCODE and pp.DIVCODE=@Divcode   
+left join rm_arrival e On  e.ARRNO=a.ARRNO and e.ARRDATE=a.ARRDT and e.VARCODE=a.VARCODE and e.SUPCD=a.SUPCD
+Inner join rm_LotAllowance d On a.lotno=d.Lotno AND a.DIVCODE=d.Divcode and d.Lotdt=a.LOTDT 
+--AND a.DBNO=d.Dbno AND a.DBDT=d.DBdt 
+left join PP_PASSWD ps on ps.user_id=d.EntUserUD and ps.divcode=a.DIVCODE and ps.module=6
+where a.LOTNO=@Lotno and a.DIVCODE=@Divcode and a.LOTDT=@LotDT-- and a.LOTTYPE=@LotType
+and isnull(a.OPFLG,'N')<>'Y'   
+and d.asno=@DBno and d.ADate =@DBDT 
+--select*from rm_LotAllowance  
+--select *from RM_lot
+go
+
+
+/*        
+  KSP_RMI_lotallowance '01','59','2022-09-12','a','4','2022-09-17'         
+*/                                         
+create Procedure KSP_RMI_lotallowance    
+(  
+@Divcode varchar(03),    
+@Lotno varchar(8),    
+@LotDT Varchar(15),    
+@LotType Varchar(03) ,
+@DBno varchar(8),    
+@DBDT Varchar(15)
+)  
+AS                                            
+BEGIN                          
+Select   
+pd.div_logo,pd.div_printname,pd.div_unitname,pd.add1,pd.add2,pd.add3,pd.city,pd.pincode,pd.statename,pd.HOCountry,        
+pd.gstinno,pd.gststatecode,pd.cinno,pd.email,pd.webaddr,pd.phone1,Sl.slname,
+Sl.add1 as sadd1,Sl.add2 as sadd2,Sl.add3 as sadd3,        
+Sl.city as scity,Sl.pin as spin,Sl.state as sstate,Sl.gstinno as sgstinno,
+Sl.gststatecode as sstatecode, Sl.slname as cname,Sl.add1 as cadd1,Sl.add2 as cadd2,
+Sl.add3 as cadd3,Sl.city as ccity,Sl.pin as cpin,Sl.state as cstate,        
+Sl.gstinno as cgstinno,Sl.gststatecode as cstatecode,hd.ASno as docno,Hd.Adate as docdt,
+l.billno as billsno,l.billdt as billsdt,Vr.VarName as pdesc,vr.HSN as hsncode,'KGS' as uom,
+hd.AKgs as qty,hd.Allowance_Candyrate as rate,hd.IGSTAMT as value,hd.cgstper,hd.sgstper,hd.igstper,        
+hd.cgstamt as cgst,hd.sgstamt as sgst,hd.igstamt as igst,hd.roff, hd.IGSTAMT as totamt,hd.ARemarks
+,hd.IGSTAMT as matl_value, k.name as bname,k.branch as bbranch,k.ADD1 as badd,k.Acno as baccno
+,k.IFSCCode as ifsc,l.plotno,l.lotno as milllotno,l.BALES,ar.prno 
+FROM rm_lotallowance hd 
+LEFT OUTER JOIN RM_Lot L ON L.LotNo=hd.lotno and L.Divcode=hd.Divcode   and hd.lotdt =l.LOTDT                                                
+INNER JOIN Fa_SlMas Sl ON Sl.SlCode=l.supcd                                                      
+INNER JOIN RM_Var Vr ON Vr.VarCode=L.VarCode 
+LEFT OUTER JOIN PP_DIVMAS pd ON pd.DIVCODE = hd.DIVCODE                                                 
+--LEFT OUTER JOIN po_car Car ON Car.CARCODE=Hd.Carrier_Code                                              
+LEFT OUTER JOIN IG_BANK k ON k.BANK_CODE = pd.BANK_CODE                                           
+LEFT JOIN rm_arrival ar on ar.DIVCODE=l.divcode and ar.lotno=l.lotno and ar.lotdt=l.lotdt 
+and ar.ARRNO =l.ARRNO and ar.ARRDATE =l.ARRDT and ar.VARCODE =l.VARCODE                   
+WHERE Hd.asno=@DBno --and Hd.ADate=@DBDT
+and Hd.Divcode=@Divcode and isnull(l.OPFLG,'N')<>'Y'  
+and hd.Lotno= @Lotno  and hd.lotdt =@LotDT --and l.LOTTYPE =@LotType
+END         
+
+
+

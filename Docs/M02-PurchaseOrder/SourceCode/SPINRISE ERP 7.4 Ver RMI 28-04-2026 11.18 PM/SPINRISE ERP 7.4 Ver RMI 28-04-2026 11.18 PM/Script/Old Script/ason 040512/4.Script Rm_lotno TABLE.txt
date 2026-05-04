@@ -1,0 +1,7 @@
+CREATE TABLE [dbo].[RM_LOtNo](
+    DivCode varchar(2) NOT NULL,
+    lOTNO   Numeric(10) NOT NULL	
+)
+
+
+Alter table RM_got Add Capacity numeric(10)

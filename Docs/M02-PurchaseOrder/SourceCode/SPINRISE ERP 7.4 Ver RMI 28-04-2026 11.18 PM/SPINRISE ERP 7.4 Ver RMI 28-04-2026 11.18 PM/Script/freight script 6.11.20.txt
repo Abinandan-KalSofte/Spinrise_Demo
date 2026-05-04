@@ -1,0 +1,45 @@
+
+alter table rm_acont add Prepared_By varchar(10)
+go
+alter table rm_acont add Tcs_per numeric(9,3)
+go
+        
+/*                
+      Sp_Freight_Trans_new '02','1','2020-09-23'            
+*/                
+                
+alter procedure Sp_Freight_Trans_new                      
+(                
+@Divcode varchar (15),                
+@docno varchar (15),                
+@docdt varchar (15)                
+)                
+as                
+Begin                
+Select a.divcode,d.DIV_LOGO,d.DIV_PRINTNAME,d.DIV_UNITNAME,d.ADD1,d.ADD2,d.ADD3,d.CITY,d.PINCODE,d.STATENAME,                
+d.PHONE1,d.gstinno,d.cinno,d.EMAIL,d.WEBADDR,a.contcode,a.arrno,a.arrdt,a.fbillno,a.fbilldt,a.frtamt,a.apprfrtamt,            
+e.slname as carname,a.LORRYNOS as lorrynos,a.LRNo as lrno,'' wname,'' as areaname,0 as prno,'' as prmark,b.FREIGHT,            
+b.QUANTITY,b.contno,b.contdt,f.VARNAME as varname,b.netwt,b.ratecy,a.docno,a.docdt,a.divcode,c.slname,e.slname as agent,                
+e.add1 as aadd1,e.add2 as aadd2,e.add3 as aadd3,e.city as acity,e.state as astate,e.country as acountry,e.pin as apin,            
+e.phone1 as aphone,e.email as aemail,e.gstinno as agstno,e.gststatecode as agststcode,a.FirstFR_AppUser,a.FirstFR_AppDate,            
+a.SecondFR_AppUser,a.SecondFR_AppDate,a.createdby,a.createddt,'' as contname,a.Total_amt,a.Net_amt,a.GST_amt,  
+l.BILLNO,l.BILLDT  
+                
+from rm_frtentryhd a                
+Inner Join rm_frtentrydt b on b.divcode = a.divcode and b.arrno = a.arrno and b.arrdate = a.arrdt and                
+b.docno = a.docno and b.docdt = a.docdt                
+inner Join fa_slmas c on c.slcode=a.slcode                
+inner Join PP_DIVMAS d on d.DIVCODE=a.divcode                
+inner Join fa_slmas e on e.slcode=a.contcode                
+inner Join rm_var f on f.VARCODE=b.varcode           
+LEFT join po_car p ON p.carcode=a.carcode      
+left join  po_car q ON q.Slcode=c.slcode  
+left join rm_lot l on l.divcode=a.divcode and l.arrno = a.arrno and l.arrdt=a.arrdt and f.VARCODE= l.varcode   
+--l.fbillno = a.fbillno and l.fbilldt=a.fbilldt                
+WHERE a.docno=@docno AND a.docdt=@docdt AND a.divcode=@divcode   
+             
+End                
+        
+--select * from rm_frtentryhd    
+--select * from rm_lot  
+--select * from fa_slmas

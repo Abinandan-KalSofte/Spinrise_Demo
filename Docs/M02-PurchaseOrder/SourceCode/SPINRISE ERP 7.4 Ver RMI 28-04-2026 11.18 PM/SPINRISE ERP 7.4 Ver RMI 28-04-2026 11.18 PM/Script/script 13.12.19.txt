@@ -1,0 +1,164 @@
+alter table RM_Cont add Fclosed char(1)
+go
+alter table RM_Cont add FCloseddt datetime
+go
+alter table RM_Cont add FClosedQty numeric(18,3)
+go
+    alter table fa_purhd add AdvanceAmt numeric(20,2)  
+go
+  alter table rm_param add purbillapproval varchar(10)
+  Go
+  
+  alter table rm_lot add
+  purappruser	varchar(150),
+purappdate	varchar(150),
+purappflg	varchar(5),
+purpreparedby	varchar(150),
+purpredate	varchar(150)
+Go
+  go
+  
+alter procedure ksp_pendingorder_datewise  
+(  
+@divcode varchar(5),  
+@yfdate varchar(25),  
+@yldate varchar(25),  
+@arrival varchar(15)  
+)  
+as  
+begin  
+   declare @Gdivcode as varchar(5)  
+   set @Gdivcode=(select poimportdivision from RM_PARAM)   
+ if @arrival='P'   
+  Begin  
+         
+    select distinct Result.contdt,Result.supcd,Result.supname,Result.brkname,Result.brkcd,Result.areacode,  
+    Result.varname,Result.contno,Result.dlytype,Result.ordqty,Result.recqty,Result.cancelbales,Result.Bales,  
+    Result.candyrate,Result.millrefno,RESULT.unit  Into Temp_Periodical_PendingOrdersDatewise    
+    From (select distinct a.contdt,a.supcd,isnull(c.slname, ' ') supname,isnull(d.slname,' ') brkname,  
+    isnull(a.brkcd,' ')'brkcd',a.areacode,b.varname,cast(a.contno as varchar)as contno,case when dlytype = 'M'   
+    or dlytype='F' then  'FOR'  else 'Spot' end as dlytype,a.ordqty,a.recqty,isnull(cancelbales,0) as cancelbales,  
+    (a.ordqty-isnull(a.recqty,0)-isnull(cancelbales,0))Bales,round(a.candyrate,0)as candyrate,a.millrefno,  
+    case when bbflag='B' then 'Bales' else 'Borah' end as unit  from RM_CONT a,rm_var b,fa_slmas c,fa_slmas d    
+    Where isnull(a.Fclosed,'N')<>'Y' and  ISNULL(ARRIVALTYPE,'P')='P' AND divcode=@divcode and  A.CONTdt BETWEEN @yfdate AND @yldate AND    
+    a.varcode*= B.varcode and  (isnull(a.recqty,0) < isnull(a.ordqty,0))and  a.supcd*= c.slcode and a.brkcd*= d.slcode  
+  AND ORDQTY-isnull(recqty,0)-ISNULL(CANCELBALES,0)>0 and (DIVCODE=@divcode or ((DIVCODE=@Gdivcode and im_ind='I')))   
+   )Result order by result.contno,result.contdt    
+ End  
+ Else  
+ Begin  
+    select distinct Result.contdt,Result.supcd,Result.supname,Result.brkname,Result.brkcd,Result.areacode,  
+    Result.varname,Result.contno,Result.dlytype,Result.ORDQTY ,Result.recqty,Result.cancelbales,Result.Bales,  
+    Result.candyrate,RESULT.millrefno, RESULT.unit  Into Temp_Periodical_PendingOrdersDatewise  From   
+     (select distinct a.supcd,isnull(c.slname, ' ') supname,isnull(d.slname,' ') brkname,isnull(a.brkcd,' ')'brkcd',  
+     a.areacode,b.varname,cast(a.contno as numeric)as contno,a.contdt,case when dlytype = 'M' or dlytype='F' then   
+      'FOR'  else 'Spot' end as dlytype,a.ordKGS as ORDQTY ,a.RCDKGS as recqty,isnull(cancelKGS,0) as cancelbales,  
+      (a.ordKGS-isnull(a.rCDKGS,0)-isnull(cancelKGS,0))Bales,round(a.candyrate,0)as candyrate,a.millrefno,  
+      case when bbflag='B' then 'Bales' else 'Borah' end as unit  from RM_CONT a,rm_var b,fa_slmas c,fa_slmas d   
+       Where isnull(a.Fclosed,'N')<>'Y' and  ISNULL(ARRIVALTYPE,'P')='K' AND divcode=@divcode and  A.CONTdt BETWEEN @yfdate AND @yldate AND   
+         a.varcode*= B.varcode  and (isnull(a.rcDKGS,0) < isnull(a.ordKGS,0))and  a.supcd*= c.slcode   
+       and a.brkcd*= d.slcode  AND ORDKGS-isnull(rCDKGS,0)-ISNULL(CANCELKGS,0)>0  and  
+        (DIVCODE=@divcode or ((DIVCODE=@Gdivcode and im_ind='I'))) )Result order by   
+       result.contno,result.contdt  
+  
+       
+  
+ end  
+end          
+go
+
+
+  
+  
+  
+alter Procedure ksp_pendingorder_supplierwise  
+(  
+@Divcode varchar(5),  
+@yfdate varchar(25),  
+@yldate varchar(25),  
+@fcode varchar(15),  
+@tcode varchar(15),  
+@arrival varchar(5)  
+)  
+as  
+begin  
+   declare @Gdivcode as varchar(5)  
+   set @Gdivcode=(select poimportdivision from RM_PARAM)   
+    if @arrival='P'   
+    BEGIN  
+  select distinct Result.contdt,Result.supcd,Result.supname,Result.brkname,Result.brkcd,Result.areacode,  
+  Result.varname,Result.contno,Result.dlytype,Result.ordqty,Result.recqty,Result.cancelbales,Result.Bales,  
+  Result.candyrate,Result.millrefno,RESULT.unit  Into Temp_Periodical_PendingOrdersSupplierwise  From   
+  (select distinct a.contdt,a.supcd,isnull(c.slname, ' ') supname,isnull(d.slname,' ') brkname,  
+  isnull(a.brkcd,' ')'brkcd',a.areacode,b.varname,cast(a.contno as varchar)as contno,case when dlytype = 'M'   
+  or dlytype='F' then  'FOR'  else 'Spot' end as dlytype,a.ordqty,a.recqty,isnull(cancelbales,0) as cancelbales,  
+  (a.ordqty-isnull(a.recqty,0)-isnull(cancelbales,0))Bales,round(a.candyrate,0)as candyrate,a.millrefno,  
+  case when bbflag='B' then 'Bales' else 'Borah' end as unit  from RM_CONT a,rm_var b,fa_slmas c,fa_slmas d  Where isnull(a.Fclosed,'N')<>'Y' and    
+  ISNULL(ARRIVALTYPE,'P')='P' AND divcode=@Divcode and  A.CONTdt BETWEEN @yfdate AND @yldate AND   
+   a.varcode*= B.varcode and  a.supcd between @fcode and @tcode and  (isnull(a.recqty,0) < isnull(a.ordqty,0))and   
+   a.supcd*= c.slcode and a.brkcd*= d.slcode  AND ORDQTY-isnull(recqty,0)-ISNULL(CANCELBALES,0)>0 and (DIVCODE=@divcode or ((DIVCODE=@Gdivcode and im_ind='I')))  )Result  
+  
+    END  
+    ELSE  
+    BEGIN  
+  select distinct Result.contdt,Result.supcd,Result.supname,Result.brkname,Result.brkcd,Result.areacode,Result.varname,  
+  Result.contno,Result.dlytype,Result.ORDQTY ,Result.recqty,Result.cancelbales,Result.Bales,Result.candyrate,  
+  RESULT.millrefno, RESULT.unit  Into Temp_Periodical_PendingOrdersSupplierwise  From    
+  (select distinct a.supcd,isnull(c.slname, ' ') supname,isnull(d.slname,' ') brkname,isnull(a.brkcd,' ')'brkcd',  
+  a.areacode,b.varname,cast(a.contno as varchar)as contno,a.contdt,case when dlytype = 'M' or dlytype='F' then  'FOR'    
+  else 'Spot' end as dlytype,a.ordKGS as ORDQTY ,a.RCDKGS as recqty,isnull(cancelKGS,0) as cancelbales,  
+  (a.ordKGS-isnull(a.rCDKGS,0)-isnull(cancelKGS,0))Bales,round(a.candyrate,0)as candyrate,a.millrefno,case when  
+  bbflag='B' then 'Bales' else 'Borah' end as unit  from RM_CONT a,rm_var b,fa_slmas c,fa_slmas d  Where   isnull(a.Fclosed,'N')<>'Y' and 
+  ISNULL(ARRIVALTYPE,'P')='K' AND divcode=@Divcode and  A.CONTdt BETWEEN @yfdate AND @yldate AND    
+  a.varcode*= B.varcode  and  a.supcd between @fcode and @tcode and (isnull(a.rcDKGS,0) < isnull(a.ordKGS,0))  
+  and  a.supcd*= c.slcode and a.brkcd*= d.slcode  AND ORDKGS-isnull(rCDKGS,0)-ISNULL(CANCELKGS,0)>0 and (DIVCODE=@divcode or ((DIVCODE=@Gdivcode and im_ind='I')))  )Result  
+    END   
+End   
+
+go
+
+  
+alter PROCEDURE pending_order_broker    
+(     
+@arr_type AS VARCHAR(1),   
+@divcode AS VARCHAR(2),  
+ @fdate AS VARCHAR(10),   
+ @tdate AS VARCHAR(10),  
+ @fbcode AS VARCHAR (10),   
+ @tbcode AS VARCHAR (10)   
+ )  
+ as    
+ BEGIN  
+    declare @Gdivcode as varchar(5)  
+   set @Gdivcode=(select poimportdivision from RM_PARAM)   
+        
+ select distinct a.supcd,isnull(c.slname, ' ') supname,isnull(d.slname,' ') brkname,isnull(a.brkcd,' ')'brkcd',      
+ a.areacode,b.varname,cast(a.contno as varchar) as contno,a.contdt,case when dlytype = 'M' or dlytype='F' then  'FOR'        
+ else 'Spot' end as dlytype,a.ordqty,a.recqty,isnull(a.cancelbales,0) as cancelbales,      
+ (a.ordqty-isnull(recqty,0)-isnull(a.cancelbales,0))Bales,round(a.candyrate,0)as candyrate,      
+ case when bbflag='B' then 'Bales' else 'Borah' end as unit,a.Millrefno from RM_CONT a,rm_var b,fa_slmas c,fa_slmas d       
+ Where  ISNULL(aRRIVALTYPE,'P')=@arr_type AND  divcode =@divcode and A.CONTdt BETWEEN @fdate AND @tdate AND  a.varcode*= B.varcode and       
+ (isnull(a.recqty,0) < isnull(a.ordqty,0))and  a.supcd*= c.slcode and a.brkcd*= d.slcode and a.brkcd BETWEEN      
+ @fbcode AND @tbcode AND 
+ ORDQTY-isnull(recqty,0)-ISNULL(CANCELBALES,0)>0 and (DIVCODE=@divcode or ((DIVCODE=@Gdivcode and im_ind='I'))) 
+ and isnull(a.Fclosed,'N')<>'Y'
+  order by A.BRKCD,cast(a.contno as varchar)     
+
+
+go
+
+  
+Create procedure Ksp_SetupCity  
+--Ksp_SetupCity '01'  
+@divcode varchar(02)  
+As  
+begin  
+  
+select a.area_code,a.name,isnull(b.name,'') as statename,isnull(c.name,'') as countryname,  
+pd.DIV_PRINTNAME,pd.DIV_UNITNAME from   
+ig_area a  
+inner  join ig_state b on a.state_code=b.state_code  
+inner join ig_country c on  a.country_code=c.country_code   
+inner join PP_DIVMAS pd on pd.divcode=@divcode  
+order by a.area_code  
+end

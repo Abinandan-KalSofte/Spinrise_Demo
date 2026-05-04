@@ -1,0 +1,55 @@
+--KSP_RMI_P_MonthlyIssueList_Count '01','2013-09-01','192.168.0.122'
+CREATE PROC KSP_RMI_P_MonthlyIssueList_Count
+(
+	@Divcode VARCHAR(3),
+	@MFDate VARCHAR(10),
+	@SystemIP VARCHAR(15)
+)
+AS
+DECLARE @Date DATETIME
+DECLARE @MLDate DATETIME
+SET @MLDate=dateadd(d,-1,DATEADD(m,1,@MFDate))
+BEGIN
+SELECT 
+X.cntcd, X.cntname, X.docdt,SUM(ISNULL(X.netwt,0))netwt,SUM(ISNULL(X.invwt,0))invwt,
+AVG(CONVERT(NUMERIC (9,2),X.[Rate/Qtl]))'Rate/Qtl',AVG(CONVERT(NUMERIC (9,2),X.RATECY))'RATECY',
+X.DIV_PRINTNAME, X.DIV_UNITNAME,sum(ISNULL(X.netwt,0)* X.RATEKG) AS IV
+FROM 
+(select distinct F.cntcd,G.cntname,--a.docno,
+a.docdt,0 as netwt,0 as invwt,        
+avg(C.RATEKG*100) AS 'Rate/Qtl',
+avg(C.RATECY) AS RATECY,D.DIV_PRINTNAME,D.DIV_UNITNAME,c.RATEKG'RATEKG'--,C.CATCD,H.CATNAME,
+from rm_issb a        
+INNER JOIN RM_ISSH F ON F.DIVCODE = a.DIVCODE AND F.DOCNO = a.DOCNO AND F.DOCDT = a.DOCDT AND F.ISSTYPE = a.ISSTYPE        
+LEFT JOIN rm_var b ON b.VARCODE = a.VARCODE        
+LEFT JOIN RM_LOT C ON C.DIVCODE=A.DIVCODE AND C.LOTNO=A.LOTNO AND C.LOTDT=A.lotdt AND C.LOTTYPE=A.LOTTYPE AND         
+C.VARCODE=A.VARCODE      
+LEFT JOIN PP_DIVMAS D ON D.DIVCODE=A.DIVCODE        
+LEFT JOIN RM_COUNT G ON G.Divcode=F.DIVCODE AND G.cntcd=F.cntcd AND G.mixgrpcd=F.MIXGRP        
+LEFT JOIN RM_CAT H ON H.CATCD=C.CATCD      
+where a.issued='Y' and a.Divcode=@Divcode and a.docdt between @MFDate and  @MLDate AND 
+F.cntcd IN (SELECT CNTCODE FROM CountCodeTemp WHERE DIVCODE=@Divcode AND SystemIP=@SystemIP)      
+group by F.cntcd,G.cntname,a.docdt,C.RATEKG,D.DIV_PRINTNAME,D.DIV_UNITNAME
+        
+Union All        
+select F.cntcd,G.cntname,a.docdt,sum(ISNULL(a.actisskgs,0))as netwt,        
+sum(ISNULL(c.pnetwt,0))as invwt,avg(C.RATEKG*100) AS 'Rate/Qtl',
+avg(C.RATECY) AS RATECY,E.DIV_PRINTNAME,E.DIV_UNITNAME,c.RATEKG'RATEKG'
+from rm_issb a        
+INNER JOIN RM_ISSH F ON F.DIVCODE = a.DIVCODE AND F.DOCNO = a.DOCNO AND F.DOCDT = a.DOCDT AND F.ISSTYPE = a.ISSTYPE        
+LEFT JOIN rm_var b ON b.VARCODE = a.VARCODE        
+LEFT JOIN RM_LOT C ON C.DIVCODE=A.DIVCODE AND C.LOTNO=A.LOTNO AND C.LOTDT=A.lotdt AND C.LOTTYPE=A.LOTTYPE AND         
+C.VARCODE=A.VARCODE        
+LEFT JOIN rm_bale D ON D.DIVCODE=A.DIVCODE AND D.LOTNO=A.LOTNO AND D.lotdt=A.lotdt AND D.lottype=A.LOTTYPE AND         
+D.BALENO=A.BALENO        
+LEFT JOIN PP_DIVMAS E ON E.DIVCODE=A.DIVCODE        
+LEFT JOIN RM_COUNT G ON G.Divcode=F.DIVCODE AND G.cntcd=F.cntcd AND G.mixgrpcd=F.MIXGRP        
+LEFT JOIN RM_CAT H ON H.CATCD=C.CATCD      
+where a.issued='Y' and a.Divcode=@Divcode and a.docdt between @MFDate and  @MLDate AND 
+F.cntcd IN (SELECT CNTCODE FROM CountCodeTemp WHERE DIVCODE=@Divcode AND SystemIP=@SystemIP)   
+group by F.cntcd,G.cntname,a.docdt,C.RATEKG,E.DIV_PRINTNAME,E.DIV_UNITNAME
+)X
+GROUP BY
+X.cntcd, X.cntname, X.docdt,X.DIV_PRINTNAME, X.DIV_UNITNAME	
+END
+GO

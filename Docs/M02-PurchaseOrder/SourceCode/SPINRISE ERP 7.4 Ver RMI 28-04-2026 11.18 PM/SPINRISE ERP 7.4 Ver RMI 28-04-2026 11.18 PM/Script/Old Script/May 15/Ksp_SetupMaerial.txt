@@ -1,0 +1,9 @@
+Create Procedure Ksp_SetupMaerial
+@divcode  varchar (02)
+as
+begin
+Select Mat_Code As [Material], Mat_Desc As [Description], Mat_Type As [Type],
+pd.DIV_PRINTNAME,pd.DIV_UNITNAME From PPC_Material a
+inner join PP_DIVMAS pd on pd.DIVCODE=@divcode
+
+end

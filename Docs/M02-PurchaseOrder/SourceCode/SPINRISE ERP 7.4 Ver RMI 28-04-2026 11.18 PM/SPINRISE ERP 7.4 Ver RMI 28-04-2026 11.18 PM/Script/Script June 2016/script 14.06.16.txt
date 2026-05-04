@@ -1,0 +1,4 @@
+alter table RM_VAR alter column Denier varchar(20)
+alter table RM_VAR alter column Length varchar(20)
+alter table CONSRMIDENIER alter column denier varchar(20)
+alter table CONSRMIDENIER alter column Length varchar(20)

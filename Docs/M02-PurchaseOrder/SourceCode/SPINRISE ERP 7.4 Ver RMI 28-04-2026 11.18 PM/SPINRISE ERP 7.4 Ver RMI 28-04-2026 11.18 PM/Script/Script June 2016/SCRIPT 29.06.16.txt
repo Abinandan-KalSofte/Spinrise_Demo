@@ -1,0 +1,2 @@
+ALTER TABLE RM_BALE ADD RETURN_KGS NUMERIC(18,3)
+alter table rm_Cont add CurrCode varchar(3),DeliveryTerms	varchar(200),Appflg	char

@@ -1,0 +1,31 @@
+
+-- KSL_RMI_FreightDetails_Supplier '01','2013-06-01','2013-09-14','1','4107','003','VEN'    
+CREATE PROC KSL_RMI_FreightDetails_Supplier    
+(     
+ @divcode VARCHAR(4),    
+ @FDate VARCHAR(10),    
+ @TDate VARCHAR(10),    
+ @FLot_No VARCHAR(5),    
+ @TLot_No  VARCHAR(5),    
+ @FTrans VARCHAR(10),    
+ @TTrans VARCHAR(10)    
+)    
+AS    
+BEGIN    
+select     
+B.lotno,B.LOTYEAR,B.lotdt,a.CARCODE,c.CARNAME,A.lorrynos,B.Bales, B.lrFrtAmt ,D.Station,a.SUPCD,f.slname,f.abbr,    
+PD.DIV_PRINTNAME,PD.DIV_UNITNAME    
+from RM_ARRIVAL A     
+INNER JOIN RM_LOT B ON A.Arrno=B.Arrno and A.Arrdate=B.Arrdt and A.Divcode=B.Divcode    
+inner join PO_CAR C ON a.carcode=C.Carcode    
+inner join Rm_Area D ON B.areacd=D.AreaCode    
+LEFT JOIN PP_DIVMAS pd ON PD.DIVCODE=A.DIVCODE   
+LEFT OUTER JOIN FA_SLMAS f ON a.SUPCD=f.slcode
+where   
+B.lotno between @FLot_No And @TLot_No     
+AND B.lotdt BETWEEN @FDate AND @TDate     
+AND C.Carcode between @FTrans AND @TTrans    
+AND a.divcode=@divcode 
+Order By b.Lotdt,b.Lotno    
+END   
+   

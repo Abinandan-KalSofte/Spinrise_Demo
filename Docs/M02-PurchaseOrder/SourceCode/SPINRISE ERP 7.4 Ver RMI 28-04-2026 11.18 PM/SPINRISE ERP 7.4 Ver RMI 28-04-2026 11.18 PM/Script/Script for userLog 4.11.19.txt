@@ -1,0 +1,362 @@
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+CREATE TABLE [dbo].[RM_Trans_Log](
+	[Divcode] [varchar](2) NULL,
+	[moduleNo] [int] NULL,
+	[Trans_Name] [varchar](30) NULL,
+	[Trans_Mod] [varchar](5) NULL,
+	[Trans_Host] [varchar](18) NULL,
+	[Trans_IPADD] [varchar](18) NULL,
+	[Trans_UserId] [varchar](12) NULL,
+	[Trans_date] [datetime] NULL,
+	[TC] [numeric](3, 0) NULL,
+	[Docno] [numeric](5, 0) NULL,
+	[Docdt] [datetime] NULL,
+	[ContNo] [numeric](10, 0) NULL,
+	[Contdt] [datetime] NULL,
+	[PRNO] [numeric](6, 0) NULL,
+	[PRDt] [datetime] NULL,
+	[Slcode] [varchar](8) NULL,
+	[Agent_code] [varchar](8) NULL,
+	[Arrno] [numeric](6, 0) NULL,
+	[Arrdt] [datetime] NULL,
+	[Lotno] [numeric](6, 0) NULL,
+	[Lotdt] [datetime] NULL,
+	[AreaCode] [varchar](8) NULL,
+	[Dlytype] [varchar](2) NULL,
+	[IM_IND] [varchar](2) NULL,
+	[CARCODE] [varchar](12) NULL,
+	[ArrivalType] [varchar](2) NULL,
+	[CreditDays] [int] NULL,
+	[TradeDisPer] [numeric](8, 4) NULL,
+	[CashDisPer] [numeric](8, 4) NULL,
+	[InsPer] [numeric](8, 4) NULL,
+	[Paycode] [varchar](4) NULL,
+	[PayMode] [varchar](4) NULL,
+	[PurType] [varchar](4) NULL,
+	[Plcode] [varchar](5) NULL,
+	[Line_No] [varchar](20) NULL,
+	[LorryNo] [varchar](50) NULL,
+	[LR_INDate] [datetime] NULL,
+	[LR_OutDate] [datetime] NULL,
+	[Godown] [varchar](6) NULL,
+	[RateUnit] [varchar](10) NULL,
+	[POTYPE] [varchar](2) NULL,
+	[BOENO] [varchar](20) NULL,
+	[BOE_DT] [datetime] NULL,
+	[IRNo] [numeric](6, 0) NULL,
+	[IRDate] [datetime] NULL,
+	[IRSNo] [numeric](2, 0) NULL,
+	[CATCD] [varchar](3) NULL,
+	[CNTCODE] [varchar](14) NULL,
+	[Varcode] [varchar](10) NULL,
+	[BBFlg] [varchar](2) NULL,
+	[ordqty] [numeric](10, 0) NULL,
+	[ordkgs] [numeric](15, 3) NULL,
+	[WeightFlg] [varchar](1) NULL,
+	[netwt] [numeric](15, 3) NULL,
+	[Grosswt] [numeric](15, 3) NULL,
+	[Tarewt] [numeric](15, 3) NULL,
+	[Pnetwt] [numeric](15, 3) NULL,
+	[PGrosswt] [numeric](15, 3) NULL,
+	[PTarewt] [numeric](15, 3) NULL,
+	[Comm_wt] [numeric](15, 3) NULL,
+	[RateCY] [numeric](15, 7) NULL,
+	[RateKg] [numeric](15, 7) NULL,
+	[currency] [varchar](5) NULL,
+	[conv_Rate] [numeric](9, 2) NULL,
+	[AssAmount] [numeric](17, 2) NULL,
+	[Frg_Amt] [numeric](12, 2) NULL,
+	[ins_Amt] [numeric](12, 2) NULL,
+	[Oth_Amt] [numeric](12, 2) NULL,
+	[IDPer] [numeric](8, 2) NULL,
+	[IDAMT] [numeric](8, 2) NULL,
+	[SWPer] [numeric](8, 2) NULL,
+	[SWAMT] [numeric](8, 2) NULL,
+	[Adv_AMT] [numeric](20, 2) NULL,
+	[HSN] [varchar](9) NULL,
+	[TaxCode] [varchar](9) NULL,
+	[Cgstper] [numeric](9, 2) NULL,
+	[Cgstamt] [numeric](12, 2) NULL,
+	[Sgstper] [numeric](9, 2) NULL,
+	[Sgstamt] [numeric](12, 2) NULL,
+	[Igstper] [numeric](9, 2) NULL,
+	[Igstamt] [numeric](12, 2) NULL,
+	[LandingCost] [numeric](18, 2) NULL,
+	[LandcostWithTax] [numeric](18, 2) NULL,
+	[ReqName] [varchar](10) NULL,
+	[sno] [numeric](2, 0) NULL
+) ON [PRIMARY]
+SET ANSI_PADDING ON
+ALTER TABLE [dbo].[RM_Trans_Log] ADD [BILLNO] [varchar](25) NULL
+ALTER TABLE [dbo].[RM_Trans_Log] ADD [BILLDATE] [datetime] NULL
+ALTER TABLE [dbo].[RM_Trans_Log] ADD [IssType] [varchar](4) NULL
+ALTER TABLE [dbo].[RM_Trans_Log] ADD [mixgrp] [varchar](10) NULL
+ALTER TABLE [dbo].[RM_Trans_Log] ADD [packno] [varchar](12) NULL
+ALTER TABLE [dbo].[RM_Trans_Log] ADD [dutyValue] [numeric](15, 2) NULL
+ALTER TABLE [dbo].[RM_Trans_Log] ADD [dutyWt] [numeric](15, 3) NULL
+ALTER TABLE [dbo].[RM_Trans_Log] ADD [MRNValue] [numeric](15, 2) NULL
+ALTER TABLE [dbo].[RM_Trans_Log] ADD [BILLValue] [numeric](15, 2) NULL
+ALTER TABLE [dbo].[RM_Trans_Log] ADD [DBCR] [numeric](15, 2) NULL
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+alter table rm_param add AmdafterGRN int
+go
+
+alter table RM_Cont add Amdnos numeric(2)
+
+go
+
+
+
+
+alter table rm_arrival add OcNo varchar(25)
+go
+alter table rm_arrival add Ocdate datetime
+go
+alter table rm_arrival add cpyno numeric(5)
+go
+alter table rm_arrival add cpysno numeric(4)
+go
+alter table rm_arrival add cpydate datetime
+go
+
+alter table rm_arrival add OcDocNo varchar(25)
+go
+alter table rm_arrival add OcDocdate datetime
+go
+alter table rm_cont add OCNo varchar(20)
+go
+alter table rm_cont add OCDate datetime
+go
+alter table rm_cont add OCDocNo numeric(6)
+go
+alter table rm_cont add OCDocDate datetime
+
+
+go
+--select  *from RM_ACONT where arrno=685 and arrdt='2019-10-24 00:00:00.000'
+CREATE TABLE [dbo].[RM_ACONT](
+	[DIVCODE] [varchar](2) NOT NULL,
+	[CONTNO] [varchar](10) NOT NULL,
+	[AContNo] numeric(6) NOT NULL,
+	[ACONTDT] [datetime] NOT NULL,
+	[CONTDT] [datetime] NOT NULL,
+	[SUPCD] [varchar](10) NULL,
+	[BRKCD] [varchar](10) NULL,
+	[AREACODE] [varchar](4) NULL,
+	[VARCODE] [varchar](10) NOT NULL,
+	[CNTCODE] [varchar](5) NULL,
+	[BBFLAG] [char](1) NOT NULL,
+	[ORDQTY] [decimal](10, 2) NULL,
+	[RECQTY] [smallint] NULL,
+	[CANDYRATE] [decimal](15, 7) NULL,
+	[RATEKG] [decimal](15, 7) NULL,
+	[PAYMODE] [char](2) NOT NULL,
+	[DLYTYPE] [char](1) NOT NULL,
+	[SALCNFNO] [varchar](10) NULL,	
+	[CARCODE] [varchar](10) NULL,
+	[indentno] [varchar](10) NULL,
+	[im_ind] [char](1) NULL,
+	[duedate] [datetime] NULL,
+	[weignment] [varchar](15) NULL,
+	[GODOWN] [varchar](3) NULL,
+	[COLORCODE] [varchar](4) NULL,
+	[SNO] [varchar](10) NULL,
+	[COMMAMT] [numeric](9, 2) NULL,
+	[LORRYFRT] [numeric](9, 2) NULL,
+	[PAYTERMS] [varchar](60) NULL,
+	[CROPYEAR] [varchar](20) NULL,
+	[acceptance] [varchar](30) NULL,
+	[PTY_CONTNO] [varchar](20) NULL,
+	[PLOTNO] [varchar](10) NULL,
+	[Prno] [varchar](10) NULL,
+	[pressmarkno] [varchar](15) NULL,
+	[rateunit] [varchar](20) NULL,
+	[remarks] [nvarchar](255) NULL,
+	[deladd] [varchar](10) NULL,
+	[billadd] [varchar](10) NULL,
+	[contperson] [varchar](50) NULL,
+	[CancelBales] [numeric](7, 0) NULL,
+	[CancelFlg] [varchar](1) NULL,
+	[CANCELDT] [datetime] NULL,
+	[alert_raised] [varchar](1) NULL,
+	[DESPATCH] [varchar](25) NULL,
+	[STAPLE] [varchar](25) NULL,
+	[SEASON] [varchar](25) NULL,
+	[MILLREFNO] [varchar](20) NULL,
+	[CASHDISPER] [numeric](5, 2) NULL,
+	[TRADEDISPER] [numeric](5, 2) NULL,
+	[BEDPER] [numeric](5, 2) NULL,
+	[SEDPER] [numeric](5, 2) NULL,
+	[HSCESSPER] [numeric](5, 2) NULL,
+	[CESSPER] [numeric](5, 2) NULL,
+	[TAX_CODE] [varchar](3) NULL,
+	[TAXPER] [numeric](5, 2) NULL,
+	[OTHTAXPER] [numeric](5, 2) NULL,
+	[INSPER] [numeric](6, 3) NULL,
+	[arrivaltype] [varchar](1) NULL,
+	[ORDKGS] [numeric](18, 3) NULL,
+	[RCDKGS] [numeric](18, 3) NULL,
+	[TAX_CHOICE] [varchar](10) NULL,
+	[cancelkgs] [numeric](18, 3) NULL,
+	[ORg_ordkgs] [numeric](9, 3) NULL,
+	[Mod_dt] [datetime] NULL,
+	[Mod_UserId] [varchar](5) NULL,
+	[ORg_ordqty] [numeric](5, 0) NULL,
+	[CREDITDAYS] [numeric](9, 2) NULL,
+	[INTERESTPER] [numeric](9, 2) NULL,
+	[SUPPLIERLOTNOFROM] [numeric](12, 0) NULL,
+	[SUPPLIERLOTNOTO] [numeric](12, 0) NULL,
+	[FinalWeighment] [varchar](1) NULL,
+	[prefix] [varchar](2) NULL,
+	[purtype] [varchar](2) NULL,
+	[NONRECIEVELOT] [varchar](500) NULL,
+	[SAMPLEFLG] [varchar](1) NOT NULL,
+	[CommPer] [numeric](5, 2) NULL,
+	[Terms1] [varchar](50) NULL,
+	[Terms1Days] [numeric](5, 0) NULL,
+	[Terms2] [varchar](50) NULL,
+	[Terms2Days] [numeric](5, 0) NULL,
+	[TransPort] [varchar](50) NULL,
+	[IPRNO] [numeric](5, 0) NULL,
+	[PRDATE] [datetime] NULL,
+	[PRSNO] [numeric](5, 0) NULL,
+	[fappflg] [varchar](1) NULL,
+	[CurrCode] [varchar](3) NULL,
+	[DeliveryTerms] [varchar](200) NULL,
+	[Appflg] [char](1) NULL,
+	[FIRST_APPFLG] [char](1) NULL,
+	[FIRST_APPUSERID] [varchar](10) NULL,
+	[FIRST_APPIP] [varchar](15) NULL,
+	[FIRST_APPDATE] [datetime] NULL,
+	[APPIP] [varchar](15) NULL,
+	[APPDATE] [datetime] NULL,
+	[APPUSERID] [varchar](10) NULL,
+	[SECOND_APPFLG] [char](1) NULL,
+	[SECOND_APPUSERID] [varchar](10) NULL,
+	[SECOND_APPIP] [varchar](15) NULL,
+	[SECOND_APPDATE] [datetime] NULL
+) ON [PRIMARY]
+SET ANSI_PADDING OFF
+ALTER TABLE [dbo].[RM_ACONT] ADD [HSN] [varchar](8) NULL
+ALTER TABLE [dbo].[RM_ACONT] ADD [cgstper] [numeric](5, 2) NULL
+ALTER TABLE [dbo].[RM_ACONT] ADD [sgstper] [numeric](5, 2) NULL
+ALTER TABLE [dbo].[RM_ACONT] ADD [igstper] [numeric](5, 2) NULL
+ALTER TABLE [dbo].[RM_ACONT] ADD [prepDate] [datetime] NULL
+ALTER TABLE [dbo].[RM_ACONT] ADD [FTAmt] [numeric](6, 2) NULL
+SET ANSI_PADDING ON
+ALTER TABLE [dbo].[RM_ACONT] ADD [FTFlg] [varchar](1) NULL
+ALTER TABLE [dbo].[RM_ACONT] ADD [Paycode] [varchar](5) NULL
+ALTER TABLE [dbo].[RM_ACONT] ADD [Line_No] [varchar](18) NULL
+ALTER TABLE [dbo].[RM_ACONT] ADD [PlCode] [varchar](5) NULL
+ALTER TABLE [dbo].[RM_ACONT] ADD [OCNo] [varchar](20) NULL
+ALTER TABLE [dbo].[RM_ACONT] ADD [OCDate] [datetime] NULL
+ALTER TABLE [dbo].[RM_ACONT] ADD [SusCatType] [varchar](3) NULL
+ALTER TABLE [dbo].[RM_ACONT] ADD [OCDocNo] [numeric](6, 0) NULL
+ALTER TABLE [dbo].[RM_ACONT] ADD [OCDocDate] [datetime] NULL
+ALTER TABLE [dbo].[RM_ACONT] ADD [AmdReason] varchar(80) NULL
+/****** Object:  Index [PK_RM_ACONT]    Script Date: 11/05/2019 13:41:44 ******/
+ALTER TABLE [dbo].[RM_ACONT] ADD  CONSTRAINT [PK_RM_ACONT] PRIMARY KEY CLUSTERED 
+(
+	[DIVCODE] ASC,
+	[aCONTNO] ASC,
+	[aCONTDT] ASC,
+	[VARCODE] ASC,
+	[CONTNO] ASC,
+	[CONTDT] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[RM_ACONT] ADD  CONSTRAINT [DF_RM_ACONT_BBFLAG]  DEFAULT ('B') FOR [BBFLAG]
+GO
+
+ALTER TABLE [dbo].[RM_ACONT] ADD  DEFAULT ('N') FOR [alert_raised]
+GO
+
+ALTER TABLE [dbo].[RM_ACONT] ADD  DEFAULT ('') FOR [STAPLE]
+GO
+
+ALTER TABLE [dbo].[RM_ACONT] ADD  DEFAULT ('') FOR [SEASON]
+GO
+
+ALTER TABLE [dbo].[RM_ACONT] ADD  DEFAULT ('') FOR [MILLREFNO]
+GO
+
+ALTER TABLE [dbo].[RM_ACONT] ADD  DEFAULT ((0)) FOR [CASHDISPER]
+GO
+
+ALTER TABLE [dbo].[RM_ACONT] ADD  DEFAULT ((0)) FOR [TRADEDISPER]
+GO
+
+ALTER TABLE [dbo].[RM_ACONT] ADD  DEFAULT ((0)) FOR [BEDPER]
+GO
+
+ALTER TABLE [dbo].[RM_ACONT] ADD  DEFAULT ((0)) FOR [SEDPER]
+GO
+
+ALTER TABLE [dbo].[RM_ACONT] ADD  DEFAULT ((0)) FOR [HSCESSPER]
+GO
+
+ALTER TABLE [dbo].[RM_ACONT] ADD  DEFAULT ((0)) FOR [CESSPER]
+GO
+
+ALTER TABLE [dbo].[RM_ACONT] ADD  DEFAULT ('') FOR [TAX_CODE]
+GO
+
+ALTER TABLE [dbo].[RM_ACONT] ADD  DEFAULT ((0)) FOR [TAXPER]
+GO
+
+ALTER TABLE [dbo].[RM_ACONT] ADD  DEFAULT ((0)) FOR [OTHTAXPER]
+GO
+
+ALTER TABLE [dbo].[RM_ACONT] ADD  DEFAULT ((0)) FOR [INSPER]
+GO
+
+ALTER TABLE [dbo].[RM_ACONT] ADD  DEFAULT ('P') FOR [arrivaltype]
+GO
+
+ALTER TABLE [dbo].[RM_ACONT] ADD  DEFAULT ('SINGLE') FOR [TAX_CHOICE]
+GO
+
+ALTER TABLE [dbo].[RM_ACONT] ADD  DEFAULT ((0)) FOR [cancelkgs]
+GO
+
+ALTER TABLE [dbo].[RM_ACONT] ADD  DEFAULT (NULL) FOR [prefix]
+GO
+
+ALTER TABLE [dbo].[RM_ACONT] ADD  DEFAULT ('N') FOR [SAMPLEFLG]
+GO
+
+ALTER TABLE [dbo].[RM_ACONT] ADD  DEFAULT ((0)) FOR [CommPer]
+GO
+
+ALTER TABLE [dbo].[RM_ACONT] ADD  DEFAULT ('N') FOR [fappflg]
+GO
+
+
+ALTER TABLE [dbo].[RM_CONT] ADD [AmdReason] varchar(80) NULL
+
+go
+
+
+
+
+
+                       

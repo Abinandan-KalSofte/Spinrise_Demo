@@ -1,0 +1,30 @@
+/*    
+  SP_Mix_Detail '01','2019-03-11','org'  
+*/    
+    
+Create PROC SP_Mix_Detail           
+(    
+ @Divcode AS varchar(5),               
+ @docdt varchar(50),  
+ @mixgrp varchar(50)                                                 
+)    
+AS                
+Begin   
+Select a.mixgrp,a.docdt,f.slname,c.varcode,d.areaname,b.lotno,b.lotdt,c.bales,e.prno,e.lorrynos,  
+g.div_printname,g.div_unitname   
+From RM_issReqH a  
+Inner join RM_issReqH b1 on a.docno=b1.docno and a.docdt=b1.docdt and a.divcode=b1.divcode   
+Inner Join RM_issReqb b on a.DIVCODE=b.DIVCODE and a.docno=b.docno and a.docdt=b.docdt   
+and a.ISSTYPE = b.ISSTYPE   
+Inner Join RM_lot c on c.LOTNO =b.LOTNO and c.LOTDT =b.lotdt and c.DIVCODE = a.DIVCODE   
+Left join rm_area d on c.areacd =d.areacode  
+left join rm_arrival e on c.arrno=e.arrno  
+left join fa_slmas f on c.supcd = f.slcode  
+Left Join PP_DIVMAS g on b.DIVCODE =a.DIVCODE   
+Where a.divcode =@Divcode and a.DOCDT =@docdt and b1.MIXGRP=@mixgrp  
+order by b.lotno  
+End  
+  
+--select  * from RM_issReqh  
+--select  * from RM_issReqb  
+--select * from RM_lot  

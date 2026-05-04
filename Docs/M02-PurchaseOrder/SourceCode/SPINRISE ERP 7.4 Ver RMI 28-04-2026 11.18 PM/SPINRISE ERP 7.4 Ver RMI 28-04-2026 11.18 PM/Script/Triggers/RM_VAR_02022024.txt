@@ -1,0 +1,32 @@
+
+CREATE TRIGGER [dbo].[DELRM_VAR] ON [dbo].RM_VAR FOR DELETE AS                                     
+DECLARE                                                                  
+@VARCODE varchar(10),  
+@sno int  
+BEGIN    
+  
+	select @VARCODE=VARCODE from deleted  
+  
+	set @sno=(select count(VARCODE) from 
+	(
+		SELECT VARCODE VARCODE FROM RM_CINVDT where VARCODE=@VARCODE
+			UNION ALL
+		SELECT VARCODE VARCODE FROM RM_CONT where VARCODE=@VARCODE
+			UNION ALL
+		SELECT VARCODE VARCODE FROM rm_issb where VARCODE=@VARCODE
+			UNION ALL
+		SELECT VARCODE VARCODE FROM RM_BALE where VARCODE=@VARCODE
+			UNION ALL
+		SELECT VARCODE VARCODE FROM RM_ARRIVAL where VARCODE=@VARCODE
+			UNION ALL
+		SELECT VARCODE VARCODE FROM RM_SAMPLE where VARCODE=@VARCODE
+			UNION ALL
+		SELECT VARCODE VARCODE FROM RM_LOT where VARCODE=@VARCODE
+	) x  
+	where VARCODE=@VARCODE)  
+	if isnull(@sno,0)> 0    
+	begin   
+		rollback  
+		RAISERROR ('Dependencies exists. Unable to delete the record at this time', 16 ,10)	
+	end   
+END

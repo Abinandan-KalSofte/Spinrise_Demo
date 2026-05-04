@@ -209,10 +209,10 @@ export default function PurchaseRequisitionListPage() {
         title={
           <Space>
             <ExclamationCircleOutlined style={{ color: '#dc2626' }} />
-            Cancel Purchase Requisition
+            Delete Purchase Requisition
           </Space>
         }
-        okText="Confirm Cancel"
+        okText="Confirm Deletion"
         okButtonProps={{ danger: true, disabled: !deleteReason, loading: deleteSubmitting }}
         cancelText="Go Back"
         onOk={() => void handleConfirmDelete()}

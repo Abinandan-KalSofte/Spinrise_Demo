@@ -1,0 +1,11 @@
+
+alter procedure Ksp_SetupRMiBillAddr
+--Ksp_SetupRMiBillAddr '01'
+@divcode varchar(02)
+As
+begin
+
+select slcode,slname,cname,a.ADD1,a.ADD2,a.ADD3,a.CITY,PIN,Phoneno Phone,pd.DIV_PRINTNAME,DIV_UNITNAME from rm_billadd a
+inner join PP_DIVMAS pd on pd.DIVCODE=@divcode
+
+end

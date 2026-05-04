@@ -1,0 +1,20 @@
+
+alter table RM_Despatchdt add Tax_Code varchar(4)
+go
+alter table RM_Despatchdt add Disc_Amt numeric(12,2)
+go
+alter table RM_Despatchdt add Taxable_Amt numeric(14,2)
+go
+alter table RM_Despatchdt add Cgstper numeric(9,2)
+go
+alter table RM_Despatchdt add CGSTAmt numeric(14,2)
+go
+alter table RM_Despatchdt add Sgstper numeric(12,2)
+go
+alter table RM_Despatchdt add SGSTAmt numeric(14,2)
+go
+alter table RM_Despatchdt add Igstper numeric(9,2)
+go
+alter table RM_Despatchdt add IGSTAmt numeric(14,2)
+go
+alter table RM_Despatchdt add TotalAmt numeric(18,2) 

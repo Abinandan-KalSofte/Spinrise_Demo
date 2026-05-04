@@ -28,8 +28,8 @@ import { generateUUID } from "@/shared/lib/uuid";
 import { getFYBounds } from "@/shared/lib/dateUtils";
 import { purchaseRequisitionApi } from "../api/purchaseRequisitionApi";
 import { useLookupStore } from "../store/useLookupStore";
-import { PRHeaderCards } from "../components/v2/PRHeaderCards";
-import { PRLineItemsTable } from "../components/v2/PRLineItemsTable";
+import { PRHeaderCards } from "../components/pr-form/PRHeaderCards";
+import { PRLineItemsTable } from "../components/pr-form/PRLineItemsTable";
 import { PR_STATUS_LABELS } from "../types";
 import type {
   PRHeaderFormValues,
@@ -52,12 +52,14 @@ const PR_STEPS = [
 function statusToStep(status: string | null): number {
   if (!status) return 0;
   const map: Record<string, number> = {
-    OPEN: 1,
-    PENDING: 1,
-    APPROVED: 2,
-    RECEIVED: 2,
-    CONVERTED: 3,
-    CANCELLED: 0,
+    OPEN:           1,
+    PENDING:        1,
+    L1_APPROVED:    2,
+    L2_APPROVED:    2,
+    FINAL_APPROVED: 2,
+    RECEIVED:       2,
+    CONVERTED:      3,
+    CANCELLED:      0,
   };
   return map[status] ?? 0;
 }
@@ -153,6 +155,7 @@ export default function PurchaseRequisitionNewPage() {
     itemName: line.itemName ?? "",
     uom: line.uom ?? "",
     currentStock: line.currentStock ?? null,
+    minLevel: null,
     qtyRequired: line.qtyRequired,
     requiredDate: line.requiredDate ?? null,
     place: line.place ?? "",
@@ -162,6 +165,7 @@ export default function PurchaseRequisitionNewPage() {
     costCentreCode: line.costCentreCode ?? "",
     budgetGroupCode: line.budgetGroupCode ?? "",
     subCostCode: line.subCostCode ?? null,
+    subCostName: line.subCostName ?? null,
     isSample: line.isSample,
     lastPoRate: line.lastPoRate ?? null,
     lastPoDate: line.lastPoDate ?? null,
@@ -527,7 +531,7 @@ export default function PurchaseRequisitionNewPage() {
             poTypes={poTypes}
             savedPrNo={savedPrNo}
             disabled={pageBusy}
-            requireRequesterName={preCheckResult?.requireRequesterName ?? false}
+            requireRequesterName={true}
             requireRefNo={preCheckResult?.requireRefNo ?? false}
             pendingPoDetailsEnabled={
               preCheckResult?.pendingPoDetailsEnabled ?? false

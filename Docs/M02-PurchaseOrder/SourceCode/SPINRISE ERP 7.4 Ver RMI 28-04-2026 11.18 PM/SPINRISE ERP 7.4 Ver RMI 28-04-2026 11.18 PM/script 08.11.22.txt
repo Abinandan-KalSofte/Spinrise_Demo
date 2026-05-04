@@ -1,0 +1,22 @@
+alter table rm_lotallowance add TRASH_Confirmation decimal(9,2)  -- 54
+go
+alter table rm_lotallowance add TRASH_Weight decimal(10,3)  -- 54
+go
+alter table rm_Arrival add TRASHWeight decimal(10,3)  -- 54
+
+go
+alter table rm_lotallowance add TRASH_Discper decimal(9,2) -- 53 
+
+alter table  rm_lotallowance add TrashValuePer decimal(9,2)
+go
+
+alter table rm_lotallowance add Moiture_Confirmation decimal(9,2) -- 57
+go
+alter table rm_lotallowance add Mositure_Discper decimal(9,2) -- 57
+go
+alter table rm_lotallowance add WeightDiff decimal(10,3) -- 57
+
+go
+alter table rm_lotallowance add Allowance_Candyrate decimal(10,3) -- 55
+go
+alter table rm_lotallowance add AllowanceDebit_Kgs decimal(10,3) --56

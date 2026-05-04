@@ -1,75 +1,81 @@
-import { Button, Col, DatePicker, Form, Input, Row, Space } from 'antd'
-import { SearchOutlined, ClearOutlined } from '@ant-design/icons'
+import { Button, DatePicker, Form, Input, Select, Space } from 'antd'
+import { RedoOutlined, SearchOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
-import type { POListFilters } from '../../hooks/usePurchaseOrderList'
+import type { POListQuery } from '../../types'
 
-interface Props {
-  loading: boolean
-  onSearch: (filters: POListFilters) => void
-  onReset: () => void
+const STATUS_OPTIONS = [
+  { value: 'PENDING',   label: 'Pending'   },
+  { value: 'APPROVED',  label: 'Approved'  },
+  { value: 'CANCELLED', label: 'Cancelled' },
+]
+
+function getFYBounds(): [dayjs.Dayjs, dayjs.Dayjs] {
+  const today = dayjs()
+  const year  = today.month() >= 3 ? today.year() : today.year() - 1
+  return [dayjs(`${year}-04-01`), dayjs(`${year + 1}-03-31`)]
 }
 
-interface FormValues {
-  searchText?: string
-  supplierCode?: string
-  dateRange?: [dayjs.Dayjs, dayjs.Dayjs]
+interface Props {
+  loading:  boolean
+  onSearch: (q: POListQuery) => void
+  onReset:  () => void
 }
 
 export function POFilterBar({ loading, onSearch, onReset }: Props) {
-  const [form] = Form.useForm<FormValues>()
+  const [form]           = Form.useForm()
+  const [fyStart, fyEnd] = getFYBounds()
 
-  const handleFinish = (values: FormValues) => {
+  const handleSearch = () => {
+    const v = form.getFieldsValue()
     onSearch({
-      searchText:   values.searchText?.trim(),
-      supplierCode: values.supplierCode?.trim(),
-      fromDate:     values.dateRange?.[0]?.format('YYYY-MM-DD'),
-      toDate:       values.dateRange?.[1]?.format('YYYY-MM-DD'),
+      searchText:   v.searchText || undefined,
+      supplierCode: v.supplierCode || undefined,
+      status:       v.status || undefined,
+      fromDate:     v.dateRange?.[0]?.format('YYYY-MM-DD'),
+      toDate:       v.dateRange?.[1]?.format('YYYY-MM-DD'),
     })
   }
 
   const handleReset = () => {
     form.resetFields()
+    form.setFieldsValue({ dateRange: [fyStart, fyEnd] })
     onReset()
   }
 
   return (
-    <Form form={form} layout="inline" onFinish={handleFinish} style={{ gap: 0 }}>
-      <Row gutter={[12, 8]} style={{ width: '100%' }}>
-        <Col xs={24} sm={12} md={6}>
-          <Form.Item name="searchText" style={{ marginBottom: 0, width: '100%' }}>
-            <Input placeholder="Search PO No / Supplier…" allowClear />
-          </Form.Item>
-        </Col>
-        <Col xs={24} sm={12} md={5}>
-          <Form.Item name="supplierCode" style={{ marginBottom: 0, width: '100%' }}>
-            <Input placeholder="Supplier Code" allowClear />
-          </Form.Item>
-        </Col>
-        <Col xs={24} sm={14} md={9}>
-          <Form.Item name="dateRange" style={{ marginBottom: 0, width: '100%' }}>
-            <DatePicker.RangePicker
-              style={{ width: '100%' }}
-              format="DD-MMM-YYYY"
-              placeholder={['From Date', 'To Date']}
-            />
-          </Form.Item>
-        </Col>
-        <Col xs={24} sm={10} md={4}>
-          <Space>
-            <Button
-              type="primary"
-              htmlType="submit"
-              icon={<SearchOutlined />}
-              loading={loading}
-            >
-              Search
-            </Button>
-            <Button icon={<ClearOutlined />} onClick={handleReset}>
-              Clear
-            </Button>
-          </Space>
-        </Col>
-      </Row>
+    <Form
+      form={form}
+      layout="inline"
+      size="small"
+      initialValues={{ dateRange: [fyStart, fyEnd] }}
+      style={{ rowGap: 8, flexWrap: 'wrap' }}
+    >
+      <Form.Item name="dateRange" style={{ marginBottom: 0 }}>
+        <DatePicker.RangePicker style={{ width: 224 }} format="DD/MM/YYYY" allowClear={false} />
+      </Form.Item>
+
+      <Form.Item name="searchText" style={{ marginBottom: 0 }}>
+        <Input placeholder="PO No / Supplier…" style={{ width: 180 }} allowClear />
+      </Form.Item>
+
+      <Form.Item name="supplierCode" style={{ marginBottom: 0 }}>
+        <Input placeholder="Supplier Code" style={{ width: 140 }} allowClear />
+      </Form.Item>
+
+      <Form.Item name="status" style={{ marginBottom: 0 }}>
+        <Select style={{ width: 130 }} allowClear placeholder="Status" options={STATUS_OPTIONS} />
+      </Form.Item>
+
+      <Form.Item style={{ marginBottom: 0 }}>
+        <Space size={6}>
+          <Button type="primary" icon={<SearchOutlined />} loading={loading} onClick={handleSearch} style={{ borderRadius: 8 }}>
+            Search
+          </Button>
+          <Button icon={<RedoOutlined />} onClick={handleReset} style={{ borderRadius: 8, color: '#6b7280' }}>
+            Reset
+          </Button>
+        </Space>
+      </Form.Item>
     </Form>
   )
 }

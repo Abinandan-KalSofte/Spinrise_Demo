@@ -1,0 +1,198 @@
+alter table rm_lot add suppassvalue numeric(15,2)
+
+
+GO
+
+
+
+
+DROP INDEX _dta_index_RM_LOT_5_1720232749__K1_K5_K3_K4_K9_K2_K11_K65_K6_K12_K13_K51_K74_31_38_39_137_258_260_262 
+ON dbo.RM_LOT;
+
+DROP INDEX _dta_index_RM_LOT_5_1720232749__K65_K5_K6_K1_K3_K4_K9_K11_K12_K13_K2_K51_K74_31_38_39_137_258_260_262 
+ON dbo.RM_LOT;
+
+GO
+ ALTER TABLE dbo.RM_LOT 
+ALTER COLUMN RATECY DECIMAL(17,10) NULL;  -- or NOT NULL if needed
+
+GO
+
+
+--SELECT ratecy, *
+--FROM dbo.RM_LOT
+--WHERE RATECY >= POWER(10, 15 - 10);
+
+
+
+/****** Object:  Index [_dta_index_RM_LOT_5_1720232749__K65_K5_K6_K1_K3_K4_K9_K11_K12_K13_K2_K51_K74_31_38_39_137_258_260_262]    Script Date: 09/09/2025 10:35:40 AM ******/
+CREATE NONCLUSTERED INDEX [_dta_index_RM_LOT_5_1720232749__K65_K5_K6_K1_K3_K4_K9_K11_K12_K13_K2_K51_K74_31_38_39_137_258_260_262] ON [dbo].[RM_LOT]
+(
+	[ARRDT] ASC,
+	[LOTTYPE] ASC,
+	[SUPCD] ASC,
+	[DIVCODE] ASC,
+	[LOTNO] ASC,
+	[LOTDT] ASC,
+	[VARCODE] ASC,
+	[ARRNO] ASC,
+	[BILLNO] ASC,
+	[BILLDT] ASC,
+	[CATCD] ASC,
+	[PJAMT] ASC,
+	[LOTYEAR] ASC
+)
+INCLUDE([TOTLANDCOST],[RATEKG],[RATECY],[PNETWT],[cgstamt],[sgstamt],[igstamt]) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+
+
+
+
+
+
+/****** Object:  Index [_dta_index_RM_LOT_5_1720232749__K1_K5_K3_K4_K9_K2_K11_K65_K6_K12_K13_K51_K74_31_38_39_137_258_260_262]    Script Date: 09/09/2025 10:35:25 AM ******/
+CREATE NONCLUSTERED INDEX [_dta_index_RM_LOT_5_1720232749__K1_K5_K3_K4_K9_K2_K11_K65_K6_K12_K13_K51_K74_31_38_39_137_258_260_262] ON [dbo].[RM_LOT]
+(
+	[DIVCODE] ASC,
+	[LOTTYPE] ASC,
+	[LOTNO] ASC,
+	[LOTDT] ASC,
+	[VARCODE] ASC,
+	[CATCD] ASC,
+	[ARRNO] ASC,
+	[ARRDT] ASC,
+	[SUPCD] ASC,
+	[BILLNO] ASC,
+	[BILLDT] ASC,
+	[PJAMT] ASC,
+	[LOTYEAR] ASC
+)
+INCLUDE([sgstamt],[igstamt],[TOTLANDCOST],[RATEKG],[RATECY],[PNETWT],[cgstamt]) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+
+
+
+
+
+
+ALTER TABLE dbo.rm_arrival 
+ALTER COLUMN RATECY DECIMAL(17,10) NULL;  -- or NOT NULL if needed
+
+GO
+
+
+drop index _dta_index_RM_CONT_65_1959937233__K71_K3_K16_K2_K1_K6_K11_K34_K57_9_10_39_58_59 on rm_cont
+GO
+
+
+ALTER TABLE dbo.rm_cont 
+ALTER COLUMN CANDYRATE DECIMAL(17,10) NULL;  -- or NOT NULL if needed
+
+GO
+
+
+
+
+
+
+
+/****** Object:  Index [_dta_index_RM_CONT_65_1959937233__K71_K3_K16_K2_K1_K6_K11_K34_K57_9_10_39_58_59]    Script Date: 09/09/2025 10:49:49 AM ******/
+CREATE NONCLUSTERED INDEX [_dta_index_RM_CONT_65_1959937233__K71_K3_K16_K2_K1_K6_K11_K34_K57_9_10_39_58_59] ON [dbo].[RM_CONT]
+(
+	[prefix] ASC,
+	[SUPCD] ASC,
+	[DIVCODE] ASC,
+	[CONTDT] ASC,
+	[CONTNO] ASC,
+	[VARCODE] ASC,
+	[CANDYRATE] ASC,
+	[rateunit] ASC,
+	[arrivaltype] ASC
+)
+INCLUDE([ORDQTY],[RECQTY],[CancelBales],[ORDKGS],[RCDKGS]) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+
+
+
+
+
+
+
+
+/*                                              
+      SP_RM_Receiptnote '01','2024-11-30','4','4'                                              
+*/                                              
+alter procedure SP_RM_Receiptnote                                              
+(                                              
+@Divcode varchar(02),                                              
+@Date varchar(15),                                              
+@FMRNno varchar(15),                                              
+@TMRNno varchar(15)                                              
+)                                              
+as                                              
+Begin                                              
+SELECT RM_ARRIVAL."ARRNO",RM_ARRIVAL."ARRDATE",RM_ARRIVAL."LORRYNOS",RM_ARRIVAL."FREIGHT",                                              
+RM_LOT."LOTNO",isnull(RM_LOT."NETWT",'0')as NETWT,RM_LOT."BALES",RM_LOT."PLOTNO",                                              
+isnull(RM_LOT."PNETWT",'0') as PNETWT,                                              
+(select user_name from pp_passwd where divcode=@divcode and user_id=entryuser and module=6) ADDUSERNAME                                              
+,RM_LOT."ADDUSERNAME" Inspect_user ,App_Date 'inspect_date',                                                          
+ case when RM_LOT.arrdt<convert(date,RM_LOT.ADDDATE) then                                             
+cast(cast( convert(date, RM_LOT.arrdt ) as varchar) +' ' +left(cast(convert(time, RM_LOT.ADDDATE )as varchar),10) as datetime)                                            
+ else RM_LOT.ADDDATE  end  ADDDATE ,                                                         
+isnull(RM_LOT."Comm_Wt",'0') AS Comm_Wt,rm_cont."CONTNO",rm_cont."CONTDT",PO_CAR."CARNAME",                                              
+RM_AREA."AREANAME",FA_SLMAS_1."slname" as Agent,PP_DIVMAS."ADD1",PP_DIVMAS."ADD2",                                              
+PP_DIVMAS."ADD3",PP_DIVMAS."CITY",PP_DIVMAS."PINCODE",PP_DIVMAS."PHONE1",PP_DIVMAS."EMAIL",                                              
+PP_DIVMAS."WEBADDR",PP_DIVMAS."HOState",PP_DIVMAS."DIV_PRINTNAME",PP_DIVMAS."DIV_UNITNAME",                                              
+PP_DIVMAS."DIV_LOGO",PP_DIVMAS."CINNO",PP_DIVMAS."GSTINNO",PP_DIVMAS.email,FA_SLMAS."slname",                                              
+FA_SLMAS."add1" AS Sadd1,FA_SLMAS."add2" AS Sadd2,FA_SLMAS."add3"AS Sadd3,FA_SLMAS."city" AS Scity,                                              
+FA_SLMAS."pin" AS Spin,FA_SLMAS."state" as sstate,FA_SLMAS."country" as scountry,FA_SLMAS."phone1" as sphone,                                              
+FA_SLMAS."email" as semail,FA_SLMAS."GSTINNO" as SGSTINNO,FA_SLMAS."GSTSTATECODE" as SGSTCODE,rm_var."VARNAME",                                              
+wh.WNAME as Weighment,Entryuser, PP_DIVMAS.mark_mail as rmpur_email,RM_LOT.RATECY,
+
+--case when dlytype='S' and rm_cont.rateunit='CANDY' then        
+--(RM_LOT.RATECY/runit.value)*RM_LOT.Pnetwt      
+-- when dlytype='S' and rm_cont.rateunit='KILOGRAMS' and rm_cont.im_ind='U' then      
+-- RM_LOT.ratecy*RM_LOT.Pnetwt   
+-- when dlytype='S' and rm_cont.rateunit='KILOGRAMS' and rm_cont.im_ind='I' then      
+-- RM_LOT.totlandcost  
+--else      
+--RM_LOT.ratekg*RM_LOT.Pnetwt end 
+
+ suppassvalue  as assvalue,                              
+--RM_LOT.assvalue as assvalue,                            
+--RM_LOT.fbillvalue as invval,                               
+RM_LOT.pinvval as invval,                              
+RM_LOT.BILLNO as invno,RM_LOT.BILLDT as invdt,Al.dbtaxableamt AS ALLOWANCE,                
+(RM_LOT.cgstamt+RM_LOT.sgstamt+RM_LOT.igstamt)as taxval,                                
+RM_ARRIVAL.lrno,RM_ARRIVAL.REMARKS,rm_cont.cropyear,god.name as godownname,RM_ARRIVAL.inwardno as GPno,RM_ARRIVAL.inwarddate as gpdt                                
+                                
+      ,rm_lot.PNETWT AS favaourablewgt , case when rm_lot.PNETWT - rm_lot.NETWT>0 THEN                  
+'Shortage : '+cast(rm_lot.NETWT - rm_lot.PNETWT as varchar )                   
+else                  
+'Excess : '+cast(rm_lot.NETWT - rm_lot.PNETWT as varchar)    end  Weightdiff                            
+FROM RM_ARRIVAL RM_ARRIVAL                                               
+INNER JOIN RM_LOT RM_LOT ON RM_ARRIVAL."DIVCODE" = RM_LOT."DIVCODE" AND                                               
+RM_ARRIVAL."LOTNO" = RM_LOT."LOTNO" AND RM_ARRIVAL."lotdt" = RM_LOT."LOTDT" AND                                               
+RM_ARRIVAL."lottype" = RM_LOT."LOTTYPE" AND RM_ARRIVAL."SUPCD" = RM_LOT."SUPCD" AND                                                        
+RM_ARRIVAL."VARCODE" = RM_LOT."VARCODE" AND RM_ARRIVAL."ARRNO" = RM_LOT."ARRNO" AND             
+RM_ARRIVAL."ARRDATE" = RM_LOT."ARRDT"                                              
+LEFT JOIN dbo.rm_cont rm_cont ON RM_ARRIVAL."CONTNO" = rm_cont."CONTNO" AND                                                
+RM_ARRIVAL."CONTDT" = rm_cont."CONTDT" AND RM_ARRIVAL."SUPCD" = rm_cont."SUPCD" AND                        
+RM_ARRIVAL."VARCODE" = rm_cont."VARCODE"                                           
+AND (RM_ARRIVAL."DIVCODE" = rm_cont."DIVCODE"  or (rm_cont.DIVCODE=(select max(isnull(poimportdivision,'01')) from rm_param) and rm_cont.im_ind='I'))                                             
+left join rm_rateunit runit on runit.unitname=rm_cont.rateunit      
+LEFT OUTER JOIN dbo.PO_CAR PO_CAR ON RM_ARRIVAL."CARCODE" = PO_CAR."CARCODE"                                               
+LEFT JOIN dbo.RM_AREA RM_AREA ON RM_ARRIVAL."AREACODE" = RM_AREA."AREACODE"                                               
+LEFT OUTER JOIN dbo.FA_SLMAS FA_SLMAS_1 ON rm_cont."BRKCD" = FA_SLMAS_1."slcode"                                              
+INNER JOIN dbo.PP_DIVMAS PP_DIVMAS ON RM_LOT."DIVCODE" = PP_DIVMAS."DIVCODE"                                              
+INNER JOIN dbo.FA_SLMAS FA_SLMAS ON RM_LOT."SUPCD" = FA_SLMAS."slcode"                                               
+LEFT JOIN dbo.rm_var rm_var ON   RM_LOT."VARCODE" = rm_var."VARCODE" AND RM_LOT."CATCD" = rm_var."CATCD"                                              
+left join rm_weighnment wh on wh.code=RM_ARRIVAL.weignment               
+left join rm_LotAllowance al on al.divcode=rm_lot.divcode and al.lotno=rm_lot.LOTNO and al.lotdt=rm_lot.lotdt              
+LEFT JOIN RM_godown god on god.DIVCODE=RM_LOT.DIVCODE and god.GODCODE=RM_LOT.GODOWN                                
+Where RM_ARRIVAL.DIVCODE = @Divcode and RM_ARRIVAL.ARRDATE = @Date and RM_ARRIVAL.ARRNO between @FMRNno and @TMRNno                                              
+ORDER BY RM_ARRIVAL."ARRNO" ASC,RM_LOT."LOTNO" ASC                                              
+End 
+
+
+GO

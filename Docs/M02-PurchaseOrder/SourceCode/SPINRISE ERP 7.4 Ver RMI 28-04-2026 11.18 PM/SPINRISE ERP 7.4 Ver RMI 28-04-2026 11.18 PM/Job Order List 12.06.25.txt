@@ -1,0 +1,46 @@
+/*    
+    KSP_RMI_JOBORDERLIST '01','2025-06-01','2025-06-30' ,'ds','A'   
+*/    
+    
+create PROCEDURE KSP_RMI_JOBORDERLIST    
+(    
+@DIVCODE VARCHAR(02),    
+@Fdate VARCHAR(10),               
+@Tdate VARCHAR(10),
+@Ipadd VARCHAR(16),
+@Status VARCHAR(1) 
+)    
+AS    
+BEGIN    
+    
+SELECT e.div_printname,e.div_unitname,c.slname,a.docNo,a.docDate,a.RefNo,a.RefDate,a.Order_Type,  
+a.agentcomm,i.payterm_desc as PaymentTerm,a.DeliveryDate,g.NAME as despatchto,h.NAME as carrier,    
+b.Product_code,b.Product_Name,'Kgs'as PackType,b.HSN,b.Quantity,b.Packs,b.rate,b.Disc_Per,  
+b.Disc_Amt,b.MixRate,a.mat_amt as assableamt,b.Taxable_Amt,a.TotalAmt,b.Cgstper,b.Sgstper,  
+b.Igstper,a.CGSTAmt,a.SGSTAmt,a.IGSTAmt,a.TCS_Per,a.TCS_amt,a.ins_Amt,a.Freight_Amt,  
+a.Other_Amt,a.Roff_amt,d.slname as agent,b.remarks ,IssuedKgs DesapthKgs,  b.Quantity-isnull(IssuedKgs,0)  BalanceKgs
+    
+FROM RM_JobOrderhd a    
+INNER JOIN RM_JobOrderDT b on b.divcode=a.divcode and b.docno=a.docno and b.DocDate=a.docDate 
+left join (select cust_code ,JobOrdNo ,product_code ,Product_type ,divcode,sum(NETT_KGS) IssuedKgs from Vw_RMJobOrderList
+group by cust_code ,JobOrdNo ,product_code ,Product_type ,divcode
+)dl on dl.cust_code =a.slcode and dl.JobOrdNo =cast(a.docno  as varchar) and dl.divcode =a.DivCode and b.Product_code =b.Product_code and b.Product_Type=dl.Product_type 
+INNER JOIN FA_SLMAS c on c.slcode=a.slcode    
+LEFT JOIN FA_SLMAS d on c.slcode=a.AgentCode    
+LEFT JOIN pp_divmas e on e.divcode=a.DivCode    
+LEFT JOIN Ig_area g on g.AREA_CODE=a.DelCode    
+LEFT JOIN ig_carrier h on h.CARRIER_CODE=a.Trans_Code    
+LEFT JOIN ig_payterm i on i.payterm_code=a.PaymentTerm  
+inner join RM_ProductprintDet r on r.supcd =a.SLCode and r.IPAdd =@Ipadd and a.DivCode =r.divcode 
+
+    
+WHERE a.DivCode=@DIVCODE and a.docDate BETWEEN @FDate AND @TDate and ((@Status='a') or (@Status='P' and b.Quantity-isnull(IssuedKgs,0) >0) )
+    
+END    
+    
+-- select * from RM_JobOrderhd    
+-- select * from RM_JobOrderDT    
+    
+    
+    
+    

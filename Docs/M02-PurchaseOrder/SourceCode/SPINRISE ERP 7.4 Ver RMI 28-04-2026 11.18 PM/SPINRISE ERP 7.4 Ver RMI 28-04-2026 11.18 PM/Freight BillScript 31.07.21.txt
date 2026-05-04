@@ -1,0 +1,5 @@
+alter table RM_FreightBillHD add PJVTC Decimal(3) 
+go
+alter table RM_FreightBillHD add PJVNO Decimal(5) 
+go
+alter table RM_FreightBillHD add PJVDT DATE 

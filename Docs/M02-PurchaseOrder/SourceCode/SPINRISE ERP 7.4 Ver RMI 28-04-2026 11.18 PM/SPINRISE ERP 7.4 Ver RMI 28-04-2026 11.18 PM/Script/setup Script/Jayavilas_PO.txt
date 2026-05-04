@@ -1,0 +1,197 @@
+        
+        
+-- KSP_PR_PO_gst '01','885','885','2017-12-25','2017-12-25'                       
+-- KSP_PR_PO_gst '01','3','3','2019-03-18','2019-03-18'                         
+CREATE PROC KSP_PR_PO_gst                                      
+(                                         
+@DIVCODE VARCHAR(10),                                      
+@FPONO VARCHAR(15),                                      
+@TPONO VARCHAR(15),                                      
+@FPODATE VARCHAR(15),                                      
+@TPODATE VARCHAR(15)                                      
+)                                      
+AS                 
+                    
+SELECT PO_ORDH."DIVCODE", PO_ORDH."PORDNO", PO_ORDH."PORDDT", PO_ORDH."POGRP",                                       
+       PO_ORDH.ORDVAL AS  ORDVAL, PO_ORDH."PAYMENT", PO_ORDH."duedate",                            
+       PO_ORDL.FRGT1AMT AS  FREIGHT , PO_ORDH."PCKPER",                                       
+       PO_ORDH."PAYTERMS", PO_ORDH."REMARKS" AS hremarks, PO_ORDH."refno", PO_ORDH."roff",                                       
+       PO_ORDH."DIRECT_INS", PO_ORDH."CurrCode",PO_ORDH."RemarksFrt",PO_ORDH."conflg",                              
+       PO_ORDL.INS_AMT , PO_ORDH."RefDate",                                       
+       PO_ORDH."FirstlevlAppDate", PO_ORDH."SecondLevelAppDate", PO_ORDH."ThirdLevelAppDate",                                       
+       PO_CAR."CARNAME", FA_SLMAS."slname", FA_SLMAS."add1", FA_SLMAS."add2",                                       
+       FA_SLMAS."add3", FA_SLMAS."city", FA_SLMAS."pin", FA_SLMAS."state",                                       
+       FA_SLMAS."country", PO_ORDL."ITEMCODE", PO_ORDL."RATE", PO_ORDL."ORDQTY",                                       
+       PO_ORDL.ORDVAL AS LORDVAL, PO_ORDL."TAXPER", PO_ORDL."TAXAMT", PO_ORDL."EXDPER",                                       
+       PO_ORDL."SEDPER", PO_ORDL."SURPER", PO_ORDL."DISPER", PO_ORDL."DISAMT",                                       
+       PO_ORDL."EXCAMT", PO_ORDL."OTHCHGS", isnull(PO_ORDL."REMARKS",'')REMARKS, PO_ORDL."CESS_PER",                                       
+       PO_ORDL."CESS_AMT", PO_ORDL."PACKAMT", PO_ORDL."SURAMT", PO_ORDL."educessper",po_ordl."PACKPER",                                
+       PO_ORDL."AEDAMT", PO_ORDL."EDUCESSAMT", PO_ORDL."Hscess_per", PO_ORDL."Hscess_Amt",                                       
+       PO_ORDL."FRate", PO_ORDL."FValue", PP_DIVMAS."DIVNAME", PP_DIVMAS."ADD1" AS DADD1,                                       
+       PP_DIVMAS."ADD2" AS DADD2, PP_DIVMAS."ADD3" AS DADD3,                                       
+       PP_DIVMAS."CITY" AS DCITY, PP_DIVMAS."PINCODE" AS DPINCODE,                                       
+       PP_DIVMAS."PHONE1" AS DPHONE1,                                       
+       PP_DIVMAS."PHONE2" AS DPHONE2,                                       
+       PP_DIVMAS."PHONE3" AS DPHONE3,                                       
+       PP_DIVMAS."FAX" AS DFAX,                                       
+       PP_DIVMAS."EMAIL" AS DEMAIL, PP_DIVMAS."TNGSTDT" AS DTNGSTDT,                                       
+       PP_DIVMAS."CGSTDT" AS DCGSTDT,                                       
+       PP_DIVMAS."CGST" AS CGST,                                 
+       PP_DIVMAS."RC_NO" AS DRC_NO,                                       
+       PP_DIVMAS."STATENAME" AS DSTATENAME,         
+       PP_DIVMAS."hocountry" AS hocountry,         
+       PP_DIVMAS."TINNO" AS DTINNO,                                       
+       PP_DIVMAS."ecc" AS DECC,                                       
+       PP_DIVMAS."DIV_PRINTNAME", PP_DIVMAS."DIV_UNITNAME", PP_DIVMAS."DIV_LOGO",                     
+       pp_divmas."hodivname" as ho_divname,pp_divmas."sub_title",                                      
+       PO_PRL."remarks" AS lremarks, IN_ITEM."ITEMNAME", IN_ITEM."ITEMSPEC1", IN_ITEM."ITEMSPEC2",                                       
+       IN_ITEM."ITEMSPEC3", IN_ITEM."UOM", IN_ITEM."CATLNO", IN_ITEM."DRAWNO",                                       
+       IN_ITEM."prispec", mm_macmas."MAC_NO", mm_macmas."DESCRIPTION", mm_macmas."MacMake",                       
+              
+        
+       (select RIGHT(PP_DIVMAS.ABBR,LEN(PP_DIVMAS.ABBR)-CHARINDEX('-',PP_DIVMAS.ABBR))) as Abbr,                   
+--       case when PO_ordh.FirstlevlAppUserID = (SELECT APP.AppUserId from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.FirstlevlAppUserID=APP.AppUserId AND app.divcode = @DIVCODE)                            --    THEN (SELECT APP.AppUserPrintName from  PO_ParaPOApproval APP                                     
+ 
+--                                               WHERE po_ordh.FirstlevlAppUserID=APP.AppUserId                                      
+-- AND app.AppLevel='1 - First Level'AND app.divcode = @DIVCODE )                                      
+--    END AS firstAppName,                                      
+--       case when PO_ordh.FirstlevlAppUserID = (SELECT APP.AppUserId from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.FirstlevlAppUserID=APP.AppUserId AND app.divcode = @DIVCODE)                                      
+--    THEN (SELECT APP.AppDesignation from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.FirstlevlAppUserID=APP.AppUserId                                      
+--              AND app.AppLevel='1 - First Level'AND app.divcode = @DIVCODE )                                      
+--END AS firstAppDes,                                       
+--       case when PO_ordh.FirstlevlAppUserID = (SELECT APP.AppUserId from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.FirstlevlAppUserID=APP.AppUserId AND app.divcode = @DIVCODE)                                      
+--    THEN (SELECT APP.[SIGNATURE] from  PO_ParaPOApproval APP                                      
+--            WHERE po_ordh.FirstlevlAppUserID=APP.AppUserId                                      
+--                                               AND app.AppLevel='1 - First Level'AND app.divcode = @DIVCODE                                      
+--    )                                      
+--    END AS firstAppSign,PO_ordh.FirstlevlAppDate,                                      
+                                          
+--    case when PO_ordh.SecondLevelAppUserId = (SELECT APP.AppUserId from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.SecondLevelAppUserId=APP.AppUserId AND app.divcode = @DIVCODE)                                      
+--    THEN (SELECT APP.AppUserPrintName from  PO_ParaPOApproval APP                                      
+--    WHERE po_ordh.SecondLevelAppUserId=APP.AppUserId                                      
+--              AND app.AppLevel='2 - Second Level'AND app.divcode = @DIVCODE )                                      
+--    END AS SecondAppName,                                      
+                                           
+--    case when PO_ordh.SecondLevelAppUserId = (SELECT APP.AppUserId from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.SecondLevelAppUserId=APP.AppUserId AND app.divcode = @DIVCODE)                                      
+--    THEN (SELECT APP.AppDesignation from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.SecondLevelAppUserId=APP.AppUserId                                      
+--              AND app.AppLevel='2 - Second Level' AND app.divcode = @DIVCODE )                                      
+--    END AS SecondAppDes,                                      
+                    
+--       case when PO_ordh.SecondLevelAppUserId = (SELECT APP.AppUserId from  PO_ParaPOApproval APP                                      
+--                  WHERE po_ordh.SecondLevelAppUserId=APP.AppUserId AND app.divcode = @DIVCODE)                                      
+--    THEN (SELECT APP.[SIGNATURE] from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.SecondLevelAppUserId=APP.AppUserId                             
+--                                               AND app.AppLevel='2 - Second Level' AND app.divcode = @DIVCODE                                     
+--    )                                      
+--    END AS SecondAppSign,PO_ordh.SecondLevelAppDate,                       
+                                          
+--    case when PO_ordh.ThirdLevelAppUserId = (SELECT APP.AppUserId from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.ThirdLevelAppUserId=APP.AppUserId AND app.divcode = @DIVCODE)                                      
+--    THEN (SELECT APP.AppUserPrintName from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.ThirdLevelAppUserId=APP.AppUserId                                      
+--              AND app.AppLevel='3 - Third Level'AND app.divcode = @DIVCODE )                                      
+--    END AS ThirdAppName,                                       
+--    case when PO_ordh.ThirdLevelAppUserId = (SELECT APP.AppUserId from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.ThirdLevelAppUserId=APP.AppUserId AND app.divcode = @DIVCODE)                                 
+--    THEN (SELECT APP.AppDesignation from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.ThirdLevelAppUserId=APP.AppUserId                                      
+--              AND app.AppLevel='3 - Third Level'AND app.divcode = @DIVCODE )                                      
+--    END AS ThirdAppDes,                                       
+                                             
+--       case when PO_ordh.ThirdLevelAppUserId = (SELECT APP.AppUserId from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.ThirdLevelAppUserId=APP.AppUserId AND app.divcode = @DIVCODE)                          
+--    THEN (SELECT APP.[SIGNATURE] from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.ThirdLevelAppUserId=APP.AppUserId                                      
+--                                 AND app.AppLevel='3 - Third Level' AND app.divcode = @DIVCODE                                     
+--    )                                      
+--    END AS ThirdAppSign,PO_ordh.ThirdLevelAppDate,                                      
+-- case when PO_ordh.FourthLevelAppUserId = (SELECT APP.AppUserId from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.FourthLevelAppUserId=APP.AppUserId AND app.divcode = @DIVCODE)                                     
+--    THEN (SELECT APP.AppUserPrintName from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.FourthLevelAppUserId=APP.AppUserId                                      
+--              AND app.AppLevel='4 - Fourth Level'AND app.divcode = @DIVCODE )                                      
+--    END AS FourthAppName,                                       
+--       case when PO_ordh.FourthLevelAppUserId = (SELECT APP.AppUserId from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.FourthLevelAppUserId=APP.AppUserId AND app.divcode = @DIVCODE)                                      
+--    THEN (SELECT APP.AppDesignation from  PO_ParaPOApproval APP                                      
+--                     WHERE po_ordh.FourthLevelAppUserId=APP.AppUserId                                      
+--              AND app.AppLevel='4 - Fourth Level' AND app.divcode = @DIVCODE)                                      
+--    END AS FourthAppDes,                                     
+--       case when PO_ordh.FourthLevelAppUserId = (SELECT APP.AppUserId from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.FourthLevelAppUserId=APP.AppUserId AND app.divcode = @DIVCODE)                                      
+--    THEN (SELECT APP.[SIGNATURE] from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.FourthLevelAppUserId=APP.AppUserId                                      
+--                                    AND app.AppLevel='4 - Fourth Level'AND app.divcode = @DIVCODE                                      
+--    )                                     
+--    END AS FourthAppSign,PO_ordh.FourthLevelAppDate,                                      
+                                    
+--       case when PO_ordh.Appuserid = (SELECT APP.AppUserId from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.Appuserid=APP.AppUserId AND app.divcode = @DIVCODE)                                     
+--    THEN (SELECT APP.AppUserPrintName from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.Appuserid=APP.AppUserId                                      
+--              AND app.AppLevel='5 - Final Level'AND app.divcode = @DIVCODE )                                      
+--    END AS FinalAppName,                                       
+--       case when PO_ordh.Appuserid = (SELECT APP.AppUserId from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.Appuserid=APP.AppUserId AND app.divcode = @DIVCODE)                                      
+--    THEN (SELECT APP.AppDesignation from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.Appuserid=APP.AppUserId                                      
+--              AND app.AppLevel='5 - Final Level' AND app.divcode = @DIVCODE)                                      
+--    END AS FinalAppDes,                                       
+--       case when PO_ordh.Appuserid = (SELECT APP.AppUserId from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.Appuserid=APP.AppUserId AND app.divcode = @DIVCODE)                                      
+--    THEN (SELECT APP.[SIGNATURE] from  PO_ParaPOApproval APP                                      
+--                                               WHERE po_ordh.Appuserid=APP.AppUserId                                      
+--                                               AND app.AppLevel='5 - Final Level' AND app.divcode = @DIVCODE                                     
+--    )                                      
+--    END AS FinalAppSign,PO_ordh.Appdate                                      
+                                      
+                                      
+    ----------------------GST Customization----------------------------------                                       
+                             
+     isnull(PO_ORDH.cgstamt,0.00) AS header_cgstamt,isnull(PO_ORDH.sgstamt,0.00) AS header_sgstamt,isnull(PO_ORDH.igstamt,0.00) AS header_igstamt,                        
+     isnull(PO_ORDH.disper,0.00) AS Head_discountPer,isnull(PO_ORDH.discount,0.00) AS Head_discountAmt,isnull(PO_ORDH.rcm,'N') AS rcm,                        
+                             
+     isnull(PO_ORDL.cgstper,0.00) AS cgstper,isnull(PO_ORDL.sgstper,0.00) AS sgstper,isnull(PO_ORDL.igstper,0.00) AS igstper,                        
+     isnull(PO_ORDL.cgstamt,0.00) AS cgstamt,isnull(PO_ORDL.sgstamt,0.00) AS sgstamt,isnull(PO_ORDL.igstamt,0.00) AS igstamt,                        
+     PO_ORDL.hsncode AS itemHsn,isnull(PO_ORDL.disper,0.00) AS discountPer,isnull(PO_ORDL.disamt,0.00) AS discountAmt,                        
+                             
+     PP_DIVMAS.gststatecode AS div_GSTstateCode,pp_divmas.gstinno AS div_gstinno,                      
+     isnull(PP_DIVMAS."PAN",'') AS DPAN,isnull(PP_DIVMAS."WEBADDR",'') AS DWEBADDR,isnull(PP_DIVMAS."CINNO",'') AS DCINNO,                        
+                             
+     FA_SLMAS.gstinno AS sup_gstinno,FA_SLMAS.gststatecode AS sup_gststatecode,                        
+      isnull(FA_SLMAS.phone1,'') AS sup_phone1,isnull(FA_SLMAS.phone2,'') AS sup_phone2,isnull(FA_SLMAS.email,'')sup_email,isnull(FA_SLMAS.pan,'') sup_pan,                  
+      NOTE,DEL_INS2,PO_ORDH.RemarksPF,PO_ORDH.RemarksFrt                  
+                             
+                                                                                                                                      
+FROM   PO_ORDH PO_ORDH                                      
+       INNER JOIN PO_CAR PO_CAR                                      
+            ON  PO_ORDH."CARCODE" = PO_CAR."CARCODE"                                      
+       INNER JOIN FA_SLMAS FA_SLMAS                                      
+  ON  PO_ORDH."SLCODE" = FA_SLMAS."slcode"                                      
+       INNER JOIN PO_ORDL PO_ORDL                                      
+            ON  PO_ORDH."DIVCODE" = PO_ORDL."DIVCODE" AND PO_ORDH."PORDNO" =                                       
+                PO_ORDL."PORDNO" AND PO_ORDH."PORDDT" = PO_ORDL."PORDDT" AND                                       
+       PO_ORDH."POGRP" = PO_ORDL."POGRP"                                      
+       INNER JOIN PP_DIVMAS PP_DIVMAS                                      
+            ON  PO_ORDH."DIVCODE" = PP_DIVMAS."DIVCODE"                                      
+       LEFT OUTER JOIN PO_PRL PO_PRL                                      
+            ON  PO_ORDL."DIVCODE" = PO_PRL."divcode" AND PO_ORDL."PRNO" = PO_PRL."prno" AND                                       
+                PO_ORDL."PRDATE" = PO_PRL."prdate" AND PO_ORDL."PRSNO" = PO_PRL."prsno" AND                                       
+                PO_ORDL."ITEMCODE" = PO_PRL."itemcode"                                      
+       INNER JOIN IN_ITEM IN_ITEM                                      
+            ON  PO_ORDL."ITEMCODE" = IN_ITEM."ITEMCODE"                                      
+       LEFT OUTER JOIN mm_macmas mm_macmas                                      
+            ON  PO_PRL."divcode" = mm_macmas."DIVCODE" AND PO_PRL."Depcode" =                                       
+                mm_macmas."DEPCODE" AND PO_PRL."macno" = mm_macmas."MAC_NO"  and mm_macmas."macflag"='S'                                    
+WHERE                                        
+PO_ORDH.DIVCODE=@DIVCODE AND PO_ORDH.PORDNO BETWEEN @FPONO AND @TPONO                                      
+AND PO_ORDH.PORDDT BETWEEN @FPODATE AND @TPODATE                                       
+ORDER BY                                      
+       PO_ORDH."PORDNO" ASC 

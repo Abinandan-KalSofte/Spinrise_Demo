@@ -1,0 +1,440 @@
+    alter table TmpTable_rmi drop column  localip  
+
+    go  
+  alter table TmpTable_rmi add Comm_Wt numeric(12,3)  
+  go  
+  alter table TmpTable_rmi add  localip varchar(20)  
+       go   
+              
+  --Exec SP_gStockStatement  '02','2019-04-01','2020-03-31','2019-11-01', '2019-11-28' ,'2019' , '192.168.0.135'           
+                  
+ALTER proc [dbo].[SP_gStockStatement]                            
+ (                            
+  @divcode  VARCHAR(2),                            
+  @yfdate   datetime,                            
+  @yldate   datetime,                            
+  @fdate   datetime,                            
+  @tdate  datetime,                            
+  @lotyear  varchar(4),                            
+  @localip VARCHAR(50)                            
+                             
+  )                            
+ as                            
+ begin                            
+   SET NOCOUNT ON;                         
+ select divcode, varcode,LOTNO,LOTDT, sum(opbales-issbales) AS OPENBAL,sum(opboras-issboras) as OPENBOR,                    
+ SUM(opgrsKgs-Isskgs)OPGRSKgs,Sum(opTrKgs)OPTRKgs,                     
+ sum(opkgs-isskgs) as OPENKGS,sum(OPvalue-issvalue) as OPENVALUE,0 AS RECBAL,0 AS RECBOR,                    
+ 0 AS RECGRSKGS, 0 AS RECTRKGS,0 AS RECKGS,0 AS RECVALUE, 0 AS RTNBAL,0 AS RTNGRSKGS, 0 AS RTNTRKGS,0 AS RTNKGS,0 AS RTNVALUE ,                    
+ 0 AS PRODBAL,0 AS PRODBOR,0 AS PRODKGS,0 AS PRODVALUE,0 AS SALESBAL,0 AS SALESBOR,0 AS SALESKGS,0 AS SALESVALUE,                    
+ 0 AS TRANSBAL,0 AS TRANSBOR,0 AS TRANSKGS,0 AS TRANSVALUE,0 AS JWBAL,0 AS JWBOR,0 AS JWKGS,0 AS JWVALUE, 0 AS REJBAL, 0 AS REJKGS,                    
+ 0 AS REJVALUE, 0 AS LOSSBAL,0 AS LOSSKGS,0 AS LOSSVALUE,0 AS ISSRETBAL,0 AS ISSRETBOR, 0 AS ISSRETKGS, 0 AS ISSRETVAL,SUM(ISNULL(COMM_WT,0))COMM_WT  into #tmp_rmi  from (                    
+                     
+ select b.DIVCODE , b.varcode,B.LOTNO,B.LOTDT,case when b.bblflg = 'B' then sum(isnull(b.bales,0)) else 0 end as opbales,                    
+ Case when b.bblflg   IN ('R','H') then sum(isnull(b.bales,0)) else 0 end as opboras, sum(isnull(b.GRSWGT,0)) as opGrskgs,        
+ sum(isnull(b.TAREWT,0)) as opTrkgs,sum(isnull(b.FAVAOURABLEWGT,0)) as opkgs,                    
+ 0 as issbales,0 as issboras,0 as isskgs,sum(isnull(b.FAVAOURABLEWGT,0)) *cast(b.ratekg as decimal (12,4)) as opvalue,0 as recvalue,                    
+ 0 as issvalue 
+ ,sum(isnull(b.COMM_WT,0)) COMM_WT
+ 
+ from rm_lot b where B.DIVCODE=@divcode AND B.lotyear IN (year(@yfdate)) AND       
+ (b.lotdt < @fdate or UPPER(OPFLG)='Y')and                    
+ BALES >0   and (B.rejflg='N' or B.rejdt>=@yfdate) group by b.varcode,                    
+ b.LOTNO , b.LOTDT, b.bblflg, b.ratekg ,b.DIVCODE                    
+ Union                    
+                    
+                     
+ select b.DIVCODE, b.varcode,B.LOTNO,B.LOTDT,0 as opbales,0 as opboras,0 as opGrskgs, 0 as opTrkgs,0 as opkgs,                    
+ case when (b.bblflg = 'B' AND C.ISSUED='Y') then count(c.baleno)  else 0 end as issbales,    
+ case when (b.bblflg   IN ('R','H')  AND C.ISSUED='Y' )then count                    
+ (c.baleno) else 0 end as issboras,SUM(ISNULL(C.isskgs,0)) as isskgs ,0 as opvalue,0 as recvalue,SUM(ISNULL(C.isskgs,0)) * B.RATEKG as issvalue  
+  ,- case when (isnull(b.comm_wt,0))<>0 then round((isnull(b.comm_wt,0))/(isnull(b.favaourablewgt,0))*sum(isnull(c.ISSKGS,0)) ,2)    
+ else 0 end    COMM_WT                
+ from rm_lot b,rm_issb c where  B.DIVCODE=C.DIVCODE AND B.DIVCODE=@divcode AND (b.lotdt < @fdate                    
+ OR UPPER(OPFLG)='Y')  and docdt between @yfdate and @yldate  and b.lotno=c.lotno and                    
+ B.lotyear in (year(@yfdate)) and b.lotdt=c.lotdt and b.lottype=c.lottype and b.catcd=c.catcd  and docdt <@fdate                    
+ group by b.varcode,B.LOTNO,B.LOTDT,b.bblflg,b.ratekg,c.issued ,b.divcode ,b.favaourablewgt ,b.comm_wt                 
+ Union                   
+ -- select b.varcode,B.LOTNO,B.LOTDT,case when b.bblflg = 'B' then count(c.baleno)  else 0 end as opbales      
+ -- ,case when b.bblflg   IN ('R','H') then count(c.baleno) else 0 end as opboras,                    
+ --SUM(ISNULL(C.isskgs,0)) as  opGrskgs, 0 as opTrkgs,SUM(ISNULL(C.isskgs,0)) as opkgs,                    
+ --0 as issbales,0 as issboras,0 as isskgs,SUM(ISNULL(C.isskgs,0)) * B.RATEKG as opvalue, 0 as recvalue,0 as Issvalue       
+   select b.DIVCODE, b.varcode,B.LOTNO,B.LOTDT,case when (b.bblflg = 'B'  AND C.ISSUED='Y') then count(isnull(c.BALENO ,0)) else 0 end as opbales,                    
+ Case when( b.bblflg   IN ('R','H')  AND C.ISSUED='Y') then count(isnull(c.BALENO ,0)) else 0 end as opboras, sum(isnull(c.ISSKGS,0)) as opGrskgs,        
+ sum(isnull(c.ISSKGS,0)) as opTrkgs,sum(isnull(c.ISSKGS,0)) as opkgs,                    
+ 0 as issbales,0 as issboras,0 as isskgs,sum(isnull(c.ISSKGS,0)) *cast(b.ratekg as decimal (12,4)) as opvalue,0 as recvalue,                    
+ 0 as issvalue    
+  , case when (isnull(b.comm_wt,0))<>0 then round((isnull(b.comm_wt,0))/(isnull(b.favaourablewgt,0))*sum(isnull(c.ISSKGS,0)) ,2)    
+ else 0 end    COMM_WT                 
+ from rm_lot b,rm_issRtnb c where  B.DIVCODE=C.DIVCODE AND B.DIVCODE=@divcode AND (b.lotdt < @fdate                    
+ OR UPPER(OPFLG)='Y')  and docdt between @yfdate and @yldate  and b.lotno=c.lotno and                    
+ B.lotyear in (year(@yfdate)) and b.lotdt=c.lotdt and b.lottype=c.lottype and b.catcd=c.catcd  and docdt <@fdate                    
+ group by b.varcode,B.LOTNO,B.LOTDT,b.bblflg,b.ratekg   ,c.ISSUED ,b.divcode ,b.favaourablewgt ,b.comm_wt           
+                     
+  Union                    
+ select divcode, VARCODE,LOTNO,Lotdt,0 as opbales,0 as opboras,0 as opGrskgs, 0 as opTrkgs,0 as opkgs,sum(issBales) AS issbales,0 as issboras,round((sum(isnull(isskgs,0))),3) AS isskgs,0 as opvalue,0 as recvalue,                    
+ (sum(isnull(issvalue,0))) as issvalue ,SUM(ISNULL(COMM_WT,0)) COMM_WT FROM ( SELECT b.divcode,e.VARCODE, e.LOTNO,e.lotdt,0 as opbales,0 as opboras,0 as opkgs,count(*) as issbales,0 as issboras,                    
+ round((sum(isnull(e.FAVAOURABLEWGT,0))),3) AS isskgs,SUM(ISNULL(e.netwt,0)) * B.RATEKG as issvalue 
+    ,- case when (isnull(b.comm_wt,0))<>0 then round((isnull(b.comm_wt,0))/(isnull(b.favaourablewgt,0))*sum(isnull(E.FAVAOURABLEWGT,0)) ,2)    
+ else 0 end    COMM_WT                     
+ from rm_bale e,rm_lot b where (e.rejflg='Y' and e.rejdt<@fdate) AND e.DIVCODE=@divcode                      
+ and e.lotno=b.lotno  and e.lotdt=b.lotdt and e.lottype=b.lottype and e.catcd=b.catcd AND Status='RJ'         
+ group by e.varcode,e.LOTNO,e.lotdt,baleno,B.RATEKG,b.divcode,b.favaourablewgt ,b.comm_wt)s GROUP BY                     
+ lotno,lotdt, VARCODE,divcode ) A --where lotno='635' and lotdt='2018-11-19'                   
+  GROUP BY A.VARCODE,A.LOTNO,A.LOTDT ,divcode        
+  HAVING sum(opboras-issboras) > 0 OR         
+  sum(opKGS-issKGS)>0                    
+                   
+ Union                    
+ SELECT DIVCODE, VARCODE, LOTNO,LOTDT,0 AS OPENBAL,0 AS OPENBOR,0 AS OPGRSKgs, 0 AS OPTRKgs, 0 AS OPENKGS,0 AS OPENVALUE,case when b.bblflg = 'B'         
+ then sum(isnull(b.bales,0)) else 0 end as RECBAL,                    
+ case when b.bblflg   IN ('R','H') then sum(isnull(b.bales,0)) else 0 end as RECBOR,                    
+ Case when 'N' = 'N' then sum(isnull(b.GRSWGT,0)) else 0 end as RECGRSKGS, Case when 'N' = 'N' then sum(isnull(b.TAREWT,0)) else 0 end as RECTRKGS,                    
+ Case when 'N' = 'N' then sum(isnull(b.FAVAOURABLEWGT,0)) else 0 end as RECKGS,SUM(B.FAVAOURABLEWGT)*RATEKG as RECVALUE, 0 AS RTNBAL,0 AS RTNGRSKGS,0 AS RTNTRKGS,
+ 0 AS RTNKGS,0 AS RTNVALUE ,                    
+ 0 AS PRODBAL,0 AS PRODBOR,0 AS PRODKGS,0 AS PRODVALUE,0 AS SALESBAL,0 AS SALESBOR,0 AS SALESKGS,0 AS SALESVALUE,                    
+ 0 AS TRANSBAL,0 AS TRANSBOR,0 AS TRANSKGS,0 AS TRANSVALUE,0 AS JWBAL,0 AS JWBOR,0 AS JWKGS,0 AS JWVALUE, 0 AS REJBAL, 0 AS REJKGS,                    
+ 0 AS REJVALUE, 0 AS LOSSBAL,0 AS LOSSKGS,0 AS LOSSVALUE,                    
+ 0 AS ISSRETBAL,0 AS ISSRETBOR, 0 AS ISSRETKGS, 0 AS ISSRETVAL,SUM(ISNULL(B.Comm_Wt,0)) COMM_WT 
+ 
+ from rm_lot b where B.DIVCODE=@divcode AND upper(opflg)='N' and (B.rejflg='N' or B.rejdt>@tdate) and                    
+ B.lotyear=year(@yfdate) AND B.LOTDT BETWEEN @fdate and @tdate group by b.varcode,B.LOTNO,                    
+ b.LOTDT , b.opflg, b.bblflg, ratekg ,divcode                   
+                      
+ Union                    
+ SELECT DIVCODE, VARCODE, LOTNO,LOTDT,0 AS OPENBAL,0 AS OPENBOR,0 AS OPGRSKgs, 0 AS OPTRKgs,0 AS OPENKGS,0 AS OPENVALUE,0 as RECBAL,0 as RECBOR,                    
+ 0 RECGRSKGS,0 AS RECTRKGS,0 as RECKGS,0 as RECVALUE, isnull(sum(bales),0) as RTNBAL,                    
+ isnull(sum(GRSWGT),0) as RTNGRSKGS, isnull(sum(TAREWT),0) as RTNTRKGS,isnull(sum(FAVAOURABLEWGT),0) as RTNKGS,                    
+ round((sum(isnull(FAVAOURABLEWGT,0))),3)*cast(ratekg as decimal (12,4))AS RTNVALUE,                    
+ 0 AS PRODBAL,0 AS PRODBOR,0 AS PRODKGS,0 AS PRODVALUE,0 AS SALESBAL,0 AS SALESBOR,0 AS SALESKGS,0 AS SALESVALUE,                    
+  0 AS TRANSBAL,0 AS TRANSBOR,0 AS TRANSKGS,0 AS TRANSVALUE,0 AS JWBAL,0 AS JWBOR,0 AS JWKGS,0 AS JWVALUE, 0 AS REJBAL, 0 AS REJKGS,                    
+ 0 AS REJVALUE, 0 AS LOSSBAL,0 AS LOSSKGS,0 AS LOSSVALUE,                     
+ 0 AS ISSRETBAL,0 AS ISSRETBOR, 0 AS ISSRETKGS, 0 AS ISSRETVAL  ,SUM(ISNULL(Comm_Wt,0)) COMM_WT                   
+ from rm_lot where divcode=@divcode and lotyear=year(@yfdate)                    
+ and lottype='T' and transfertype='JR' and lotdt Between @fdate and @tdate                    
+ GROUP BY VARCODE,LOTNO,LOTDT,RATEKG ,divcode                   
+                     
+  Union                    
+ SELECT b.DIVCODE, C.VARCODE,C.LOTNO,C.LOTDT,0 AS OPENBAL,0 AS OPENBOR,0 AS OPGRSKgs, 0 AS OPTRKgs,0 AS OPENKGS,0 AS OPENVALUE,0 AS RECBAL,0 AS RECBOR,                    
+ 0 AS RECGRSKGS,0 AS RECTRKGS,0 AS RECKGS,0 AS RECVALUE, 0 AS RTNBAL,0 AS RTNGRSKGS,0 AS RTNTRKGS,0 AS RTNKGS,0 AS RTNVALUE ,0 AS PRODBAL,0 AS PRODBOR,0 AS PRODKGS
+ ,0 AS PRODVALUE,0 AS SALESBAL,0 AS SALESBOR,                    
+ 0 AS SALESKGS,0 AS SALESVALUE,0 AS TRANSBAL,0 AS TRANSBOR,0 AS TRANSKGS,0 AS TRANSVALUE,0 AS JWBAL,0 AS JWBOR,                   
+ 0 AS JWKGS,0 AS JWVALUE,0 AS REJBAL,0 AS REJKGS,0 AS REJVALUE , count(C.baleno) AS LOSSBAL,sum(isnull(C.FAVAOURABLEWGT,0)-isnull(C.FAVAOURABLEWGT,0)) LOSSKGS,                    
+ round((sum(isnull(C.FAVAOURABLEWGT,0))),3)*cast(b.ratekg as decimal (12,4)) AS LOSSVALUE,                    
+ 0 AS ISSRETBAL,0 AS ISSRETBOR, 0 AS ISSRETKGS, 0 AS ISSRETVAL  ,0 COMM_WT                   
+ from RM_BALE C,RM_LOT B                 
+ Where c.LOTNO = b.LOTNO And c.LOTDT = b.LOTDT And c.catcd = b.catcd And c.Divcode = b.Divcode And c.lottype = b.lottype                    
+ AND C.lotdt Between @fdate and @tdate and C.Issued = 'Y'                    
+ group by C.VARCODE,C.LOTNO,C.LOTDT,B.RATEKG ,b.DIVCODE                    
+                      
+ Union                    
+ SELECT  divcode, VARCODE, LOTNO,LOTDT,0 AS OPENBAL,0 AS OPENBOR,0 AS OPGRSKgs, 0 AS OPTRKgs,0 AS OPENKGS,0 AS OPENVALUE,0 AS RECBAL,0 AS RECBOR,                
+ 0 AS RECGRSKGS,0 AS RECTRKGS,0 AS RECKGS,0 AS RECVALUE, 0 AS RTNBAL,0 AS RTNGRSKGS,0 AS RTNTRKGS,0 AS RTNKGS,0 AS RTNVALUE,                    
+ SUM(PRODBAL) AS PRODBAL,SUM(PRODBOR) AS PRODBOR,SUM(PRODKGS) AS PRODKGS,SUM(PRODVALUE) AS PRODVALUE,                    
+ SUM(SALESBAL) AS SALESBAL,SUM(SALESBOR) AS SALESBOR,SUM(SALESKGS) AS SALESKGS,SUM(SALESVALUE) AS SALESVALUE,                    
+ SUM(TRANSBAL) AS TRANSBAL,SUM(TRANSBOR) AS TRANSBOR,SUM(TRANSKGS) AS TRANSKGS,SUM(TRANSVALUE) AS TRANSVALUE,                    
+ SUM(JWBAL) AS JWBAL,SUM(JWBOR) AS JWBOR,SUM(JWKGS) AS JWKGS,SUM(JWVALUE) AS JWVALUE,  0 AS REJBAL, 0 AS REJKGS,0 AS REJVALUE, 0 AS LOSSBAL,0 AS LOSSKGS,0 AS LOSSVALUE,                    
+ SUM(ISNULL(ISSRETBAL,0))ISSRETBAL,SUM(ISNULL(ISSRETBOR,0))ISSRETBOR,SUM(ISNULL(ISSRETKGS,0))ISSRETKGS, SUM(ISNULL(ISSRETVAL,0)) AS ISSRETVAL
+ ,SUM(ISNULL(Comm_Wt,0)) COMM_WT                      
+ From                    
+ (                     
+                     
+ select divcode,varcode,LOTNO,LOTDT,ISSTYPE,SUM(ISNULL(Bales,0))PRODBAL,SUM(ISNULL(BORAS,0)) PRODBOR,                     
+ SUM(ISNULL(ISSKGS,0))PRODKGS,SUM(ISNULL(ISSVALUE,0))AS PRODVALUE,                     
+ 0 as SALESBAL,0 as SALESBOR,0 as SALESKGS,0 AS SALESVALUE,0 AS TRANSBAL,0 AS TRANSBOR,0 AS TRANSKGS,0 AS TRANSVALUE,                    
+ 0 AS JWBAL,0 AS JWBOR,0 AS JWKGS,0 AS JWVALUE,0 AS ISSRETBAL,0 AS ISSRETBOR, 0 AS ISSRETKGS, 0 AS ISSRETVAL,-SUM(COMM_WT) COMM_WT  FROM ( 
+                     
+ select b.DIVCODE, b.varcode,B.LOTNO,B.LOTDT,I.ISSTYPE,case when b.bblflg = 'B' then count(c.baleno)  else 0 END as BALES,                    
+ case when b.bblflg   IN ('R','H') then count(c.baleno) else 0 END as BORAS,0 AS ISSKGS ,0 AS ISSVALUE ,0 as SALESBAL,                    
+ 0 as SALESBOR,0 as SALESKGS,0 AS SALESVALUE,0 AS TRANSBAL,0 AS TRANSBOR,0 AS TRANSKGS,0 AS TRANSVALUE,                    
+ 0 AS JWBAL,0 AS JWBOR,0 AS JWKGS,0 AS JWVALUE,                    
+ 0 AS ISSRETBAL,0 AS ISSRETBOR, 0 AS ISSRETKGS, 0 AS ISSRETVAL,  0 Comm_Wt                    
+ from rm_lot b,rm_issb c,rm_issuetype i where C.ISSUED='Y' AND B.DIVCODE=C.DIVCODE AND B.DIVCODE=@divcode AND                    
+ BALES >0  AND b.lotno=c.lotno and b.lotdt=c.lotdt and b.lottype=c.lottype and b.catcd=c.catcd                    
+ AND I.issue_code=C.ISSTYPE and docdt between @fdate and @tdate and lotyear=year(@yfdate)                    
+ and (B.rejflg='N' OR B.rejdt>@tdate) AND I.Isstype='P'                    
+ group by b.varcode,B.LOTNO,B.LOTDT,b.opflg,b.bblflg,b.ratekg,I.ISSTYPE,b.divcode                    
+ Union                     
+ select b.divcode,b.varcode,B.LOTNO,B.LOTDT,I.ISSTYPE,0 as BALES,0 AS BORAS,sum(ISNULL(C.Isskgs,0)) as ISSKGS,                    
+ round((sum(isnull(C.Isskgs,0))),3)*cast(b.ratekg as decimal (12,4)) AS ISSVALUE,0 as SALESBAL,                    
+ 0 as SALESBOR,0 as SALESKGS,0 AS SALESVALUE,0 AS TRANSBAL,0 AS TRANSBOR,0 AS TRANSKGS,0 AS TRANSVALUE,                    
+ 0 AS JWBAL,0 AS JWBOR,0 AS JWKGS,0 AS JWVALUE,                     
+ 0 AS ISSRETBAL,0 AS ISSRETBOR, 0 AS ISSRETKGS, 0 AS ISSRETVAL  
+   , case when (isnull(b.comm_wt,0))<>0 then round((isnull(b.comm_wt,0))/(isnull(b.favaourablewgt,0))*sum(isnull(c.ISSKGS,0)) ,2)    
+ else 0 end    COMM_WT                     
+ from rm_lot b,rm_issb c,rm_issuetype i where B.DIVCODE=C.DIVCODE AND B.DIVCODE=@divcode AND                    
+ BALES >0  AND b.lotno=c.lotno and b.lotdt=c.lotdt and b.lottype=c.lottype and b.catcd=c.catcd                    
+ AND I.issue_code=C.ISSTYPE and docdt between @fdate and @tdate and lotyear=year(@yfdate)                    
+ and (B.rejflg='N' OR B.rejdt>@tdate) AND I.Isstype='P'                    
+ group by b.varcode,B.LOTNO,B.LOTDT,b.opflg,b.bblflg,b.ratekg,I.ISSTYPE   ,b.divcode,B.Comm_Wt,B.favaourablewgt                 
+ )x --where lotno='635' and lotdt='2018-11-19'                   
+  group by Varcode,LOTNO,LOTDT,ISSTYPE ,divcode                   
+                     
+              
+              
+              
+   -- SALES ISSUE             
+    Union                  
+ select b.DIVCODE , b.varcode,B.LOTNO,B.LOTDT,I.ISSTYPE,0 as PRODBAL,0 as PRODBOR,0 as PRODKGS,0 AS PRODVALUE,            
+ case when b.bblflg = 'B' then count(c.baleno)  else 0 END as SALESBAL,                  
+ case when b.bblflg   IN ('R','H') then count(c.baleno) else 0 END as SALESBOR,            
+ 0 as SALESKGS,0 AS SALESVALUE,            
+ 0 AS TRANSBAL,0 AS TRANSBOR,0 AS TRANSKGS,0 AS TRANSVALUE            
+,  0 AS JWBAL,0 AS JWBOR,0 AS JWKGS,0 AS JWVALUE,                  
+ 0 AS ISSRETBAL,0 AS ISSRETBOR, 0 AS ISSRETKGS, 0 AS ISSRETVAL ,0 COMM_WT                  
+ from rm_lot b,rm_issb c,rm_issuetype i where                  
+ C.ISSUED='Y' AND B.DIVCODE=C.DIVCODE AND B.DIVCODE=@divcode AND BALES >0                  
+ AND b.lotno=c.lotno and b.lotdt=c.lotdt and b.lottype=c.lottype and b.catcd=c.catcd                  
+ AND I.issue_code=C.ISSTYPE and docdt between @fdate and @tdate and lotyear=year(@yfdate)                  
+ and (B.rejflg='N' OR B.rejdt>@tdate) AND I.Isstype='S'                  
+ group by b.varcode,B.LOTNO,B.LOTDT,b.opflg,b.bblflg,b.ratekg,I.ISSTYPE,b.divcode             
+             
+                 
+  Union               
+                 
+ select b.DIVCODE , b.varcode,B.LOTNO,B.LOTDT,I.ISSTYPE,0 as PRODBAL,0 as PRODBOR,0 as PRODKGS,0 AS PRODVALUE,0 as SALESBAL,                  
+0 as SALESBOR,sum(ISNULL(C.isskgs,0)) as SALESKGS,round((sum(isnull(C.isskgs,0))),3)*cast(b.ratekg as decimal (12,4)) AS SALESVALUE,0 AS TRANSBAL,0 AS TRANSBOR,0 AS TRANSKGS,0 AS TRANSVALUE            
+,  0 AS JWBAL,0 AS JWBOR,0 AS JWKGS,0 AS JWVALUE,                  
+ 0 AS ISSRETBAL,0 AS ISSRETBOR, 0 AS ISSRETKGS, 0 AS ISSRETVAL 
+   , -case when (isnull(b.comm_wt,0))<>0 then round((isnull(b.comm_wt,0))/(isnull(b.favaourablewgt,0))*sum(isnull(c.ISSKGS,0)) ,2)    
+ else sum(isnull(c.ISSKGS,0)) end    COMM_WT                    
+ from rm_lot b,rm_issb c,rm_issuetype i where   --C.ISSUED='Y' AND               
+  B.DIVCODE=C.DIVCODE AND B.DIVCODE=@divcode AND BALES >0                  
+ AND b.lotno=c.lotno and b.lotdt=c.lotdt and b.lottype=c.lottype and b.catcd=c.catcd                  
+ AND I.issue_code=C.ISSTYPE and docdt between @fdate and @tdate and lotyear=year(@yfdate)                  
+ and (B.rejflg='N' OR B.rejdt>@tdate) AND I.Isstype='S'                  
+ group by b.varcode,B.LOTNO,B.LOTDT,b.opflg,b.bblflg,b.ratekg,I.ISSTYPE ,b.DIVCODE  ,B.Comm_Wt,B.favaourablewgt           
+             
+  -- TRANSFER ISSUE             
+               
+    Union                  
+ select b.DIVCODE, b.varcode,B.LOTNO,B.LOTDT,I.ISSTYPE,0 as PRODBAL,0 as PRODBOR,0 as PRODKGS,0 AS PRODVALUE,0 as SALESBAL,                  
+ 0 as SALESBOR,0 as SALESKGS,0 AS SALESVALUE,case when b.bblflg = 'B' then count(c.baleno)  else 0 END AS TRANSBAL,            
+ case when b.bblflg   IN ('R','H') then count(c.baleno) else 0 END AS TRANSBOR,0 AS TRANSKGS,            
+ 0 AS TRANSVALUE,                  
+ 0 AS JWBAL,0 AS JWBOR,0 AS JWKGS,0 AS JWVALUE,                  
+ 0 AS ISSRETBAL,0 AS ISSRETBOR, 0 AS ISSRETKGS, 0 AS ISSRETVAL  ,0 COMM_WT                 
+ from rm_lot b,rm_issb c,rm_issuetype i where                  
+ C.ISSUED='Y' AND B.DIVCODE=C.DIVCODE AND B.DIVCODE=@divcode AND BALES >0                  
+ AND b.lotno=c.lotno and b.lotdt=c.lotdt and b.lottype=c.lottype and b.catcd=c.catcd                  
+ AND I.issue_code=C.ISSTYPE and docdt between @fdate and @tdate and lotyear=year(@yfdate)                  
+ and (B.rejflg='N' OR B.rejdt>@tdate) AND I.Isstype='T'                  
+ group by b.varcode,B.LOTNO,B.LOTDT,b.opflg,b.bblflg,b.ratekg,I.ISSTYPE ,b.divcode               
+                
+  Union                  
+ select b.DIVCODE, b.varcode,B.LOTNO,B.LOTDT,I.ISSTYPE,0 as PRODBAL,0 as PRODBOR,0 as PRODKGS,0 AS PRODVALUE,0 as SALESBAL,                  
+ 0 as SALESBOR,0 as SALESKGS,0 AS SALESVALUE,0 AS TRANSBAL,0 AS TRANSBOR,            
+ sum(ISNULL(C.isskgs,0)) AS TRANSKGS,round((sum(isnull(C.isskgs,0))),3)*cast(b.ratekg as decimal (12,4)) AS TRANSVALUE,                  
+ 0 AS JWBAL,0 AS JWBOR,0 AS JWKGS,0 AS JWVALUE,                  
+ 0 AS ISSRETBAL,0 AS ISSRETBOR, 0 AS ISSRETKGS, 0 AS ISSRETVAL  
+   , -case when (isnull(b.comm_wt,0))<>0 then round((isnull(b.comm_wt,0))/(isnull(b.favaourablewgt,0))*sum(isnull(c.ISSKGS,0)) ,2)    
+ else 0 end    COMM_WT                   
+ from rm_lot b,rm_issb c,rm_issuetype i where -- C.ISSUED='Y' AND                 
+  B.DIVCODE=C.DIVCODE AND B.DIVCODE=@divcode AND BALES >0                  
+ AND b.lotno=c.lotno and b.lotdt=c.lotdt and b.lottype=c.lottype and b.catcd=c.catcd                  
+ AND I.issue_code=C.ISSTYPE and docdt between @fdate and @tdate and lotyear=year(@yfdate)                  
+ and (B.rejflg='N' OR B.rejdt>@tdate) AND I.Isstype='T'                  
+ group by b.varcode,B.LOTNO,B.LOTDT,b.opflg,b.bblflg,b.ratekg,I.ISSTYPE  ,b.DIVCODE,B.Comm_Wt,B.favaourablewgt                 
+                   
+                   
+              
+  -- jobwork issue             
+   Union            
+               
+ select b.DIVCODE , b.varcode,B.LOTNO,B.LOTDT,I.ISSTYPE,0 as PRODBAL,0 as PRODBOR,0 as PRODKGS,0 AS PRODVALUE,0 as SALESBAL,                  
+ 0 as SALESBOR,0 as SALESKGS,0 AS SALESVALUE,0 AS TRANSBAL,0 AS TRANSBOR,0 AS TRANSKGS,0 AS TRANSVALUE,                  
+ case when b.bblflg = 'B' then count(c.baleno)  else 0 END AS JWBAL,                  
+  case when b.bblflg   IN ('R','H') then count(c.baleno) else 0 END AS JWBOR,                  
+0 AS JWKGS,0 AS JWVALUE,                  
+ 0 AS ISSRETBAL,0 AS ISSRETBOR, 0 AS ISSRETKGS, 0 AS ISSRETVAL 
+ ,0 COMM_wT                  
+ from rm_lot b,rm_issb c,rm_issuetype i where                  
+ C.ISSUED='Y' AND B.DIVCODE=C.DIVCODE AND B.DIVCODE=@divcode AND BALES >0                  
+ AND b.lotno=c.lotno and b.lotdt=c.lotdt and b.lottype=c.lottype and b.catcd=c.catcd                  
+ AND I.issue_code=C.ISSTYPE and docdt between @fdate and @tdate and lotyear=year(@yfdate)                  
+ and (B.rejflg='N' OR B.rejdt>@tdate) AND I.Isstype='J'                  
+ group by b.varcode,B.LOTNO,B.LOTDT,b.opflg,b.bblflg,b.ratekg,I.ISSTYPE ,b.DIVCODE          
+             
+  Union            
+               
+ select b.divcode,b.varcode,B.LOTNO,B.LOTDT,I.ISSTYPE,0 as PRODBAL,0 as PRODBOR,0 as PRODKGS,0 AS PRODVALUE,0 as SALESBAL,                  
+ 0 as SALESBOR,0 as SALESKGS,0 AS SALESVALUE,0 AS TRANSBAL,0 AS TRANSBOR,0 AS TRANSKGS,0 AS TRANSVALUE,                  
+ 0 AS JWBAL,                  
+  0 AS JWBOR,                  
+ sum(ISNULL(C.isskgs,0)) AS JWKGS,round((sum(isnull(C.isskgs,0))),3)*cast(b.ratekg as decimal (12,4)) AS JWVALUE,                  
+ 0 AS ISSRETBAL,0 AS ISSRETBOR, 0 AS ISSRETKGS, 0 AS ISSRETVAL  
+   , -case when (isnull(b.comm_wt,0))<>0 then round((isnull(b.comm_wt,0))/(isnull(b.favaourablewgt,0))*sum(isnull(c.ISSKGS,0)) ,2)    
+ else 0 end    COMM_WT                   
+ from rm_lot b,rm_issb c,rm_issuetype i where      --  C.ISSUED='Y' AND            
+ B.DIVCODE=C.DIVCODE AND B.DIVCODE=@divcode AND BALES >0                  
+ AND b.lotno=c.lotno and b.lotdt=c.lotdt and b.lottype=c.lottype and b.catcd=c.catcd                  
+ AND I.issue_code=C.ISSTYPE and docdt between @fdate and @tdate and lotyear=year(@yfdate)                  
+ and (B.rejflg='N' OR B.rejdt>@tdate) AND I.Isstype='J'                  
+ group by b.varcode,B.LOTNO,B.LOTDT,b.opflg,b.bblflg,b.ratekg,I.ISSTYPE,b.divcode ,B.Comm_Wt,B.favaourablewgt             
+               
+  Union                    
+ select divcode,varcode,LOTNO,LOTDT,'IR' AS ISSTYPE, 0 AS PRODBAL,0 AS PRODBOR,0 AS PRODKGS,0 AS  PRODVALUE,                    
+ 0 as SALESBAL,0 as SALESBOR,0 as SALESKGS,0 AS SALESVALUE,0 AS TRANSBAL,0 AS TRANSBOR,0 AS TRANSKGS,0 AS TRANSVALUE,                    
+ 0 AS JWBAL,0 AS JWBOR,0 AS JWKGS,0 AS JWVALUE,                    
+ SUM(ISNULL(Bales,0)) ISSRETBAL,SUM(ISNULL(BORAS,0))AS ISSRETBOR,SUM(ISNULL(ISSKGS,0)) AS ISSRETKGS,                    
+ SUM(IsNull(ISSVALUE, 0)) As ISSRETVAL,SUM(ISNULL(COMM_WT,0)) COMM_WT FROM (                    
+                     
+ Select b.divcode, b.varcode,B.LOTNO,B.LOTDT,case when b.bblflg = 'B' then 0  else 0 END as BALES,                    
+ case when b.bblflg   IN ('R','H') then count(c.baleno) else 0 END as BORAS,0 AS ISSKGS ,0 AS ISSVALUE ,                    
+ 0 as SALESBAL,0 as SALESBOR,0 as SALESKGS,0 AS SALESVALUE,0 AS TRANSBAL,0 AS TRANSBOR,0 AS TRANSKGS,0 AS TRANSVALUE,                    
+ 0 AS JWBAL,0 AS JWBOR,0 AS JWKGS,0 AS JWVALUE  ,0 COMM_WT                   
+ From rm_lot b,RM_ISSRTNB c where C.ISSUED='Y' AND B.DIVCODE=C.DIVCODE AND B.DIVCODE=@divcode AND                     
+ BALES >0  AND b.lotno=c.lotno and b.lotdt=c.lotdt and b.lottype=c.lottype and b.catcd=c.catcd                     
+ And docdt between @fdate and @tdate and lotyear=year(@yfdate)                    
+ and (B.rejflg='N' OR B.rejdt>@tdate)                    
+group by b.varcode,B.LOTNO,B.LOTDT,b.opflg,b.bblflg,b.ratekg,b.DIVCODE                     
+                     
+ Union                    
+                     
+ Select b.divcode,b.varcode,B.LOTNO,B.LOTDT,case when b.bblflg = 'B' then count(c.baleno)  else 0 END as BALES,     
+ case when b.bblflg   IN ('R','H') then count(c.baleno) else 0 END AS BORAS,sum(ISNULL(C.Isskgs,0)) as ISSKGS,                    
+ round((sum(isnull(C.Isskgs,0))),3)*cast(b.ratekg as decimal (12,4)) AS ISSVALUE,0 as SALESBAL,                    
+ 0 as SALESBOR,0 as SALESKGS,0 AS SALESVALUE,0 AS TRANSBAL,0 AS TRANSBOR,0 AS TRANSKGS,0 AS TRANSVALUE,                    
+ 0 AS JWBAL,0 AS JWBOR,0 AS JWKGS,0 AS JWVALUE   
+   , case when (isnull(b.comm_wt,0))<>0 then round((isnull(b.comm_wt,0))/(isnull(b.favaourablewgt,0))*sum(isnull(c.ISSKGS,0)) ,2)    
+ else 0 end    COMM_WT                   
+ from rm_lot b,RM_ISSRTNB c where B.DIVCODE=C.DIVCODE AND B.DIVCODE=@divcode AND                    
+ BALES >0  AND b.lotno=c.lotno and b.lotdt=c.lotdt and b.lottype=c.lottype and b.catcd=c.catcd                    
+ And docdt between @fdate and @tdate and lotyear=year(@yfdate)                    
+ and (B.rejflg='N' OR B.rejdt>@tdate)                    
+ group by b.varcode,B.LOTNO,B.LOTDT,b.opflg,b.bblflg,b.ratekg  ,b.divcode  ,B.Comm_Wt,B.favaourablewgt                
+                     
+                    
+                     
+                     
+ )IR group by Varcode,LOTNO,LOTDT  ,divcode                   
+ ) X--  where lotno='635' and lotdt='2018-11-19'                   
+ GROUP BY LOTNO,LOTDT,VARCODE,ISSTYPE ,divcode                    
+                     
+  Union                    
+ SELECT  divcode,VARCODE,LOTNO,LOTDT,0 AS OPENBAL,0 AS OPENBOR,0 AS OPGRSKgs, 0 AS OPTRKgs,0 AS OPENKGS,0 AS OPENVALUE,0 AS RECBAL,0 AS RECBOR,                    
+ 0 AS RECGRSKGS,0 AS RECTRKGS,0 AS RECKGS,0 AS RECVALUE, 0 AS RTNBAL,0 AS RTNGRSKGS,0 AS RTNTRKGS,0 AS RTNKGS,0 AS RTNVALUE,0 AS PRODBAL,0 AS PRODBOR,0 AS PRODKGS,0 AS PRODVALUE,0 AS SALESBAL,0 AS SALESBOR,                    
+ 0 AS SALESKGS,0 AS SALESVALUE,0 AS TRANSBAL,0 AS TRANSBOR,0 AS TRANSKGS,0 AS TRANSVALUE,0 AS JWBAL,0 AS JWBOR,                    
+ 0 AS JWKGS,0 AS JWVALUE, SUM(REJBAL) AS REJBAL, SUM(REJKGS) AS REJKGS,                    
+ SUM(REJVALUE) AS REJVALUE,0 AS LOSSBAL,0 AS LOSSKGS,0 AS LOSSVALUE,                     
+ 0 AS ISSRETBAL,0 AS ISSRETBOR, 0 AS ISSRETKGS, 0 AS ISSRETVAL ,0 COMM_WT                    
+ FROM (                    
+ SELECT   b.divcode,C.VARCODE,C.LOTNO,C.LOTDT,0 AS OPENBAL,0 AS OPENBOR,0 AS OPGRSKgs, 0 AS OPTRKgs,0 AS OPENKGS,0 AS OPENVALUE,0 AS RECBAL,0 AS RECBOR,                    
+ 0 AS RECGRSKGS,0 AS RECTRKGS,0 AS RECKGS,0 AS RECVALUE, 0 AS RTNBAL,0 AS RTNGRSKGS,0 AS RTNTRKGS,0 AS RTNKGS,0 AS RTNVALUE,0 AS PRODBAL,0 AS PRODBOR,0 AS PRODKGS,0 AS PRODVALUE,0 AS SALESBAL,0 AS SALESBOR,                    
+ 0 AS SALESKGS,0 AS SALESVALUE,0 AS TRANSBAL,0 AS TRANSBOR,0 AS TRANSKGS,0 AS TRANSVALUE,0 AS JWBAL,0 AS JWBOR,                    
+ 0 AS JWKGS,0 AS JWVALUE, COUNT(C.BALENO) AS REJBAL, SUM(C.FAVAOURABLEWGT) AS REJKGS,                    
+ round((sum(isnull(C.FAVAOURABLEWGT,0))),3)*cast(b.ratekg as decimal (12,4)) AS REJVALUE,0 AS LOSSBAL,0 AS LOSSKGS,0 AS LOSSVALUE                    
+ FROM RM_BALE C,RM_LOT B                    
+ Where c.LOTNO = b.LOTNO And c.LOTDT = b.LOTDT And c.catcd = b.catcd And c.Divcode = b.Divcode And c.lottype = b.lottype                    
+ AND C.rejflg='Y' and C.Status='RJ' and C.rejdt>=@fdate                    
+ and C.rejdt<=@tdate and lotyear=year(@yfdate)                    
+ GROUP BY C.LOTNO,C.lotdt,C.VARCODE,B.RATEKG  ,b.divcode      
+       
+ UNION                     
+ select  b.divcode,b.varcode,B.LOTNO,B.LOTDT,0 AS OPENBAL,0 AS OPENBOR,0 AS OPGRSKgs, 0 AS OPTRKgs,0 AS OPENKGS,0 AS OPENVALUE,0 AS RECBAL    
+ ,0 AS RECBOR,                    
+ 0 AS RECGRSKGS,0 AS RECTRKGS,0 AS RECKGS,0 AS RECVALUE, 0 AS RTNBAL,0 AS RTNGRSKGS,0 AS RTNTRKGS,0 AS RTNKGS,0 AS RTNVALUE,    
+ 0 AS PRODBAL,0 AS PRODBOR,0 AS PRODKGS,0 AS PRODVALUE,0 AS SALESBAL,0 AS SALESBOR,                    
+ 0 AS SALESKGS,0 AS SALESVALUE,0 AS TRANSBAL,0 AS TRANSBOR,0 AS TRANSKGS,0 AS TRANSVALUE,0 AS JWBAL,0 AS JWBOR,                    
+ 0 AS JWKGS,0 AS JWVALUE,case when C.ISSUEd='Y' then count(c.baleno) else 0 end as REJBAL,sum(ISNULL(C.isskgs,0)) as REJKGS,    
+ round((sum(isnull(C.isskgs,0))),3)*cast(b.ratekg as decimal (12,4)) AS REJVALUE,0 AS LOSSBAL,0 AS LOSSKGS,0 AS LOSSVALUE              
+          
+ from rm_lot b,rm_issb c,rm_issuetype i where  B.DIVCODE=C.DIVCODE AND B.DIVCODE=@divcode AND                    
+ BALES >0  AND b.lotno=c.lotno and b.lotdt=c.lotdt and b.lottype=c.lottype and b.catcd=c.catcd                    
+ AND I.issue_code=C.ISSTYPE and docdt between @fdate and @tdate and lotyear=year(@yfdate)                    
+ and (B.rejflg='N' OR B.rejdt>@tdate) AND I.Isstype='R'    --C.ISSUED='Y' AND                 
+ group by b.varcode,B.LOTNO,B.LOTDT,b.opflg,b.bblflg,b.ratekg,I.ISSTYPE ,c.issued  ,b.divcode    
+  
+                
+ ) V-- where lotno='635' and lotdt='2018-11-19'                  
+  GROUP BY VARCODE,LOTNO,LOTDT ,divcode                    
+  
+  /*
+  -----Commercial Weight  
+ union all  
+  select divcode, varcode,LOTNO,LOTDT, 0 AS OPENBAL,0 as OPENBOR,                    
+ 0 OPGRSKgs,0 OPTRKgs,                     
+0 as OPENKGS,0 as OPENVALUE,0 AS RECBAL,0 AS RECBOR,                    
+ 0 AS RECGRSKGS, 0 AS RECTRKGS,0 AS RECKGS,0 AS RECVALUE, 0 AS RTNBAL,0 AS RTNGRSKGS, 0 AS RTNTRKGS,0 AS RTNKGS,0 AS RTNVALUE ,                    
+ 0 AS PRODBAL,0 AS PRODBOR,0 AS PRODKGS,0 AS PRODVALUE,0 AS SALESBAL,0 AS SALESBOR,0 AS SALESKGS,0 AS SALESVALUE,                    
+ 0 AS TRANSBAL,0 AS TRANSBOR,0 AS TRANSKGS,0 AS TRANSVALUE,0 AS JWBAL,0 AS JWBOR,0 AS JWKGS,0 AS JWVALUE, 0 AS REJBAL, 0 AS REJKGS,                    
+ 0 AS REJVALUE, 0 AS LOSSBAL,0 AS LOSSKGS,0 AS LOSSVALUE,0 AS ISSRETBAL,0 AS ISSRETBOR, 0 AS ISSRETKGS, 0 AS ISSRETVAL,   
+ sum(isnull(opkgs,0)-isnull(isskgs,0)) CommWt   from (    
+   
+  select b.DIVCODE , b.varcode,B.LOTNO,B.LOTDT,case when b.bblflg = 'B' then sum(isnull(b.bales,0)) else 0 end as opbales,                    
+ Case when b.bblflg   IN ('R','H') then sum(isnull(b.bales,0)) else 0 end as opboras, sum(isnull(b.GRSWGT,0)) as opGrskgs,        
+ sum(isnull(b.TAREWT,0)) as opTrkgs,sum(isnull(b.comm_wt,0)) as opkgs,                    
+ 0 as issbales,0 as issboras,0 as isskgs,sum(isnull(b.FAVAOURABLEWGT,0)) *cast(b.ratekg as decimal (12,4)) as opvalue,0 as recvalue,                    
+ 0 as issvalue  ,sum(isnull(b.FAVAOURABLEWGT,0)) opk, 0 issk       
+ from rm_lot b where B.DIVCODE=@divcode AND B.lotyear IN (year(@yfdate)) AND       
+ (b.lotdt <= @tdate or UPPER(OPFLG)='Y')and                    
+ BALES >0   and (B.rejflg='N' or B.rejdt>=@yfdate) group by b.varcode,                    
+ b.LOTNO , b.LOTDT, b.bblflg, b.ratekg ,b.DIVCODE                    
+ Union      
+ select b.DIVCODE, b.varcode,B.LOTNO,B.LOTDT,0 as opbales,0 as opboras,0 as opGrskgs, 0 as opTrkgs,0 as opkgs,                    
+ case when (b.bblflg = 'B' AND C.ISSUED='Y') then count(c.baleno)  else 0 end as issbales,    
+ case when (b.bblflg   IN ('R','H')  AND C.ISSUED='Y' )then count                    
+ (c.baleno) else 0 end as issboras,  
+  case when (isnull(b.comm_wt,0))<>0 then round((isnull(b.comm_wt,0))/(isnull(b.favaourablewgt,0))*sum(isnull(c.ISSKGS,0)) ,2)    
+ else sum(isnull(c.ISSKGS,0)) end   
+  as isskgs ,0 as opvalue,0 as recvalue,SUM(ISNULL(C.isskgs,0)) * B.RATEKG as issvalue   
+   ,0 opk, sum(isnull(c.ISSKGS,0))  issk                      
+ from rm_lot b  
+ left join  rm_issb c on B.DIVCODE=C.DIVCODE and b.lotno=c.lotno and b.lotdt=c.lotdt and b.lottype=c.lottype and b.catcd=c.catcd   
+ ----left join rm_bale aa on aa.lotno=b.lotno and aa.lotdt=b.lotdt and aa.DIVCODE=b.DIVCODE and aa.VARCODE=c.VARCODE and aa.baleno=c.baleno and aa.lottype=b.LOTTYPE   
+ --and aa.CATCD =b.CATCD   
+ where   B.DIVCODE=@divcode AND (b.lotdt < @fdate                    
+ OR UPPER(OPFLG)='Y')  and docdt between @yfdate and @yldate   and                    
+ B.lotyear in (year(@yfdate)) and docdt between @fdate  and @tdate                   
+ group by b.varcode,B.LOTNO,B.LOTDT,b.bblflg,b.ratekg,c.issued ,b.divcode  ,b.comm_wt   ,b.favaourablewgt              
+ Union                    
+ -- select b.varcode,B.LOTNO,B.LOTDT,case when b.bblflg = 'B' then count(c.baleno)  else 0 end as opbales      
+ -- ,case when b.bblflg   IN ('R','H') then count(c.baleno) else 0 end as opboras,                    
+ --SUM(ISNULL(C.isskgs,0)) as  opGrskgs, 0 as opTrkgs,SUM(ISNULL(C.isskgs,0)) as opkgs,                    
+ --0 as issbales,0 as issboras,0 as isskgs,SUM(ISNULL(C.isskgs,0)) * B.RATEKG as opvalue, 0 as recvalue,0 as Issvalue       
+   select b.DIVCODE, b.varcode,B.LOTNO,B.LOTDT,case when (b.bblflg = 'B'  AND C.ISSUED='Y') then count(isnull(c.BALENO ,0)) else 0 end as opbales,                    
+ Case when( b.bblflg   IN ('R','H')  AND C.ISSUED='Y') then count(isnull(c.BALENO ,0)) else 0 end as opboras, sum(isnull(c.ISSKGS,0)) as opGrskgs,        
+ sum(isnull(c.ISSKGS,0)) as opTrkgs,  
+  case when (isnull(b.comm_wt,0))<>0 then round((isnull(b.comm_wt,0))/(isnull(b.favaourablewgt,0))*sum(isnull(c.ISSKGS,0)) ,2)    
+ else sum(isnull(c.ISSKGS,0))  end     
+ as opkgs,                    
+ 0 as issbales,0 as issboras,0 as isskgs,sum(isnull(c.ISSKGS,0)) *cast(b.ratekg as decimal (12,4)) as opvalue,0 as recvalue,                    
+ 0 as issvalue  ,sum(isnull(c.ISSKGS,0)) opk, 0 issk                     
+ from rm_lot b   left join rm_issRtnb c  on B.DIVCODE=C.DIVCODE  and b.lotdt=c.lotdt and b.lotno=c.lotno and b.lottype=c.lottype and b.catcd=c.catcd and b.VARCODE =c.VARCODE   
+ -- left join rm_bale aa on aa.lotno=b.lotno and aa.lotdt=b.lotdt and aa.DIVCODE=b.DIVCODE and aa.VARCODE=c.VARCODE and aa.baleno=c.baleno and aa.lottype=b.LOTTYPE   
+ --and aa.CATCD =b.CATCD   
+ where   B.DIVCODE=@divcode AND (b.lotdt < @fdate                    
+ OR UPPER(OPFLG)='Y')  and docdt between @yfdate and @yldate   and                    
+ B.lotyear in (year(@yfdate))   and docdt  between @fdate  and @tdate                     
+ group by b.varcode,B.LOTNO,B.LOTDT,b.bblflg,b.ratekg   ,c.ISSUED ,b.divcode  ,b.comm_wt  ,b.favaourablewgt        
+                  
+  Union                    
+ select divcode, VARCODE,LOTNO,Lotdt,0 as opbales,0 as opboras,0 as opGrskgs, 0 as opTrkgs,0 as opkgs,sum(issBales) AS issbales,0 as issboras,round((sum(isnull(isskgs,0))),3) AS isskgs,0 as opvalue,0 as recvalue,                    
+ (sum(isnull(issvalue,0))) as issvalue  ,0 opk, round((sum(isnull(isskgs,0))),3) issk  
+   
+ FROM ( SELECT b.divcode,e.VARCODE, e.LOTNO,e.lotdt,0 as opbales,0 as opboras,0 as opkgs,count(*) as issbales,0 as issboras,                    
+ round((sum(isnull(e.FAVAOURABLEWGT,0))),3) AS isskgs,SUM(ISNULL(e.netwt,0)) * B.RATEKG as issvalue   
+  
+                     
+ from rm_bale e,rm_lot b where (e.rejflg='Y' and e.rejdt<@fdate) AND e.DIVCODE=@divcode                      
+ and e.lotno=b.lotno  and e.lotdt=b.lotdt and e.lottype=b.lottype and e.catcd=b.catcd AND Status='RJ'         
+ group by e.varcode,e.LOTNO,e.lotdt,baleno,B.RATEKG,b.divcode)s GROUP BY                     
+ lotno,lotdt, VARCODE,divcode  
+   
+  ) A --where lotno='635' and lotdt='2018-11-19'                   
+  GROUP BY A.VARCODE,A.LOTNO,A.LOTDT ,divcode        
+  HAVING --sum(opboras-issboras) > 0 OR         
+sum(isnull(opkgs,0)-isnull(isskgs,0))>0   and sum(isnull(opk,0)-isnull(issk,0))>0 
+         */       
+                          
+DELETE TmpTable_rmi where localip =@localip                            
+                             
+ INSERT INTO TmpTable_rmi SELECT *,@localip FROM #tmp_rmi                            
+DROP TABLE #tmp_rmi                          
+ end                    
+                    
+                    
+                  --select *  from TmpTable_rmi  
+                    
+                  --
+                    

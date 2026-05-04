@@ -1,0 +1,2 @@
+alter table RM_LOTALLOWANCE add ARemarks Varchar(100)
+

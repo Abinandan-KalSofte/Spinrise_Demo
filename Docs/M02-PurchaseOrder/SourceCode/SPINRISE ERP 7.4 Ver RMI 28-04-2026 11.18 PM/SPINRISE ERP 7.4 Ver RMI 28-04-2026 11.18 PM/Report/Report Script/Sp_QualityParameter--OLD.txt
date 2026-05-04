@@ -1,0 +1,89 @@
+/************************************************************
+ * Code formatted by SoftTree SQL Assistant © v4.5.9
+ * Time: 06/12/2012 12:26:47 PM
+ ************************************************************/
+--EXEC SP_S_QUALITY_PARAMETER '01','2012-04-01','2012-12-16','2012-04-01','2012-12-06'    
+--SP_S_QUALITY_PARAMETER '01','2012-10-01','2012-10-16'    
+ALTER PROCEDURE SP_S_QUALITY_PARAMETER(
+    @Divcode  VARCHAR(2),
+    @FDate    VARCHAR(10),
+    @TDate    VARCHAR(10),
+    @yfdate   VARCHAR(10),
+    @CDate    VARCHAR(10)
+)
+AS
+	SELECT a.divname, a.ARRNO, a.ARRDATE, a.CONTNO, a.CONTDT, a.LOTNO, a.LOTDT, 
+	       a.BALES, a.ISSBAL,ISNULL(b.Closingbales,0)Closingbales, a.TOTLANDCOST, a.RateQty, a.STAPLEN, 
+	       a.MICRONAIRE, a.TRASH_PER, a.PLOTNO, a.STAPLEN50, a.UNIRATIO, a.STRENGTH, 
+	       a.SCI, a.FQI, a.ELG, a.RD, a.bb, a.Grade, a.AREANAME, a.slname, a.AgentName, 
+	       a.VARNAME, a.DIV_PRINTNAME, a.DIV_UNITNAME, a.VARCODE
+	FROM   (
+	           SELECT DISTINCT F.DIVNAME, A.ARRNO, A.ARRDATE, A.CONTNO, A.CONTDT, 
+	                  B.LOTNO, B.LOTDT, B.BALES, B.TOTLANDCOST, RateQty = ROUND(B.NETWT, 2), 
+	                  B.STAPLEN, B.MICRONAIRE, B.TRASH_PER, B.ISSBAL, B.PLOTNO, 
+	                  B.STAPLEN50, B.UNIRATIO, B.STRENGTH, B.SCI, B.FQI, B.ELG, 
+	                  B.RD, B.bb, B.Grade, C.AREANAME, G.slname, D.slname AS 
+	                  AgentName, E.VARNAME, F.DIV_PRINTNAME, F.DIV_UNITNAME, b.VARCODE, 
+	                  b.DIVCODE
+	           FROM   RM_ARRIVAL A
+	                  INNER JOIN RM_LOT B
+	                       ON  A.DIVCODE = B.DIVCODE AND a.LOTNO = b.LOTNO AND a.lotdt = 
+	                           b.LOTDT
+	                  LEFT JOIN RM_AREA C
+	                       ON  A.AREACODE = C.AREACODE
+	                  LEFT JOIN FA_SLMAS D
+	                       ON  A.BRKCD = D.slcode
+	                  LEFT JOIN RM_VAR E
+	                       ON  A.VARCODE = E.VARCODE
+	                  LEFT JOIN PP_DIVMAS F
+	                       ON  A.DIVCODE = F.DIVCODE
+	                  LEFT JOIN FA_SLMAS G
+	                       ON  G.slcode = A.SUPCD
+	           WHERE  A.DIVCODE = @Divcode AND A.ARRDATE BETWEEN @FDate AND @TDate AND 
+	                  ISNULL(B.OPFLG, 'N') = 'N'
+	       )a, (
+	           SELECT x.divcode, x.varcode, x.lotno, x.lotdt, SUM(x.opbales) -
+	                  SUM(x.issbales)Closingbales
+	           FROM   (
+	                      SELECT b.divcode, b.varcode, B.LOTNO, B.LOTDT, SUM(ISNULL(b.bales, 0)) AS 
+	                             opbales, 0 AS issbales
+	                      FROM   rm_lot b
+	                      WHERE  B.DIVCODE = @Divcode AND B.lotyear IN (YEAR(@yfdate)) AND (b.lotdt <= @CDate OR UPPER(OPFLG) = 'Y') AND 
+	                             BALES > 0 AND (B.rejflg = 'N' OR B.rejdt >= @CDate)
+	                      GROUP BY
+	                             b.varcode, b.LOTNO, b.LOTDT, b.divcode
+	                      UNION
+	                      SELECT b.divcode, b.varcode, B.LOTNO, B.LOTDT, 0 AS 
+	                             opbales, COUNT(c.baleno) AS issbales
+	                      FROM   rm_lot b, rm_issb c
+	                      WHERE  C.ISSUED = 'Y' AND B.DIVCODE = C.DIVCODE AND B.DIVCODE = 
+	                             @Divcode AND (b.lotdt < @CDate OR UPPER(OPFLG) = 'Y') AND 
+	                             docdt BETWEEN @yfdate AND @CDate AND b.lotno = 
+	                             c.lotno AND B.lotyear IN (YEAR(@yfdate)) AND b.lotdt = 
+	                             c.lotdt AND b.lottype = c.lottype AND b.catcd = 
+	                             c.catcd AND docdt <= @CDate
+	                      GROUP BY
+	                             b.varcode, B.LOTNO, B.LOTDT, b.divcode
+	                      UNION
+	                      SELECT b.divcode, E.VARCODE, e.LOTNO, e.lotdt, 0 AS 
+	                             opbales, COUNT(*) AS issbales
+	                      FROM   rm_bale e, rm_lot b
+	                      WHERE  (e.rejflg = 'Y' AND e.rejdt <= @CDate) AND e.DIVCODE = 
+	                             @Divcode AND e.lotno = b.lotno AND e.lotdt = b.lotdt AND 
+	                             e.lottype = b.lottype AND e.catcd = b.catcd AND 
+	                             STATUS = 'RJ'
+	                      GROUP BY
+	                             e.varcode, e.LOTNO, e.lotdt, b.divcode
+	                  )x
+	           GROUP BY
+	                  x.divcode, x.varcode, x.LOTNO, x.LOTDT
+	       )b
+	WHERE  a.LOTNO = b.lotno AND a.LOTDT = b.lotdt AND a.DIVCODE = b.divcode AND 
+	       a.VARCODE = b.varcode
+       
+       
+       
+  
+       
+       
+       

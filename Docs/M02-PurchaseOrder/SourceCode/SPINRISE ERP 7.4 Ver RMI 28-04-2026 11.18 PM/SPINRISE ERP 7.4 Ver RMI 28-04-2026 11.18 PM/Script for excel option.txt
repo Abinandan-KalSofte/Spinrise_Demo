@@ -1,0 +1,207 @@
+  /*  
+   Ksp_RMI_PendingPODatewiseExcel '01','2023-09-13' , '2023-12-07','K'  
+   Ksp_RMI_PendingPODatewiseExcel '01','2023-09-13','2023-12-07','K'  
+  
+  */  
+CREATE procedure Ksp_RMI_PendingPODatewiseExcel          
+(          
+ @divcode varchar(5),          
+ @yfdate varchar(25),          
+ @yldate varchar(25),          
+ @arrival varchar(15)    
+)          
+as          
+ begin        
+    declare @Gdivcode as varchar(5)          
+   set @Gdivcode=(select poimportdivision from RM_PARAM)     
+     
+ if @arrival='P'           
+  Begin          
+                 
+    select distinct Result.contdt,Result.supcd,Result.supname,Result.brkname,Result.brkcd,Result.areacode,          
+    Result.varname,Result.contno,Result.dlytype,Result.ordqty,isnull(Result.recqty,0) recqty,Result.cancelbales,Result.Bales,          
+    Result.candyrate,Result.millrefno,RESULT.unit  --Into Temp_Periodical_PendingOrdersDatewise            
+    From (select distinct a.contdt,a.supcd,isnull(c.slname, ' ') supname,isnull(d.slname,' ') brkname,          
+    isnull(a.brkcd,' ')'brkcd',a.areacode,b.varname,cast(a.contno as varchar)as contno,case when dlytype = 'M'           
+    or dlytype='F' then  'FOR'  else 'Spot' end as dlytype,a.ordqty,a.recqty,isnull(cancelbales,0) as cancelbales,          
+    (a.ordqty-isnull(a.recqty,0)-isnull(cancelbales,0))Bales,round(a.candyrate,0)as candyrate,a.millrefno,          
+    case when bbflag='B' then 'Bales' else 'Borah' end as unit      
+    from RM_CONT a      
+  LEFT JOIN rm_var b ON a.varcode= B.varcode      
+  LEFT JOIN fa_slmas c ON  a.supcd= c.slcode       
+  LEFT JOIN fa_slmas d  ON a.brkcd= d.slcode       
+    Where  ISNULL(ARRIVALTYPE,'P')='P' AND divcode=@divcode and  A.CONTdt BETWEEN @yfdate AND @yldate AND            
+    (isnull(a.recqty,0) < isnull(a.ordqty,0))         
+  AND ORDQTY-isnull(recqty,0)-ISNULL(CANCELBALES,0)>0 and (DIVCODE=@divcode or ((DIVCODE=@Gdivcode and im_ind='I')))           
+   )Result order by result.contno,result.contdt            
+ End          
+ Else          
+ Begin          
+    select distinct Result.contdt,Result.supcd,Result.supname,Result.brkname,Result.brkcd,Result.areacode,          
+    Result.varname,Result.contno,Result.dlytype,Result.ORDQTY ,isnull(Result.recqty,0) recqty,Result.cancelbales,Result.Bales,          
+    Result.candyrate,RESULT.millrefno, RESULT.unit  --Into Temp_Periodical_PendingOrdersDatewise     
+ From           
+     (select distinct a.supcd,isnull(c.slname, ' ') supname,isnull(d.slname,' ') brkname,isnull(a.brkcd,' ')'brkcd',          
+     a.areacode,b.varname,cast(a.contno as numeric)as contno,a.contdt,case when dlytype = 'M' or dlytype='F' then           
+      'FOR'  else 'Spot' end as dlytype,a.ordKGS as ORDQTY ,a.RCDKGS as recqty,isnull(cancelKGS,0) as cancelbales,          
+      (a.ordKGS-isnull(a.rCDKGS,0)-isnull(cancelKGS,0))Bales,round(a.candyrate,0)as candyrate,a.millrefno,          
+      case when bbflag='B' then 'Bales' else 'Borah' end as unit        
+     from RM_CONT a      
+  LEFT JOIN rm_var b ON a.varcode= B.varcode      
+  LEFT JOIN fa_slmas c ON  a.supcd= c.slcode       
+  LEFT JOIN fa_slmas d  ON a.brkcd= d.slcode       
+         
+       Where ISNULL(ARRIVALTYPE,'P')='K' AND divcode=@divcode and  A.CONTdt BETWEEN @yfdate AND @yldate AND           
+          (isnull(a.rcDKGS,0) < isnull(a.ordKGS,0))      
+      
+    AND ORDKGS-isnull(rCDKGS,0)-ISNULL(CANCELKGS,0)>0  and          
+        (DIVCODE=@divcode or ((DIVCODE='01' and im_ind='I'))) )Result  
+    
+  order by           
+       result.contno,result.contdt          
+          
+               
+          
+ end           
+end 
+
+GO
+
+
+ CREATE Procedure Ksp_RMI_PODatewiseExcel  
+ (  
+ @Divcode varchar(5),  
+ @Fdate varchar(25),  
+ @Tdate varchar(25)  
+ )  
+ AS  
+ Begin  
+ select distinct a.contdt,c.varname,b.slname as SupplierName,z.slname as BrokerName,v.areaname,cast(a.contno as varchar) as contno,  
+  round(a.candyrate,4) AS CandyRate,unit=case when a.dlytype='F' then 'FOR' else 'SPOT' end,isnull(a.ordqty,0)ordqty,a.duedate,  
+  isnull(a.ordkgs,0)ordkgs,a.MillRefNo,divcode,a.varcode,a.recqty as recqty from rm_cont a inner Join fa_slmas b on a.SUPCD=b.SLCODE    
+  Left Join  fa_slmas z on a.brkcd =z.slcode   left JOin rm_var c on c.varcode=a.varcode    
+  Left Join rm_area v on a.areacOdE=v.areacode  where a.contdt Between @Fdate and @Tdate and divcode=@Divcode 
+ End   
+GO
+
+
+
+insert into RM_EXCELLRPTHEAD values(1,'Arrival Date','ArrDate')
+insert into RM_EXCELLRPTHEAD values(2,'Arrival No.','ArrDate')
+insert into RM_EXCELLRPTHEAD values(3,'PO. No.','ArrDate')
+insert into RM_EXCELLRPTHEAD values(4,'PO. Date.','ArrDate')
+insert into RM_EXCELLRPTHEAD values(5,'Supplier Name','ArrDate')
+insert into RM_EXCELLRPTHEAD values(6,'Invoice No.','ArrDate')
+insert into RM_EXCELLRPTHEAD values(7,'Invoice Date.','ArrDate')
+insert into RM_EXCELLRPTHEAD values(8,'Variety Name','ArrDate')
+insert into RM_EXCELLRPTHEAD values(9,'No.of Bales','ArrDate')
+insert into RM_EXCELLRPTHEAD values(10,'Gross Wt.','ArrDate')
+insert into RM_EXCELLRPTHEAD values(11,'Net Wt.','ArrDate')
+insert into RM_EXCELLRPTHEAD values(12,'Commercial. Wt.','ArrDate')
+insert into RM_EXCELLRPTHEAD values(13,'Price/Kg','ArrDate')
+insert into RM_EXCELLRPTHEAD values(14,'Total Invoice Value','ArrDate')
+insert into RM_EXCELLRPTHEAD values(15,'Transport Name','ArrDate')
+insert into RM_EXCELLRPTHEAD values(16,'Station','ArrDate')
+insert into RM_EXCELLRPTHEAD values(17,'Lorry No','ArrDate')
+insert into RM_EXCELLRPTHEAD values(18,'Lorry Freight','ArrDate')
+
+
+GO
+
+
+
+
+
+drop table RPTArrivalDetails
+  
+select a.arrdate,a.arrno,a.lotno,a.lotdt,a.plotno,a.quantity,a.lrno,isnull(a.freight,0) as freight,a.netwt,a.prno,        
+b.carname,c.Slname , d.areaname, a.LORRYNOS,a.VARCODE,v.VARNAME,e.slname AS Agent_Name        
+,pd.DIV_PRINTNAME,pd.DIV_UNITNAME,contno,contdt,isnull(inwardno,0) as invoiceno, isnull(inwarddate,'') as invoicedt,
+isnull(a.quantity,0) as noofbales,isnull(a.grosswt,0) as grosswt,isnull(a.netwt,0) as invoicevalue, isnull(a.Commr_Wt,0) Commr_Wt,
+isnull(a.ratecy,0) as rateperkg into  RPTArrivalDetails
+ from rm_arrival a        
+ LEFT OUTER JOIN po_car b ON b.CARCODE = a.CARCODE        
+ LEFT OUTER JOIN fa_slmas c ON c.Slcode = a.SUPCD        
+ LEFT OUTER JOIN rm_area d ON a.areacode=d.areacode        
+ LEFT OUTER JOIN RM_VAR V ON v.VARCODE=a.VARCODE        
+ LEFT OUTER JOIN fa_slmas e ON e.slcode=a.BRKCD        
+ left outer join PP_DIVMAS pd ON a.DIVCODE=pd.DIVCODE
+
+
+GO
+
+
+
+/*  
+exec Ksp_RMI_ArrivalList_Datewise '01' , '2023-12-01' , '2023-12-31','A','A'   
+*/  
+alter PROCEDURE Ksp_RMI_ArrivalList_Datewise        
+@Divcode  VARCHAR(2),              
+@FDate    VARCHAR(10),              
+@TDate    VARCHAR(10),    
+@FSupcd varchar(8),    
+@Tsupcd varchar(8)    
+-- Ksp_RMI_ArrivalList_Datewise '01','2013-06-01','2013-07-10'        
+AS        
+BEGIN        
+            
+select a.arrdate,a.arrno,a.lotno,a.lotdt,a.plotno,a.quantity,a.lrno,isnull(a.freight,0) as freight,a.netwt,a.prno,        
+b.carname,c.Slname , d.areaname, a.LORRYNOS,a.VARCODE,v.VARNAME,e.slname AS Agent_Name        
+,pd.DIV_PRINTNAME,pd.DIV_UNITNAME,contno,contdt,isnull(inwardno,0) as invoiceno, isnull(inwarddate,'') as invoicedt,
+isnull(a.quantity,0) as noofbales,isnull(a.grosswt,0) as grosswt,isnull(a.netwt,0) as invoicevalue, isnull(a.Commr_Wt,0) Commr_Wt,
+isnull(a.ratecy,0) as rateperkg 
+ from rm_arrival a        
+ LEFT OUTER JOIN po_car b ON b.CARCODE = a.CARCODE        
+ LEFT OUTER JOIN fa_slmas c ON c.Slcode = a.SUPCD        
+ LEFT OUTER JOIN rm_area d ON a.areacode=d.areacode        
+ LEFT OUTER JOIN RM_VAR V ON v.VARCODE=a.VARCODE        
+ LEFT OUTER JOIN fa_slmas e ON e.slcode=a.BRKCD        
+ left outer join PP_DIVMAS pd ON a.DIVCODE=pd.DIVCODE        
+where a.arrdate Between @FDate and @TDate and a.divcode=@Divcode and  (@FSupcd='A' or a.SUPCD between @FSupcd and @TSupcd)       
+END      
+GO
+
+
+
+
+alter view VW_RM_ArrivalList    
+as     
+    
+    select * from (       
+select arrdate adate,cast(arrno as varchar) arrno ,cast(contno as varchar) contno,contdt,Slname,cast(invoiceno as varchar) invoiceno,invoicedt,VARNAME,quantity ,grosswt,netwt,Commr_Wt,
+rateperkg,invoicevalue,carname,areaname,LORRYNOS ,isnull(freight,0) as freight
+
+--Agent_Name ,lotno,plotno,     
+--,netwt --,, convert(varchar,a.lotdt,103) lotdt,a.lrno,a.prno,        
+       
+ from RPTArrivalDetails    
+ union all    
+ select arrdate adate,'' arrno,'' as contno,null as contdt,'Sub Total' Slname,'' as invoiceno,null as invoicedt,'' VARNAME,    
+ SUM(quantity) quantity,SUM(grosswt) grosswt ,SUM(netwt) netwt ,SUM(Commr_Wt) Commr_Wt ,0 as rateperkg,sum(invoicevalue) as invoicevalue,''carname ,
+ ''areaname,''LORRYNOS  ,sum(isnull(a.freight,0)) as freight        
+  from RPTArrivalDetails a     
+  group by arrdate    
+  union all    
+ select '2050-01-01' adate,'' arrno,'' as contno,null as contdt,'Sub Total' Slname,'' as invoiceno,null as invoicedt,'' VARNAME,    
+ SUM(quantity) quantity,SUM(grosswt) grosswt ,SUM(netwt) netwt ,SUM(Commr_Wt) Commr_Wt ,0 as rateperkg,sum(invoicevalue) as invoicevalue,''carname ,
+ ''areaname,''LORRYNOS  ,sum(isnull(a.freight,0)) as freight      
+  from RPTArrivalDetails a      
+
+
+
+ -- select arrdate adate,'' arrno,'Sub Total' Slname,'' AS Agent_Name  ,'' lotno,'' plotno,''carname ,    
+ --''areaname,''VARNAME,SUM(quantity) quantity,SUM(netwt) netwt ,''LORRYNOS ,sum(isnull(a.freight,0)) as freight   --,'' lotdt,'' lrno,'' prno,        
+ -- from RPTArrivalDetails a     
+ -- group by arrdate    
+ -- union all    
+ --select '2050-01-01' adate,'' arrno,'Grand Total' Slname,'' AS Agent_Name  ,'' lotno,'' plotno,''carname ,    
+ --''areaname,''VARNAME,SUM(quantity) quantity,SUM(netwt) netwt ,''LORRYNOS ,sum(isnull(a.freight,0)) as freight   --,'' lotdt,'' lrno,'' prno,        
+ -- from RPTArrivalDetails a     
+
+ )x --order by x.arrdate,lotno desc    
+
+
+ GO
+
+
+

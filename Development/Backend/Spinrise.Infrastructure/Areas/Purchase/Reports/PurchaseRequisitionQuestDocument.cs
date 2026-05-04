@@ -3,7 +3,7 @@ using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using Spinrise.Application.Areas.Common.Lookup.DTOs;
 using Spinrise.Domain.Entities;
-using Spinrise.Infrastructure.Reports.Engine;
+using Spinrise.Infrastructure.Areas.Purchase.Reports.Engine;
 
 namespace Spinrise.Infrastructure.Areas.Purchase.Reports;
 
@@ -207,13 +207,22 @@ internal sealed class PurchaseRequisitionQuestDocument : IDocument
                 Dc(line.Remarks ?? "",                                              DA.Left),
             };
 
-            ChildRowConfig[] childRows =
-            {
-                 new($"DRAWING NO.:  {line.DrawNo ?? ""}",       FsData),
-                new($"CATALOGUE NO.:  {line.CatNo ?? ""}",  FsData),
-                new($"MACHINE NO.:  {line.MachineNo ?? ""}",    FsData),
+            //ChildRowConfig[] childRows =
+            //{
+            //     new($"DRAWING NO.:  {line.DrawNo ?? ""}",       FsData),
+            //    new($"CATALOGUE NO.:  {line.CatNo ?? ""}",  FsData),
+            //    new($"MACHINE NO.:  {line.MachineNo ?? ""}",    FsData),
                
-            };
+            //};
+
+            var childRowList = new List<ChildRowConfig>();
+            if (!string.IsNullOrWhiteSpace(line.DrawNo))
+                childRowList.Add(new($"DRAWING NO.:  {line.DrawNo}",    FsData));
+            if (!string.IsNullOrWhiteSpace(line.CatNo))
+                childRowList.Add(new($"CATALOGUE NO.:  {line.CatNo}",   FsData));
+            if (!string.IsNullOrWhiteSpace(line.MachineNo))
+                childRowList.Add(new($"MACHINE NO.:  {line.MachineNo}", FsData));
+            ChildRowConfig[] childRows = childRowList.ToArray();
 
             return new DataRowConfig(cells, childRows);
         }).ToList();

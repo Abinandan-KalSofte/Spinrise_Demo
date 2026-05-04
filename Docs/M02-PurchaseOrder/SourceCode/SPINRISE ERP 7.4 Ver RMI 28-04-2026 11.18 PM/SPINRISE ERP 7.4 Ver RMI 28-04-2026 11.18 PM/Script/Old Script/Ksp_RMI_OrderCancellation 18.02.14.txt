@@ -1,0 +1,36 @@
+
+-- exec Ksp_RMI_OrderCancellation '01','2013-04-01','2014-03-31','2013-07-01','2014-02-17','P'
+CREATE PROCEDURE Ksp_RMI_OrderCancellation
+(
+	@divcode VARCHAR(2),
+	@Yfdate VARCHAR(15),
+	@Ytdate VARCHAR(15),
+	@fdate VARCHAR(15),
+	@tdate VARCHAR(15),
+	@arrivaltype VARCHAR(2)
+)
+AS
+BEGIN	
+
+select a.CONTDT,a.CONTNO,a.SUPCD AS S_slcode,c.slname AS S_slname,a.BRKCD AS B_slcode,d.slname AS B_slname,
+CASE WHEN a.DLYTYPE = 'M' THEN 'FOR' ELSE 'SPOT' END AS delivery,
+CASE WHEN a.BBFLAG = 'B' THEN 'Bales' END AS Units,
+CASE WHEN a.arrivaltype = 'P' THEN a.ORDQTY ELSE a.ORDKGS END AS ORD_QTY,
+CASE WHEN a.arrivaltype = 'P' THEN a.RECQTY ELSE a.RCDKGS END AS REC_QTY,
+CASE WHEN a.arrivaltype = 'P' THEN a.CancelBales ELSE a.CANCELKGS END AS CAN_QTY,
+a.VARCODE,a.CANDYRATE,a.CANCELDT,b.REASON,pd.DIV_PRINTNAME,pd.DIV_UNITNAME
+  from rm_cont a 
+  LEFT outer JOIN rm_ordcancel b ON b.DIVCODE = a.DIVCODE AND a.CONTNO=b.ORDERNO  
+  LEFT OUTER JOIN fa_slmas c ON c.SLCODE = a.SUPCD
+  LEFT OUTER JOIN fa_slmas_1 d ON d.SLCODE = a.BRKCD
+  LEFT outer JOIN pp_divmas pd ON a.DIVCODE=pd.DIVCODE
+Where a.DIVCODE=@divcode AND ISNULL(a.ARRIVALTYPE,'P')=@arrivaltype AND a.CONTDT BETWEEN @Yfdate AND @Ytdate 
+and a.contdt between @fdate and @tdate AND a.CANCELFLG ='Y' AND
+b.ORDERNO IN (SELECT ORDERNO FROM rm_ordcancel where DIVCODE=@divcode AND DOCDT BETWEEN @Yfdate AND @Ytdate 
+AND docdt between @fdate and @tdate GROUP BY ORDERNO) AND 
+a.VARCODE IN (SELECT VARCODE FROM rm_ordcancel where DIVCODE=@divcode AND DOCDT BETWEEN @Yfdate AND @Ytdate 
+AND docdt between @fdate and @tdate GROUP BY VARCODE)
+order by a.CONTDT,a.CONTNO
+
+END
+

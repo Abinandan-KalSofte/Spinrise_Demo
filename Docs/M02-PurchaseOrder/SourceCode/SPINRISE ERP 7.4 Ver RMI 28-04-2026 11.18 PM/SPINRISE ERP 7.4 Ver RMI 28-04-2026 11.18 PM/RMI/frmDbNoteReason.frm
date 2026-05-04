@@ -1,0 +1,1502 @@
+VERSION 5.00
+Object = "{CDE57A40-8B86-11D0-B3C6-00A0C90AEA82}#1.0#0"; "MSDATGRD.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.2#0"; "MSCOMCTL[1].OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{7C3C09A6-5C19-11D5-879E-00C0A8562C82}#1.0#0"; "KSLLIST.ocx"
+Begin VB.Form frmDBType 
+   Caption         =   "Debit Note Reason"
+   ClientHeight    =   6795
+   ClientLeft      =   60
+   ClientTop       =   345
+   ClientWidth     =   8250
+   DrawWidth       =   2
+   KeyPreview      =   -1  'True
+   LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
+   MDIChild        =   -1  'True
+   ScaleHeight     =   6795
+   ScaleWidth      =   8250
+   WindowState     =   2  'Maximized
+   Begin VB.Frame Buttonframe 
+      Height          =   705
+      Left            =   0
+      TabIndex        =   19
+      Top             =   -120
+      Width           =   11730
+      Begin VB.CommandButton BUTTON 
+         DownPicture     =   "frmDbNoteReason.frx":0000
+         Height          =   550
+         Index           =   4
+         Left            =   2160
+         Picture         =   "frmDbNoteReason.frx":030A
+         Style           =   1  'Graphical
+         TabIndex        =   23
+         ToolTipText     =   "Find (Ctrl F)"
+         Top             =   120
+         Width           =   520
+      End
+      Begin VB.CommandButton BUTTON 
+         DownPicture     =   "frmDbNoteReason.frx":069F
+         Height          =   550
+         Index           =   8
+         Left            =   4200
+         Picture         =   "frmDbNoteReason.frx":0AE9
+         Style           =   1  'Graphical
+         TabIndex        =   7
+         ToolTipText     =   "Last Record (Ctrl Right)"
+         Top             =   120
+         Width           =   520
+      End
+      Begin VB.CommandButton BUTTON 
+         DownPicture     =   "frmDbNoteReason.frx":0E4B
+         Height          =   550
+         Index           =   10
+         Left            =   5250
+         Picture         =   "frmDbNoteReason.frx":1155
+         Style           =   1  'Graphical
+         TabIndex        =   9
+         ToolTipText     =   "Cancel (Ctrl Backspace)"
+         Top             =   120
+         Width           =   520
+      End
+      Begin VB.CommandButton BUTTON 
+         DownPicture     =   "frmDbNoteReason.frx":14D1
+         Height          =   550
+         Index           =   9
+         Left            =   4725
+         Picture         =   "frmDbNoteReason.frx":17DB
+         Style           =   1  'Graphical
+         TabIndex        =   8
+         ToolTipText     =   "Save (Ctrl S)"
+         Top             =   120
+         Width           =   520
+      End
+      Begin VB.CommandButton BUTTON 
+         DownPicture     =   "frmDbNoteReason.frx":1B7D
+         Height          =   550
+         Index           =   11
+         Left            =   5775
+         Picture         =   "frmDbNoteReason.frx":1FC7
+         Style           =   1  'Graphical
+         TabIndex        =   10
+         ToolTipText     =   "Exit (Ctrl Q)"
+         Top             =   120
+         Width           =   520
+      End
+      Begin VB.CommandButton BUTTON 
+         DownPicture     =   "frmDbNoteReason.frx":235C
+         Height          =   550
+         Index           =   7
+         Left            =   3675
+         Picture         =   "frmDbNoteReason.frx":27A6
+         Style           =   1  'Graphical
+         TabIndex        =   6
+         ToolTipText     =   "Previous Record (Ctrl Up)"
+         Top             =   120
+         Width           =   520
+      End
+      Begin VB.CommandButton BUTTON 
+         Height          =   550
+         Index           =   3
+         Left            =   1620
+         Picture         =   "frmDbNoteReason.frx":2AF6
+         Style           =   1  'Graphical
+         TabIndex        =   3
+         ToolTipText     =   "List (Ctrl L)"
+         Top             =   120
+         Width           =   520
+      End
+      Begin VB.CommandButton BUTTON 
+         DownPicture     =   "frmDbNoteReason.frx":2E8D
+         Height          =   550
+         Index           =   1
+         Left            =   570
+         Picture         =   "frmDbNoteReason.frx":3197
+         Style           =   1  'Graphical
+         TabIndex        =   1
+         ToolTipText     =   "Modify (Ctrl M)"
+         Top             =   120
+         Width           =   520
+      End
+      Begin VB.CommandButton BUTTON 
+         DownPicture     =   "frmDbNoteReason.frx":3511
+         BeginProperty Font 
+            Name            =   "MS Sans Serif"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   700
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   550
+         Index           =   2
+         Left            =   1095
+         Picture         =   "frmDbNoteReason.frx":381B
+         Style           =   1  'Graphical
+         TabIndex        =   2
+         ToolTipText     =   "Delete (Ctrl D)"
+         Top             =   120
+         Width           =   520
+      End
+      Begin VB.CommandButton BUTTON 
+         DownPicture     =   "frmDbNoteReason.frx":3BB7
+         Height          =   550
+         Index           =   5
+         Left            =   2625
+         Picture         =   "frmDbNoteReason.frx":4001
+         Style           =   1  'Graphical
+         TabIndex        =   4
+         ToolTipText     =   "First Record (Ctrl Left)"
+         Top             =   120
+         Width           =   520
+      End
+      Begin VB.CommandButton BUTTON 
+         DownPicture     =   "frmDbNoteReason.frx":4366
+         Height          =   550
+         Index           =   0
+         Left            =   45
+         Picture         =   "frmDbNoteReason.frx":4670
+         Style           =   1  'Graphical
+         TabIndex        =   0
+         ToolTipText     =   "Add (Ctrl A)"
+         Top             =   120
+         UseMaskColor    =   -1  'True
+         Width           =   520
+      End
+      Begin VB.CommandButton BUTTON 
+         DownPicture     =   "frmDbNoteReason.frx":4A03
+         Height          =   550
+         Index           =   6
+         Left            =   3150
+         Picture         =   "frmDbNoteReason.frx":4E4D
+         Style           =   1  'Graphical
+         TabIndex        =   5
+         ToolTipText     =   "Next Record (Ctrl Down)"
+         Top             =   120
+         Width           =   520
+      End
+      Begin VB.Label desc 
+         AutoSize        =   -1  'True
+         BackStyle       =   0  'Transparent
+         Caption         =   "Query"
+         BeginProperty Font 
+            Name            =   "Times New Roman"
+            Size            =   11.25
+            Charset         =   0
+            Weight          =   700
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         ForeColor       =   &H80000002&
+         Height          =   255
+         Left            =   7275
+         TabIndex        =   21
+         Top             =   255
+         Width           =   615
+      End
+      Begin VB.Label DATLAB 
+         AutoSize        =   -1  'True
+         BackStyle       =   0  'Transparent
+         Caption         =   "DATE"
+         BeginProperty DataFormat 
+            Type            =   1
+            Format          =   "d MMMM yyyy"
+            HaveTrueFalseNull=   0
+            FirstDayOfWeek  =   0
+            FirstWeekOfYear =   0
+            LCID            =   1033
+            SubFormatType   =   3
+         EndProperty
+         BeginProperty Font 
+            Name            =   "Times New Roman"
+            Size            =   11.25
+            Charset         =   0
+            Weight          =   700
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         ForeColor       =   &H80000002&
+         Height          =   255
+         Left            =   8805
+         TabIndex        =   20
+         Top             =   255
+         Width           =   630
+      End
+   End
+   Begin MSComctlLib.StatusBar StatusBar1 
+      Align           =   2  'Align Bottom
+      Height          =   300
+      Left            =   0
+      TabIndex        =   18
+      Top             =   6495
+      Width           =   8250
+      _ExtentX        =   14552
+      _ExtentY        =   529
+      _Version        =   393216
+      BeginProperty Panels {8E3867A5-8586-11D1-B16A-00C0F0283628} 
+         NumPanels       =   4
+         BeginProperty Panel1 {8E3867AB-8586-11D1-B16A-00C0F0283628} 
+         EndProperty
+         BeginProperty Panel2 {8E3867AB-8586-11D1-B16A-00C0F0283628} 
+            Object.Width           =   12630
+            MinWidth        =   12630
+         EndProperty
+         BeginProperty Panel3 {8E3867AB-8586-11D1-B16A-00C0F0283628} 
+            Style           =   6
+            Alignment       =   2
+            TextSave        =   "06/02/2020"
+         EndProperty
+         BeginProperty Panel4 {8E3867AB-8586-11D1-B16A-00C0F0283628} 
+            Style           =   5
+            Alignment       =   2
+            TextSave        =   "11:11 AM"
+         EndProperty
+      EndProperty
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "MS Sans Serif"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+   End
+   Begin TabDlg.SSTab SSTab1 
+      Height          =   4350
+      Left            =   900
+      TabIndex        =   11
+      Top             =   1300
+      Width           =   6555
+      _ExtentX        =   11562
+      _ExtentY        =   7673
+      _Version        =   393216
+      Tabs            =   1
+      TabsPerRow      =   1
+      TabHeight       =   520
+      ShowFocusRect   =   0   'False
+      TabCaption(0)   =   "        "
+      TabPicture(0)   =   "frmDbNoteReason.frx":519A
+      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).Control(0)=   "grdDataGrid"
+      Tab(0).Control(0).Enabled=   0   'False
+      Tab(0).ControlCount=   1
+      Begin MSDataGridLib.DataGrid grdDataGrid 
+         Height          =   4070
+         Left            =   135
+         TabIndex        =   12
+         Top             =   135
+         Width           =   6270
+         _ExtentX        =   11060
+         _ExtentY        =   7170
+         _Version        =   393216
+         AllowArrows     =   -1  'True
+         ForeColor       =   0
+         HeadLines       =   1
+         RowHeight       =   15
+         TabAction       =   2
+         WrapCellPointer =   -1  'True
+         AllowAddNew     =   -1  'True
+         AllowDelete     =   -1  'True
+         BeginProperty HeadFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            Name            =   "MS Sans Serif"
+            Size            =   9.75
+            Charset         =   0
+            Weight          =   700
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            Name            =   "MS Sans Serif"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         ColumnCount     =   2
+         BeginProperty Column00 
+            DataField       =   ""
+            Caption         =   ""
+            BeginProperty DataFormat {6D835690-900B-11D0-9484-00A0C91110ED} 
+               Type            =   0
+               Format          =   ""
+               HaveTrueFalseNull=   0
+               FirstDayOfWeek  =   0
+               FirstWeekOfYear =   0
+               LCID            =   1033
+               SubFormatType   =   0
+            EndProperty
+         EndProperty
+         BeginProperty Column01 
+            DataField       =   ""
+            Caption         =   ""
+            BeginProperty DataFormat {6D835690-900B-11D0-9484-00A0C91110ED} 
+               Type            =   0
+               Format          =   ""
+               HaveTrueFalseNull=   0
+               FirstDayOfWeek  =   0
+               FirstWeekOfYear =   0
+               LCID            =   1033
+               SubFormatType   =   0
+            EndProperty
+         EndProperty
+         SplitCount      =   1
+         BeginProperty Split0 
+            BeginProperty Column00 
+            EndProperty
+            BeginProperty Column01 
+            EndProperty
+         EndProperty
+      End
+   End
+   Begin VB.Frame Frame3 
+      Height          =   5100
+      Left            =   360
+      TabIndex        =   13
+      Top             =   1200
+      Visible         =   0   'False
+      Width           =   8865
+      Begin VB.CommandButton Command1 
+         Cancel          =   -1  'True
+         Caption         =   "&Cancel"
+         DownPicture     =   "frmDbNoteReason.frx":51B6
+         Height          =   615
+         Left            =   4710
+         Picture         =   "frmDbNoteReason.frx":5598
+         Style           =   1  'Graphical
+         TabIndex        =   15
+         Top             =   4110
+         Width           =   1185
+      End
+      Begin VB.CommandButton Command3 
+         Caption         =   "&OK"
+         Default         =   -1  'True
+         DownPicture     =   "frmDbNoteReason.frx":596B
+         Height          =   615
+         Left            =   3000
+         Picture         =   "frmDbNoteReason.frx":5D51
+         Style           =   1  'Graphical
+         TabIndex        =   16
+         Top             =   4110
+         Width           =   1185
+      End
+      Begin KSLLISTOCX.KslList KslList1 
+         Height          =   3255
+         Left            =   840
+         TabIndex        =   14
+         Top             =   600
+         Width           =   7215
+         _ExtentX        =   12726
+         _ExtentY        =   5741
+         ForeColor       =   -2147483635
+      End
+      Begin VB.Label Label15 
+         Alignment       =   2  'Center
+         BackColor       =   &H80000002&
+         Caption         =   "Caption"
+         BeginProperty Font 
+            Name            =   "MS Sans Serif"
+            Size            =   9.75
+            Charset         =   0
+            Weight          =   700
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         ForeColor       =   &H80000005&
+         Height          =   315
+         Left            =   45
+         TabIndex        =   22
+         Top             =   120
+         Width           =   8730
+      End
+   End
+   Begin VB.Label label1 
+      Caption         =   "Debit Note Reason"
+      BeginProperty Font 
+         Name            =   "Times New Roman"
+         Size            =   15.75
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   -1  'True
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FF0000&
+      Height          =   375
+      Left            =   930
+      TabIndex        =   17
+      Top             =   840
+      Width           =   2805
+   End
+End
+Attribute VB_Name = "frmDBType"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
+
+Dim WithEvents adoprimaryrs As Recordset
+Attribute adoprimaryrs.VB_VarHelpID = -1
+Dim Rs As Recordset
+Dim Opt As String
+Dim FLGREPET As Boolean
+Dim st, st1, st2 As String
+Dim DB As Connection
+Public Sub openconnection()
+On Error GoTo openconnection_Error
+    Set DB = New Connection
+    DB.CursorLocation = adUseClient
+    DB.Open connectstring
+Exit Sub
+openconnection_Error:
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure openconnection of Form Godown"
+End Sub
+Private Sub BUTTON_Click(Index As Integer)
+On Error GoTo BUTTON_Click_Error
+
+Select Case Index
+Case 0
+'addition
+        Opt = "add"
+        desc.Caption = "Addition"
+        st = "B"
+        st1 = "B"
+'       Adodc1.RecordSource = "select LOCCODE""Code"" ,LOCNAME ""Location Name"" from LOCMAS where 1=2 Order by LOCCODE"
+'       Adodc1.Refresh
+        Set adoprimaryrs = New Recordset
+        adoprimaryrs.Open "select dbcode ""Code"" ,dbreason ""Reason"" from rm_dbnotetype where 1=2 order by dbcode", DB, adOpenStatic, adLockBatchOptimistic
+        Set grdDataGrid.DataSource = adoprimaryrs
+'       Set grdDataGrid.DataSource = Adodc1.Recordset
+        grdDataGrid.Columns(0).Width = 1140.095
+        grdDataGrid.Columns(1).Width = 4800.118
+        
+        DB.BeginTrans
+        grdDataGrid.AllowAddNew = True
+        grdDataGrid.AllowUpdate = True
+        adoprimaryrs.AddNew
+        
+        'Calling adddelmod procedure
+        Call adddelmod(BUTTON)
+        'BUTTON(9).Enabled = False
+        'BUTTON(4).Enabled = True
+        'BUTTON(9).ToolTipText = "Add Record"
+        'grdDataGrid.ScrollBars = dbgBoth
+        
+        grdDataGrid.Col = 0
+        grdDataGrid.SetFocus
+
+Case 1
+        'modification
+        Set Rs = New Recordset
+    Rs.Open "select count(*) from rm_dbnotetype", DB
+    If Not Rs(0) = 0 Then
+        Opt = "mod"
+        Screen.MousePointer = 11
+        desc.Caption = "Modification"
+        DB.BeginTrans
+''''        SSTab1.Visible = False
+''''        grddatagrid.Visible = False
+''''        Frame3.Visible = True
+''''        Label15.Caption = "Godown List"
+''''        KslList1.conn = connectstring
+''''        KslList1.table = "rm_god"
+''''        KslList1.listfield1 = "gcode"
+''''        KslList1.listfield2 = "gname"
+''''        Frame3.Visible = True
+''''        Command3.SetFocus
+''''        Frame3.ZOrder
+
+         LookUp.clear = True
+         LookUp.query = "select dbcode AS 'DB Code',dbReason as 'DB Reason' from rm_dbnotetype "
+         LookUp.Caption = "DB Type Listing"
+         LookUp.DefCol = "DB Reason"
+         LookUp.ALIGN = "1500,5500"
+         LookUp.Show vbModal
+         If LookUp.Cancel = False Then
+            SSTab1.Visible = True
+            grdDataGrid.Visible = True
+            StatusBar1.Panels(2).Text = ""
+            Set adoprimaryrs = New Recordset
+            adoprimaryrs.Open "select dbcode ""Code"" ,dbreason ""DB reason"" from rm_dbnotetype where dbcode = '" & LookUp.Fields(0) & "' order by dbcode", DB, adOpenStatic, adLockBatchOptimistic
+            Set grdDataGrid.DataSource = adoprimaryrs
+            grdDataGrid.Columns(0).Width = 1140.095
+            grdDataGrid.Columns(1).Width = 4800.118
+            grdDataGrid.Columns(0).Locked = True
+            grdDataGrid.AllowAddNew = False
+            grdDataGrid.Col = 1
+            grdDataGrid.Row = 0
+            grdDataGrid.SetFocus
+            BUTTON(9).Enabled = True 'Save
+            BUTTON(10).Enabled = True
+            If Opt = "del" Then
+            BUTTON(9).SetFocus
+            End If
+            Call adddelmod(BUTTON)
+            Frame3.Visible = False
+         Else
+            Call BUTTON_Click(10)
+         End If
+        grdDataGrid.AllowUpdate = True
+        'calling addmoddel procedure from module
+        ''Call adddelmod(BUTTON)
+        grdDataGrid.Columns(0).Locked = True
+        ''BUTTON(9).Enabled = False 'Save
+        ''BUTTON(10).Enabled = False
+        'BUTTON(9).ToolTipText = "Modify"
+        StatusBar1.Panels(2).Text = "Select DB Code from the list for modification"
+        Screen.MousePointer = 0
+    Else
+        MsgBox "No Record Found", vbInformation, head
+        Exit Sub
+    End If
+Case 2
+        'Deletion
+        Set Rs = New Recordset
+        Rs.Open "select count(*) from rm_dbnotetype ", DB
+    If Not Rs(0) = 0 Then
+        Screen.MousePointer = 11
+        Opt = "del"
+        desc.Caption = "Deletion"
+        DB.BeginTrans
+''        SSTab1.Visible = False
+''        grddatagrid.Visible = False
+''        Label15.Caption = "Godown List"
+''        KslList1.conn = connectstring
+''        KslList1.table = "rm_god"
+''        KslList1.listfield1 = "gcode"
+''        KslList1.listfield2 = "gname"
+''        grddatagrid.AllowUpdate = False
+''        Frame3.Visible = True
+''        Command3.SetFocus
+''        Frame3.ZOrder
+        LookUp.clear = True
+         LookUp.query = "select dbcode AS 'DB Code',dbreason as 'DB Reason' from rm_dbnotetype"
+         LookUp.Caption = "DB reason Listing"
+         LookUp.DefCol = "DB Reason"
+         LookUp.ALIGN = "1500,5500"
+         LookUp.Show vbModal
+         If LookUp.Cancel = False Then
+            SSTab1.Visible = True
+            grdDataGrid.Visible = True
+            StatusBar1.Panels(2).Text = ""
+            Set adoprimaryrs = New Recordset
+            adoprimaryrs.Open "select dbcode AS 'DB Code',dbreason as 'DB Reason' from rm_dbnotetype  where dbcode = '" & LookUp.Fields(0) & "'  order by dbcode", DB, adOpenStatic, adLockBatchOptimistic
+            Set grdDataGrid.DataSource = adoprimaryrs
+            grdDataGrid.Columns(0).Width = 1140.095
+            grdDataGrid.Columns(1).Width = 4800.118
+            
+            grdDataGrid.Columns(0).Locked = True
+            grdDataGrid.AllowAddNew = False
+            grdDataGrid.Col = 1
+            grdDataGrid.Row = 0
+            grdDataGrid.SetFocus
+            BUTTON(9).Enabled = True 'Save
+            BUTTON(10).Enabled = True
+            If Opt = "del" Then
+            BUTTON(9).SetFocus
+            End If
+            Frame3.Visible = False
+            Call adddelmod(BUTTON)
+         Else
+            Call BUTTON_Click(10)
+         End If
+        'Call adddelmod(BUTTON)
+        'BUTTON(9).Enabled = False 'Save
+        'BUTTON(10).Enabled = False
+        'BUTTON(9).ToolTipText = "Delete"
+        StatusBar1.Panels(2).Text = "Select Godown Code from the list for deletion"
+        Screen.MousePointer = 0
+        'Frame3.Visible = True
+    Else
+        MsgBox "No Record Found", vbInformation, head
+        Exit Sub
+    End If
+Case 4
+    Opt = "fnd"
+    desc.Caption = "Find"
+            DB.BeginTrans
+''        SSTab1.Visible = False
+''        grddatagrid.Visible = False
+''        Label15.Caption = "Godown List"
+''        KslList1.conn = connectstring
+''        KslList1.table = "rm_god"
+''        KslList1.listfield1 = "gcode"
+''        KslList1.listfield2 = "gname"
+''        grddatagrid.AllowUpdate = False
+''        Frame3.Visible = True
+''        Command3.SetFocus
+''        Frame3.ZOrder
+        LookUp.clear = True
+         LookUp.query = ""
+         LookUp.Caption = "Godown Listing"
+         LookUp.DefCol = "GodownName"
+         LookUp.ALIGN = "1500,5500"
+         LookUp.Show vbModal
+         If LookUp.Cancel = False Then
+            SSTab1.Visible = True
+            grdDataGrid.Visible = True
+            StatusBar1.Panels(2).Text = ""
+            Set adoprimaryrs = New Recordset
+            adoprimaryrs.Open "select dbcode AS 'DB Code',dbreason as 'DB Reason' from rm_dbnotetype where dbcode = '" & LookUp.Fields(0) & "' order by dbcode", DB, adOpenStatic, adLockBatchOptimistic
+            Set grdDataGrid.DataSource = adoprimaryrs
+            grdDataGrid.Columns(0).Width = 1140.095
+            grdDataGrid.Columns(1).Width = 4800.118
+            
+            grdDataGrid.Columns(0).Locked = True
+            grdDataGrid.AllowAddNew = False
+            grdDataGrid.Col = 1
+            grdDataGrid.Row = 0
+            grdDataGrid.SetFocus
+            BUTTON(9).Enabled = True 'Save
+            BUTTON(10).Enabled = True
+            If Opt = "del" Then
+            BUTTON(9).SetFocus
+            End If
+            Frame3.Visible = False
+            Call adddelmod(BUTTON)
+            If Opt = "fnd" Then
+                BUTTON(9).Enabled = False
+            End If
+         Else
+            Call BUTTON_Click(10)
+         End If
+        'Call adddelmod(BUTTON)
+        'BUTTON(9).Enabled = False 'Save
+        'BUTTON(10).Enabled = False
+        'BUTTON(9).ToolTipText = "Delete"
+        StatusBar1.Panels(2).Text = "Select Godown Code from the list"
+        Screen.MousePointer = 0
+        'Frame3.Visible = True
+Case 3
+        'list
+    desc.Caption = "Listing"
+    Dim iCount As Integer
+    Set Rs = New Recordset
+    Rs.Open "select * from RM_dbnotetype Order by dbcode", DB, adOpenStatic
+    If Rs.RecordCount <= 0 Then
+        MsgBox "No Records Found", vbInformation, head
+        desc.Caption = "Query"
+        Exit Sub
+    End If
+
+        ipageno = 1
+'        Set rsP = New Recordset
+        Close
+        Open KALFOLDERDATA + "red.txt" For Output As #1
+        iCount = 1
+        'Open "C:\red.txt" For Output As #1
+            irow = 0
+            Call listHeader
+            irow = irow + 9
+            Rs.MoveFirst
+            Do While Not Rs.EOF
+                Print #1, Space(3); Padr(iCount, 10, " ") + Space(4) + Padr(Rs("dbCode"), 20, " ") + Space(4) + Padr(Rs("dbreason"), 41, " ")
+                irow = irow + 1
+                iCount = iCount + 1
+                    If irow > 60 Then
+                        Print #1,
+                        Print #1, Space(2) & String(80, "-")
+                        Print #1, Chr(12)
+                        irow = irow + 3
+                        
+                        Print #1, Chr(12)
+'                        Co = 0
+                        ipageno = ipageno + 1
+                        Call listHeader
+                    End If
+                Rs.MoveNext
+            Loop
+            
+            Print #1,
+            Print #1, Space(2) & String(80, "-")
+            Print #1, Chr(12)
+            irow = irow + 3
+            
+        Close #1
+        Call KALBATPROCESS("Red")
+        Screen.MousePointer = 0
+
+
+
+
+
+'        Set dv1 = New DataEnvironment1
+'        dv1.Connection1.ConnectionString = connectstring
+'        Set Cn = New Connection
+'        Cn.CursorLocation = adUseClient
+'    If Cn.State = 1 Then
+'        Cn.Close
+'    End If
+'        Cn.ConnectionString = "provider=msdatashape;" & connectstring
+'    If Cn.State = adStateclose Then
+'        Cn.Open
+'    End If
+'        Call repproc2(rptgodown)
+'    If dv1.rsCommand1.State = adStateOpen Then
+'        dv1.rsCommand1.Close
+'    End If
+'        dv1.rsCommand1.Open "select dbcode AS 'DB Code',dbreason as 'DB Reason' from rm_dbnotetype  where 1=1  Order by dbcode", Cn, adOpenStatic, adLockOptimistic
+'    If dv1.rsCommand1.RecordCount <> 0 Then
+'        Set rptgodown.DataSource = dv1
+'        rptgodown.Show
+'        desc.Caption = "Query"
+'    Else
+'        MsgBox "No  Records Found", vbInformation, head
+'        desc.Caption = "Query"
+'        Exit Sub
+'    End If
+'Case 4
+        'Query
+        'opt = "query"
+        'desc.Caption = "Query"
+Case 5
+        'first
+        desc.Caption = "Query"
+        On Error GoTo GoFirstError
+        adoprimaryrs.MoveFirst
+        StatusBar1.Panels(2).Text = "First Record"
+        'calling fir procedure from module
+        Call navi(BUTTON)
+        Call FIR(BUTTON)
+        Beep
+        Exit Sub
+GoFirstError:
+        MsgBox Err.Description, vbInformation, head
+Case 6
+        'next
+        desc.Caption = "Query"
+        On Error GoTo GoNextError
+    If Not adoprimaryrs.EOF Then
+        adoprimaryrs.MoveNext
+        BUTTON(5).Enabled = True
+        BUTTON(7).Enabled = True
+        BUTTON(6).Enabled = True
+        BUTTON(8).Enabled = True
+    End If
+    If adoprimaryrs.EOF And adoprimaryrs.RecordCount > 0 Then
+        Beep
+        BUTTON(6).Enabled = False
+        BUTTON(8).Enabled = False
+        BUTTON(5).Enabled = True
+        BUTTON(7).Enabled = True
+        adoprimaryrs.MoveLast
+    End If
+        'show the current record
+        Call navi(BUTTON)
+        Exit Sub
+GoNextError:
+        MsgBox Err.Description, vbInformation, head
+Case 7
+ 'previous
+        desc.Caption = "Query"
+        On Error GoTo GoPrevError
+        If Not adoprimaryrs.BOF Then
+            adoprimaryrs.MovePrevious
+            BUTTON(5).Enabled = True
+            BUTTON(7).Enabled = True
+            BUTTON(6).Enabled = True
+            BUTTON(8).Enabled = True
+        End If
+        If adoprimaryrs.BOF And adoprimaryrs.RecordCount > 0 Then
+            Beep
+            'moved off the end so go back
+            BUTTON(5).Enabled = False
+            BUTTON(7).Enabled = False
+            BUTTON(6).Enabled = True
+            BUTTON(8).Enabled = True
+            adoprimaryrs.MoveFirst
+        End If
+        'show the current record
+        Call navi(BUTTON)
+        Exit Sub
+
+GoPrevError:
+   MsgBox Err.Description, vbInformation, head
+       
+Case 8
+'last
+         desc.Caption = "Query"
+         On Error GoTo GoLastError
+         adoprimaryrs.MoveLast
+         StatusBar1.Panels(2).Text = "Last Record"
+        'calling las procedure from module
+         Call navi(BUTTON)
+         Call las(BUTTON)
+         Beep
+         Exit Sub
+GoLastError:
+       MsgBox Err.Description, vbInformation, head
+Case 9
+'Save
+        If Opt = "add" Or Opt = "mod" Then
+           If adoprimaryrs.RecordCount = 1 And grdDataGrid.Columns(0).Text = "" Then
+        MsgBox "Empty record Can't be Saved", vbInformation, head
+        grdDataGrid.Col = 0
+        grdDataGrid.SetFocus
+        Exit Sub
+      End If
+      If grdDataGrid.Columns(0).Text = "" Then
+        MsgBox "DB code Can't be Empty", vbInformation, head
+        grdDataGrid.Col = 0
+        grdDataGrid.SetFocus
+        Exit Sub
+      End If
+      If grdDataGrid.Columns(1).Text = "" Then
+        MsgBox "DB Reason Can't be Empty", vbInformation, head
+        grdDataGrid.Col = 1
+        grdDataGrid.SetFocus
+        Exit Sub
+      End If
+      
+           tmp = Opt
+           Opt = ""
+           adoprimaryrs.MoveFirst
+           Do While Not adoprimaryrs.EOF
+           If Trim(grdDataGrid.Columns(0).Text) = "" And Trim(grdDataGrid.Columns(1).Text) = "" Then
+            adoprimaryrs.Delete
+           Else
+           End If
+           adoprimaryrs.MoveNext
+           Loop
+           If adoprimaryrs.RecordCount = 0 Then
+                DB.RollbackTrans
+                Exit Sub
+           End If
+           
+          'If Trim(grdDataGrid.Columns(0).Text) = "" And Trim(grdDataGrid.Columns(1).Text) = "" Then
+          'MsgBox "Please Enter all the Values", vbInformation
+          'grdDataGrid.Col = 0
+          'grdDataGrid.SetFocus
+          'Exit Sub
+          If adoprimaryrs.RecordCount = 0 Then
+            BUTTON_Click (10)
+            DB.RollbackTrans
+            Exit Sub
+          End If
+           On Error Resume Next
+           Opt = tmp
+           adoprimaryrs.MoveFirst
+           adoprimaryrs.UpdateBatch adAffectAllChapters
+           DB.CommitTrans
+           If Opt = "add" Then
+                MsgBox "Record(s) Saved", vbInformation, head
+           Else
+                MsgBox "Record(s) Modified", vbInformation, head
+           End If
+            
+           Opt = ""
+'          Else
+'          If Trim(grdDataGrid.Columns(0).Text) <> "" Then
+'            If Trim(grdDataGrid.Columns(1).Text) = "" Then
+'                StatusBar1.Panels(2).Text = "Location Name cannot be empty"
+'                grdDataGrid.Col = 1
+'                grdDataGrid.SetFocus
+'                Screen.MousePointer = 0
+'                Exit Sub
+'             Else
+'               StatusBar1.Panels(2).Text = ""
+'            End If
+'         End If
+'       End If
+     End If
+       If Opt = "add" Then
+        On Error GoTo deler
+        adoprimaryrs.MoveFirst
+        adoprimaryrs.UpdateBatch adAffectAllChapters
+        DB.CommitTrans
+        MsgBox "Record(s) Saved", vbInformation, head
+       End If
+       If Opt = "mod" Then
+         grdDataGrid.AllowUpdate = True
+         adoprimaryrs.UpdateBatch adAffectAllChapters
+         DB.CommitTrans
+                MsgBox "Record(s) Modified", vbInformation, head
+       End If
+       If Opt = "del" Then
+         On Error GoTo deler
+         Dim msg As String
+         msg = MsgBox("Do you want to delete this record?", vbYesNo, head)
+         If msg = vbYes Then
+            DB.Execute ("delete from rm_dbnotetype where dbcode=" + "'" + grdDataGrid.Columns(0) + "'")
+            DB.CommitTrans
+              MsgBox "Record(s) Deleted", vbInformation, head
+        Else
+            Call BUTTON_Click(10)
+            Exit Sub
+        End If
+       End If
+       If Opt = "fnd" Then
+        DB.CommitTrans
+       End If
+         Opt = " "
+         Call Query_mode
+         'calling newform_cancel procedure from module (also for save)
+         Call NEWFORM(BUTTON)
+         Call NEWFORM1(BUTTON, GSNO)
+         BUTTON(4).Enabled = True
+         desc.Caption = "Query" 'After this mode QUERY WILL BE INVOKED
+Case 10
+If MsgBox("Do you want to Cancel?", vbYesNo, head) = vbNo Then Exit Sub
+gocancel:
+    
+    desc.Caption = "Query"
+    Screen.MousePointer = 11
+    'CANCEL
+    Select Case Opt
+    Case "mod"
+        DB.RollbackTrans
+    Case "add"
+        DB.RollbackTrans
+    Case "del"
+        DB.RollbackTrans
+    Case "fnd"
+        DB.RollbackTrans
+    End Select
+    Opt = " "
+    Call Query_mode
+    grdDataGrid.Visible = True
+    SSTab1.Visible = True
+    Frame3.Visible = False
+    'calling cancl procedure from module
+    Call cancl(BUTTON)
+    ''button(0).enabled = false
+    If adoprimaryrs.RecordCount = 0 Then
+        Call Norecfound(BUTTON)
+    Else
+        Call Recfound(BUTTON)
+    End If
+    Call NEWFORM1(BUTTON, GSNO)
+    BUTTON(9).Enabled = False
+    BUTTON(4).Enabled = True
+    BUTTON(0).SetFocus '''''''''''''''
+Case 11
+    'EXIT
+    Reset
+Unload Me
+End Select
+Exit Sub
+deler:
+       If Err = -2147217900 Then
+        MsgBox "This Area Code cannot be deleted as dependencies exist ", vbInformation, head
+        GoTo gocancel
+        Screen.MousePointer = 0
+       ElseIf Err = -2147217842 Then
+        MsgBox "Area Name cannot be empty", vbInformation, head
+        GoTo gocancel
+        Screen.MousePointer = 0
+       Else
+        Opt = "add"
+        GoTo gocancel
+        MsgBox "This Area Code already exists", vbInformation, head
+        Screen.MousePointer = 0
+    st = "B"
+    grdDataGrid.Col = 0
+    End If
+
+
+Exit Sub
+BUTTON_Click_Error:
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure BUTTON_Click of Form Frmgodown", vbInformation, head
+End Sub
+
+Private Sub Command1_Click()
+Frame3.Visible = False
+SSTab1.Visible = True
+grdDataGrid.Visible = True
+Call BUTTON_Click(10)
+End Sub
+
+Private Sub Command3_Click()
+On Error GoTo Command3_Click_Error
+
+  SSTab1.Visible = True
+  grdDataGrid.Visible = True
+    StatusBar1.Panels(2).Text = ""
+    'adoprimaryRs = "select LOCCODE""Code"",LOCNAME ""Location Name"" from LOCMAS where LOCCODE='" & ksllist1.Code & "' Order by LOCCODE"
+    'Adodc1.Refresh
+    Set adoprimaryrs = New Recordset
+    adoprimaryrs.Open "select gcode ""Code"" ,gname ""Godown Name"" from rm_god  where gcode = '" & KslList1.Code & "' and DivCode = '" & Divcode & "' order by gcode", DB, adOpenStatic, adLockBatchOptimistic
+    Set grdDataGrid.DataSource = adoprimaryrs
+    'Set grdDataGrid.DataSource = Adodc1.Recordset
+    grdDataGrid.Columns(0).Width = 1140.095
+    grdDataGrid.Columns(1).Width = 4800.118
+    grdDataGrid.Columns(0).Locked = True
+    grdDataGrid.AllowAddNew = False
+    grdDataGrid.Col = 1
+    grdDataGrid.Row = 0
+    grdDataGrid.SetFocus
+    BUTTON(9).Enabled = True 'Save
+    BUTTON(10).Enabled = True
+    If Opt = "del" Then
+    BUTTON(9).SetFocus
+    End If
+    Frame3.Visible = False
+
+
+Exit Sub
+Command3_Click_Error:
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure Command3_Click of Form Frmgodown", vbInformation, head
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+If KeyCode = vbKeyA And Shift = 2 Then
+    If BUTTON(0).Enabled = True Then
+        Call BUTTON_Click(0)    ''Add
+    End If
+ElseIf KeyCode = vbKeyM And Shift = 2 Then
+   If BUTTON(1).Enabled = True Then
+        Call BUTTON_Click(1)    ''Modify
+   End If
+ElseIf KeyCode = vbKeyD And Shift = 2 Then
+    If BUTTON(2).Enabled = True Then
+        Call BUTTON_Click(2)    ''Delete
+    End If
+ElseIf KeyCode = vbKeyL And Shift = 2 Then
+    If BUTTON(3).Enabled = True Then
+        Call BUTTON_Click(3)    ''List
+    End If
+ElseIf KeyCode = vbKeyF And Shift = 2 Then
+    If BUTTON(4).Enabled = True Then
+        Call BUTTON_Click(4)    ''Find
+    End If
+ElseIf KeyCode = vbKeyLeft And Shift = 2 Then
+    If BUTTON(5).Enabled = True Then
+        Call BUTTON_Click(5)    ''First
+    End If
+ElseIf KeyCode = vbKeyDown And Shift = 2 Then
+    If BUTTON(6).Enabled = True Then
+        Call BUTTON_Click(6)    ''Next
+    End If
+ElseIf KeyCode = vbKeyUp And Shift = 2 Then
+    If BUTTON(7).Enabled = True Then
+        Call BUTTON_Click(7)    ''Previous
+    End If
+ElseIf KeyCode = vbKeyRight And Shift = 2 Then
+    If BUTTON(8).Enabled = True Then
+        Call BUTTON_Click(8)    ''Last
+    End If
+ElseIf KeyCode = vbKeyS And Shift = 2 Then
+    If BUTTON(9).Enabled = True Then
+        Call BUTTON_Click(9)    ''Save
+    End If
+ElseIf KeyCode = vbKeyBack And Shift = 2 Then
+    If BUTTON(10).Enabled = True Then
+        Call BUTTON_Click(10)    ''Cancel
+    End If
+ElseIf KeyCode = vbKeyQ And Shift = 2 Then
+    If BUTTON(11).Enabled = True Then
+        Call BUTTON_Click(11)   ''Exit
+    End If
+ElseIf KeyCode = vbKeyP And Shift = 2 Then
+    If BUTTON(12).Enabled = True Then
+        Call BUTTON_Click(12)   ''Print Option
+    End If
+ElseIf KeyCode = vbKeyY And Shift = 2 Then
+    If BUTTON(13).Enabled = True Then
+        Call BUTTON_Click(13)   ''Crystal Report
+    End If
+ElseIf KeyCode = vbKeyEscape Then
+    If BUTTON(10).Enabled = True Then
+        Call BUTTON_Click(10)   ''Cancel
+    End If
+End If
+    
+    If KeyCode = vbKeyF1 Then
+        Call showForm4FunctionKey("F1")
+    ElseIf KeyCode = vbKeyF2 Then
+        Call showForm4FunctionKey("F2")
+    ElseIf KeyCode = vbKeyF3 Then
+        Call showForm4FunctionKey("F3")
+    ElseIf KeyCode = vbKeyF4 Then
+        Call showForm4FunctionKey("F4")
+    ElseIf KeyCode = vbKeyF5 Then
+        Call showForm4FunctionKey("F5")
+    ElseIf KeyCode = vbKeyF6 Then
+        Call showForm4FunctionKey("F6")
+    ElseIf KeyCode = vbKeyF7 Then
+        Call showForm4FunctionKey("F7")
+    ElseIf KeyCode = vbKeyF8 Then
+        Call showForm4FunctionKey("F8")
+    ElseIf KeyCode = vbKeyF9 Then
+        Call showForm4FunctionKey("F9")
+    ElseIf KeyCode = vbKeyF10 Then
+        Call showForm4FunctionKey("F10")
+    ElseIf KeyCode = vbKeyF11 Then
+        Call showForm4FunctionKey("F11")
+    ElseIf KeyCode = vbKeyF12 Then
+        Call showForm4FunctionKey("F12")
+    End If
+    
+    Exit Sub
+End Sub
+
+Private Sub Form_Load()
+On Error GoTo Form_Load_Error
+
+StatusBar1.Panels(1).Text = STBARmsg
+    Call openconnection
+    Call Query_mode
+    Call NEWFORM1(BUTTON, GSNO)
+   ' sstab1.Tabs.Clear
+    BUTTON(9).Enabled = False
+    BUTTON(4).Enabled = True
+    grdDataGrid.Columns(0).Width = 1140.095
+    grdDataGrid.Columns(1).Width = 4800.118
+
+
+Exit Sub
+Form_Load_Error:
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure Form_Load of Form Frmgodown", vbInformation, head
+End Sub
+
+Private Sub Form_Resize()
+'  On Error Resume Next
+'  SSTab1.Left = 1700
+'  grddatagrid.Left = 1800
+'  'This will resize the grid whef the form is resized
+'  SSTab1.Width = Me.Width - 3500
+'  SSTab1.Height = Me.Height - 3200
+'  grddatagrid.Height = SSTab1.Height - 220
+'  grddatagrid.Width = SSTab1.Width - 225
+   End Sub
+Private Sub Form_Unload(Cancel As Integer)
+  Screen.MousePointer = vbDefault
+End Sub
+Private Sub adoPrimaryRS_MoveComplete(ByVal adReason As ADODB.EventReasonEnum, ByVal pError As ADODB.Error, adStatus As ADODB.EventStatusEnum, ByVal pRecordset As ADODB.Recordset)
+  'This will display the current record position for this recordset
+  If Opt <> "add" Then
+  StatusBar1.Panels(2).Text = "Records " & CStr(adoprimaryrs.AbsolutePosition) & " of " & CStr(adoprimaryrs.RecordCount)
+  End If
+End Sub
+
+Private Sub GrdDatagrid_AfterColUpdate(ByVal ColIndex As Integer)
+Dim Rs As Recordset
+On Error GoTo GrdDatagrid_AfterColUpdate_Error
+
+        If ColIndex = 0 Then
+        If Trim(grdDataGrid.Columns(0).Text) = Empty Or Trim(grdDataGrid.Columns(0).Text) = "" Then
+            MsgBox "DB Code cannot be empty!", vbInformation, head
+        Else
+            Set Rs = New Recordset
+            Rs.Open "select 'X'  from rm_dbnotetype where dbcode='" & grdDataGrid.Columns(0).Text & "'", DB, adOpenStatic, adLockBatchOptimistic
+            If Not Rs.BOF Then
+                MsgBox "DB Code already defined!", vbInformation, head
+                grdDataGrid.Columns(0).Text = " "
+                st = "A"
+                Exit Sub
+             End If
+        End If
+        End If
+
+
+Exit Sub
+GrdDatagrid_AfterColUpdate_Error:
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure grddatagrid_AfterColUpdate of Form Frmgodown", vbInformation, head
+        End Sub
+Private Sub grdDataGrid_AfterColEdit(ByVal ColIndex As Integer)
+On Error GoTo grdDataGrid_AfterColEdit_Error
+
+If Opt = "add" Then
+If Trim(grdDataGrid.Columns(0)) <> "" Then
+    BUTTON(9).Enabled = True
+End If
+End If
+If Opt = "add" Then
+  If grdDataGrid.Col = 1 Then
+    If adoprimaryrs.RecordCount = adoprimaryrs.AbsolutePosition And FLGREPET = True Then
+        adoprimaryrs.AddNew
+        grdDataGrid.Col = 0
+        grdDataGrid.SetFocus
+    End If
+  End If
+  If grdDataGrid.Col = 0 Then
+    a = adoprimaryrs.AbsolutePosition
+    Code = adoprimaryrs(0)
+    Opt = " "
+    adoprimaryrs.MoveFirst
+    For i = 1 To adoprimaryrs.RecordCount - 1
+        If adoprimaryrs(0).value = Code And Not adoprimaryrs.AbsolutePosition = a Then
+            MsgBox "DB Code Already Defined!", vbInformation, head
+            adoprimaryrs.AbsolutePosition = a
+            adoprimaryrs(0).value = ""
+            grdDataGrid.Columns(0).Locked = False
+            grdDataGrid.Col = 0
+            grdDataGrid.SetFocus
+            Opt = "add"
+            Exit Sub
+        End If
+        adoprimaryrs.MoveNext
+    Next i
+    Opt = "add"
+End If
+End If
+If st1 = "A" Then
+    grdDataGrid.Col = 1
+    grdDataGrid.SetFocus
+End If
+
+
+Exit Sub
+grdDataGrid_AfterColEdit_Error:
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure grdDataGrid_AfterColEdit of Form Frmgodown", vbInformation, head
+End Sub
+Private Sub grdDataGrid_Error(ByVal DataError As Integer, Response As Integer)
+Response = 0
+End Sub
+
+Private Sub GRDDATAGRID_GotFocus()
+On Error GoTo GRDDATAGRID_GotFocus_Error
+
+  If Opt = "add" Then
+     If grdDataGrid.Col = 0 Then
+          StatusBar1.Panels(2).Text = "Enter Maximum of 2 Character"
+     End If
+   ElseIf Opt = "mod" Then
+     If grdDataGrid.Col = 1 Then
+          StatusBar1.Panels(2).Text = "Enter Maximum of 20 Character"
+     End If
+End If
+
+Exit Sub
+GRDDATAGRID_GotFocus_Error:
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure grdDataGrid_GotFocus of Form Frmgodown", vbInformation, head
+Screen.MousePointer = 0
+End Sub
+
+Private Sub GrdDatagrid_KeyDown(KeyCode As Integer, Shift As Integer)
+On Error GoTo GrdDatagrid_KeyDown_Error
+
+If KeyCode = vbKeyTab Then
+    FLGREPET = True
+    If Trim(grdDataGrid.Text) = "" Then
+        If grdDataGrid.Col = 1 Then
+            MsgBox ("DB Reason Name Cannot be empty"), vbInformation, head
+            grdDataGrid.Col = 1
+            grdDataGrid.SetFocus
+            st2 = "A"
+            Exit Sub
+        End If
+        If grdDataGrid.Col = 0 Then
+            MsgBox ("DB Code cannot be empty"), vbInformation, head
+            grdDataGrid.Col = 0
+            grdDataGrid.SetFocus
+            st = "A"
+        End If
+    End If
+Else
+    FLGREPET = False
+End If
+'If opt = "add" And grdDataGrid.Col = 0 Then
+'    If KeyCode = 9 Then
+'        st1 = "A"
+'    Else
+'        st1 = ""
+'    End If
+'End If
+If KeyCode = vbKeyA And Shift = 2 Then
+    If BUTTON(0).Enabled = True Then
+        Call BUTTON_Click(0)    ''Add
+    End If
+ElseIf KeyCode = vbKeyM And Shift = 2 Then
+   If BUTTON(1).Enabled = True Then
+        Call BUTTON_Click(1)    ''Modify
+   End If
+ElseIf KeyCode = vbKeyD And Shift = 2 Then
+    If BUTTON(2).Enabled = True Then
+        Call BUTTON_Click(2)    ''Delete
+    End If
+ElseIf KeyCode = vbKeyL And Shift = 2 Then
+    If BUTTON(3).Enabled = True Then
+        Call BUTTON_Click(3)    ''List
+    End If
+ElseIf KeyCode = vbKeyF And Shift = 2 Then
+    If BUTTON(4).Enabled = True Then
+        Call BUTTON_Click(4)    ''Find
+    End If
+ElseIf KeyCode = vbKeyLeft And Shift = 2 Then
+    If BUTTON(5).Enabled = True Then
+        Call BUTTON_Click(5)    ''First
+    End If
+ElseIf KeyCode = vbKeyDown And Shift = 2 Then
+    If BUTTON(6).Enabled = True Then
+        Call BUTTON_Click(6)    ''Next
+    End If
+ElseIf KeyCode = vbKeyUp And Shift = 2 Then
+    If BUTTON(7).Enabled = True Then
+        Call BUTTON_Click(7)    ''Previous
+    End If
+ElseIf KeyCode = vbKeyRight And Shift = 2 Then
+    If BUTTON(8).Enabled = True Then
+        Call BUTTON_Click(8)    ''Last
+    End If
+ElseIf KeyCode = vbKeyS And Shift = 2 Then
+    If BUTTON(9).Enabled = True Then
+        Call BUTTON_Click(9)    ''Save
+    End If
+ElseIf KeyCode = vbKeyBack And Shift = 2 Then
+    If BUTTON(10).Enabled = True Then
+        Call BUTTON_Click(10)    ''Cancel
+    End If
+ElseIf KeyCode = vbKeyQ And Shift = 2 Then
+    If BUTTON(11).Enabled = True Then
+        Call BUTTON_Click(11)   ''Exit
+    End If
+ElseIf KeyCode = vbKeyP And Shift = 2 Then
+    If BUTTON(12).Enabled = True Then
+        Call BUTTON_Click(12)   ''Print Option
+    End If
+ElseIf KeyCode = vbKeyY And Shift = 2 Then
+    If BUTTON(13).Enabled = True Then
+        Call BUTTON_Click(13)   ''Crystal Report
+    End If
+ElseIf KeyCode = vbKeyEscape Then
+    If BUTTON(10).Enabled = True Then
+        Call BUTTON_Click(10)   ''Cancel
+    End If
+End If
+
+Exit Sub
+GrdDatagrid_KeyDown_Error:
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure grddatagrid_KeyDown of Form Frmgodown", vbInformation, head
+Screen.MousePointer = 0
+End Sub
+
+Private Sub GrdDatagrid_KeyPress(KeyAscii As Integer)
+On Error GoTo GrdDatagrid_KeyPress_Error
+
+If Opt = "add" Or Opt = "mod" Then
+If grdDataGrid.Col = 0 Then
+    ToAlphaNumber grdDataGrid, 3, KeyAscii
+    ToUpCase grdDataGrid, KeyAscii
+'    If KeyAscii = 40 Or KeyAscii = 41 Or KeyAscii = 95 Or KeyAscii = 44 Or KeyAscii = 45 Or KeyAscii = 46 Or KeyAscii = 47 Then
+'        KeyAscii = 0
+'    End If
+ElseIf grdDataGrid.Col = 1 Then
+    ToAlphaNumber grdDataGrid, 20, KeyAscii
+    ToUpCase grdDataGrid, KeyAscii
+    'Initials grddatagrid, KEYASCII
+'    If KeyAscii = 40 Or KeyAscii = 41 Or KeyAscii = 95 Or KeyAscii = 44 Or KeyAscii = 45 Or KeyAscii = 46 Or KeyAscii = 47 Then
+'        KeyAscii = 0
+'    End If
+End If
+End If
+
+Exit Sub
+GrdDatagrid_KeyPress_Error:
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure GRDDATAGRID_KeyPress of Form Frmgodown", vbInformation, head
+Screen.MousePointer = 0
+End Sub
+
+Public Sub Query_mode()
+On Error GoTo er1
+  'Adodc1.RecordSource = "select LOCCODE""Code"",LOCNAME ""Location Name"" from  LOCMAS  Order by LOCCODE"
+  'Adodc1.Refresh
+  Set adoprimaryrs = New Recordset
+  adoprimaryrs.Open "select dbcode AS 'DB Code',dbreason as 'DB Reason' from rm_dbnotetype order by dbcode", DB, adOpenStatic, adLockReadOnly
+  Set grdDataGrid.DataSource = adoprimaryrs
+  If adoprimaryrs.BOF Then
+    MsgBox " No Records Found", vbInformation, head
+  End If
+'    grdDataGrid.Columns(0).Width = 1140.095
+'    grdDataGrid.Columns(1).Width = 4164.095
+    grdDataGrid.Columns(0).Width = 1140.095
+    grdDataGrid.Columns(1).Width = 4800.118
+  desc.Caption = "Query"
+  DATLAB.Caption = pdate
+  'Calling newform procedure from Module to disable buttons
+  Call NEWFORM(BUTTON)
+  Call NEWFORM1(BUTTON, GSNO)
+  Opt = " "
+  Screen.MousePointer = 0
+  If adoprimaryrs.RecordCount = 0 Then
+     Call Norecfound(BUTTON)
+  Else
+     Call Recfound(BUTTON)
+  End If
+  Call NEWFORM1(BUTTON, GSNO)
+  StatusBar1.Panels(2).Text = "Records " & CStr(adoprimaryrs.AbsolutePosition) & " of " & CStr(adoprimaryrs.RecordCount)
+  Exit Sub
+er1:
+  If Err = 3021 Then
+    MsgBox "No Records Exist", vbInformation, head
+  End If
+  If Err = -2147467259 Then
+    MsgBox "Connection  could  not  be  established " & Chr(13) & " Log out and  try  after some  time ", vbInformation, head
+  End If
+  grdDataGrid.Columns(0).Locked = True
+  grdDataGrid.Columns(1).Locked = True
+End Sub
+
+Private Sub grdDataGrid_RowColChange(LastRow As Variant, ByVal LastCol As Integer)
+On Error GoTo grdDataGrid_RowColChange_Error
+
+If Opt = "add" Then
+    If st = "A" Or st1 = "A" Then
+        grdDataGrid.Col = 0
+        st = "B"
+    End If
+    If st2 = "A" Then
+        grdDataGrid.Col = 1
+        st2 = "B"
+    End If
+    If grdDataGrid.Col = 1 And grdDataGrid.Columns(0).Text = "" Then
+        grdDataGrid.Col = 0
+    End If
+    If grdDataGrid.Row >= 0 And grdDataGrid.Col = 1 Then
+        ln = Len(grdDataGrid.Columns(0).Text)
+        'grdDataGrid.Columns(2).Text = Divcode
+        For i = 1 To ln
+                t = Asc(Mid$(grdDataGrid.Columns(0).Text, i, 1))
+                If Not ((t >= 65 And t <= 90) Or (t >= 97 And t <= 122) Or (t >= 48 And t <= 57)) Then
+                    grdDataGrid.Col = 0
+                    Exit Sub
+                End If
+                Next i
+                st = "B"
+                End If
+        If Opt = "add" And grdDataGrid.Col = 1 And grdDataGrid.Columns(0) <> "" Then
+        
+        End If
+   End If
+   If Opt = "add" Then
+     If grdDataGrid.Col = 0 Then
+          StatusBar1.Panels(2).Text = "Enter Maximum of 3 Character"
+     End If
+     If grdDataGrid.Col = 1 Then
+          StatusBar1.Panels(2).Text = "Enter Maximum of 20 Character"
+     End If
+   ElseIf Opt = "mod" Then
+     If grdDataGrid.Col = 1 Then
+          StatusBar1.Panels(2).Text = "Modify DB Reason"
+     End If
+End If
+
+
+Exit Sub
+grdDataGrid_RowColChange_Error:
+    MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure GRDDATAGRID_RowColChange of Form Frmgodown", vbInformation, head
+End Sub
+
+Private Sub KslList1_GotFocus()
+Command3.Default = True
+End Sub
+Private Sub listHeader()
+'    Print #1,
+    Print #1, Chr(18)
+    Print #1, Space(2) & Chr(27); "E"; CENTRE(divname, 80, " "); Chr(27); "F"
+     ' Call Module2.addresshead
+    Print #1,
+    Print #1, Space(2); "Debit Reason Listing" & Space(34); Format(pdate, "dd/mm/yy") + Space(2); "Pg No. : " & 1
+    Print #1, Space(2) & String(80, "-")
+    Print #1, Space(2); " Sl No.        Debit Note Code         Debit Note Reason"
+    Print #1, Space(2) & String(80, "-")
+End Sub
+
+

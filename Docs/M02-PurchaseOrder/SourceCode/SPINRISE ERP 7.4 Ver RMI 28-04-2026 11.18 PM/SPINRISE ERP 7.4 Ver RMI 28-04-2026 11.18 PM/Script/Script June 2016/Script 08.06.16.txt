@@ -1,0 +1,5 @@
+alter table rm_var ADD VARTYPE VARCHAR(1)
+ alter table rm_var ADD SHADENO VARCHAR(20)
+ Alter Table rm_var add Denier NUMERIC(10,2)
+ ALTER TABLE RM_VAR ADD LENGTH NUMERIC(10,2)
+ALTER TABLE RM_var ADD CATTYPE CHAR(1)

@@ -1,0 +1,166 @@
+
+create table RM_EXCELLRPTHEAD (Sno numeric(3),RptHead varchar(40),Rptname varchar(10)) 
+go
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[RM_FibreDiscCN ](
+	[Divcode] [varchar](2) NULL,
+	[Docno] [numeric](9, 0) NOT NULL,
+	[Docdate] [datetime] NOT NULL,
+	RefDocno numeric(8) not null, 
+	RefDocDt Datetime not null, 
+	Fdate datetime,
+	tdate datetime,
+	[DocSno] [numeric](2, 0) NOT NULL,
+	[Supcd] [varchar](8) NOT NULL,
+	[CATCD] [varchar](2) NULL,
+	[Varcode] [varchar](10) NOT NULL,
+	[Plant] [varchar](5) NULL,
+	[RateUnit] [varchar](10) NULL,
+	[CandyRate] [numeric](15, 5) NULL,
+	[RATEKG] [numeric](10, 5) NULL,
+	[Effdate] [datetime] NULL,
+	[Ipadd] [varchar](16) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Docno] ASC,
+	[Docdate] ASC,
+	[Varcode] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+
+
+go
+
+/****** Object:  Table [dbo].[RM_FibreRateDiscTXN]    Script Date: 03/19/2020 14:24:30 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[RM_FibreDiscCNTXN](
+	[Divcode] [varchar](2) NULL,
+	[Docno] [numeric](9, 0) NULL,
+	[Docdate] [datetime] NULL,
+	[SupCD] [varchar](8) NULL,
+	[VSno] [numeric](2, 0) NOT NULL,
+	[DocSno] [numeric](3, 0) NOT NULL,
+	[Varcode] [varchar](10) NOT NULL,
+	[DType] [varchar](4) NOT NULL,
+	[DRate] [numeric](9, 2) NULL,
+	[IPAdd] [varchar](16) NULL
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+
+
+
+
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[RM_FibreDiscCNDRate](
+	[Divcode] [varchar](2) NULL,
+	[Docno] [numeric](9, 0) NOT NULL,
+	[Docdate] [datetime] NOT NULL,
+	Fdate datetime,
+	tdate datetime,
+	[VSno] [numeric](2, 0) NOT NULL,
+	[DocSno] [numeric](3, 0) NOT NULL,
+	[SUPCD] [varchar](8) NOT NULL,
+	[Varcode] [varchar](10) NOT NULL,
+	[DType] [varchar](4) NOT NULL,
+	[DRate] [numeric](9, 2) NULL,
+	[Ipadd] [varchar](16) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Docno] ASC,
+	[Docdate] ASC,
+	[Varcode] ASC,
+	[DType] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[RM_FibreDiscCNDRate]  WITH CHECK ADD  CONSTRAINT [fk_fabricrateDicCNRATE] FOREIGN KEY([Docno], [Docdate], [Varcode])
+REFERENCES [dbo].[RM_FibreDiscCN] ([Docno], [Docdate], [Varcode])
+GO
+
+ALTER TABLE [dbo].[RM_FibreDiscCNDRate] CHECK CONSTRAINT [fk_fabricrateDicCNRATE]
+GO
+
+
+
+
+
+
+
+
+go
+
+
+insert into RM_EXCELLRPTHEAD values (1,'S.No','CRDisc')
+go
+insert into RM_EXCELLRPTHEAD values (2,'Fibre','CRDisc')
+go
+insert into RM_EXCELLRPTHEAD values (3,'Supplier','CRDisc')
+go
+insert into RM_EXCELLRPTHEAD values (4,'Plant','CRDisc')
+go
+
+
+
+create view VW_RMI_FibreCreditNoteDiscount
+as
+select  a.docdate ,d.VARname 'Fibre', c.slname 'Supplier',e.PLName 'PlantName',f.Description 'Disctype',
+g.comwt,cast(round(g.comwt*b.drate,2) as numeric(15,2)) DiscValue,b.drate  , a.fdate , a.tdate,a.Plant,a.varcode,a.supcd  from  RM_FibreDiscCN  a
+inner join RM_FibreDiscCNDRate  b on a.DOCNO=b.docno and a.docdate=b.docdate and a.supcd=b.supcd and a.varcode=b.varcode
+inner join fa_slmas c on a.supcd=c.slcode 
+inner join rm_var d on d.varcode=a.varcode 
+inner join rm_plant e on e.PLCode=a.Plant 
+inner join RM_DiscountType f on f.Code =b.DType and RPTFLG='Y'
+left join (select  lotdt,sum(comm_wt) comwt,supcd,varcode  from rm_lot group by supcd,varcode,lotdt ) g
+on g.varcode=a.varcode and g.supcd=a.supcd and g.lotdt between a.fdate and a.tdate
+
+create view Vw_RM_CreditNoteDiscountTypes 
+as
+select  Description  dicsctype from RM_DiscountType where RPTFLG='Y'
+

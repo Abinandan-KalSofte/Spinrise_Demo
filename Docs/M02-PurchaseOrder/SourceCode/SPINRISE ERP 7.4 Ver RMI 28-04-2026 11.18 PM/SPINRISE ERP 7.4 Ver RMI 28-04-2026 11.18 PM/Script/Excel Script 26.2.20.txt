@@ -1,0 +1,554 @@
+-----Lot wise stock statement
+insert into RM_EXCELLRPTHEAD values (1,'Category','STMTLOT')
+go
+insert into RM_EXCELLRPTHEAD values (2,'Mill Lot No.','STMTLOT')
+go
+insert into RM_EXCELLRPTHEAD values (3,'Mill lot Date','STMTLOT')
+go
+insert into RM_EXCELLRPTHEAD values (4,'Variety Name','STMTLOT')
+go
+insert into RM_EXCELLRPTHEAD values (5,'Pack Type','STMTLOT')
+go
+insert into RM_EXCELLRPTHEAD values (6,'Op. Stock Qty','STMTLOT')
+go
+insert into RM_EXCELLRPTHEAD values (7,'OP. Stock Kgs.','STMTLOT')
+go
+insert into RM_EXCELLRPTHEAD values (8,'Receipt Qty.','STMTLOT')
+go
+insert into RM_EXCELLRPTHEAD values (9,'Receipt Kgs','STMTLOT')
+go
+insert into RM_EXCELLRPTHEAD values (10,'Issued Qty.','STMTLOT')
+go
+insert into RM_EXCELLRPTHEAD values (11,'Issued Kgs','STMTLOT')
+go
+insert into RM_EXCELLRPTHEAD values (12,'Rejected Qty','STMTLOT')
+go
+insert into RM_EXCELLRPTHEAD values (13,'Rejected Kgs','STMTLOT')
+
+go
+insert into RM_EXCELLRPTHEAD values (14,'Closing Qty','STMTLOT')
+go
+insert into RM_EXCELLRPTHEAD values (15,'Closing Kgs','STMTLOT')
+go
+insert into RM_EXCELLRPTHEAD values (16,'Rate/Kg','STMTLOT')
+go
+insert into RM_EXCELLRPTHEAD values (17,'Rate/Unit','STMTLOT')
+go
+insert into RM_EXCELLRPTHEAD values (18,'Stock Value','STMTLOT')
+
+
+GO
+alter View VW_RM_StockStatmentLotwise
+as
+select  Catname ,lotno,lotdt,plotno,varname,unit,opbales+opboras opbales,opkgs ,RecBales ,reckgs ,ISSBales,isskgs ,REJBALES,REJKGS,cloboras+clobales clobales ,clokgs ,ratekg,ratecy,value   from StockLotwisetemp1
+union all
+select  Catname ,'0' lotno,'' lotdt,'' plotno,'Sub total'varname,''unit,sum(opbales)+sum(opboras) opbales, 
+sum(opkgs) opkgs ,sum(RecBales) RecBales ,sum(reckgs) reckgs ,sum(ISSBales) ISSBales,sum(isskgs) isskgs,sum(REJBALES) REJBALES ,sum(REJKGS) REJKGS 
+,sum(cloboras+clobales) clobales ,sum(clokgs) clokgs ,0 ratekg,0 ratecy,sum(value) value   from StockLotwisetemp1
+group by Catname
+union all
+select 'zzzzz' Catname ,'0' lotno,'' lotdt,'' plotno,'Grand total'varname,''unit,sum(opbales)+sum(opboras) opbales,
+sum(opkgs) opkgs ,sum(RecBales) RecBales ,sum(reckgs) reckgs ,sum(ISSBales) ISSBales,sum(isskgs) isskgs,sum(REJBALES) REJBALES ,sum(REJKGS) REJKGS 
+,sum(cloboras+clobales) clobales ,sum(clokgs) clokgs ,0 ratekg,0 ratecy,sum(value) value   from StockLotwisetemp1
+
+go
+
+
+
+GO
+
+
+
+insert into RM_EXCELLRPTHEAD values (1,'Category','STMTLOTABS')
+GO
+insert into RM_EXCELLRPTHEAD values (2,'Variety Name','STMTLOTABS')
+go
+insert into RM_EXCELLRPTHEAD values (3,'Op. Stock Qty','STMTLOTABS')
+go
+insert into RM_EXCELLRPTHEAD values (4,'OP. Stock Kgs.','STMTLOTABS')
+go
+insert into RM_EXCELLRPTHEAD values (5,'Receipt Qty.','STMTLOTABS')
+go
+insert into RM_EXCELLRPTHEAD values (6,'Receipt Kgs','STMTLOTABS')
+go
+insert into RM_EXCELLRPTHEAD values (7,'Issued Qty.','STMTLOTABS')
+go
+insert into RM_EXCELLRPTHEAD values (8,'Issued Kgs','STMTLOTABS')
+go
+insert into RM_EXCELLRPTHEAD values (9,'Rejected Qty','STMTLOTABS')
+go
+insert into RM_EXCELLRPTHEAD values (10,'Rejected Kgs','STMTLOTABS')
+
+go
+insert into RM_EXCELLRPTHEAD values (11,'Closing Qty','STMTLOTABS')
+go
+insert into RM_EXCELLRPTHEAD values (12,'Closing Kgs','STMTLOTABS')
+go
+insert into RM_EXCELLRPTHEAD values (13,'Stock Value','STMTLOTABS')
+go
+
+CREATE View VW_RM_StockStatmentLotwiseABS
+as
+
+select  Catname ,varname,sum(opbales)+sum(opboras) opbales, 
+sum(opkgs) opkgs ,sum(RecBales) RecBales ,sum(reckgs) reckgs ,sum(ISSBales) ISSBales,sum(isskgs) isskgs,sum(REJBALES) REJBALES ,sum(REJKGS) REJKGS 
+,sum(cloboras+clobales) clobales ,sum(clokgs) clokgs ,sum(value) value   from StockLotwisetemp1
+group by Catname,varname
+union all
+select 'zzzzz' Catname ,'Grand total'varname,sum(opbales)+sum(opboras) opbales,
+sum(opkgs) opkgs ,sum(RecBales) RecBales ,sum(reckgs) reckgs ,sum(ISSBales) ISSBales,sum(isskgs) isskgs,sum(REJBALES) REJBALES ,sum(REJKGS) REJKGS 
+,sum(cloboras+clobales) clobales ,sum(clokgs) clokgs ,sum(value) value   from StockLotwisetemp1
+go
+
+
+
+----- Variety wise Stock statement
+
+
+
+insert into RM_EXCELLRPTHEAD values (1,'Variety Name','STMTVAR')
+go
+insert into RM_EXCELLRPTHEAD values (2,'Op. Qty. in Bales','STMTVAR')
+go
+insert into RM_EXCELLRPTHEAD values (3,'OP. Net Wt. Kgs.','STMTVAR')
+go
+insert into RM_EXCELLRPTHEAD values (4,'Op. Stock Value','STMTVAR')
+go
+insert into RM_EXCELLRPTHEAD values (5,'Receipt Qty in Bales','STMTVAR')
+go
+insert into RM_EXCELLRPTHEAD values (6,'Receipt Net wt. in Kgs.','STMTVAR')
+go
+insert into RM_EXCELLRPTHEAD values (7,'Receipt Value','STMTVAR')
+go
+insert into RM_EXCELLRPTHEAD values (8,'Issues Qty. in Bales','STMTVAR')
+go
+insert into RM_EXCELLRPTHEAD values (10,'Issues Net Wt. Kgs','STMTVAR')
+
+go
+insert into RM_EXCELLRPTHEAD values (11,'Issued Value','STMTVAR')
+go
+insert into RM_EXCELLRPTHEAD values (12,'Closing Stock Qty in Bales','STMTVAR')
+
+go
+insert into RM_EXCELLRPTHEAD values (12,'Closing Stock Net Wt. in Kgs.','STMTVAR')
+
+go
+insert into RM_EXCELLRPTHEAD values (12,'Closing Stock Value','STMTVAR')
+
+go
+
+
+
+
+create View VW_RM_StockStatmentVaritywise
+as
+select varname,opbales+opboras opbales,opkgs ,OPVALUE,RecBales+ RECBORAS RecBales ,reckgs ,RECVALUE,ISSBales+ISSBORAS ISSBales,isskgs ,ISSVALUE,cloboras+clobales clobales ,clokgs ,CLOSEVALUE   from Temp_per_stockstatementvar
+union all
+select 'zzz Grand Total' varname,sum(opbales+opboras) opbales,sum(opkgs) opkgs ,sum(OPVALUE) OPVALUE,sum(RecBales+ RECBORAS) RecBales 
+,sum(reckgs)reckgs ,sum(RECVALUE),sum(ISSBales+ISSBORAS) ISSBales,sum(isskgs) isskgs ,sum(ISSVALUE) ISSVALUE,sum(cloboras+clobales) clobales ,sum(clokgs) clokgs ,sum(CLOSEVALUE) CLOSEVALUE   from Temp_per_stockstatementvar
+
+go
+
+
+
+
+----Date wiseissue
+
+
+
+go
+
+--KSP_RMI_P_IssueList_Date '01','2017-04-01','2018-03-31','A','t' 
+---- if you add any new column in Proc then add to EXRPTISSUELISTDate table for Excel       
+alter PROC KSP_RMI_P_IssueList_Date                           
+(                                    
+ @Divcode VARCHAR(2),                                    
+ @FDate VARCHAR(10),                                    
+ @TDate VARCHAR(10),                                
+ @IssueType VARCHAR(10),                                
+ @LotType VARCHAR(10)                                
+)                                    
+AS                                    
+BEGIN                                    
+SELECT x.DOCDT,x.DOCNO,X.cntcd,X.cntname,X.VARCODE,X.VARNAME,X.LOTNO,X.LOTYEAR,                                  
+SUM(ISNULL(BALES,0))AS BALES,SUM(ISNULL(NETWT,0))AS NETWT,                                    
+SUM(ISNULL(INVWT,0))AS INVWT,X.[Rate/Qtl],(SUM(ISNULL(NETWT,0))/100)*[Rate/Qtl] TOTLANDCOST,X.RATECY,X.DIV_PRINTNAME,X.DIV_UNITNAME,                                  
+--CONVERT(VARCHAR,X.LOTNO)+'/'+RIGHT(CONVERT(VARCHAR,((X.LOTYEAR))),2)+'-'+RIGHT(CONVERT(VARCHAR,(X.LOTYEAR)+1),2)LotNO_FYear,                                  
+X.CATCD,X.CATNAME,CONVERT(VARCHAR,X.LOTNO)+'/'+right(X.AYEAR,5) AS LotNO_FYear  ,SUM(ISNULL(X.ISSKGS,0))  AS ISSKGS 
+                             
+FROM                                    
+(select distinct a.docno, a.docdt,F.cntcd,G.cntname,A.VARCODE, b.varname,A.LOTNO,C.LOTYEAR,                                  
+count(a.baleno) as bales,0 as netwt,0 as invwt,                                    
+C.RATEKG*100 AS 'Rate/Qtl',C.TOTLANDCOST,C.RATECY AS RATECY,D.DIV_PRINTNAME,D.DIV_UNITNAME,                                  
+C.CATCD,H.CATNAME,py.AYEAR ,0 as ISSKGS                                  
+from rm_issb a                                    
+INNER JOIN RM_ISSH F ON F.DIVCODE = a.DIVCODE AND F.DOCNO = a.DOCNO AND F.DOCDT = a.DOCDT AND F.ISSTYPE = a.ISSTYPE                                    
+inner JOIN rm_var b ON b.VARCODE = a.VARCODE                                    
+left JOIN RM_LOT C ON C.DIVCODE=A.DIVCODE AND C.LOTNO=A.LOTNO AND C.LOTDT=A.lotdt AND C.LOTTYPE=A.LOTTYPE AND                                     
+C.VARCODE=A.VARCODE   and c.catcd = a.catcd                              
+LEFT OUTER JOIN PP_YEAR py on C.LOTDT BETWEEN py.AYFDATE AND py.AYLDATE                              
+LEFT JOIN PP_DIVMAS D ON D.DIVCODE=A.DIVCODE                                    
+LEFT JOIN RM_COUNT G ON G.Divcode=F.DIVCODE AND G.cntcd=F.cntcd AND G.mixgrpcd=F.MIXGRP                                    
+LEFT JOIN RM_CAT H ON H.CATCD=C.CATCD                                  
+where     
+--a.issued='Y'  and    
+ a.Divcode=@Divcode and a.docdt between @FDate and  @TDate AND                              (@IssueType='A' or a.ISSTYPE =@IssueType) and         
+(@LotType ='ALL' or a.LOTTYPE= @LotType)                
+--((@IssueType='A' AND a.ISSTYPE IN (SELECT  distinct isstype FROM  rm_issb))  OR                                  
+--(@IssueType<> 'A' AND a.ISSTYPE IN (SELECT  distinct isstype FROM  rm_issb WHERE isstype =@IssueType )))AND                                
+--((@LotType ='ALL' AND a.LOTTYPE IN (SELECT distinct LOTTYPE FROM  rm_issb))  OR                                  
+--(@LotType <> 'ALL'  AND a.LOTTYPE IN (SELECT distinct  LOTTYPE FROM  rm_issb WHERE LOTTYPE =@LotType  )))                                 
+AND C.LOTYEAR=year(py.ayfdate)                     
+--AND C.LOTYEAR=year(a.docdt)                     
+                         
+group by a.docno, a.docdt,F.cntcd,G.cntname,A.VARCODE,b.varname,A.LOTNO,C.LOTYEAR,C.RATEKG,C.TOTLANDCOST,C.RATECY,                                    
+D.DIV_PRINTNAME,D.DIV_UNITNAME,C.CATCD,H.CATNAME,py.AYEAR                               
+                           
+Union All                                    
+                            
+select a.docno, a.docdt,F.cntcd,G.cntname, A.VARCODE,b.varname, A.LOTNO,C.LOTYEAR,                                  
+0 as BALES, sum(ISNULL(a.actisskgs,0))as netwt,                                    
+sum(ISNULL(c.pnetwt,0))as invwt,C.RATEKG*100 AS 'Rate/Qtl',C.TOTLANDCOST,C.RATECY AS RATECY,                                    
+E.DIV_PRINTNAME,E.DIV_UNITNAME,                               
+C.CATCD,H.CATNAME,py.AYEAR,sum(a.ISSKGS) as ISSKGS            
+from rm_issb a                                    
+INNER JOIN RM_ISSH F ON F.DIVCODE = a.DIVCODE AND F.DOCNO = a.DOCNO AND F.DOCDT = a.DOCDT AND F.ISSTYPE = a.ISSTYPE                                    
+inner JOIN PP_YEAR py1 on a.docdt BETWEEN py1.AYFDATE AND py1.AYLDATE               
+left JOIN rm_var b ON b.VARCODE = a.VARCODE                                    
+inner JOIN RM_LOT C ON C.DIVCODE=A.DIVCODE AND C.LOTNO=A.LOTNO AND C.LOTDT=A.lotdt AND C.LOTTYPE=A.LOTTYPE AND                                     
+C.VARCODE=A.VARCODE     and c.catcd = a.catcd                            
+inner  JOIN PP_YEAR py on C.LOTDT BETWEEN py.AYFDATE AND py.AYLDATE                                 
+left JOIN rm_bale D ON D.DIVCODE=A.DIVCODE AND D.LOTNO=A.LOTNO AND D.lotdt=A.lotdt AND D.lottype=A.LOTTYPE AND D.LOTNO=c.LOTNO AND D.lotdt=c.lotdt and d.VARCODE =c.VARCODE  AND       C.LOTTYPE=d.lottype     AND                          
+D.BALENO=A.BALENO    and d.VARCODE =a.VARCODE and d.CATCD = a.CATCD                           
+inner JOIN PP_DIVMAS E ON E.DIVCODE=A.DIVCODE                                    
+left JOIN RM_COUNT G ON G.Divcode=F.DIVCODE AND G.cntcd=F.cntcd AND G.mixgrpcd=F.MIXGRP                                    
+LEFT JOIN RM_CAT H ON H.CATCD=C.CATCD                                  
+where     
+--a.issued='Y' and     
+a.Divcode=@Divcode and a.docdt between @FDate and @TDate AND                         (@IssueType='A' or a.ISSTYPE =@IssueType) and         
+(@LotType ='ALL' or a.LOTTYPE= @LotType)         
+--((@IssueType='A' AND a.ISSTYPE IN (SELECT distinct  isstype FROM  rm_issb))  OR                                  
+--(@IssueType<> 'A' AND a.ISSTYPE IN (SELECT distinct isstype FROM  rm_issb WHERE isstype =@IssueType )))AND                                
+--((@LotType ='ALL' AND a.LOTTYPE IN (SELECT distinct LOTTYPE FROM  rm_issb))  OR                                  
+--(@LotType <> 'ALL'  AND a.LOTTYPE IN (SELECT distinct  LOTTYPE FROM  rm_issb WHERE LOTTYPE =@LotType  )))                                
+--AND C.LOTYEAR=year(py1.ayfdate)                     
+AND C.LOTYEAR=year(py.ayfdate)                  
+--AND a.lotno =41                        
+group by a.docno, a.docdt,F.cntcd,G.cntname,A.VARCODE,b.varname,A.LOTNO,C.LOTYEAR,C.RATEKG,C.TOTLANDCOST,C.RATECY,                                    
+E.DIV_PRINTNAME,E.DIV_UNITNAME,C.CATCD,H.CATNAME,py.AYEAR        
+        
+        
+)X                                    
+GROUP BY x.DOCNO,x.DOCDT,X.cntcd,X.cntname,X.VARCODE,X.VARNAME,X.LOTNO,X.LOTYEAR,X.[Rate/Qtl],X.TOTLANDCOST,X.RATECY,                                    
+X.DIV_PRINTNAME,X.DIV_UNITNAME,X.CATCD,X.CATNAME,X.AYEAR--,X.ISSKGS                                  
+ORDER BY X.docdt,X.docno,X.CNTCD,X.VARCODE                                 
+                            
+END 
+
+
+CREATE TABLE [dbo].[EXRPTISSUELISTDate](
+	[DOCDT] [datetime] NOT NULL,
+	[DOCNO] [decimal](6, 0) NOT NULL,
+	[cntcd] [varchar](10) NULL,
+	[cntname] [varchar](30) NULL,
+	[VARCODE] [varchar](10) NULL,
+	[VARNAME] [varchar](35) NULL,
+	[LOTNO] [smallint] NOT NULL,
+	[LOTYEAR] [decimal](5, 0) NULL,
+	[BALES] [decimal](11) NULL,
+	[NETWT] [decimal](38, 3) NULL,
+	[INVWT] [decimal](38, 3) NULL,
+	[Rate/Qtl] [decimal](19, 7) NULL,
+	[TOTLANDCOST] [decimal](11, 2) NULL,
+	[RATECY] [decimal](15, 7) NULL,
+	[DIV_PRINTNAME] [varchar](60) NULL,
+	[DIV_UNITNAME] [varchar](100) NULL,
+	[CATCD] [char](1) NULL,
+	[CATNAME] [varchar](35) NULL,
+	[LotNO_FYear] [varchar](36) NULL,
+	[ISSKGS] [decimal](38, 3) NULL
+) ON [PRIMARY]
+
+
+go
+
+
+insert into RM_EXCELLRPTHEAD values (1,'Date','IssDate')
+go
+insert into RM_EXCELLRPTHEAD values (2,'issue No.','IssDate')
+go
+insert into RM_EXCELLRPTHEAD values (3,'Mixing Count','IssDate')
+go
+insert into RM_EXCELLRPTHEAD values (4,'Variety Name','IssDate')
+go
+insert into RM_EXCELLRPTHEAD values (5,'Mill Lot No.','IssDate')
+go
+insert into RM_EXCELLRPTHEAD values (6,'No. of Bales','IssDate')
+go
+insert into RM_EXCELLRPTHEAD values (7,'Issue Wt. in kgs.','IssDate')
+go
+insert into RM_EXCELLRPTHEAD values (8,'Actual Wt. in Kgs.','IssDate')
+go
+insert into RM_EXCELLRPTHEAD values (9,'Issue Value','IssDate')
+
+go
+insert into RM_EXCELLRPTHEAD values (10,'Rate/Candy or Kgs','IssDate')
+go
+
+
+
+
+insert into RM_EXCELLRPTHEAD values (1,'Mixing Count','IssDateAbs')
+go
+insert into RM_EXCELLRPTHEAD values (2,'Variety Name','IssDateAbs')
+
+go
+insert into RM_EXCELLRPTHEAD values (3,'No. of Bales','IssDateAbs')
+go
+insert into RM_EXCELLRPTHEAD values (4,'Issue Wt. in kgs.','IssDateAbs')
+go
+insert into RM_EXCELLRPTHEAD values (5,'Actual Wt. in Kgs.','IssDateAbs')
+go
+insert into RM_EXCELLRPTHEAD values (6,'Issue Value','IssDateAbs')
+
+go
+insert into RM_EXCELLRPTHEAD values (7,'Rate/Candy or Kgs','IssDateAbs')
+
+go
+
+CREATE View VW_RM_IssuelistDatewise  
+as  
+select DOCDT,DOCNO,cntname,VARNAME,LotNO_FYear,BALES,NETWT,ISSKGS,TOTLANDCOST,RATECY  from EXRPTISSUELISTDate  
+  
+union all  
+select  DOCDT, DOCNO,''cntname,'Issue No. Total / Average' VARNAME,'' LotNO_FYear,SUM( BALES) BALES,sum(NETWT)NETWT ,sum(ISSKGS) ISSKGS,sum(TOTLANDCOST) TOTLANDCOST  
+,avg(RATECY) RATECY  from EXRPTISSUELISTDate group by DOCNO,DOcdt  
+  
+union all  
+select  DOCDT,'10000' DOCNO,''cntname,'Day Total'VARNAME,'' LotNO_FYear,SUM( BALES) BALES,sum(NETWT)NETWT ,sum(ISSKGS) ISSKGS,sum(TOTLANDCOST) TOTLANDCOST  
+,avg(RATECY) RATECY  from EXRPTISSUELISTDate group by DOcdt  
+  
+union all  
+select '2060-01-01' DOCDT,'100000' DOCNO,'zzz'cntname,'Grand Total'VARNAME,'' LotNO_FYear,SUM( BALES) BALES,sum(NETWT)NETWT ,sum(ISSKGS) ISSKGS,sum(TOTLANDCOST) TOTLANDCOST  
+,avg(RATECY) RATECY  from EXRPTISSUELISTDate 
+
+
+go
+
+create View VW_RM_IssuelistDatewiseABS
+as
+
+select  cntname,VARNAME,SUM( BALES) BALES,sum(NETWT)NETWT ,sum(ISSKGS) ISSKGS,sum(TOTLANDCOST) TOTLANDCOST
+,avg(RATECY) RATECY  from EXRPTISSUELISTDate group by cntname,VARNAME
+
+union all
+select  'zzzzzzzzzz'cntname,'Grand Total'VARNAME,SUM( BALES) BALES,sum(NETWT)NETWT ,sum(ISSKGS) ISSKGS,sum(TOTLANDCOST) TOTLANDCOST
+,avg(RATECY) RATECY  from EXRPTISSUELISTDate 
+
+go
+
+
+------- Issue Mix no Wise------------
+
+
+CREATE TABLE [dbo].[EXIssueListMixwise](
+	[docno] [decimal](6, 0) NOT NULL,
+	[mixgrp] [varchar](10) NULL,
+	[docdt] [datetime] NOT NULL,
+	[varcode] [varchar](10) NULL,
+	[catcd] [char](1) NULL,
+	[cntname] [varchar](30) NULL,
+	[catname] [varchar](35) NULL,
+	[lotno] [numeric](5, 0) NULL,
+	[bale] [int] NULL,
+	[unit] [varchar](5) NOT NULL,
+	[netkg] [decimal](38, 3) NULL,
+	[ratequin] [decimal](38, 7) NULL,
+	[amount] [decimal](38, 6) NULL,
+	[avgrate] [decimal](38, 7) NULL,
+	[plotno] [varchar](15) NULL,
+	[ratecandy] [numeric](38, 10) NULL,
+	[mixgrpcd] [varchar](5) NULL,
+	[cntcode] [varchar](10) NULL,
+	[DIV_PRINTNAME] [varchar](60) NULL,
+	[DIV_UNITNAME] [varchar](100) NULL
+) ON [PRIMARY]
+
+
+go
+
+
+-- ksp_mixnumber_wisenew '03','2019-06-01','2019-06-26','2019'      
+-- if you add any new column in Proc then add to EXIssueListMixwise table for Excel
+                 
+alter Procedure ksp_mixnumber_wisenew                                                                     
+@divcode varchar(2),                                                                                            
+@FromDate AS varchar(15),                                                                                               
+@ToDate AS Varchar(15),                  
+@lotyear AS Varchar(10)                  
+                                                                                     
+As                        
+begin                      
+                      
+select distinct                     
+docno,    
+--mixgrpcd as mixgrp,                    
+cntcode as mixgrp,  
+docdt,varcode,catcd,cntname ,catname,lotno,sum(bale) as bale,                      
+unit ,round(sum(isnull(netkgs,0)),3)netkg                    
+,sum(isnull(quintal,0)) ratequin,                      
+sum(isnull(Amount,0)) AS amount,avg(ratekg) as avgrate,plotno,                    
+round(avg(ratekg*355.616),0)as ratecandy,                      
+mixgrpcd,cntcode,DIV_PRINTNAME,DIV_UNITNAME   from (                    
+SELECT c.DOCDT, a.CNTCODE AS CNTCD, d.mixgrpcd, a.VARCODE, a.LOTNO, COUNT(b.BALENO) AS bale,                     
+(CASE WHEN a.bblflg = 'R' THEN 'Borah' ELSE 'Bales' END) AS Unit, SUM(ISNULL(b.ISSKGS, 0)) AS 'netkgs', a.PLOTNO, AVG(a.RATEKG) AS 'quintal',                     
+SUM(ISNULL(b.ISSKGS, 0)) * a.RATEKG AS AMOUNT, a.RATEKG, ROUND(a.RATEKG * 355.616, 0) AS ratecandy, ISNULL(c.DOCNO, 0) AS docno,                     
+a.catcd,f.CATNAME ,p.DIV_PRINTNAME,p.DIV_UNITNAME, c.cntcd AS cntcode  ,d.cntname                  
+FROM dbo.RM_ISSB AS b   
+INNER JOIN                    
+dbo.RM_ISSH AS c ON b.DIVCODE = c.DIVCODE AND b.ISSTYPE = c.ISSTYPE AND b.DOCDT = c.DOCDT AND b.DOCNO = c.DOCNO    
+left JOIN                    
+ dbo.RM_BALE AS e ON e.DIVCODE = b.DIVCODE AND e.lottype = b.LOTTYPE AND e.LOTNO = b.LOTNO AND e.CATCD = b.CATCD AND                     
+e.BALENO = b.BALENO left JOIN                    
+dbo.RM_LOT AS a ON e.lotdt = a.LOTDT AND b.DIVCODE = a.DIVCODE AND b.CATCD = a.CATCD AND b.LOTNO = a.LOTNO AND                     
+b.lotdt = a.LOTDT   
+                   
+left JOIN dbo.RM_CAT as f ON b.CATCD=f.CATCD         
+inner join PP_DIVMAS p on p.DIVCODE=b.DIVCODE                     
+LEFT OUTER JOIN dbo.RM_COUNT AS d ON c.cntcd = d.cntcd  and c.divcode=d.divcode                  
+WHERE (b.LOTTYPE in ('A','T')) AND (a.DIVCODE = @divcode) AND (a.REJFLG = 'N') AND (b.issued = 'N' OR b.issued = 'Y')           
+AND (a.LOTYEAR = @lotyear)                    
+and c.docdt  between @Fromdate  and @Todate                       
+GROUP BY d.mixgrpcd, a.BBLFLG, a.RATEKG, a.RATECY, a.VARCODE, a.LOTNO, c.DOCDT, a.CNTCODE, a.PLOTNO, c.DOCNO, a.CATCD,f.CATNAME, c.cntcd,DIV_PRINTNAME,DIV_UNITNAME ,d.cntname                    
+) xxx                        
+group by varcode,lotno,DOCDT,unit,plotno,                    
+docno,                    
+catcd,catname,mixgrpcd,cntcode,DIV_PRINTNAME,DIV_UNITNAME,cntname,CNTCD                    
+order by cntcode                      
+                      
+END 
+go
+
+insert into RM_EXCELLRPTHEAD values (1,'S.No.','IssMix')
+go
+insert into RM_EXCELLRPTHEAD values (2,'Mixing Code..','IssMix')
+go
+insert into RM_EXCELLRPTHEAD values (3,'Mixing Name','IssMix')
+go
+insert into RM_EXCELLRPTHEAD values (4,'Issue No.','IssMix')
+go
+insert into RM_EXCELLRPTHEAD values (5,'issue Date','IssMix')
+go
+insert into RM_EXCELLRPTHEAD values (6,'Category','IssMix')
+go
+insert into RM_EXCELLRPTHEAD values (7,'Lot No','IssMix')
+go
+insert into RM_EXCELLRPTHEAD values (8,'No. of Bales','IssMix')
+go
+insert into RM_EXCELLRPTHEAD values (9,'Net Wt. in Kgs','IssMix')
+go
+go
+insert into RM_EXCELLRPTHEAD values (10,'Rate/Candy','IssMix')
+go
+insert into RM_EXCELLRPTHEAD values (11,'Issue Value','IssMix')
+
+
+go
+create View VW_RM_IssuelistMixWise  
+as  
+select row_number() over (order by cntcode,lotno) sno, cntcode,cntname,docno,docdt,catname,lotno,bale,netkg,amount,ratecandy  from EXIssueListMixwise  
+  
+union all  
+select 10000 sno, cntcode,'Mixing Total 'cntname,0 docno,'2050-01-01' docdt,''catname,0 Lotno,sum(bale) bale ,sum(netkg)netkg,sum(amount) amount,avg(ratecandy) ratecandy  from EXIssueListMixwise group by cntcode,cntname 
+  
+union all  
+select 50000 sno, 'zzzzz' cntcode,'Grand Total 'cntname,0 docno,'2050-01-01' docdt,''catname,0 Lotno,sum(bale) bale ,sum(netkg)netkg,sum(amount) amount,avg(ratecandy) ratecandy  from EXIssueListMixwise 
+  
+  go
+
+
+
+go
+insert into RM_EXCELLRPTHEAD values (1,'Mixing Code..','IssMixABS')
+go
+insert into RM_EXCELLRPTHEAD values (2,'Mixing Name','IssMixABS')
+
+go
+insert into RM_EXCELLRPTHEAD values (3,'Category','IssMixABS')
+
+go
+insert into RM_EXCELLRPTHEAD values (4,'No. of Bales','IssMixABS')
+go
+insert into RM_EXCELLRPTHEAD values (5,'Net Wt. in Kgs','IssMixABS')
+go
+go
+insert into RM_EXCELLRPTHEAD values (6,'Rate/Candy','IssMixABS')
+go
+insert into RM_EXCELLRPTHEAD values (7,'Issued Value','IssMixABS')
+
+go
+
+
+create View VW_RM_IssuelistMixWiseABS  
+as  
+
+select  cntcode,cntname,catname,sum(bale) bale ,sum(netkg)netkg,sum(amount) amount,avg(ratecandy) ratecandy  
+from EXIssueListMixwise group by cntcode,cntname ,catname
+  
+union all  
+select 'zzzzz' cntcode,'Grand Total' cntname,''catname,sum(bale) bale ,sum(netkg)netkg,sum(amount) amount,avg(ratecandy) ratecandy  from EXIssueListMixwise 
+  
+  go
+
+
+------------------- Transfer Receipt----------------------
+
+
+
+go
+
+insert into RM_EXCELLRPTHEAD values (1,'Issue Type','TRNREC')
+go
+insert into RM_EXCELLRPTHEAD values (2,'Supplier Code','TRNREC')
+go
+insert into RM_EXCELLRPTHEAD values (3,'Supplier Name','TRNREC')
+go
+insert into RM_EXCELLRPTHEAD values (4,'Mill Lot No.','TRNREC')
+go
+insert into RM_EXCELLRPTHEAD values (5,'Received Date','TRNREC')
+go
+insert into RM_EXCELLRPTHEAD values (6,'Variety Name','TRNREC')
+go
+insert into RM_EXCELLRPTHEAD values (7,'Bill No.','TRNREC')
+go
+insert into RM_EXCELLRPTHEAD values (8,'Quantity','TRNREC')
+go
+insert into RM_EXCELLRPTHEAD values (10,'Unit','TRNREC')
+
+go
+insert into RM_EXCELLRPTHEAD values (11,'Net Wt.','TRNREC')
+go
+insert into RM_EXCELLRPTHEAD values (12,'Rate/Candy','TRNREC')
+
+go
+insert into RM_EXCELLRPTHEAD values (13,'Rate/KG','TRNREC')
+
+go
+insert into RM_EXCELLRPTHEAD values (14,'Value','TRNREC')
+
+
+go
+
+
+create view VW_RM_TransferReceipt
+as
+select ISSUE_DESC,supcd, Supplier,LOTNO,lotdt,varname ,billno,bales ,unit,round(netwt,2) netwt,ratecy,[Rate/Quintal], value  from Vw_Rmi_Transfer_receiptregister
+union all
+select ISSUE_DESC,'Supplier Total'  supcd, Supplier,10000 LOTNO,'2050-01-01' lotdt,''varname ,''billno,sum(bales) bales ,''unit,sum(netwt) netwt,0 ratecy,0 [Rate/Quintal], sum(value) value  from Vw_Rmi_Transfer_receiptregister
+
+group by supcd,Supplier,ISSUE_DESC
+union all
+select 'zzzzzz' ISSUE_DESC,'Grand Total'  supcd,'' Supplier,50000 LOTNO,'2050-01-01' lotdt,''varname ,''billno,sum(bales) bales ,''unit,sum(netwt) netwt,0 ratecy,0 [Rate/Quintal], sum(value) value  from Vw_Rmi_Transfer_receiptregister
+
+go
+

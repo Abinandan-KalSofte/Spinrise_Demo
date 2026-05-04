@@ -1,0 +1,560 @@
+
+/****** Object:  Trigger [dbo].[INSCINVHD]    Script Date: 10/14/2020 18:58:54 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+   
+alter  TRIGGER [dbo].[INSCINVHD] ON [dbo].[RM_CINVHD] FOR INSERT AS            
+DECLARE            
+  @v_divcode VARCHAR(2),   @v_invtc   NUMERIC(2),    @inv_type    varchar(2),              
+  @v_invno   NUMERIC(6),   @v_invdt   DATETIME,      @v_slcode    VARCHAR(7),            
+  @v_ordno   NUMERIC(6),   @v_orddt   DATETIME,      @v_paymode   VARCHAR(2),            
+  @v_crdays  NUMERIC(3),   @v_taxcode VARCHAR(3),    @v_cglcode   VARCHAR(6),            
+  @v_salegl  VARCHAR(6),   @v_taxgl   VARCHAR(6),    @v_scgl      VARCHAR(6),            
+  @v_bedgl   VARCHAR(6),   @v_ocgl    VARCHAR(6),    @v_insgl     VARCHAR(6),            
+  @v_aedgl   varchar(6),   @v_cessgl  varchar(6),    @v_charitygl Varchar(6),             
+  @v_freightgl varchar(6), @v_agentcode varchar(7),           
+  @v_roffgl  VARCHAR(6),   @v_saleval DECIMAL(12,2), @v_bedamt    NUMERIC(9,2),             
+  @v_taxamt  NUMERIC(9,2), @v_scamt   NUMERIC(7,2),  @v_ocamt   NUMERIC(7,2),              
+  @v_insamt  NUMERIC(9,2), @v_roff    NUMERIC(5,2),  @v_invamt  DECIMAL(12,2),            
+  @v_charity numeric(9,2), @v_cess    numeric(9,2),  @v_aedamt numeric(10,2),               
+  @v_cnt     NUMERIC,      @v_count   numeric,       @v_gvocno  NUMERIC(6),            
+  @v_ldate   DATETIME,     @v_abstc   numeric(2),    @saletrnty char(1),            
+  @taxtrnty    char(1),    @dutytrnty char(1),       @fa_link char(1),            
+  @v_area varchar(4),     @v_stflg  char(1), @v_slpost char(1) ,            
+  @V_FT CHAR(1),      
+  @v_PackingChargesAmt    NUMERIC(9,2),@v_PackingChargesgl  varchar(6),            
+  @v_botype varchar(4),@v_narr1 varchar(30)   
+    --added on  25-08-17
+   , @v_CGSTGL VARCHAR(6),  @v_SGSTGL VARCHAR(6),@v_IGSTGL VARCHAR(6),  
+   @V_CGST_Amt NUMERIC(9, 2),@V_SGST_Amt NUMERIC(9, 2),@V_IGST_Amt NUMERIC(9, 2) 
+    ,@V_TCS_Amt NUMERIC(9, 2)   , @v_tcsgl    VARCHAR(6)       
+            
+BEGIN            
+    SELECT @v_abstc = fromjvtc  from FA_PARAM            
+    if @@rowcount = 0            
+     BEGIN            
+        set @v_abstc = 40 --30            
+        insert into fa_param(fromjvtc) values(40) --30            
+     END             
+    else            
+        if @v_abstc is null            
+        BEGIN            
+           set @v_abstc = 40 --30            
+           update fa_param set fromjvtc = 40 --30            
+        END             
+            
+   select @v_count = count(*) from fa_tcmas where tc = @v_abstc            
+    if @v_count = 0             
+       insert into fa_tcmas(tc,tchead,tcabbr)            
+       values(@v_abstc,'General Journal','GJV')            
+            
+   SET @v_gvocno = 999999            
+            
+   SELECT @v_divcode = DIVCODE,     @v_invno   = CAST(substring(INV_NO,3,8)AS NUMERIC),             
+          @v_invdt   = DATE,        @inv_type  = inv_type,            
+   @v_slcode  = CUST_CODE,   @v_ordno   =  CAST(BO_NO AS NUMERIC),            
+   @v_crdays  = CR_DAYS,     @v_paymode = PAY_MODE,            
+          @v_saleval = MATL_VALUE,  @v_ocamt   = FREIGHT,            
+          @v_taxamt  = TAX_AMT,     @v_scamt   = LSC_AMT,            
+   @v_bedamt  = BED_AMT,     @v_aedamt  = AED_AMT,            
+   @v_insamt  = INS_AMT,     @v_cess    = cess_amt,            
+   @v_charity = CHARITY,     @v_roff    = RND_OFF,                 
+   @v_invamt  = TOTAL_AMT,   @v_area    =DESPATCH_TO,      
+   @v_agentcode=agent_code,@v_botype=bo_type  ,  @V_CGST_Amt=CGSTAMT,@V_SGST_Amt=SGSTAMT,@V_IGST_Amt=IGSTAMT   ,@V_TCS_Amt=isnull(tcs_amt,0)   
+   FROM INSERTED         
+    RM_CINvHd      
+            
+SELECT @fa_link= fa_link,@saletrnty=SALE_TRANSFER, @taxtrnty=TAX_TRANSFER, @dutytrnty=DUTY_TRANSFER from  ig_param where divcode=@v_divcode            
+            
+SELECT @V_FT = FA_TRANSFER FROM IG_INVTYPE WHERE DIVCODE = @V_DIVCODE AND INV_TYPE = @INV_TYPE            
+            
+IF @fa_link='Y'  AND @V_FT = 'Y'            
+ BEGIN            
+    SELECT @v_ldate = DATEADD(DAY,-1*DAY(DATEADD(MONTH,1,            
+                   @v_invdt)),DATEADD(MONTH,1,@v_invdt))            
+            
+    select @v_stflg=state_flag from ig_area a,ig_state b  where a.state_code=b.state_code and a.area_code=@v_area            
+  
+       
+       if @v_botype='SS'  
+			begin
+			SET @v_narr1='RAW MATRIAL SALES INVOICE'  
+			end
+		else  
+			begin
+			SET @v_narr1='PURCHASE RETURN'  
+			end    
+  
+  
+  
+    IF @v_stflg='L'              
+  BEGIN            
+   SELECT  @v_invtc = tc_code,      @v_salegl=SALE_AC_L,        @v_taxgl=tax_ac,   @v_scgl=lsc_ac,            
+      @v_cessgl=cess_ac_l,     @v_charitygl=charity_ac_l,  @v_bedgl=bed_ac_l, @v_aedgl=aed_ac_l,            
+      @v_freightgl=freight_ac, @v_insgl=ins_ac,            @v_roffgl=rndoff_ac, @v_PackingChargesgl=Packing_Charges_AC  ,@v_tcsgl=isnull(TCS_AC,'')             
+        --For GST   
+   ,@v_CGSTGL=CGST_AC, @v_SGSTGL= SGST_AC
+   
+   FROM ig_invtype WHERE divcode = @v_divcode and inv_type=@inv_type 
+     
+     
+                
+              END             
+     ELSE        
+  BEGIN             
+   SELECT  @v_invtc = tc_code,      @v_salegl=SALE_AC_is,        @v_taxgl=cst_ac,    @v_scgl=lsc_ac,            
+      @v_cessgl=cess_ac_is,    @v_charitygl=charity_ac_is,  @v_bedgl=bed_ac_is, @v_aedgl=aed_ac_is,            
+      @v_freightgl=freight_ac, @v_insgl=ins_ac,             @v_roffgl=rndoff_ac, @v_PackingChargesgl=Packing_Charges_AC ,@v_tcsgl=isnull(TCS_AC,'') 
+      , @v_IGSTGL= IGST_AC                      
+     FROM ig_invtype WHERE divcode = @v_divcode and inv_type=@inv_type            
+       END            
+            
+--PRODUCT VALUE             
+            
+   IF (@v_salegl IS NOT NULL AND @v_salegl <> '' and @saletrnty='I')             
+    BEGIN            
+       SET @v_cnt = 0            
+            
+       SELECT @v_cnt = COUNT(*) from fa_cgtrn            
+       WHERE divcode = @v_divcode AND glcode = @v_salegl AND            
+          vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+          vocsno = 2 and trntype = 'PR'            
+            
+       IF @v_cnt > 0             
+         UPDATE fa_cgtrn            
+          SET credit = ISNULL(credit, 0) + ISNULL(@v_saleval, 0)            
+          WHERE divcode = @v_divcode AND glcode = @v_salegl AND            
+          vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+          vocsno = 2 and trntype = 'PR'            
+       ELSE            
+          INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,            
+             narration1,credit,trntype)            
+          VALUES(@v_divcode,@v_salegl,@v_invno,@v_invdt,2,@v_invtc,                        
+-- 'PURCHASE RETURN'  
+  @v_narr1,ISNULL(@v_saleval,0),'PR')            
+     END            
+            
+---EXCISE AMOUNT            
+--BED            
+   SET @v_cnt = 0            
+   SELECT @v_cnt = COUNT(*) from fa_cgtrn            
+   WHERE divcode = @v_divcode AND glcode = @v_bedgl AND            
+         vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+         vocsno = 2 and trntype = 'PR'            
+             
+   IF ISNULL(@v_bedamt,0) >0 AND (@v_bedgl IS NOT NULL and @v_bedgl <> '' and @dutytrnty='I')            
+   BEGIN            
+    IF @v_cnt=0              
+       INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,            
+          narration1,credit,trntype)            
+       VALUES(@v_divcode,@v_bedgl,@v_invno,@v_invdt,2,@v_invtc,            
+          --'PURCHASE RETURN'  
+  @v_narr1,ISNULL(@v_bedamt,0),'PR')            
+     ELSE            
+          UPDATE fa_cgtrn            
+          SET credit = ISNULL(credit, 0) + ISNULL(@v_bedamt, 0)            
+          WHERE divcode = @v_divcode AND glcode = @v_bedgl AND            
+          vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+          vocsno = 2 and trntype = 'PR'            
+   END      
+      
+--Packing Charges            
+   SET @v_cnt = 0            
+   SELECT @v_cnt = COUNT(*) from fa_cgtrn            
+   WHERE divcode = @v_divcode AND glcode = @v_PackingChargesgl AND            
+         vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+         vocsno = 2 and trntype = 'PR'            
+            
+            
+   IF ISNULL(@v_PackingChargesAmt,0) >0 AND (@v_PackingChargesgl IS NOT NULL and @v_PackingChargesgl <> '' and @dutytrnty='I')            
+   BEGIN            
+    IF @v_cnt=0            
+       INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,            
+          narration1,credit,trntype)            
+       VALUES(@v_divcode,@v_PackingChargesgl,@v_invno,@v_invdt,2,@v_invtc,            
+--          'PURCHASE RETURN'  
+  @v_narr1,ISNULL(@v_PackingChargesAmt,0),'PR')            
+    ELSE              
+          UPDATE fa_cgtrn            
+          SET credit = ISNULL(credit, 0) + ISNULL(@v_PackingChargesAmt, 0)            
+          WHERE divcode = @v_divcode AND glcode = @v_PackingChargesgl AND            
+          vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+          vocsno = 2 and trntype = 'PR'            
+   END            
+      
+   
+--TCS AMT            
+   SET @v_cnt = 0            
+   SELECT @v_cnt = COUNT(*) from fa_cgtrn            
+   WHERE divcode = @v_divcode AND glcode = @v_PackingChargesgl AND            
+         vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+         vocsno = 2 and trntype = 'PR'            
+            
+            
+   IF ISNULL(@V_TCS_Amt,0) >0 AND (@v_tcsgl IS NOT NULL and @v_tcsgl <> '' and @dutytrnty='I')            
+   BEGIN            
+    IF @v_cnt=0            
+       INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,            
+          narration1,credit,trntype)            
+       VALUES(@v_divcode,@v_tcsgl,@v_invno,@v_invdt,2,@v_invtc,            
+--          'PURCHASE RETURN'  
+  @v_narr1,ISNULL(@V_TCS_Amt,0),'PR')            
+    ELSE              
+          UPDATE fa_cgtrn            
+          SET credit = ISNULL(credit, 0) + ISNULL(@V_TCS_Amt, 0)            
+          WHERE divcode = @v_divcode AND glcode = @v_tcsgl AND            
+          vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+          vocsno = 2 and trntype = 'PR'            
+   END            
+      
+
+  
+            
+--AED            
+  SET @v_cnt = 0            
+   SELECT @v_cnt = COUNT(*) from fa_cgtrn            
+   WHERE divcode = @v_divcode AND glcode = @v_aedgl AND            
+         vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+         vocsno = 2 and trntype = 'PR'            
+            
+            
+   IF ISNULL(@v_aedamt,0) >0 AND (@v_aedgl IS NOT NULL and @v_aedgl <> '' and @dutytrnty='I')            
+   BEGIN            
+    IF @v_cnt=0            
+       INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,            
+          narration1,credit,trntype)            
+       VALUES(@v_divcode,@v_aedgl,@v_invno,@v_invdt,2,@v_invtc,            
+        --  'PURCHASE RETURN'  
+@v_narr1,ISNULL(@v_aedamt,0),'PR')            
+    ELSE              
+          UPDATE fa_cgtrn            
+          SET credit = ISNULL(credit, 0) + ISNULL(@v_aedamt, 0)            
+          WHERE divcode = @v_divcode AND glcode = @v_aedgl AND            
+          vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+          vocsno = 2 and trntype = 'PR'            
+   END            
+            
+--TAX AMOUNT            
+   SET @v_cnt = 0            
+   SELECT @v_cnt = COUNT(*) from fa_cgtrn            
+   WHERE divcode = @v_divcode AND glcode = @v_taxgl AND            
+         vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+         vocsno = 2 and trntype = 'PR'            
+            
+IF ISNULL(@v_taxamt,0) >0 AND (@v_taxgl IS NOT NULL and @v_taxgl <> '' and (@taxtrnty='%'  OR @taxtrnty='I'))            
+   BEGIN            
+    IF @v_cnt=0              
+       INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,            
+          narration1,credit,trntype)            
+        VALUES(@v_divcode,@v_taxgl,@v_invno,@v_invdt,2,@v_invtc,            
+--       'PURCHASE RETURN'  
+  @v_narr1,ISNULL(@v_taxamt,0),'PR')            
+    ELSE            
+          UPDATE fa_cgtrn            
+          SET credit = ISNULL(credit, 0) + ISNULL(@v_taxamt, 0)            
+          WHERE divcode = @v_divcode AND glcode = @v_taxgl AND            
+          vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+          vocsno = 2 and trntype = 'PR'             
+   END     
+   
+   
+ -----------------------------------------CGST---------------------------------------------
+    
+--CGST AMOUNT        
+    SET @v_cnt = 0            
+   SELECT @v_cnt = COUNT(*) from fa_cgtrn            
+   WHERE divcode = @v_divcode AND glcode = @v_CGSTGL AND            
+         vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+         vocsno = 2 and trntype = 'PR'            
+            
+IF ISNULL(@V_CGST_Amt,0) >0 AND (@v_CGSTGL IS NOT NULL and @v_CGSTGL <> '' and (@taxtrnty='%'  OR @taxtrnty='I'))            
+   BEGIN            
+    IF @v_cnt=0              
+       INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,            
+          narration1,credit,trntype)            
+        VALUES(@v_divcode,@v_CGSTGL,@v_invno,@v_invdt,2,@v_invtc,            
+--       'PURCHASE RETURN'  
+  @v_narr1,ISNULL(@V_CGST_Amt,0),'PR')            
+    ELSE            
+          UPDATE fa_cgtrn            
+          SET credit = ISNULL(credit, 0) + ISNULL(@V_CGST_Amt, 0)            
+          WHERE divcode = @v_divcode AND glcode = @v_CGSTGL AND            
+          vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+          vocsno = 2 and trntype = 'PR'             
+   END     
+ 
+ --SGST AMOUNT        
+    SET @v_cnt = 0            
+   SELECT @v_cnt = COUNT(*) from fa_cgtrn            
+   WHERE divcode = @v_divcode AND glcode = @v_SGSTGL AND            
+         vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+         vocsno = 2 and trntype = 'PR'            
+            
+IF ISNULL(@V_SGST_Amt,0) >0 AND (@v_SGSTGL IS NOT NULL and @v_SGSTGL <> '' and (@taxtrnty='%'  OR @taxtrnty='I'))            
+   BEGIN            
+    IF @v_cnt=0              
+       INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,            
+          narration1,credit,trntype)            
+        VALUES(@v_divcode,@v_SGSTGL,@v_invno,@v_invdt,2,@v_invtc,            
+--       'PURCHASE RETURN'  
+  @v_narr1,ISNULL(@V_SGST_Amt,0),'PR')            
+    ELSE            
+          UPDATE fa_cgtrn            
+          SET credit = ISNULL(credit, 0) + ISNULL(@V_SGST_Amt, 0)            
+          WHERE divcode = @v_divcode AND glcode = @v_SGSTGL AND            
+          vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+          vocsno = 2 and trntype = 'PR'             
+   END     
+ 
+ 
+ 
+ --IGST AMOUNT        
+    SET @v_cnt = 0            
+   SELECT @v_cnt = COUNT(*) from fa_cgtrn            
+   WHERE divcode = @v_divcode AND glcode = @v_IGSTGL AND            
+         vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+         vocsno = 2 and trntype = 'PR'            
+            
+IF ISNULL(@V_IGST_Amt,0) >0 AND (@v_IGSTGL IS NOT NULL and @v_IGSTGL <> '' and (@taxtrnty='%'  OR @taxtrnty='I'))            
+   BEGIN            
+    IF @v_cnt=0              
+       INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,            
+          narration1,credit,trntype)            
+        VALUES(@v_divcode,@v_IGSTGL,@v_invno,@v_invdt,2,@v_invtc,            
+--       'PURCHASE RETURN'  
+  @v_narr1,ISNULL(@V_IGST_Amt,0),'PR')            
+    ELSE            
+          UPDATE fa_cgtrn            
+          SET credit = ISNULL(credit, 0) + ISNULL(@V_IGST_Amt, 0)            
+          WHERE divcode = @v_divcode AND glcode = @v_IGSTGL AND            
+          vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+          vocsno = 2 and trntype = 'PR'             
+   END     
+ 
+        
+  ---------------------------GST END------------------------------------------ 
+   
+          
+--SURCHARGE AMOUNT            
+   SET @v_cnt = 0            
+   SELECT @v_cnt = COUNT(*) from fa_cgtrn            
+   WHERE divcode = @v_divcode AND glcode = @v_scgl AND            
+         vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+         vocsno = 2 and trntype = 'PR'            
+            
+IF ISNULL(@v_scamt,0) >0  AND (@v_scgl IS NOT NULL AND @v_scgl <> '' and (@taxtrnty='%'  OR @taxtrnty='I'))            
+     BEGIN            
+  IF @v_cnt=0            
+     INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,            
+        narration1,credit,trntype)            
+       VALUES(@v_divcode,@v_scgl,@v_invno,@v_invdt,2,@v_invtc,            
+--          'PURCHASE RETURN'  
+  @v_narr1,ISNULL(@v_scamt,0),'PR')            
+    ELSE            
+          UPDATE fa_cgtrn            
+     SET credit = ISNULL(credit, 0) + ISNULL(@v_scamt, 0)            
+          WHERE divcode = @v_divcode AND glcode = @v_scgl AND            
+          vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+          vocsno = 2 and trntype = 'PR'             
+   END            
+            
+--FREIGHT CHARGES            
+   SET @v_cnt = 0            
+   SELECT @v_cnt = COUNT(*) from fa_cgtrn            
+   WHERE divcode = @v_divcode AND glcode = @v_freightgl AND            
+         vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+         vocsno = 2 and trntype = 'PR'            
+            
+   IF ISNULL(@v_ocamt,0) >0  AND (@v_freightgl IS NOT NULL AND @v_freightgl <> '')              
+   BEGIN            
+     if @v_cnt=0             
+       INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,            
+          narration1,credit,trntype)            
+       VALUES(@v_divcode,@v_freightgl,@v_invno,@v_invdt,2,@v_invtc,            
+        --  'PURCHASE RETURN'  
+  @v_narr1,ISNULL(@v_ocamt,0),'PR')            
+    ELSE            
+          UPDATE fa_cgtrn            
+          SET credit = ISNULL(credit, 0) + ISNULL(@v_ocamt, 0)            
+          WHERE divcode = @v_divcode AND glcode = @v_freightgl AND            
+          vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+          vocsno = 2 and trntype = 'PR'             
+   END            
+            
+--CHARITY            
+   SET @v_cnt = 0            
+   SELECT @v_cnt = COUNT(*) from fa_cgtrn            
+   WHERE divcode = @v_divcode AND glcode = @v_charitygl AND            
+         vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+         vocsno = 2 and trntype = 'PR'            
+            
+ IF ISNULL(@v_charity,0) >0  AND (@v_charitygl IS NOT NULL AND @v_charitygl <> '')              
+   BEGIN            
+    if @v_cnt=0             
+       INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,            
+          narration1,credit,trntype)            
+       VALUES(@v_divcode,@v_charitygl,@v_invno,@v_invdt,2,@v_invtc,            
+        --  'PURCHASE RETURN'  
+  @v_narr1,ISNULL(@v_charity,0),'PR')            
+    ELSE            
+          UPDATE fa_cgtrn            
+          SET credit = ISNULL(credit, 0) + ISNULL(@v_charity, 0)            
+          WHERE divcode = @v_divcode AND glcode = @v_charitygl AND            
+          vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+          vocsno = 2 and trntype = 'PR'             
+   END            
+--CESS            
+   SET @v_cnt = 0            
+   SELECT @v_cnt = COUNT(*) from fa_cgtrn            
+   WHERE divcode = @v_divcode AND glcode = @v_cessgl AND            
+         vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+         vocsno = 2 and trntype = 'PR'            
+   IF ISNULL(@v_cess,0) >0  AND (@v_cessgl IS NOT NULL AND @v_cessgl <> '')              
+   BEGIN            
+    if @v_cnt=0            
+       INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,            
+          narration1,credit,trntype)            
+       VALUES(@v_divcode,@v_cessgl,@v_invno,@v_invdt,2,@v_invtc,            
+        --  'PURCHASE RETURN'  
+  @v_narr1,ISNULL(@v_cess,0),'PR')            
+    ELSE            
+          UPDATE fa_cgtrn            
+          SET credit = ISNULL(credit, 0) + ISNULL(@v_cess, 0)            
+          WHERE divcode = @v_divcode AND glcode = @v_cessgl AND            
+          vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+          vocsno = 2 and trntype = 'PR'             
+    END            
+--INSURANCE AMOUNT            
+   SET @v_cnt = 0            
+   SELECT @v_cnt = COUNT(*) from fa_cgtrn            
+   WHERE divcode = @v_divcode AND glcode = @v_insgl AND            
+         vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+         vocsno = 2 and trntype = 'PR'            
+IF ISNULL(@v_insamt,0) >0 AND (@v_insgl IS NOT NULL AND @v_insgl <> '')            
+   BEGIN            
+    if @v_cnt=0            
+       INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,            
+          narration1,credit,trntype)            
+       VALUES(@v_divcode,@v_insgl,@v_invno,@v_invdt,2,@v_invtc,            
+          --'PURCHASE RETURN'  
+   @v_narr1,ISNULL(@v_insamt,0),'PR')            
+    ELSE            
+          UPDATE fa_cgtrn            
+         SET credit = ISNULL(credit, 0) + ISNULL(@v_insamt, 0)            
+          WHERE divcode = @v_divcode AND glcode = @v_insgl AND            
+          vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+          vocsno = 2 and trntype = 'PR'             
+   END            
+               
+-- ROUND-OFF            
+            
+   IF (NOT ISNULL(@v_roff,0) =0 ) AND (@v_roffgl IS NOT NULL AND @v_roffgl <> '')             
+   BEGIN            
+            
+      IF @v_roff >0             
+        BEGIN            
+     SET @v_cnt = 0            
+  SELECT @v_cnt = COUNT(*) from fa_cgtrn            
+     WHERE divcode = @v_divcode AND glcode = @v_roffgl AND            
+   vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+           vocsno = 2 and trntype = 'PR'            
+  if @v_cnt=0            
+           INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,            
+              narration1,credit,trntype)            
+           VALUES(@v_divcode,@v_roffgl,@v_invno,@v_invdt,2,@v_invtc,            
+--              'PURCHASE RETURN'  
+  @v_narr1,ISNULL(@v_roff,0),'PR')            
+  ELSE            
+   UPDATE fa_cgtrn            
+           SET credit = ISNULL(credit, 0) + ISNULL(@v_roff, 0)            
+           WHERE divcode = @v_divcode AND glcode = @v_roffgl AND            
+           vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+           vocsno = 2 and trntype = 'PR'             
+             END                  
+      ELSE            
+       BEGIN              
+     SET @v_cnt = 0            
+  SELECT @v_cnt = COUNT(*) from fa_cgtrn            
+     WHERE divcode = @v_divcode AND glcode = @v_roffgl AND          
+           vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+           vocsno = 1 and trntype = 'PR'            
+  IF @v_cnt=0            
+            INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,            
+               narration1,debit,trntype)            
+            VALUES(@v_divcode,@v_roffgl,@v_invno,@v_invdt,1,@v_invtc,            
+            --   'PURCHASE RETURN'  
+  @v_narr1,ABS(ISNULL(@v_roff,0)),'PR')            
+    ELSE            
+   UPDATE fa_cgtrn            
+            SET debit = ISNULL(debit, 0) + ABS(ISNULL(@v_roff, 0))            
+            WHERE divcode = @v_divcode AND glcode = @v_roffgl AND            
+            vocdt = @v_invdt AND tc = @v_invtc AND vocno = @v_invno AND            
+            vocsno = 1 and trntype = 'PR'             
+                   END            
+ END            
+            
+--INVOICE AMOUNT            
+            
+             
+            
+   BEGIN            
+       INSERT INTO fa_cstrn (divcode,slcode,vocdt,tc,vocno,vocsno,            
+        narration1,debit,trntype)            
+       VALUES(@v_divcode,@v_slcode,@v_invdt,@v_invtc,@v_invno,1,            
+        --  'PURCHASE RETURN'  
+  @v_narr1,ISNULL(@v_invamt,0),'PR')            
+             
+     -- CONTROL A/C            
+                  
+       set @v_cnt = 0            
+                  
+       SELECT @v_cglcode = glcode  FROM fa_prty            
+       WHERE prtytyp = substring(@v_slcode,1,2)            
+            
+       SELECT @v_cnt = COUNT(*)  FROM fa_cgtrn            
+       WHERE divcode = @v_divcode AND glcode = @v_cglcode AND            
+       vocdt = @v_ldate AND tc = @v_abstc AND vocno = @v_gvocno AND            
+       vocsno = 1 AND trntype = 'AB'            
+            
+       IF @v_cnt > 0             
+          UPDATE fa_cgtrn            
+          SET debit = ISNULL(debit, 0) + ISNULL(@v_invamt, 0)            
+          WHERE divcode = @v_divcode AND glcode = @v_cglcode AND            
+             vocdt = @v_ldate AND tc = @v_abstc AND vocno = @v_gvocno AND            
+             vocsno = 1 AND trntype = 'AB'            
+              ELSE            
+            
+                INSERT INTO fa_cgtrn            
+          (divcode,glcode,tc,vocno,vocdt,vocsno,trntype,narration1,debit)            
+VALUES(@v_divcode,@v_cglcode,@v_abstc,@v_gvocno,@v_ldate,1,'AB',            
+          'Sales Summary',ISNULL(@v_invamt,0))            
+            
+  -- UPDATION OF ACCOUNTS RECEIVABLES TABLE            
+             
+       IF substring(@v_slcode,1,1) = 'C'             
+                    INSERT INTO fa_apdbt            
+              (divcode, slcode, trntype, tc, vocdt, vocno, vocsno, narr1,             
+              debit, balance)            
+          VALUES(@v_divcode, @v_slcode, 'PR', @v_invtc, @v_invdt, @v_invno, 1,            
+        --      'PURCHASE RETURN'  
+   @v_narr1, @v_invamt, @v_invamt)            
+       ELSE            
+           IF substring(@v_slcode,1,1) = 'D'             
+                        INSERT INTO fa_arecm            
+                  (divcode, slcode,agent_code, trntype, invtc, invdt, invno, invsno,            
+                  ordno, orddt, narr1, crdays, paymode, invamt, amtdue)            
+               VALUES(@v_divcode, @v_slcode,isnull(@v_agentcode,''),'PR', @v_invtc, @v_invdt, @v_invno,            
+                  1,@v_ordno, @v_orddt, @v_narr1, @v_crdays, @v_paymode,            
+                  @v_invamt, @v_invamt)           
+   --'PURCHASE RETURN'   
+    END            
+            
+ END            
+end            
+      
+      
+    
+

@@ -1,0 +1,368 @@
+CREATE proc SP_rmi_receiptreg_varitywise              
+@Divcode as varchar(5),              
+@FromDate as varchar(10),              
+@Todate as varchar(10),              
+@Lotyear as varchar(5)              
+as              
+SELECT a.varcode,B.VARNAME,A.ARRDT,A.LOTNO,C.SLNAME,sum(A.BALES) as Bales_qty,UNIT =CASE WHEN A.BBLFLG='B'               
+THEN 'Bales' else 'Borah' end,round(sum(A.NETWT),2) AS KGS,avg(a.RATEKG) AS 'RATE/CANDY',              
+sum(a.NETWT)*round((isnull(a.ratecy,0)/355.6187),2) AS 'VALUE',isnull(a.ratecy,0) as ratecy,              
+sum(a.totlandcost) as totlandcost,a.arrno,a.inwardno,a.inwarddate,e.ordqty,e.candyrate,E.CONTNO,E.CONTDT,  
+sum(a.lrfrtamt) as freight,D.PRNO AS SERIALNO      
+FROM RM_LOT A,RM_VAR B,FA_SLMAS C,rm_arrival d,rm_cont e               
+WHERE a.arrno=d.arrno and a.divcode = d.divcode and a.arrdt=d.arrdate and a.varcode=d.varcode and a.lotno=d.lotno   
+and a.lotdt=d.lotdt and a.supcd=d.supcd and        
+d.contno=e.contno and d.contdt=e.contdt and d.divcode=e.divcode and a.supcd=e.supcd and  d.varcode=e.varcode and        
+a.divcode=e.divcode and A.VARCODE=B.VARCODE AND               
+A.SUPCD=C.SLCODE AND A.lotdt BETWEEN @FromDate AND @ToDate and opflg='N' and a.rejflg='N' and               
+a.lotyear=@Lotyear and a.divcode=@Divcode               
+group by a.varcode,B.VARNAME,A.ARRDT,A.LOTNO,C.SLNAME,a.bblflg,a.ratecy,a.arrno,a.inwardno,a.inwarddate,  
+e.ordqty,e.candyrate,E.CONTNO,E.CONTDT,D.PRNO order by a.lotno
+
+
+go
+
+
+
+CREATE TABLE [dbo].[Temp_per_stockstatementvar](
+	[VARNAME] [varchar](20) NOT NULL,
+	[opbales] [decimal](38, 0) NULL,
+	[opbORAS] [decimal](38, 0) NULL,
+	[OPKGS] [decimal](38, 3) NULL,
+	[OPVALUE] [numeric](38, 6) NULL,
+	[RECBALES] [decimal](38, 0) NULL,
+	[RECBORAS] [decimal](38, 0) NULL,
+	[RECKGS] [decimal](38, 3) NULL,
+	[RECVALUE] [numeric](38, 6) NULL,
+	[ISSBALES] [int] NULL,
+	[ISSBORAS] [int] NULL,
+	[ISSKGS] [decimal](38, 3) NULL,
+	[ISSVALUE] [decimal](38, 6) NULL,
+	[REJBALES] [int] NULL,
+	[REJKGS] [decimal](38, 3) NULL,
+	[REJVALUE] [decimal](38, 6) NULL,
+	[CLOBALES] [decimal](38, 0) NULL,
+	[CLOBORAS] [decimal](38, 0) NULL,
+	[CLOKGS] [decimal](38, 3) NULL,
+	[CLOSEVALUE] [numeric](38, 6) NULL
+) ON [PRIMARY]
+
+GO
+
+
+ALTER Procedure [dbo].[FormIVDatas]
+@date1 varchar(10),
+@Month varchar(10),
+@MonthValue varchar(10),
+@Category varchar(10)
+/*@OPENBALES int,
+@OPENKGS decimal(20,3),
+@stot int,
+@Receiptkgs decimal(20,3),
+@stot4 int,
+@Consumption decimal(20,3)  */
+
+as
+Select date1,opbales as Openbale,opborah as OPENBOARH,optot as oPENTOTAL,optotkg as opkgs,
+recbale as Recpbale,recborah recpborah,rectot Rectotal,rectotkg as reckgs,oprecbale as oprebale,
+oprecborah opreborah,oprectot opretot,oprectotkg oprekgs,issbale as issbale,issboarh as issborah,
+isstot as isstotal,isstotkg as isskgs,isstran,isstrantot,totbale as closbale,totborah as closborah,
+total as closbaleboar,totkg  as closing,REJBALE AS REJBALES,rejkg as rejectedkgs,ADJBALE AS ADJBALES,
+adjkg as adjustedkgs,salbale,saltotkg, saltot as saleType from formiv where Date1 <= @date1 order by date1
+
+
+go
+
+
+ALTER TABLE StockLotwisePositiontemp ALTER COLUMN VALUE NUMERIC(13,3)
+
+
+go
+
+CREATE VIEW FA_SLMAS_3 AS
+Select * FROM fa_slmas
+
+go
+
+
+ALTER Procedure [dbo].[Sp_CottonSales_Print] @Divcode Varchar(2),@InvNo Varchar(8),@InvDt Varchar(10)   
+as  
+select  Hd.Inv_No,Hd.date,Hd.Cust_Code,sl.SlName,Sl.Add1,Sl.Add2,  
+Sl.PIN,Dt.Cont_No as LotNo ,Sl.TINNO,Vr.VarName,Dt.Packs,Dt.InvSNo,  
+Dt.Nett_Kgs,Dt.RAte_ex,Dt.Nett_Kgs * Dt.RAte_ex as Value,Dt.Cess_Amt,Dt.Tax_Amt,  
+Dt.AED_Amt,Dt.BED_Amt,Hd.Carrier_code,Car.CARNAME,PRE_TIME,REM_TIME,LR_NO,VEHICLE_NO, pd.DIV_LOGO
+FROM RM_CinvHd hd   
+INNER JOIN RM_Cinvdt dt ON Hd.Divcode=dt.Divcode and Hd.Inv_Type=Dt.Inv_Type and Hd.Inv_No=dt.Inv_No  
+LEFT OUTER JOIN RM_Lot L ON L.LotNo=Dt.Cont_No and L.Divcode=Dt.Divcode  
+INNER JOIN Fa_SlMas Sl ON Sl.SlCode=Hd.Cust_Code  
+LEFT OUTER JOIN RM_Var Vr ON Vr.VarCode=L.VarCode  
+LEFT OUTER JOIN po_car Car ON Car.CARCODE=Hd.Carrier_Code  
+INNER JOIN PP_DIVMAS pd ON pd.DIVCODE = dt.DIVCODE 
+WHERE Hd.Inv_No=@InvNo and Hd.Date=@InvDt and Hd.Divcode=@Divcode  
+
+
+go
+
+alter PROC [dbo].[sp_issuesreport] --'01','2012-06-18','251'
+@Divcode AS varchar(5),        
+@date AS varchar(10),        
+@dcno AS varchar(10)        
+AS
+
+SELECT  a.VARCODE, a.LOTNO, a.LOTDT, b.GRWT, b.TAREWT, ISNULL(b.moisture_et, 0) AS moiture, b.NETWT, ISNULL(b.ISQTY, 0) AS 'IsQty', 
+                      ISNULL(c.ACTISSKGS, 0) AS 'AIKgs', ISNULL(c.ACTISSKGS, 0) - ISNULL(b.ISQTY, 0) AS 'Excess', c.BALENO, c.ACTISSKGS, f.MIXGRPNAME, g.cntname, 
+                      e.ordno, h.DIVNAME,DIV_LOGO, h.ADD1, h.ADD2, h.ADD3, h.PHONE1, h.FAX, h.EMAIL, h.WEBADDR
+FROM         RM_ISSH AS e INNER JOIN
+                      RM_ISSB AS c ON e.DIVCODE = c.DIVCODE AND e.DOCNO = c.DOCNO AND e.DOCDT = c.DOCDT AND e.ISSTYPE = c.ISSTYPE INNER JOIN
+                     (select distinct varcode,lotno,divcode,lotdt from RM_LOT ) AS a INNER JOIN
+                      RM_BALE AS b ON a.DIVCODE = b.DIVCODE AND a.LOTNO = b.LOTNO AND a.LOTDT = b.lotdt ON c.DIVCODE = a.DIVCODE AND c.lotdt = b.lotdt AND 
+                      c.LOTNO = b.LOTNO AND c.BALENO = b.BALENO INNER JOIN
+                      RM_MIXGRP AS f ON e.MIXGRP = f.MIXGRPCD INNER JOIN
+                      RM_COUNT AS g ON e.cntcd = g.cntcd INNER JOIN
+                      PP_DIVMAS AS h ON e.DIVCODE = h.DIVCODE AND f.DIVCODE = h.DIVCODE
+WHERE     (a.DIVCODE = @divcode) AND (c.DOCNO = @dcno) AND (c.DOCDT = @date)
+ORDER BY a.LOTNO
+
+
+go
+
+
+ALTER Proc [dbo].[RawMatrialWeightList]    
+As    
+    
+SELECT  a.b1,a.g1,a.b2,a.g2,a.b3,a.g3,a.b4,a.g4,a.b5,a.g5,a.b6,a.g6,a.b7,a.g7,a.b8,a.g8,a.b9,a.g9,  
+a.b10,a.g10,SNO,catname,VARNAME,Quantity,d.slname,b.LOTNO,prno,plotno,e.b2 as [Quantity],e.b3 as [Grosswt],  
+e.b4 as [tarewt],e.b5 as [Netwt],e.b6 as [RateCy],e.b7 as [Ptywgt],e.b8 as [LotDt],e.b9 as [Allow],  
+e.b10 as [lrfrtAmt], b.catname, prno, b.ptywgt ,b.ptarewt, b.pnetwt, b.lotdt, b.ALLOWANCEAMT, b.Billno,
+b.lorrynos,
+pd.DIV_LOGO, pd.DIVNAME, pd.add1,pd.add2,pd.add3, pd.phone1, pd.fax, pd.email, pd.webaddr,  
+pd.PINCODE, pd.HOState, pd.CITY
+FROM ACH1 a,ACH3 b,rm_var c,fa_slmas d,ACH4 e, PP_DIVMAS pd  
+where a.lotno=b.lotno and a.catcd=b.catcd and b.varcode=c.varcode and d.slcode=b.supcd and   
+b.lotno=e.b1 and lottype='A'AND b.ratecy=e.b6 Order by a.Lotno 
+
+
+go
+
+
+alter PROC [dbo].[sp_issuesreport] --'01','2012-06-17','248'  
+@Divcode AS varchar(5),          
+@date AS varchar(15),          
+@dcno AS varchar(10)          
+AS  
+  
+SELECT  a.VARCODE, a.LOTNO, a.LOTDT, b.GRWT, b.TAREWT, ISNULL(b.moisture_et, 0) AS moiture, b.NETWT, ISNULL(b.ISQTY, 0) AS 'IsQty',   
+                      ISNULL(c.ACTISSKGS, 0) AS 'AIKgs', ISNULL(c.ACTISSKGS, 0) - ISNULL(b.ISQTY, 0) AS 'Excess', c.BALENO, c.ACTISSKGS, f.MIXGRPNAME, g.cntname,   
+                      e.ordno, h.DIVNAME,DIV_LOGO, h.ADD1, h.ADD2, h.ADD3, h.PHONE1, h.FAX, h.EMAIL, h.WEBADDR,
+                      h.CITY, h.PINCODE, h.HOState, v.VARNAME
+FROM         RM_ISSH AS e INNER JOIN  
+                      RM_ISSB AS c ON e.DIVCODE = c.DIVCODE AND e.DOCNO = c.DOCNO AND e.DOCDT = c.DOCDT AND e.ISSTYPE = c.ISSTYPE INNER JOIN  
+                     (select distinct varcode,lotno,divcode,lotdt from RM_LOT ) AS a INNER JOIN  
+                      RM_BALE AS b ON a.DIVCODE = b.DIVCODE AND a.LOTNO = b.LOTNO AND a.LOTDT = b.lotdt ON c.DIVCODE = a.DIVCODE AND c.lotdt = b.lotdt AND   
+                      c.LOTNO = b.LOTNO AND c.BALENO = b.BALENO INNER JOIN  
+                      RM_MIXGRP AS f ON e.MIXGRP = f.MIXGRPCD INNER JOIN  
+                      RM_COUNT AS g ON e.cntcd = g.cntcd INNER JOIN  
+                      PP_DIVMAS AS h ON e.DIVCODE = h.DIVCODE AND f.DIVCODE = h.DIVCODE  INNER JOIN 
+                      RM_VAR AS v ON v.VARCODE = a.varcode
+WHERE     (a.DIVCODE = @divcode) AND (c.DOCNO = @dcno) AND (c.DOCDT = @date)  
+--WHERE     (a.DIVCODE = 01) AND (c.DOCNO = 251) AND (c.DOCDT = '2012-06-18')  
+ORDER BY a.LOTNO
+
+
+go
+
+
+CREATE VIEW FA_SLMAS_1 AS
+SELECT *FROM FA_SLMAS fs
+
+GO
+
+CREATE VIEW RM_CONT_1 AS 
+SELECT *FROM RM_CONT rc
+
+
+go
+
+
+ALTER PROC KSP_LSALES_SALEORDER --'01','12000360','NS'              
+ @DIVCODE VARCHAR(2),                  
+ @CONTNO VARCHAR(10),                  
+ @CONTTYPE VARCHAR(5)                  
+ AS                   
+ SELECT CONVERT(NUMERIC,(RIGHT(H.Cont_No,6))) AS Order_No, H.Cont_No As Order_No1, H.Date, H.Cont_Type,H.curcode as Curcode, 
+ Typ.Description As Type,   
+ C.SlName As Customer, IsNull(A.SlName, '') As Agent,                  
+ T.PayTerm_Desc As PayTerm, M.Pay_Desc As PayMode, H.Credit_Days, H.Remarks,                  
+ Case D.Rate_Flag When 'X' Then 'Ex-Mill Rate' When 'N' Then 'Nett Rate' End As Rate_Flag,                  
+ P.Description As Product, Tt.Description As Pack_Type, D.Packs, D.Kgs,pd.*,                  
+ D.rate , D.Rate_Units,pd.div_printname, pd.div_unitname,c.add1,c.add2,c.add3,c.city,c.state,    
+ c.country,c.pin,c.phone1,pd.DIV_LOGO, pd.ADD1, pd.ADD2, pd.ADD3, pd.CITY, pd.PINCODE, pd.HOState,  
+ pd.PHONE1, pd.FAX, pd.EMAIL, pd.WEBADDR, D.DELY_TO, ia.[NAME]  
+ From Ig_ContHd H                   
+  Inner Join Ig_ContDt D On D.Cont_No = H.Cont_No And D.Cont_Type = h.Cont_Type and d.DIVCODE=h.DIVCODE                  
+ Inner Join Ig_ContType Typ On Typ.Cont_Type = H.Cont_Type  and Typ.DIVCODE=h.DIVCODE                  
+ Inner Join Fa_SlMas C On  C.SlCode = H.Cust_Code                  
+ Left Outer Join Fa_SlMas A On  A.SlCode = H.Agent_Code                  
+ Inner Join Ig_PayTerm T On T.PayTerm_Code = H.Pay_terms                  
+ Inner Join Ig_PayMode M On M.Pay_Code = H.Pay_Mode                  
+ Inner Join Ig_Product P On P.Product_Code = D.Product_Code  and P.DIVCODE=h.DIVCODE                  
+ Inner Join Ig_PackType Tt on Tt.Pack_Type = D.Pack_Type                  
+ INNER JOIN PP_DIVMAS pd ON pd.DIVCODE=h.DIVCODE   
+ INNER JOIN IG_AREA ia ON ia.AREA_CODE = h.DESPATCH_TO  
+                   
+ Where H.DivCode = @DIVCODE And H.Cont_No = @CONTNO                  
+ And H.Cont_Type = @CONTTYPE AND                  
+ D.DivCode = @DIVCODE And D.Cont_No = @CONTNO                  
+ And D.Cont_Type = @CONTTYPE   
+
+go
+
+
+Alter Proc [dbo].[RawMatrialWeightList]      
+As      
+      
+SELECT  a.b1,a.g1,a.b2,a.g2,a.b3,a.g3,a.b4,a.g4,a.b5,a.g5,a.b6,a.g6,a.b7,a.g7,a.b8,a.g8,a.b9,a.g9,    
+a.b10,a.g10,SNO,catname,VARNAME,Quantity,d.slname,b.LOTNO,prno,plotno,e.b2 as [Quantity],e.b3 as [Grosswt],    
+e.b4 as [tarewt],e.b5 as [Netwt],e.b6 as [RateCy],e.b7 as [Ptywgt],e.b8 as [LotDt],e.b9 as [Allow],    
+e.b10 as [lrfrtAmt], b.catname, prno, b.ptywgt ,b.ptarewt, b.pnetwt, b.lotdt, b.ALLOWANCEAMT, b.Billno,  
+b.lorrynos, b.freght,
+pd.DIV_LOGO, pd.DIVNAME, pd.add1,pd.add2,pd.add3, pd.phone1, pd.fax, pd.email, pd.webaddr,    
+pd.PINCODE, pd.HOState, pd.CITY  
+FROM ACH1 a,ACH3 b,rm_var c,fa_slmas d,ACH4 e, PP_DIVMAS pd    
+where a.lotno=b.lotno and a.catcd=b.catcd and b.varcode=c.varcode and d.slcode=b.supcd and     
+b.lotno=e.b1 and lottype='A'AND b.ratecy=e.b6 Order by a.Lotno 
+
+
+go
+
+
+
+--SP_rmi_receiptreg_varitywise '01','2012-04-01','2012-08-01',2012
+create proc SP_rmi_receiptreg_varitywise
+@Divcode as varchar(5),                
+@FromDate as varchar(10),                
+@Todate as varchar(10),                
+@Lotyear as varchar(5)                
+as                
+SELECT     A.VARCODE, B.VARNAME, A.ARRDT, A.LOTNO, C.slname, SUM(A.BALES) AS Bales_qty, 
+CASE WHEN A.BBLFLG = 'B' THEN 'Bales' ELSE 'Borah' END AS UNIT, ROUND(SUM(A.NETWT), 2) AS KGS, 
+AVG(A.RATEKG) AS 'RATE/CANDY', SUM(A.NETWT) * ROUND(ISNULL(A.RATECY, 0) / 355.6187, 2) AS 'VALUE',
+ISNULL(A.RATECY, 0) AS ratecy, SUM(A.TOTLANDCOST) AS totlandcost, A.ARRNO, A.inwardno, A.inwarddate,
+e.ORDQTY, e.CANDYRATE, e.CONTNO, e.CONTDT, SUM(A.LRFRTAMT) AS freight, d.PRNO AS SERIALNO, 
+PP_DIVMAS.DIVNAME, PP_DIVMAS.ADD1
+FROM         RM_LOT AS A INNER JOIN
+RM_ARRIVAL AS d ON A.ARRNO = d.ARRNO AND A.DIVCODE = d.DIVCODE AND A.ARRDT = d.ARRDATE AND 
+A.VARCODE = d.VARCODE AND A.LOTNO = d.LOTNO AND A.LOTDT = d.lotdt AND A.SUPCD = d.SUPCD INNER JOIN
+RM_CONT AS e ON d.CONTNO = e.CONTNO AND d.CONTDT = e.CONTDT AND d.DIVCODE = e.DIVCODE AND
+A.SUPCD = e.SUPCD AND d.VARCODE = e.VARCODE AND A.DIVCODE = e.DIVCODE INNER JOIN
+RM_VAR AS B ON A.VARCODE = B.VARCODE INNER JOIN
+FA_SLMAS AS C ON A.SUPCD = C.slcode INNER JOIN
+PP_DIVMAS ON A.DIVCODE = PP_DIVMAS.DIVCODE
+WHERE     (A.LOTDT BETWEEN @FromDate AND @Todate) AND (A.OPFLG = 'N') AND 
+(A.REJFLG = 'N') AND (A.LOTYEAR = @Lotyear) AND (A.DIVCODE = @Divcode)
+GROUP BY A.VARCODE, B.VARNAME, A.ARRDT, A.LOTNO, C.slname, A.BBLFLG, A.RATECY, A.ARRNO, A.inwardno, 
+A.inwarddate, e.ORDQTY, e.CANDYRATE, e.CONTNO, e.CONTDT, d.PRNO, PP_DIVMAS.DIVNAME, PP_DIVMAS.ADD1
+ORDER BY A.LOTNO
+
+
+
+go
+
+
+
+     
+  --sp_rmi_receiptregdtwise '2012-04-01','2012-08-09','C2A0001','C2Z001','01'  
+create proc sp_rmi_receiptregdtwise                
+@Fdate varchar(15),          
+@Tdate varchar(15),          
+@FSubCd varchar(20),          
+@TSubCd  varchar(20),          
+@Divcode  varchar(2)        
+    
+AS  
+  
+select distinct X.inwardno,X.inwarddate,X.PLOTNO,X.PGRSWT,X.PTAREWT,X.GRSWGT,  
+X.carcode, X.arrno, X.arrdt,   
+--X.dcno, X.dcdt,   
+X.lotdt,X.lotno,X.lotyear,X.prmark,X.pjno,X.contno,                      
+X.dlytype,X.varcode,x.varname,  
+--x.delfrom,X.mergeno,   
+X.pnetwt,  
+--X.CURRCODE,   
+X.bales,x.contdt,X.netwt,X.ratecy,X.pjamt,                      
+X.taxamt,X.vatamt,X.ldgulg,X.freight,X.totalvalue,X.supplier,X.Broker,X.CARNAME,                      
+X.brkcd,X.lorrynos,X.LRFRTAMT,X.CSTAMT,X.CSTVAL,X.VATVAL,                      
+X.DBTAMT,X.fbillno, X.AssValue,X.OthersAmt,x.scamt,                      
+X.RateKg,X.commamt,X.brkcom,X.vcatcd,                      
+X.tratekg,X.DIFF,X.ITEMVALUE,X.billvalue,                      
+X.Purcost,X.otherchrg,                      
+(X.Purcost/X.netwt) AS Rate_Kg, X.DIVNAME AS DIVNAME, X.add1 AS ADDR      
+From                      
+(select isnull(a.aedamt,0) as aedamt,isnull(a.bedamt,0) as bedamt,                      
+isnull(a.sedamt,0) as sedamt,ISNULL(a.insamt,0) AS insamt,isnull(a.cessamt,0)as cessamt,                      
+a.inwardno,a.inwarddate,isnull(a.PLOTNO,0) as PLOTNO,isnull(a.PGRSWT,0) as PGRSWT,  
+isnull(a.PTAREWT,0) as PTAREWT,isnull(a.GRSWGT,0) as GRSWGT,                      
+b.carcode,a.arrno, a.arrdt,   
+--a.dcno, a.dcdt,   
+a.lotdt,a.lotno,  
+--a.delfrom,a.mergeno,   
+a.pnetwt,   
+a.lotyear,b.prmark,a.pjno,b.contno as pono,                      
+c.dlytype,a.varcode,v.varname, a.bales,c.contdt, ISNULL(a.ratecy,0) AS ratecy,a.pjamt,                      
+ISNULL(a.taxamt,0) AS taxamt,ISNULL(a.vatamt,0) AS vatamt,                      
+a.ldgulg,ISNULL(b.freight,0) AS FREIGHT,ISNULL(a.totlandcost,0) as totalvalue,e.slname as supplier,  
+g.slname AS Broker,h.CarName as CARNAME,                      
+isnull(b.brkcd,'') as brkcd,ISNULL(A.NETWT,0) AS NETWT,c.contno,b.lorrynos,                      
+ISNULL(a.LRFRTAMT,0) AS LRFRTAMT,ISNULL(A.CSTAMT,0) AS CSTAMT,                      
+CASE WHEN a.vcatcd='O' THEN ISNULL(a.vatamt,0) END AS CSTVAL,                      
+CASE WHEN a.vcatcd<>'O' THEN ISNULL(a.vatamt,0) END AS VATVAL,                      
+ISNULL(A.DBAMT,0) AS DBTAMT,a.fbillno, ISNULL(a.AssValue,0) AS AssValue,ISNULL(a.OthersAmt,0) AS OthersAmt,                      
+ISNULL(a.RateKg,0) AS RateKg,ISNULL(a.commamt,0) AS commamt,ISNULL(a.brkcom,0) AS brkcom,a.vcatcd,   
+--C.currcode,                  
+(IsNull(totlandcost,0)/ ISNULL(A.NETWT,0)) AS tratekg,                      
+(ISNULL(A.NETWT,0) - ISNULL(A.NETWT,0)) AS DIFF,ISNULL(A.scamt,0) AS scamt,                      
+(ISNULL(a.AssValue,0)-ISNULL(a.OthersAmt,0)) AS ITEMVALUE,                      
+(ISNULL(a.AssValue,0)-ISNULL(a.OthersAmt,0)) + ISNULL(a.vatamt,0) + ISNULL(a.scamt,0)+ ISNULL(A.CSTAMT,0) + ISNULL(a.OthersAmt,0) + isnull(a.aedamt,0) + isnull(a.bedamt,0) + isnull(a.cessamt,0) + isnull(a.sedamt,0)- isnull(a.cashdisamt,0) -               
+  
+    
+      
+isnull(a.tradedisamt,0) AS billvalue,                      
+(ISNULL(a.AssValue,0)-ISNULL(a.OthersAmt,0)) + ISNULL(a.vatamt,0) + ISNULL(a.scamt,0)+ ISNULL(A.CSTAMT,0) + ISNULL(a.OthersAmt,0) + isnull(a.aedamt,0) + isnull(a.bedamt,0) + isnull(a.cessamt,0) + isnull(a.sedamt,0) - isnull(a.cashdisamt,0) -              
+  
+    
+      
+       
+isnull(a.tradedisamt,0) - ISNULL(a.vatamt,0) - ISNULL(a.scamt,0) + ISNULL(a.LRFRTAMT,0) - ISNULL(A.DBAMT,0) - ISNULL(a.commamt,0) - ISNULL(a.brkcom,0) - isnull(a.aedamt,0) - isnull(a.bedamt,0) - isnull(a.cessamt,0) - isnull(a.sedamt,0)                    
+  
+AS Purcost,                      
+ISNULL(a.commamt,0) + ISNULL(a.brkcom,0) AS otherchrg, pd.DIVNAME, pd.add1             
+from  rm_lot a                
+inner join rm_arrival b on A.ARRDT=B.ARRDATE AND a.ARRno = b.ARRno and a.lotno=b.lotno and a.lotdt=b.lotdt AND                
+a.arrno=b.arrno and a.divcode=b.divcode and a.supcd=b.supcd                
+inner join rm_cont c on b.contno = c.contno and b.contdt=c.contdt and b.divcode=c.divcode                
+inner join fa_slmas e on a.supcd=e.slcode                
+left join fa_slmas g on c.brkcd=g.slcode                
+inner join PO_CAR h on h.CARCODE = b.CARCODE                
+inner join rm_var v on a.varcode=v.varcode
+INNER JOIN PP_DIVMAS pd ON pd.DIVCODE = a.divcode
+WHERE  a.supcd between @FSubCd and @TSubCd                 
+and a.arrdt between @Fdate  and @Tdate AND a.OPFLG<>'Y'                      
+AND LOTYEAR=year(@Fdate)    
+--and isnull(a.delflg,'N')<>'Y'                
+and a.DivCode =@Divcode)X                      
+group by X.aedamt,X.bedamt,X.sedamt,X.insamt,X.cessamt,                      
+X.inwardno,X.inwarddate,X.PLOTNO,X.PGRSWT,X.PTAREWT,X.GRSWGT,                      
+X.carcode,X.lotdt,x.arrno, x.arrdt,   
+--x.dcno, x.dcdt,   
+X.lotno,X.lotyear,X.prmark,X.pjno,X.contno,                     
+X.dlytype,X.varcode,X.bales,x.contdt,X.netwt,X.ratecy,X.pjamt,                      
+x.varname,  
+--x.delfrom, X.mergeno,  
+X.pnetwt, X.taxamt,X.vatamt,X.ldgulg,X.freight,X.totalvalue,X.supplier,X.Broker,X.CARNAME,                      
+X.brkcd,  
+--X.CURRCODE,   
+X.lorrynos,X.LRFRTAMT,X.CSTAMT,X.CSTVAL,X.VATVAL,                      
+X.DBTAMT,X.fbillno, X.AssValue,X.OthersAmt,x.scamt,                      
+X.RateKg,X.commamt,X.brkcom,X.vcatcd,                      
+X.tratekg,X.DIFF,X.ITEMVALUE,X.billvalue,                      
+X.purcost,X.otherchrg,x.DIVNAME, x.add1

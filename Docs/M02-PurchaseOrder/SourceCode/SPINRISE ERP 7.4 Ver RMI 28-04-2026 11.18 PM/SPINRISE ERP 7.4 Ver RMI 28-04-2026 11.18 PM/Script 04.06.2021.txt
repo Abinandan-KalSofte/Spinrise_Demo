@@ -1,0 +1,30 @@
+/*  
+ Ksp_RMI_Purchasedaybooklist '01','2021-04-01','2021-05-31'                              
+ Exec Ksp_RMI_Purchasedaybooklist '01' ,'2021-04-01','2021-05-01'
+ */  
+Alter PROCEDURE Ksp_RMI_Purchasedaybooklist                              
+(                              
+@divcode AS varchar(10),                              
+@fdate AS varchar(10),                              
+@tdate AS varchar(10)                              
+)                                
+AS                              
+BEGIN                              
+SELECT   
+ a.PJNO AS vno,a.PJDT AS vdate,a.BILLNO AS inv,a.BILLDT AS inv_dt,a.LOTNO,fs.OLDSLCODE AS pc,fs.slname                              
+ ,v.VARNAME AS vac,v.VARNAME,CASE WHEN (pd.STATE_CODE=fs.state_code) THEN '1' ELSE '2' END tp,a.BALES AS qty,a.SICAAmt AS sl                            
+ ,a.CHARITYAMT AS ch,a.NETWT AS qtl,a.PJAMT AS basic_val,a.VATAMT AS vat,a.CashDisAmt AS discount,                            
+ a.BillValue AS val,a.TOTLANDCOST AS camt,a.OTHERSAMT AS ulc,0 AS acno,0 AS rc,pd2.DIV_PRINTNAME,pd2.DIV_UNITNAME                  
+ ,a.HSN,a.cgstper,a.cgstamt,a.sgstper,a.sgstamt,a.igstper,a.igstamt,fs.gstinno as supp_gstinno  ,arr.contno pono,arr.contdt podt                
+ ,A.ARRNO,A.ARRDT ARRDATE  ,A.COMM_WT COMMWT, A.GRSWGT    GROSSWT  ,be_no BENO,be_date BEDT,arr.plotno supplotno,a.OTHERSAMT                 
+FROM RM_LOT a                              
+ LEFT OUTER JOIN FA_SLMAS fs ON fs.slcode = a.SUPCD                 
+ inner join  rm_arrival arr on arr.divcode=a.divcode and arr.arrno=a.arrno and a.arrdt=arr.arrdate  and a.varcode=arr.varcode   and a.supcd=arr.supcd                
+ LEFT OUTER JOIN PP_DIVMAS pd ON pd.DIVCODE = a.DIVCODE AND fs.state_code=pd.STATE_CODE                            
+ LEFT OUTER JOIN PP_DIVMAS pd2 ON a.DIVCODE=pd2.DIVCODE                            
+ LEFT OUTER JOIN RM_VAR v ON a.VARCODE=v.VARCODE                            
+WHERE   
+ a.DIVCODE=@divcode and a.LOTDT BETWEEN @fdate AND @tdate   and isnull(a.opflg,'N')<>'Y'                          
+--AND a.PJDT BETWEEN @fdate AND @tdate                             
+END            
+  

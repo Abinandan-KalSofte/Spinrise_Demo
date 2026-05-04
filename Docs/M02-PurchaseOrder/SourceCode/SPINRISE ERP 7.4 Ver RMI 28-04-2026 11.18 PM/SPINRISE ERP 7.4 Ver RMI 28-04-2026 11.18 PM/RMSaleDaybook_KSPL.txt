@@ -1,0 +1,63 @@
+/*      
+    SP_RM_Salesdaybook '01','2023','2023-10-01','2024-01-12' ,'D8A0001','D8V0006','CS,VS','N'      
+*/      
+alter PROCEDURE SP_RM_Salesdaybook      
+(      
+@Divcode VARCHAR (02),      
+@lotyear VARCHAR (10),      
+@Fdate VARCHAR (15),      
+@Tdate VARCHAR (15),      
+@FCust VARCHAR (15),      
+@TCust VARCHAR (15),      
+@lottype VARCHAR (200),    
+@flg varchar(3)    
+)      
+as      
+Begin      
+Select --delivery_dt,c.lotdt,product_code,    
+sum(b.value) value,a.inv_type,a.inv_no,date,cust_code,      
+d.slname,a.agent_code,d.state_code,brok_code,      
+--(matl_value/(select sum(isnull(INV_KGS,0))  from rm_cinvdt aa  where  aa.inv_no=a.inv_no and aa.inv_type=aa.inv_type and a.divcode=aa.divcode ))*sum(ISNULL(INV_KGS,0))     
+sum(b.value)    
+ matl_value       
+,(total_amt/(select sum(isnull(INV_KGS,0))  from rm_cinvdt aa  where  aa.inv_no=a.inv_no and aa.inv_type=a.inv_type and a.divcode=aa.divcode ))*sum(ISNULL(INV_KGS,0))    
+--sum(b.value)+sum(isnull(b.cgstamt,0))+sum(isnull(b.sgstamt,0))+sum(isnull(b.igstamt,0))    
+ total_amt      
+,sum(isnull(b.cgstamt,0)) cgstamt,      
+sum(isnull(b.sgstamt,0))sgstamt,sum(isnull(b.igstamt,0))igstamt,      
+sum(case when c.bblflg = 'B' then packs  else 0 end) as bales,      
+sum(case when c.bblflg   IN ('R','H') then packs else 0 end) as boras,rate_nett,      
+sum(nett_kgs) nett_kgs,sum(ISNULL(INV_KGS,0)) AS INV_KGS, c.varcode,sum(isnull(b.cess_amt,0)) cess_amt,      
+c.catcd,      
+--vatamt=(case when d.state_code=s.state_code then round(isnull(b.tax_amt,0),0) else 0 end),s.state_code as divstate,      
+--cstamt=(case when d.state_code<>s.state_code then round(isnull(b.tax_amt,0),0) else 0 end),      
+r.VARNAME,s.div_printname,s.div_unitname,right(a.inv_no,3) as billno,      
+(a.TCS_AMT/(select sum(isnull(INV_KGS,0))  from rm_cinvdt aa  where  aa.inv_no=a.inv_no and aa.inv_type=a.inv_type and a.divcode=aa.divcode ))*sum(ISNULL(INV_KGS,0))  TCS_AMT      
+,(a.FREIGHT/(select sum(isnull(INV_KGS,0))  from rm_cinvdt aa  where  aa.inv_no=a.inv_no and aa.inv_type=a.inv_type and a.divcode=aa.divcode ))*sum(ISNULL(INV_KGS,0))  FREIGHT,
+c.ratekg,c.ratecy,ct.catname,c.lotno as mlotno,c.PLOTNO as supplotno,sl.slname as tosupp
+from rm_cinvhd a      
+inner join rm_cinvdt b  on a.divcode=b.divcode and a.inv_type=b.inv_type and a.inv_no=b.inv_no      
+inner join(select distinct lotno,lotdt,varcode,lottype,divcode,docno,docdt from rm_issb )bb on  b.product_code=bb.lotno  and b.lotdt=bb.lotdt and bb.divcode=a.divcode and bb.docno=a.bo_no and bb.docdt=a.bo_dt      
+inner join rm_lot c on b.product_code=c.lotno  and a.divcode=c.divcode and b.LotDt=c.lotdt       
+and c.lotno=bb.lotno and bb.lotdt=c.lotdt and bb.varcode=c.varcode and bb.lottype=c.lottype      
+inner join fa_slmas d on  a.cust_code=d.slcode       
+inner join pp_divmas s on a.divcode=s.divcode       
+inner join rm_var r  on r.varcode = c.varcode 
+inner join fa_slmas sl on  sl.slcode=c.supcd 
+left join rm_cat ct on ct.CATCD=r.CATCD
+where       
+ a.divcode=@Divcode and c.lotyear= @lotyear AND        
+Date Between @Fdate AND @Tdate and cust_code between @FCust and @TCust  AND a.inv_type in (select  items from dbo.split( @lottype ,','))     
+and CANCELLED in( select items from dbo.Split(@flg,','))    
+group by r.VARNAME,s.div_printname,s.div_unitname,a.inv_no ,c.catcd,c.bblflg ,--delivery_dt,c.lotdt,    
+--product_code,    
+a.inv_no,date,cust_code,d.slname,sl.slname,a.agent_code,d.state_code,brok_code,matl_value,total_amt,rate_nett, c.varcode,a.inv_type,a.divcode,a.FREIGHT,a.TCS_AMT,
+c.ratekg,c.ratecy,ct.catname,c.lotno,c.plotno
+order by DATE      
+End      
+--select sum(CGSTAMT),sum(sGSTAMT),sum(iGSTAMT),sum(MATL_VALUE),sum(TOTAL_AMT) from rm_cinvhd   where date>='2020-06-01' and sGSTAMT<>CGSTAMT    
+--  select * from rm_cinvhd   where date>='2020-06-01' and sGSTAMT<>CGSTAMT    
+--  select sum(b.CGSTAMT),sum(b.sGSTAMT),sum(b.iGSTAMT)    
+--  from rm_cinvhd a      
+--inner join rm_cinvdt b  on a.divcode=b.divcode and a.inv_type=b.inv_type and a.inv_no=b.inv_no     
+-- where date>='2020-06-01' 

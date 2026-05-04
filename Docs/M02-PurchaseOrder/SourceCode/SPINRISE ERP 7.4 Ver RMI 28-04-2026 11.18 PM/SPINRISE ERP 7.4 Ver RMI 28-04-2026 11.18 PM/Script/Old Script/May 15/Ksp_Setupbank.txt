@@ -1,0 +1,13 @@
+
+alter procedure Ksp_Setupbank
+--Ksp_Setupbank '01'
+@divcode varchar(02)
+As
+begin
+
+select  a.BANK_CODE,NAME,BRANCH,a.add1,a.add2,a.add3,PHONE,
+a.ZIP,a.fax,pd.DIV_PRINTNAME,pd.DIV_UNITNAME 
+from IG_bank a
+inner join PP_DIVMAS pd on pd.DIVCODE=@divcode
+--where a.divcode=@divcode
+end

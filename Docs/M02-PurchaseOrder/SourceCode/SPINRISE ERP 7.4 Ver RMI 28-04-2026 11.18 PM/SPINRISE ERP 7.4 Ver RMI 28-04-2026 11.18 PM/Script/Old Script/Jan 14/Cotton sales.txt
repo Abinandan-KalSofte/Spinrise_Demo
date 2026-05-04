@@ -1,0 +1,59 @@
+Rc_No,Pan,            
+cons_add1,cons_add2,cons_add3,Convert(Numeric(18,3),    
+Sum(Gross_kgs)) Gross_kgs ,    
+    
+Pin,X.CIN,x.OLDPRODUCT_CODE,x.OLDSLCODE          
+,x.despatch_to         
+--,x.grs1          
+ FROM (             
+              
+SELECT DISTINCT     
+                      a.DIVCODE, a.INV_TYPE, a.INV_NO, a.DATE, c.slcode AS C_slcode,   
+                      c.slname AS C_SlName, c.add1 AS C_Add1, c.add2 AS C_Add2, c.add3 AS C_Add3,     
+                      c.city AS C_City, c.state AS C_State, c.country AS C_Country,  
+                       c.pin AS C_Pin, c.phone1 AS C_phone, c.TINNO AS C_TIN, c.cgst AS C_tngst,     
+                      c.cgstdt AS C_cgstdt, a.PRE_TIME, a.REM_TIME, e.NAME AS CARRIER,   
+                      a.VEHICLE_NO, b.NETT_KGS, b.PACKS, b.RATE_EX, b.VALUE, a.MATL_VALUE,     
+                      a.CESS_AMT, ISNULL(a.BED_AMT, 0) + ISNULL(a.educess_amt, 0)  
+                       + ISNULL(a.AED_AMT, 0) AS Exise, a.TAX_AMT, ISNULL(a.CHARITY, 0)     
+                      + ISNULL(a.LSC_AMT, 0) + ISNULL(a.INS_AMT, 0) + ISNULL(a.FREIGHT, 0) AS Others,  
+                       a.TOTAL_AMT, a.RND_OFF, pp.YarnInvPrefix, g.invPrintHead,     
+                      ISNULL(a.LR_NO, '') AS LR_NO, a.LR_DATE, a.CESS_PER, b.TAX_PER,   
+                      b.RATE_NETT, 'NOS' AS UOM, h.DESCRIPTION AS Tax_desc,     
+                      ISNULL(a.TCS_AMT, 0) AS TCsAmt, ISNULL(a.fwd_chrg, 0) AS FWd_Chrg,   
+                      ISNULL(c.RC_NO, '') AS Rc_No, ISNULL(c.pan, '') AS Pan,     
+                      a.CONS_ADD1 AS cons_add1, a.CONS_ADD2 AS cons_add2,   
+                      a.CONS_ADD3 AS cons_add3, b.GROSS_KGS AS Gross_kgs, c.pin,  
+                       pp.CIN, c.oldslcode,    
+                      a.DESPATCH_TO  
+                      ,b.PRODUCT_CODE  
+                          ,v.drawno    as  OLDPRODUCT_CODE                    
+                    
+                      ,v.varname as [Description]  
+                     -- ,v.oldvarcode as  OLDPRODUCT_CODE  
+FROM        RM_CINVHD AS a INNER JOIN    
+                      RM_CINVDT AS b ON a.DIVCODE = b.DIVCODE AND a.INV_TYPE = b.INV_TYPE AND a.INV_NO = b.INV_NO   
+                      INNER JOIN  FA_SLMAS AS c ON a.CUST_CODE = c.slcode   
+                      INNER JOIN  RM_ISSB AS d ON b.DIVCODE = d.DIVCODE AND b.CONT_TYPE = d.ISSTYPE   
+                                                 AND b.CONT_NO = d.DOCNO AND b.PRODUCT_CODE = d.LOTNO                         
+                      inner JOIN PP_YEAR py1 on a.date BETWEEN py1.AYFDATE AND py1.AYLDATE                         
+                      inner join RM_lot AS l ON l.DIVCODE = d.DIVCODE AND l.lotno= d.LOTNO   
+                      AND l.lotdt= d.LOTdt AND l.catcd= d.catcd AND l.lottype= d.lottype  AND l.lotyear= year(py1.AYFDATE)  
+                      inner join RM_var AS v ON v.varcode = l.varcode AND l.catcd= d.catcd                        
+                      LEFT OUTER JOIN     dbo.IG_CARRIER AS e ON a.CARRIER_CODE = e.CARRIER_CODE LEFT OUTER JOIN    
+                      dbo.PP_DIVMAS AS pp ON a.DIVCODE = pp.DIVCODE LEFT OUTER JOIN    
+                      dbo.IG_INVTYPE AS g ON g.INV_TYPE = a.INV_TYPE AND g.DIVCODE = a.DIVCODE LEFT OUTER JOIN    
+                      dbo.IG_TAX AS h ON h.TAX_CODE = b.TAX_CODE    
+                      WHERE  a.DIVCODE=@Divcode AND a.INV_NO=@InvNo AND a.INV_TYPE=@InvType              
+            
+                
+)x            
+            
+Group BY  DIVCODE,INV_TYPE,INV_NO,DATE,C_slcode,C_SlName,C_Add1,C_Add2,C_Add3,C_City,C_State,              
+C_Country,C_Pin,C_phone,C_TIN,C_tngst,C_cgstdt,PRE_TIME,              
+REM_TIME,CARRIER,VEHICLE_NO,Product_code,Description,RATE_EX, RAte_NETT,Uom,Tax_desc,TCsAmt,FWd_Chrg,Rc_No,Pan,cons_add1,cons_add2,cons_add3,            
+MATL_VALUE,cess_amt,Exise,TAX_AMT,Others,TOTAL_AMT,              
+RND_OFF,YarnInvPrefix,invPrintHead,isnull(LR_NO,''),LR_DATE,CESS_PER,Pin           
+,CIN,x.OLDPRODUCT_CODE,x.OLDSLCODE,x.despatch_to       
+--,x.grs1
+go

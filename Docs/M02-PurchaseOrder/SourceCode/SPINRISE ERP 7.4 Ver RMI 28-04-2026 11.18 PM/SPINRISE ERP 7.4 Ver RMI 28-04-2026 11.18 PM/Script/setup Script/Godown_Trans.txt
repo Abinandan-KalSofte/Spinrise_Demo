@@ -1,0 +1,20 @@
+/*    
+  SP_Godown_Trans '01','1','2019-03-11'   
+*/    
+    
+CREATE PROC SP_Godown_Trans            
+(    
+ @Divcode AS varchar(5),               
+ @Docno varchar(50),  
+ @Docdt varchar(50)                                                
+)    
+AS                
+Begin   
+Select a.DOCNO,a.DOCDT,a.LOTNO,a.LOTDT,a.FGOD,a.TGOD,a.BALES,a.NETWT,a.REMARKS,  
+b.div_printname,b.div_unitname    
+From rm_godtrans a  
+Left Join PP_DIVMAS b on b.DIVCODE =a.DIVCODE   
+Where a.DivCode = @Divcode And a.DOCNO =@Docno and a.DOCDT=@Docdt  
+End  
+  
+  

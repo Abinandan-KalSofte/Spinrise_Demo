@@ -1,0 +1,13 @@
+alter table rm_param add tcstax varchar(1)
+go
+alter table rm_param add RTCS_ROFF int
+go
+
+alter table RM_lot add Tcs_per  numeric(9,3)
+go
+alter table RM_lot add  Tcs_amt numeric(12,2)
+go
+alter table rm_param_fa add TCS_GL  varchar(8) 
+go
+
+alter table fa_purhd add TCS_Amont numeric(15,2)

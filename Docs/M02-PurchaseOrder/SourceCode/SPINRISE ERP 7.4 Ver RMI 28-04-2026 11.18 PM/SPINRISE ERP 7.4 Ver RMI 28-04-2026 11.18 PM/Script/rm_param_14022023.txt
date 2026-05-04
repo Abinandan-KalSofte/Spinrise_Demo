@@ -1,0 +1,2 @@
+alter table rm_param add TDSCalcFlag char(1)
+alter table rm_param add [Tds_Rndnextrs] [tinyint] NULL

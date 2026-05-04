@@ -1,0 +1,31 @@
+
+-- Ksl_RMI_ArrivalRegister_Arrivalno '01','2013-11-01','2013-11-20','98','160'
+ALTER PROCEDURE Ksl_RMI_ArrivalRegister_Arrivalno
+(
+	@Divcode  VARCHAR(2),          
+	@FDate    VARCHAR(10),          
+	@TDate    VARCHAR(10)
+	--@FAno    VARCHAR(10),          
+	--@TAno    VARCHAR(10)   
+)
+AS
+BEGIN
+	
+SELECT a.ARRNO,a.arrdate,a.SUPCD,c.Slname,a.BRKCD,e.slname AS Agent_Name,'' AS s_m,a.LORRYNOS,a.PLOTNO,a.PRNO,a.PRMARK,a.VARCODE
+,v.VARNAME,a.NETWT AS inv_dcweight,a.FREIGHT,a.REMARKS,a.BBFLAG,a.quantity,
+CASE WHEN a.BBFLAG='B' THEN a.quantity end AS BLS,
+CASE WHEN a.BBFLAG='R' THEN a.quantity end AS BRS,
+pd.DIV_PRINTNAME,pd.DIV_UNITNAME     
+ from rm_arrival a    
+ --LEFT OUTER JOIN rm_cont f ON f.DIVCODE = a.DIVCODE AND f.VARCODE = a.VARCODE AND f.BBFLAG = a.BBFLAG AND f.CONTNO = a.CONTNO AND f.CONTDT = a.CONTDT
+ --LEFT OUTER JOIN po_car b ON b.CARCODE = a.CARCODE    
+ LEFT OUTER JOIN fa_slmas c ON c.Slcode = a.SUPCD    
+ --LEFT OUTER JOIN rm_area d ON a.areacode=d.areacode    
+ LEFT OUTER JOIN RM_VAR V ON v.VARCODE=a.VARCODE    
+ LEFT OUTER JOIN fa_slmas e ON e.slcode=a.BRKCD    
+ left outer join PP_DIVMAS pd ON a.DIVCODE=pd.DIVCODE    
+WHERE a.divcode=@Divcode and a.arrdate Between @FDate and @TDate  
+
+END
+
+

@@ -1,0 +1,33 @@
+
+ALTER trigger [dbo].[insrmcont] on [dbo].[RM_CONT] for insert as         
+DECLARE        
+     @cnt numeric,        
+     @divcode VARCHAR(2),        
+     @PRDATE DATETIME,  
+	 @PRSNO NUMERIC(5,0),  
+     @iPRNO NUMERIC(5,0) ,  
+     @VARCODE varchar (10),  
+     @BBFLAG VARCHAR(1),  
+     @ORDKGS DECIMAL (18,3),
+     @ORDQTY DECIMAL (18,3)  
+       
+       
+BEGIN        
+   
+ SELECT @divcode =DIVCODE,@iPRNO =ISNULL(IPRNO,0),@PRDATE=PRDATE,@PRSNO=PRSNO,@VARCODE=VARCODE,  
+ @BBFLAG=BBFLAG, @ORDKGS = ORDKGS,@ORDQTY=ORDQTY FROM INSERTED            
+ IF @iPRNO <>0   
+  BEGIN   
+     select @cnt = count(*) from RM_PRL where   
+      DIVCODE = @divcode AND PRNO =@iPRNO AND   
+      PRDATE =@PRDATE AND  PRSNO =@PRSNO AND VARCODE=@VARCODE       
+   if @cnt <> 0         
+   BEGIN  
+    UPDATE RM_PRL SET  qtyordKG = ISNULL(qtyordKG,0) + ISNULL( @ORDKGS,0),
+		QTYORD=ISNULL(QTYORD,0)+ISNULL(@ORDQTY,0)
+        WHERE DIVCODE = @divcode AND PRNO =@iPRNO AND   
+        PRDATE =@PRDATE AND  PRSNO =@PRSNO AND VARCODE=@VARCODE                 
+   end    
+  END  
+ END
+

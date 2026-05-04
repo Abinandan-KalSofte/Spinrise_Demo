@@ -1,0 +1,3 @@
+
+alter table rm_lot  add final_DBN tinyint
+alter table rm_lotallowance  add final_DBN tinyint

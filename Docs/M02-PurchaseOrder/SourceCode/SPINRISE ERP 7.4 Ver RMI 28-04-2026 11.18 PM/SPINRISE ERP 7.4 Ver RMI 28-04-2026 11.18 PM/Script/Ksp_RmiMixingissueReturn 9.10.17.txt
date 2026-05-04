@@ -1,0 +1,41 @@
+--Ksp_RmiMixingissueReturn '01','1','1'
+alter proc Ksp_RmiMixingissueReturn
+(
+@divcode varchar(2),
+@FNo varchar(15),
+@TNo varchar(15)
+)
+
+
+
+as
+begin
+select  d.div_printname,d.DIV_UNITNAME ,aa.issno issueno ,aa.issdt issuedt,aa.docno,aa.docdt,bb.varcode,c.varname,bb.lotno,bb.lotdt
+,sum(x.isskgs) issActualKgs, sum(x.Baleno) issBaleno , sum(bb.ACTISSKGS) retActualKgs, count(bb.Baleno) retBaleno 
+, sum(x.isskgs)-(sum(x1.isskgs) -sum(bb.ACTISSKGS)) balActualKgs, sum(x.Baleno)- (sum(x1.Baleno) - count(bb.Baleno)) balBaleno
+,sum(x1.isskgs) accAKgs, sum(x1.Baleno) accBno 
+from 
+rm_issrtnh aa
+inner JOIN rm_issrtnb bb ON aa.docno=bb.docno AND aa.DOCDT=bb.DOCDT AND aa.DIVCODE=bb.DIVCODE
+left JOIN (
+select  SUM(ACTISSKGS) isskgs,COUNT(baleno) baleno,a.DOCNO,a.DOCDT ,a.DIVCODE,a.LOTNO,a.lotdt
+  from  rm_issb   a
+inner join rm_issh b on a.docno=b.docno and a.Docdt=b.Docdt and a.Divcode=b.Divcode
+GROUP BY a.DOCNO,a.DOCDT ,a.DIVCODE,a.LOTNO,a.lotdt
+) x ON aa.ISSNO=x.docno AND aa.issdt=x.docdt AND x.divcode=aa.divcode --AND bb.LOTNO=x.LOTNO AND  bb.lotdt=x.lotdt
+
+left JOIN (
+select  SUM(ActualKgs) isskgs,COUNT(baleno) baleno,a.IssueNo DOCNO,a.IssueDt DOCDT ,a.DIVCODE,a.LOTNO,a.lotdate lotdt
+  from  PRP_MixingReceiptdt   a
+inner join PRP_MixingReceipthd b on a.docno=b.docno and a.Docdate=b.Docdate and a.Divcode=b.Divcode
+GROUP BY a.IssueNo,a.Issuedt ,a.DIVCODE,a.LOTNO,a.lotdate
+) x1 ON aa.ISSNO=x1.docno AND aa.issdt=x1.docdt AND x1.divcode=aa.divcode AND bb.LOTNO=x.LOTNO AND  bb.lotdt=x.lotdt
+
+
+inner join RM_VAR c on c.varcode=bb.varcode 
+inner join PP_DIVMAS d on d.divcode=aa.divcode
+
+where aa.Docno between @FNo and @tNo and aa.Divcode=@divcode
+group by 
+ d.div_printname,d.DIV_UNITNAME ,aa.issno ,aa.issdt,aa.docno,aa.docdt,bb.varcode,c.varname,bb.lotno,bb.lotdt
+end

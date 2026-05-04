@@ -1,0 +1,27 @@
+ROP TABLE [Temp_per_stockstatementvar]
+GO
+CREATE TABLE [dbo].[Temp_per_stockstatementvar](
+	[variety] [varchar](50) NULL,
+	[opqty] [numeric](20, 0) NULL,
+	[OPKGS] [numeric](20, 0) NULL,
+	[opval] [numeric](20, 0) NULL,
+	[recqty] [numeric](20, 0) NULL,
+	[reckgs] [numeric](20, 0) NULL,
+	[recval] [numeric](20, 0) NULL,
+	[issqty] [numeric](20, 0) NULL,
+	[ISSKGS] [numeric](20, 0) NULL,
+	[issval] [numeric](20, 0) NULL,
+	[rtunqty] [numeric](20, 0) NULL,
+	[rtunkgs] [numeric](20, 0) NULL,
+	[rtunval] [numeric](20, 0) NULL,
+	[trnsqty] [numeric](20, 0) NULL,
+	[trnskgs] [numeric](20, 0) NULL,
+	[trnsval] [numeric](20, 0) NULL,
+	[cloqty] [numeric](20, 0) NULL,
+	[clokgs] [numeric](20, 0) NULL,
+	[cloval] [numeric](20, 0) NULL
+) ON [PRIMARY]
+
+GO
+
+

@@ -16,19 +16,21 @@ export function getFYBounds(date?: dayjs.Dayjs): [dayjs.Dayjs, dayjs.Dayjs] {
 // ── Status ─────────────────────────────────────────────────────────────────────
 
 export const STATUS_OPTIONS = [
-  { value: 'OPEN',      label: 'Open'      },
-  { value: 'APPROVED',  label: 'Approved'  },
-  { value: 'RECEIVED',  label: 'Received'  },
-  { value: 'CONVERTED', label: 'Converted' },
-  { value: 'CANCELLED', label: 'Cancelled' },
+  { value: 'OPEN',           label: 'Open'                  },
+  { value: 'L1_APPROVED',    label: 'First Level Approved'  },
+  { value: 'L2_APPROVED',    label: 'Second Level Approved' },
+  { value: 'FINAL_APPROVED', label: 'Final Approved'        },
+  { value: 'CANCELLED',      label: 'Cancelled'             },
 ]
 
 export const STATUS_TAG: Record<string, { color: string; label: string }> = {
-  OPEN:      { color: '#1d4ed8', label: 'Open'      },
-  APPROVED:  { color: '#7c3aed', label: 'Approved'  },
-  RECEIVED:  { color: '#0284c7', label: 'Received'  },
-  CONVERTED: { color: '#16a34a', label: 'Converted' },
-  CANCELLED: { color: '#dc2626', label: 'Cancelled' },
+  OPEN:           { color: '#1d4ed8', label: 'Open'                  },
+  L1_APPROVED:    { color: '#d97706', label: 'First Level Approved'  },
+  L2_APPROVED:    { color: '#7c3aed', label: 'Second Level Approved' },
+  FINAL_APPROVED: { color: '#16a34a', label: 'Final Approved'        },
+  RECEIVED:       { color: '#0284c7', label: 'Received'              },
+  CONVERTED:      { color: '#16a34a', label: 'Converted'             },
+  CANCELLED:      { color: '#dc2626', label: 'Cancelled'             },
 }
 
 // ── Shared styles ──────────────────────────────────────────────────────────────
@@ -42,10 +44,8 @@ export const CARD_STYLE: CSSProperties = {
 // ── Search form types ──────────────────────────────────────────────────────────
 
 export interface SearchFormValues {
-  searchText?: string
-  prNo?:       number
-  dateRange?:  [dayjs.Dayjs, dayjs.Dayjs]
-  depCode?:    string
-  reqName?:    string
-  status?:     string
+  prNo?:      string
+  dateRange?: [dayjs.Dayjs, dayjs.Dayjs]
+  depCode?:   string
+  status?:    string
 }

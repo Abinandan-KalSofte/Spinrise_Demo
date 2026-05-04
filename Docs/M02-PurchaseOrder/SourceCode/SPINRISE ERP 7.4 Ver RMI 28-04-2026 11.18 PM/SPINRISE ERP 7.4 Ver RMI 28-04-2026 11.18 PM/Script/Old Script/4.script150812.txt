@@ -1,0 +1,16 @@
+create proc SP_DebitnoteRegister  
+@Divcode as varchar(5),  
+@Supcode as varchar(25),  
+@Fdate as varchar(20),  
+@Tdate as varchar(20)  
+as  
+Select DISTINCT a.Lotno,a.Lotdt,Supcd,slname,Varcode,B.ASNO,B.Adate,b.Dbno,b.Dbdt,b.Dbnarr,b.Aratecy,Akgs,  
+B.DBAMT,ALLOWANCE,a.billno,a.billdt,isnull(a.pjamt,0) as pjamt,d.divname,  
+c.add1,c.add2,c.add3,c.city,c.pin,c.state,e.dbreason  
+from rm_lot a,rm_lotallowance b,fa_slmas c,pp_divmas d,RM_DBNoteType e   
+WHERE a.lotno=b.lotno and a.lotdt=b.lotdt and a.divcode=b.divcode and a.DIVCODE=@Divcode and a.supcd=c.slcode   
+and a.supcd =@Supcode  AND b.adate BETWEEN @Fdate AND @Tdate  
+ and a.divcode=d.divcode 
+--and b.dbno=e.dbcode 
+ORDER BY B.ASNO,B.ADATE 
+

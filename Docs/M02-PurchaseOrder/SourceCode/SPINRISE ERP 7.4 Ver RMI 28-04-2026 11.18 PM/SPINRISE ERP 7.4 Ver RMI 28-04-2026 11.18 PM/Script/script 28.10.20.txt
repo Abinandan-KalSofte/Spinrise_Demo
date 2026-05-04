@@ -1,0 +1,14 @@
+alter table rm_frtentryhd add Net_amt numeric(15,2)
+go
+alter table rm_frtentryhd add GST_amt numeric(15,2)
+go
+alter table rm_frtentryhd add Total_amt numeric(15,2)
+go
+alter table rm_frtentryhd add Discount_amt numeric(15,2)
+go
+alter table rm_frtentryhd add MDApp_copy varchar(40)
+go
+alter table rm_param add FREIGHTGLCODE varchar(7)
+go
+alter table rm_frtentryhd add jvocno numeric(5)
+go

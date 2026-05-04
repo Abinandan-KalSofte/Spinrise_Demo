@@ -1,0 +1,13 @@
+alter procedure Ksp_SetupFibrenorms
+@divcode varchar(02)
+as
+begin
+
+SELECT a.DIVCODE,VARNAME ,SPANLEN25,SPANLEN50,UR,MIC,FIBRESTENGTH,ELONGATION,TRASHPER,
+SCI,SFI,IFC,NEPS,SCN,a.ML,a.UHML,a.UI,a.GTEX,pd.DIV_PRINTNAME,pd.DIV_UNITNAME FROM 
+RM_FIBRENORMS A
+inner join  RM_VAR C on a.VARCODE=c.VARCODE
+inner join PP_DIVMAS pd on pd.DIVCODE=a.DivCode
+ WHERE a.DivCode=@divcode 
+ order by a.VARCODE
+ end

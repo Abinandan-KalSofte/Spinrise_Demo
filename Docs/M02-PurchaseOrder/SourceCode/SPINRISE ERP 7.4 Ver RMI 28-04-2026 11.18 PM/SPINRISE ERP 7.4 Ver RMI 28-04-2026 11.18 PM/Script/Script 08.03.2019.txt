@@ -1,0 +1,32 @@
+-- Ksp_RMI_Purchasedaybooklist '01','2019-02-01','2019-02-28'                    
+ ALTER PROCEDURE Ksp_RMI_Purchasedaybooklist                    
+(                    
+ @divcode AS varchar(10),                    
+ @fdate AS varchar(10),                    
+ @tdate AS varchar(10)                    
+)                      
+ AS                    
+ BEGIN                    
+                   
+                  
+SELECT cont.CONTNO pono,cont.CONTDT podt,a.PJNO AS vno,a.PJDT AS vdate,a.BILLNO AS inv,a.BILLDT AS inv_dt,a.LOTNO,fs.OLDSLCODE AS pc,fs.slname                    
+ ,a.VARCODE AS vac,v.VARNAME,CASE WHEN (pd.STATE_CODE=fs.state_code) THEN '1' ELSE '2' END tp,a.BALES AS qty,a.SICAAmt AS sl                  
+ ,a.CHARITYAMT AS ch,a.NETWT AS qtl,a.PJAMT AS basic_val,a.VATAMT AS vat,a.CashDisAmt AS discount,                  
+ a.BillValue AS val,a.TOTLANDCOST AS camt,a.OTHERSAMT AS ulc,0 AS acno,0 AS rc,pd2.DIV_PRINTNAME,pd2.DIV_UNITNAME        
+ ,a.HSN,a.cgstper,a.cgstamt,a.sgstper,a.sgstamt,a.igstper,a.igstamt,fs.gstinno as supp_gstinno        
+  FROM RM_LOT a                    
+ LEFT OUTER JOIN FA_SLMAS fs ON fs.slcode = a.SUPCD                    
+ LEFT OUTER JOIN PP_DIVMAS pd ON pd.DIVCODE = a.DIVCODE AND fs.state_code=pd.STATE_CODE                  
+ LEFT OUTER JOIN PP_DIVMAS pd2 ON a.DIVCODE=pd2.DIVCODE                  
+ LEFT OUTER JOIN RM_VAR v ON a.VARCODE=v.VARCODE  
+ LEFT JOIN RM_ARRIVAL AS ra ON a.ARRNO=ra.ARRNO AND a.ARRDT=ra.ARRDATE AND a.DIVCODE=ra.DIVCODE 
+ LEFT JOIN rm_cont cont ON cont.DIVCODE=ra.DIVCODE AND cont.CONTNO=ra.CONTNO 
+ AND cont.CONTDT=ra.CONTDT AND cont.SUPCD=ra.SUPCD   --AND a.CNTCODE=cont.CNTCODE 
+-- AND a.VARCODE=cont.VARCODE AND cont.VARCODE=v.VARCODE
+ AND a.VARCODE=cont.VARCODE --AND a.lotno=cont.CONTNO
+ WHERE a.DIVCODE=@divcode and a.LOTDT BETWEEN @fdate AND @tdate                   
+ --AND a.PJDT BETWEEN @fdate AND @tdate                   
+ END                      
+     
+     
+     

@@ -1,0 +1,26 @@
+
+CREATE TRIGGER [dbo].[DELRM_GOD] ON [dbo].RM_GOD FOR DELETE AS                                     
+DECLARE                                                                  
+@GCODE varchar(10),  
+@sno int  
+BEGIN    
+  
+	select @GCODE=GCODE from deleted  
+  
+	set @sno=(select count(GCODE) from 
+	(
+		SELECT GODOWN GCODE FROM RM_LOT where GODOWN=@GCODE
+			UNION ALL
+		SELECT GODOWN GCODE FROM RM_ARRIVAL where GODOWN=@GCODE			
+			UNION ALL
+		SELECT GODOWN GCODE FROM RM_CONT where GODOWN=@GCODE			
+			UNION ALL
+		SELECT GODOWN GCODE FROM RM_ARRIVAL where GODOWN=@GCODE			
+	) x  
+	where GCODE=@GCODE)  
+	if isnull(@sno,0)> 0    
+	begin   
+		rollback  
+		RAISERROR ('Dependencies exists. Unable to delete the record at this time', 16 ,10)	
+	end   
+END

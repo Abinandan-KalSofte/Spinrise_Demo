@@ -57,6 +57,7 @@ public static class PRMappings
             CostCentreCode = line.CostCentreCode,
             BudgetGroupCode = line.BudgetGroupCode,
             SubCostCode = line.SubCostCode,
+            SubCostName = line.SubCostName,
             LastPoRate = line.LastPoRate,
             LastPoDate = line.LastPoDate,
             LastPoSupplierCode = line.LastPoSupplierCode,
@@ -118,12 +119,13 @@ public static class PRMappings
         };
     }
 
-    public static PurchaseRequisitionLine ToEntity(this CreatePRLineDto dto, string divCode, long prNo, int prSNo)
+    public static PurchaseRequisitionLine ToEntity(this CreatePRLineDto dto, string divCode, long prNo, DateTime prDate, int prSNo)
     {
         return new PurchaseRequisitionLine
         {
             DivCode = divCode.Trim(),
             PrNo = prNo,
+            PrDate = prDate,
             PrSNo = prSNo,
             ItemCode = dto.ItemCode.Trim(),
             ItemName = dto.ItemName?.Trim(),
@@ -152,8 +154,8 @@ public static class PRMappings
         };
     }
 
-    public static PurchaseRequisitionLine ToEntity(this UpdatePRLineDto dto, string divCode, long prNo, int prSNo)
+    public static PurchaseRequisitionLine ToEntity(this UpdatePRLineDto dto, string divCode, long prNo, DateTime prDate, int prSNo)
     {
-        return ((CreatePRLineDto)dto).ToEntity(divCode, prNo, prSNo);
+        return ((CreatePRLineDto)dto).ToEntity(divCode, prNo, prDate, prSNo);
     }
 }

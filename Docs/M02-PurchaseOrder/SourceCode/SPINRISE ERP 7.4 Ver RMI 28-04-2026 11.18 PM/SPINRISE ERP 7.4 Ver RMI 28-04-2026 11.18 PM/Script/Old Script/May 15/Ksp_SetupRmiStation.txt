@@ -1,0 +1,12 @@
+Create procedure Ksp_SetupRmiStation
+@divcode varchar(02)
+as
+begin
+SELECT areacode  AS Expr1, areaname AS Expr2, station AS Expr3, state AS Expr4,
+L_OR_U =case l_or_u when 'L' then 'Local'when 'I' then 'Import' else 'Upcountry' end,
+pd.DIV_PRINTNAME,pd.DIV_UNITNAME  from 
+rm_area   a
+inner join PP_DIVMAS pd on pd.DIVCODE=@divcode
+Order by areacode
+
+end

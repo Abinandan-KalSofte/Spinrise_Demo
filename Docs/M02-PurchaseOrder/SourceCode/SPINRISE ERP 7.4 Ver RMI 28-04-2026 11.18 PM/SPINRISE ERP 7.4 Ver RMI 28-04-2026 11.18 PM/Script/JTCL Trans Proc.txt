@@ -1,0 +1,161 @@
+  
+alter Procedure Ksp_Materialtransferreceipt      
+---Ksp_Materialtransferreceipt '01','109','2015-05-31','2015'      
+@divcode varchar(02),      
+@lotno varchar(20),      
+@lotdate varchar(20),      
+@lotyear varchar(15)      
+as      
+begin      
+SELECT      
+    RM_LOT."LOTNO",      
+    RM_LOT."LOTDT",      
+    RM_LOT."LOTTYPE",      
+    RM_LOT."NETWT",      
+    RM_LOT."BALES",      
+    RM_LOT."PLOTNO",      
+    RM_LOT."PNETWT",    
+    pp_divmas."ADD1",      
+    PP_DIVMAS."ADD2",      
+    PP_DIVMAS."ADD3",      
+    PP_DIVMAS."CITY",      
+    PP_DIVMAS."PINCODE",    
+    PP_DIVMAS."PHONE1",      
+    PP_DIVMAS."FAX",      
+    PP_DIVMAS."EMAIL",      
+    PP_DIVMAS."WEBADDR",      
+    PP_DIVMAS."HOState",      
+    PP_DIVMAS."HOCountry",      
+    PP_DIVMAS."DIV_PRINTNAME",      
+    PP_DIVMAS."DIV_LOGO",      
+    FA_SLMAS."slname",      
+    FA_SLMAS."add1",      
+    FA_SLMAS."add2",      
+    FA_SLMAS."add3",      
+    FA_SLMAS."city",      
+    FA_SLMAS."pin",      
+    FA_SLMAS."state",      
+    FA_SLMAS."country",      
+    rm_var."VARNAME",fa.slname agent,ra.AREANAME,rm_lot.brkcd,rm_lot.ARRDT,rm_lot.ARRNO      
+FROM      
+    RM_LOT RM_LOT       
+    INNER JOIN PP_DIVMAS PP_DIVMAS ON      
+        RM_LOT."DIVCODE" = PP_DIVMAS."DIVCODE"      
+    left outer JOIN FA_SLMAS FA_SLMAS ON      
+        RM_LOT."SUPCD" = FA_SLMAS."slcode"      
+    left outer join rm_var rm_var ON      
+        RM_LOT."VARCODE" = rm_var."VARCODE" AND      
+        RM_LOT."CATCD" = rm_var."CATCD"      
+        left join fa_slmas fa on fa.slcode=rm_lot.brkcd      
+        left outer join rm_area ra on ra.AREACODE=rm_lot.AREACD      
+where rm_lot.divcode=@divcode and rm_lot.LOTNO=@lotno and rm_lot.LOTDT=@lotdate  and rm_lot.LOTYEAR=@lotyear             
+      
+          
+end      
+go
+
+/*              
+KSP_RMI_Purchasebill  '03','2019-07-23','210','210'              
+*/              
+alter PROC KSP_RMI_Purchasebill                                                                        
+(                                                                              
+ @Divcode VARCHAR(2),                                                                              
+ @Date VARCHAR(25),                                                                      
+ @FMRNo VARCHAR(10),                                                                                           
+ @TMRNo VARCHAR(25)                                         
+)                                                                              
+AS                                                           
+Begin                                                                         
+SELECT a."ARRNO",a."ARRDATE",a."LORRYNOS",a."RATECY",b."LOTNO",b."BILLNO",b."BILLDT",b."INSAMT",              
+b."BEDAMT",b."GRSWGT",b."NETWT",b."BALES",b."PJNO",b."PJDT",b."PJAMT",b."PLOTNO",b."PNETWT",b."DBAMT",              
+b."VATAMT",b."CESSAMT",b."LRFRTAMT",b."COMMAMT",b."ADDTAXAMOUNT",b."SuppBillvalue",c."CONTNO",              
+c."CONTDT",d."CARNAME",e."VARNAME",p."ADD1",p."ADD2",p."ADD3",p."CITY",p."PINCODE",p."PHONE1",              
+p."FAX",p."EMAIL",p."WEBADDR",p."HOState",p."DIV_PRINTNAME",p."DIV_UNITNAME",p."DIV_LOGO",ff."slname" as slname1,              
+g."slname",g."add1" as sadd1,g."add2" as sadd2,g."add3" as sadd3,g."city" as scity,g."pin" as spin,              
+g."state" as sstate,g."country" as scountry,p.gstinno,p.cinno,g.phone1 as sphone,g.email as semail,c.cgstper,c.sgstper,c.igstper,              
+--((((ISNULL(ORDKGS,0.00)*ISNULL(c.RATEKG,0.00)))+( ((ISNULL(ORDKGS,0.00)*ISNULL(c.RATEKG,0.00)*isnull(c.CESSPER,0.00))/100) ))*isnull(c.cgstper,0.00))/100 AS cgstamt,                                  
+--((((ISNULL(ORDKGS,0.00)*ISNULL(c.RATEKG,0.00)))+( ((ISNULL(ORDKGS,0.00)*ISNULL(c.RATEKG,0.00)*isnull(c.CESSPER,0.00))/100) ))*isnull(c.sgstper,0.00))/100 AS sgstamt,                                  
+--((((ISNULL(ORDKGS,0.00)*ISNULL(c.RATEKG,0.00)))+( ((ISNULL(ORDKGS,0.00)*ISNULL(c.RATEKG,0.00)*isnull(c.CESSPER,0.00))/100) ))*isnull(c.igstper,0.00))/100 AS igstamt                
+b.cgstamt,b.sgstamt,b.igstamt ,TOTLANDCOST Billvalue,0.0 Roff ,    
+  
+c.DLYTYPE,purpreparedby Prepby,purappruser appby,    
+purappdate first_appdate,purpredate appdate ,b."PJNO",b."PJDT",      
+case when c.DLYTYPE ='S' then 0 else b."LRFRTAMT" end LRFRTAMT,      
+case when c.DLYTYPE ='S' then (b."SuppBillvalue" - b."LRFRTAMT") else b."SuppBillvalue" end SuppBillvalue      
+    
+FROM RM_ARRIVAL a               
+INNER JOIN RM_LOT b ON a."DIVCODE" = b."DIVCODE" AND a."LOTNO" = b."LOTNO" AND              
+a."lotdt" = b."LOTDT" AND a."lottype" = b."LOTTYPE" AND a."SUPCD" = b."SUPCD" AND              
+a."VARCODE" = b."VARCODE" AND a."ARRNO" = b."ARRNO" AND a."ARRDATE" = b."ARRDT"              
+left JOIN rm_cont c ON a."CONTNO" = c."CONTNO" AND a."CONTDT" = c."CONTDT" AND              
+a."SUPCD" = c."SUPCD" AND a."VARCODE" = c."VARCODE"     
+--AND a."DIVCODE" = c."DIVCODE"              
+LEFT OUTER JOIN PO_CAR d ON a."CARCODE" = d."CARCODE"              
+left JOIN rm_var e ON b."VARCODE" = e."VARCODE" AND b."CATCD" = e."CATCD"              
+LEFT OUTER JOIN FA_SLMAS_1 ff ON c."BRKCD" = ff."slcode"              
+left JOIN PP_DIVMAS p ON b."DIVCODE" = p."DIVCODE"              
+left JOIN FA_SLMAS g ON b."SUPCD" = g."slcode"              
+WHERE b.DIVCODE=@Divcode AND b.PJDT =@Date  AND b.PJNO > = @FMRNo AND b.PJNO<= @TMRNo               
+ORDER BY b."LOTNO" ASC                               
+END     
+  go
+  
+ 
+/*  
+   Sp_CottonSales_Print '01','19000001','2019-05-26','2019'                                      
+*/   
+                                     
+alter Procedure [dbo].[Sp_CottonSales_Print]  
+(                                            
+@Divcode Varchar(2),                                            
+@InvNo Varchar(10),                                            
+@InvDt Varchar(10),                                                
+@Lotyear VARCHAR(10)  
+)                                                   
+as                                        
+  
+Begin                                              
+Select  Hd.Inv_No,Hd.date,Hd.Cust_Code,sl.SlName,Sl.Add1,Sl.Add2,sl.add3,sl.city,                                                  
+Sl.PIN, sl.state as state,                                             
+Dt.Cont_No as LotNo ,L.Lotyear,                                              
+------dt.product_code as LOtno,                                              
+Sl.TINNO,Vr.VarName,Dt.Packs,Dt.InvSNo,                                                  
+Dt.inv_kgs  Nett_Kgs,Dt.RAte_ex,Dt.VALUE  as Value,HD.Cess_Amt,HD.Tax_Amt,                                      
+isnull(HD.CHARITY,0)OTHERSAMT,HD.AED_Amt,HD.BED_Amt,Hd.Carrier_code,PRE_TIME,REM_TIME,                                      
+LR_NO,VEHICLE_NO,hd.RND_OFF,pd.DIVCODE as p_DIVCODE,pd.DIVNAME as p_DIVNAME,pd.cinno as p_cinno,                                      
+PD.ADD1 AS  P_ADD1 ,pd.ADD2 as p_ADD2,pd.ADD3 as p_ADD3,pd.CITY as p_CITY,hd.delivery_dt as dtsupply,                                      
+hd.VEHICLE_NO,pd.PINCODE as p_PINCODE,pd.PHONE1 as p_PHONE1,pd.PHONE2 as p_PHONE2,pd.FAX as p_FAX,                                      
+pd.HOADD1,pd.HOADD2,pd.HOADD3,pd.HOCity,pd.HOCountry,pd.HOPin,pd.HOState,pd.HOPhone,pd.HOEmail,                                      
+pd.EMAIL as p_EMAIL,sl.gstinno as s_gstinno,pd.WEBADDR as p_WEBADDR,pd.CGSTDT as p_CGSTDT,                                      
+pd.CGST as p_CGST,pd.RANGE as p_RANGE,pd.DIVISION as p_DIVISION, pd.webaddr as p_web,pd.COMM_CODE as p_COMM_CODE,                                      
+pd.PAN as p_PAN,pd.gstinno as p_gstinno,pd.ecc as p_ecc,pd.DIVNAME,pd.DIV_PRINTNAME,dt.cgstamt as cgstamt,                                          
+dt.sgstamt as sgstamt,dt.igstamt as igstamt,hd.TOTAL_AMT as tot_value,sl.gststatecode as s_gststcode,                                      
+car.carname as transport,pd.div_logo,pd.SUB_TITLE AS DIV_UNITNAME,vr.hsn as hsn,dt.cgstper as cgstper,                                      
+dt.sgstper as sgstper,dt.igstper as igstper,k.name as bank_name,k.branch,k.ADD1 as bank_add1,k.Acno,k.IFSCCode,                                      
+isnull(pd.YarnInvPrefix,'') AS inv_prefix,  INVTYPE.invPrintHead as     invPrintHead,                      
+isnull(INVTYPE.invno_prefix,'')+'/'                
+--+ISNULL(INVTYPE.invPrintHead,'')+'/'+                            
++cast(hd.INV_NO as varchar) as inv_noPrefix,                                    
+case when hd.rcm ='Y' then 'YES' Else 'NO' End rcm,                                      
+'0.00' as freight,'0.00' as ins_amt,'0.00'as handchrg,                                      
+'0.00' as charity,hd.RND_OFF as roff,CONS_ADD2,CONS_ADD3,CONS_ADD4,CONS_ADD1 as cons_slname,hd.remarks,  
+hd.matl_value+HD.Cess_Amt as matlval,hd.matl_value+HD.Cess_Amt as itemval  
+                                                    
+FROM RM_CinvHd hd                                                   
+INNER JOIN RM_Cinvdt dt ON Hd.Divcode=dt.Divcode and Hd.Inv_Type=Dt.Inv_Type and Hd.Inv_No=dt.Inv_No                                                  
+LEFT OUTER JOIN RM_Lot L ON L.LotNo=Dt.PRODUCT_CODE and L.Divcode=Dt.Divcode  and l.LOTYEAR=@Lotyear   and dt.lotdt =l.LOTDT                                              
+INNER JOIN Fa_SlMas Sl ON Sl.SlCode=Hd.Cust_Code                                                  
+INNER JOIN RM_Var Vr ON Vr.VarCode=L.VarCode --and vr.hsn=L.hsn                                              
+LEFT OUTER JOIN PP_DIVMAS pd ON pd.DIVCODE = hd.DIVCODE                                             
+LEFT OUTER JOIN po_car Car ON Car.CARCODE=Hd.Carrier_Code                                          
+LEFT OUTER JOIN IG_BANK k ON k.BANK_CODE = hd.BANK_CODE                                            
+LEFT JOIN IG_INVTYPE INVTYPE ON INVTYPE.DIVCODE=hd.DIVCODE AND INVTYPE.INV_TYPE=hd.INV_TYPE                 
+WHERE Hd.Inv_No=@InvNo and Hd.Date=@InvDt and Hd.Divcode=@Divcode and l.LOTYEAR=@Lotyear               
+                                      
+END   
+  
+  
+--select matl_value,* from RM_CinvHd  
+--select * from RM_Cinvdt  
+
+   

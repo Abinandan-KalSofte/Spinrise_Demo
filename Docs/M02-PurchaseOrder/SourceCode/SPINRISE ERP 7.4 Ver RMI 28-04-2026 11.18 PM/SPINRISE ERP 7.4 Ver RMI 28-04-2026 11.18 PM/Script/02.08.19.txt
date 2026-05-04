@@ -1,0 +1,1 @@
+  alter table fa_purhd add AdvanceAmt numeric(20,2)  

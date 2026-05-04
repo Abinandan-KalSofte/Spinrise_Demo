@@ -1,0 +1,135 @@
+
+
+
+
+CREATE TABLE [dbo].[RM_SustainRMType](
+	[Code] [varchar](3) NULL,
+	[Description] [varchar](25) NULL
+) ON [PRIMARY]
+
+go
+create view vw_OPSustainRpt
+as
+select divcode,docdt ,code,description,opkgs from  RM_OPSustain 
+
+
+
+go
+create table RM_OPSustain(Divcode varchar(2),Docno Numeric(4),docdt Datetime ,Code varchar(4),description varchar(25),Opkgs numeric(15,3))
+go
+
+
+
+alter view vw_SustainArrival
+as
+select c.slname 'Supplier',a.LOTNO ArrNo ,convert(varchar,a.LOTDT,103)  Arrdate , cast(b.CONTNO as varchar)+' / '+ CONVERT(varchar,b.CONTDT ,103) 'Po',
+cast(a.BILLNO  as varchar)+' / '+ CONVERT(varchar,a.BILLDT  ,103) 'SupplierBill',a.favaourablewgt 'Netwt',a.LOTDT ,b.varcode
+ from rm_lot a
+ inner join rm_var v on v.varcode=a.varcode 
+inner join RM_ARRIVAL b on a.ARRDT =b.ARRDATE and a.ARRNO =b.ARRNO and a.DIVCODE =b.DIVCODE and a.VARCODE =b.VARCODE and a.CATCD =b.CATCD 
+inner join FA_SLMAS c on a.SUPCD =c.slcode 
+
+go
+
+create View vw_Sustaininvoice
+as
+select  
+left( (select Stuff((  select  ', ' +ord from (SELECT distinct convert (varchar,ibh.ordrefno)   ord                                       
+                   FROM IG_conthd ibh                                                        
+            inner join IG_BOdt  ibt ON ibh.cont_no=ibt.CONT_NO AND ibh.CONT_TYPE=ibt.cont_TYPE AND ibh.DIVCODE=ibt.DIVCODE                                                       
+                                                           
+where    ibh.divcode=a.divcode  AND   ibt.BO_NO=a.BO_NO  AND ibt.BO_TYPE=a.BO_TYPE ) x                                       
+FOR XML PATH('')),1,1,'')  ),100) PONo, 
+ cast(b.INV_TYPE   as varchar)+' / '+
+ cast(b.INV_NO  as varchar)+' / '+ CONVERT(varchar,a.DATE  ,103) InvDetail,d.slname 'customer',b.LOTCODE ,c.DESCRIPTION 'product',b.NETT_KGS 'qty',
+ b.Total_Amt 
+ 
+
+
+  from ig_invhd a
+inner join ig_invdt b on a.inv_no=b.inv_no and a.inv_type=b.inv_type and a.divcode=b.divcode
+
+inner join ig_product c on b.product_code=c.product_code and a.divcode=b.divcode
+inner join fa_slmas d on d.slcode=a.cust_code
+
+
+go
+
+
+
+
+create table RM_OPSustain(Divcode varchar(2),Docno Numeric(4),docdt Datetime ,Code varchar(4),description varchar(25),Opkgs numeric(15,3))
+
+
+
+create view vw_OPSustainRpt
+as
+select divcode,docdt ,code,description,opkgs from  RM_OPSustain 
+
+go
+alter table rm_cont add SusCatType varchar(3)
+go
+alter view vw_SustainArrival  
+as  
+select c.slname 'Supplier',a.LOTNO ArrNo ,convert(varchar,a.LOTDT,103)  Arrdate , cast(b.CONTNO as varchar)+' / '+ CONVERT(varchar,b.CONTDT ,103) 'Po',  
+cast(a.BILLNO  as varchar)+' / '+ CONVERT(varchar,a.BILLDT  ,103) 'SupplierBill',a.favaourablewgt 'Netwt',a.LOTDT ,b.varcode ,a.divcode ,SusCatType,a.pjamt
+ from rm_lot a  
+ inner join rm_var v on v.varcode=a.varcode   
+inner join RM_ARRIVAL b on a.ARRDT =b.ARRDATE and a.ARRNO =b.ARRNO and a.DIVCODE =b.DIVCODE and a.VARCODE =b.VARCODE and a.CATCD =b.CATCD   and a.supcd=b.supcd
+inner join rm_cont d on d.contno=b.contno and d.contdt=b.contdt  and b.divcode=d.divcode and b.varcode=d.varcode and d.supcd=b.supcd
+inner join FA_SLMAS c on a.SUPCD =c.slcode   
+
+
+alter View vw_Sustaininvoice
+as
+select  
+left( (select Stuff((  select  ', ' +ord from (SELECT distinct convert (varchar,ibh.ordrefno)   ord                                       
+                   FROM IG_conthd ibh                                                        
+            inner join IG_BOdt  ibt ON ibh.cont_no=ibt.CONT_NO AND ibh.CONT_TYPE=ibt.cont_TYPE AND ibh.DIVCODE=ibt.DIVCODE                                                       
+                                                           
+where    ibh.divcode=a.divcode  AND   ibt.BO_NO=a.BO_NO  AND ibt.BO_TYPE=a.BO_TYPE ) x                                       
+FOR XML PATH('')),1,1,'')  ),100) PONo, 
+ cast(b.INV_TYPE   as varchar)+' / '+
+ cast(b.INV_NO  as varchar)+' / '+ CONVERT(varchar,a.DATE  ,103) InvDetail, CONVERT(varchar,a.DATE  ,103) invdate,d.slname 'customer',b.LOTCODE ,c.DESCRIPTION 'product',b.NETT_KGS 'qty',
+ b.Total_Amt ,a.DIVCODE, a.SusCatType ,isnull(RealisationPer,74) RealisationPer,a.date,b.INV_NO,
+  cast(b.INV_TYPE   as varchar)+' / '+
+ cast(b.INV_NO  as varchar)+' / '+ CONVERT(varchar,a.DATE  ,103)+'-'+ b.LOTCODE +'-'+b.product_code inv
+  from ig_invhd a
+inner join ig_invdt b on a.inv_no=b.inv_no and a.inv_type=b.inv_type and a.divcode=b.divcode
+
+inner join ig_product c on b.product_code=c.product_code and a.divcode=b.divcode
+inner join fa_slmas d on d.slcode=a.cust_code
+left join IG_PARAM p on p.divcode=a.divcode
+go
+
+
+alter table ig_invhd add  SusCatType varchar(3)
+go
+alter table ig_param add RealisationPer numeric(7,2)
+
+go
+
+CREATE TABLE [dbo].[RM_Certificate](
+	[DIVCODE] [varchar](2) NOT NULL,
+	[Docno] [numeric](9, 0) NOT NULL,
+	[DocDt] [datetime] NOT NULL,
+	[SlotNo] [varchar](10) NOT NULL,
+	[LotNo] [numeric](10, 0) NOT NULL,
+	[Lotdt] [datetime] NOT NULL,
+	[CertificateNo] [varchar](15) NOT NULL,
+	[CertificateDt] DateTime NOT NULL,
+	CertificateNo2 [varchar](15) NOT NULL,
+	CertificateDt2 datetime,
+	CertificateNo3 [varchar](15) NOT NULL,
+	CertificateDt3 datetime,
+	
+	[slcode] [varchar](9) NULL
+) ON [PRIMARY]
+
+GO
+alter table rm_lot add CertificateNo  varchar(20)
+go
+alter table rm_lot add CertificateDt  datetime
+
+
+

@@ -1,0 +1,11 @@
+CREATE PROCEDURE pending_order_broker   
+@arr_type AS VARCHAR(1), @divcode AS VARCHAR(2), @fdate AS VARCHAR(10), @tdate AS VARCHAR(10), @fbcode AS VARCHAR (10), @tbcode AS VARCHAR (10) as   
+select distinct a.supcd,isnull(c.slname, ' ') supname,isnull(d.slname,' ') brkname,isnull(a.brkcd,' ')'brkcd',  
+a.areacode,b.varname,cast(a.contno as varchar) as contno,a.contdt,case when dlytype = 'M' or dlytype='F' then  'FOR'    
+else 'Spot' end as dlytype,a.ordqty,a.recqty,isnull(a.cancelbales,0) as cancelbales,  
+(a.ordqty-isnull(recqty,0)-isnull(a.cancelbales,0))Bales,round(a.candyrate,0)as candyrate,  
+case when bbflag='B' then 'Bales' else 'Borah' end as unit,a.Millrefno from RM_CONT a,rm_var b,fa_slmas c,fa_slmas d   
+Where  ISNULL(aRRIVALTYPE,'P')=@arr_type AND  divcode =@divcode and A.CONTdt BETWEEN @fdate AND @tdate AND  a.varcode*= B.varcode and   
+(isnull(a.recqty,0) < isnull(a.ordqty,0))and  a.supcd*= c.slcode and a.brkcd*= d.slcode and a.brkcd BETWEEN  
+@fbcode AND @tbcode AND ORDQTY-isnull(recqty,0)-ISNULL(CANCELBALES,0)>0  order by A.BRKCD,cast(a.contno as varchar)  
+  

@@ -1,0 +1,41 @@
+--For RMI
+CREATE PROCEDURE KSP_EXCELSUPPMSTRMI
+as
+BEGIN
+Declare @PType as varchar(300)
+set @PType =(select PTypeCotton from MasterLen)
+ select 
+	 --top 10
+	 ROW_NUMBER() over (order by slcode) as sno,
+	 slcode,
+	 slname,
+	 add1,
+	 add2,
+	 add3,
+	 city,
+	 pin,
+	 state,
+	 country,
+	 GSTINNO,
+	 GSTSTATECODE as state_code,
+	 pan,
+	 UAM,
+	 phone1,
+	 email,
+	 contper,
+	 contdesg,
+	 '' AS MSME_Registration,
+	 TypeofEnterprise,
+	 GROUPCODE,
+	 crddays,
+	 pay_terms    
+FROM
+	fa_slmas
+WHERE
+ substring(ltrim(slcode),1,2) in(select items from dbo.Split(@PType,','))
+END
+
+
+--exec KSP_EXCELSUPPMSTRMI
+--select * from masterlen
+--select * from fa_slmas

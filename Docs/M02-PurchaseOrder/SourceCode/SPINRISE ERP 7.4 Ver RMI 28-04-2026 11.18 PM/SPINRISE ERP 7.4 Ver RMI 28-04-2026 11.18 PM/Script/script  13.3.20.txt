@@ -1,0 +1,62 @@
+alter table rm_COUNT add Map_CntCd varchar(10)
+go
+
+alter table rm_cont add DRecqty numeric(8)
+go
+alter table rm_cont add DRCDKGS numeric(12,3)
+go
+alter table RM_param add Arrdespatch_Flg varchar(1)
+go
+
+
+ 
+ 
+ alter view Vw_RM_PendingDespatch
+ as
+ select DISTINCT a.supcd,b.Slname, b.City, b.brcode,isnull(GROUPCODE,'')GROUPCODE ,isnull(B.GSTSTATECODE,'0') GSTSTATECODE,isnull(B.GSTINNO,'') GSTINNO,isnull(b.supptype,'R') Supptype ,
+  a.contno,a.contdt,a.divcode,im_ind,a.Appflg ,candyrate,rateunit,arrivaltype ,a.Varcode,varname
+  ,
+  --ISNULL(Ordqty,0)-(ISNULL(dRECQTY,0)+ISNULL(CANCELBALES,0))
+    (Qty-isnull(RVDQTY,0))
+   Balqty,c.docno,c.DocDate ,INV_QtyKGS
+  from rm_cont a
+  inner join RM_DespatchDT c on a.contno=c.contno and a.contdt=c.contdt and a.divcode=c.ORDDivcode and a.VARCODE=c.VarCode 
+  inner join   fa_slmas b on a.supcd=b.slcode
+  left join rm_var d on d.varcode=a.varcode
+   where  isnull(a.Fclosed,'N')<>'Y' 
+ and (ordqty>(isnull(cancelbales,0)+isnull(recqty,0)))   
+  and  (Qty>isnull(RVDQTY,0))
+ --(ordqty>(isnull(cancelbales,0)+isnull(drecqty,0)) )
+   AND ISNULL(ARRIVALTYPE,'P')='P'    
+    UNION ALL  
+    select DISTINCT a.supcd,Slname, b.City, b.brcode,isnull(GROUPCODE,'')GROUPCODE,isnull(B.GSTSTATECODE,'0') GSTSTATECODE,isnull(B.GSTINNO,'') GSTINNO,isnull(b.supptype,'R') Supptype, 
+    a.contno,a.contdt,a.divcode,im_ind,a.Appflg,candyrate,rateunit,arrivaltype,a.Varcode,varname ,
+     (QtyKGS-(isnull(RVDKGS,0)))  Balqty,c.docno,c.DocDate ,INV_QtyKGS
+     from rm_cont a
+     inner join RM_DespatchDT c on a.contno=c.contno and a.contdt=c.contdt and a.divcode=c.ORDDivcode and a.VARCODE=c.VarCode 
+    inner join  fa_slmas b   on  a.supcd=b.slcode
+    left join rm_var d on d.varcode=a.varcode
+     where  isnull(a.Fclosed,'N')<>'Y'
+     and (ordKGS>(isnull(rCDKGS,0)+ISNULL(cancelkgs,0)))  and  (QtyKGS>isnull(RVDKGS,0))
+     AND ISNULL(ARRIVALTYPE,'P')='K' 
+     
+     
+
+go
+	alter table rm_arrival add Commr_Wt numeric(14,3)
+	go
+     alter table rm_arrival add DPDocno numeric(8)
+     go
+     alter table rm_arrival add DPDocDate datetime
+
+go
+
+     alter table rm_bale add Comm_Wt numeric(9,3)
+go
+
+
+alter table rm_lot add DPDocDate datetime
+go
+alter table rm_lot add DPDocno numeric(8)
+go
+

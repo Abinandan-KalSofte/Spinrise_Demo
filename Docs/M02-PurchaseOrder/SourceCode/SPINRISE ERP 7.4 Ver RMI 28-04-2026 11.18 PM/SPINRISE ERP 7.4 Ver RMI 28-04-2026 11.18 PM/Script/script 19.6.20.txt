@@ -1,0 +1,2 @@
+
+ALTER TABLE RM_CONT ADD No_of_Load Numeric(2)

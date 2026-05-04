@@ -1,0 +1,69 @@
+alter table RM_FreightBillHD add Carcode varchar(4)
+
+go
+  
+alter View Vw_RM_PendingFreightBill  
+as  
+select a.DIVCODE,Fbillno,a.fbilldt ,a.pjno,a.pjdt ,a.supcd Slcode,b.slname,d.VARNAME ,c.lrno+'/'+c.LORRYNOS LORRYNOS  
+,e.plname,sum(a.comm_wt) comm_wt ,  
+sum(a.fbillvalue) fbillvalue,sum(c.FREIGHT) FREIGHT,sum(a.bales) bales,a.PlCode,0 ratekg,c.carcode
+ from rm_lot a   
+inner join fa_slmas b on a.supcd=b.slcode   
+inner join rm_arrival c on a.ARRNO =c.ARRNO and a.arrdt=c.ARRDATE and a.divcode=c.divcode and a.varcode=c.varcode and a.contnum=c.contno and c.CONTDT=a.Contdate  
+and a.SUPCD=c.supcd    
+inner join RM_VAR d on d.VARCODE =a.VARCODE   
+left join rm_plant e on e.PLCode=a.PlCode  
+where isnull(frtentrapp,'N')<>'Y'  and a.PJNO is not null   
+group by Fbillno ,a.pjno,a.pjdt ,a.supcd,b.slname,d.VARNAME ,c.lrno+'/'+c.LORRYNOS ,e.plname,a.fbilldt,a.DIVCODE,a.PlCode  ,c.carcode
+  
+  go
+create Proc KSP_FreightBillList
+(
+@divcode varchar(2),
+@Fdate varchar(10),
+@tdate Varchar(10),
+@ipAdd varchar(10)
+
+)
+as
+select   a.Docno ,a.Docdt ,a.Billno ,a.Billdt ,c.slname 'Transpoter',d.CARNAME carrier,
+f.DIV_PRINTNAME ,DIV_UNITNAME ,c.add1 tadd1,c.add2 Tadd2,c.add3 tadd3,c.city tcity,c.pin tpin
+, f.add1 ppadd1,f.add2 ppadd2,f.add3 ppadd3,f.city ppcity,f.pincode pppin,g.slname 'Supplier',
+b.LRNo,InvoiceNo,Invoicedt,PJVNO,PJVDT,p.plname 'Plant',Bales,b.TotalKgs,inv_Amt,FreightAmtBill,FreightAmtMill,FreightAmtApp,CGSTPER,
+b.CGSTAmt,SGSTPER,b.SGSTAmt,IGSTPER,b.IGSTAmt,b.TDSPER,b.TDSAmt,b.TotalAmt
+
+  from RM_FreightBillHD a 
+inner join RM_FreightBilldt b on a.docno=b.docno and a.Divcode=b.Divcode  and a.Docdt =b.Docdt 
+inner join fa_slmas c on c.slcode=a.slcode 
+left join fa_slmas g on g.slcode=b.Supcd
+inner join po_car d on d.CARCODE =a.Carcode 
+left join rm_plant p on p.plcode=  b.PLCode
+inner join pp_divmas f on f.divcode=a.divcode
+where a.docdt between  @Fdate and @Tdate  and a.Divcode=@divcode
+
+ go
+ 
+create Proc KSP_pendingFreightBill
+(
+@divcode varchar(2),
+@Fdate varchar(10),
+@tdate Varchar(10),
+@ipAdd varchar(10)
+
+)
+as
+select   a.arrno ,a.ARRDATE ,b.BILLNO ,b.BILLDT ,d.CARNAME carrier,
+f.DIV_PRINTNAME ,DIV_UNITNAME
+, f.add1 ppadd1,f.add2 ppadd2,f.add3 ppadd3,f.city ppcity,f.pincode pppin,g.slname 'Supplier',
+a.LRNo,g.add1 sadd1,g.add2 sadd2,g.add3 sadd3,g.city scity,g.pin spin,a.FREIGHT 'FreightAmt'
+
+  from RM_arrival a 
+inner join RM_lot b on a.ARRNO =b.ARRNO  and a.Divcode=b.Divcode  and a.ARRDATE  =b.ARRDT and a.VARCODE =b.VARCODE  
+left join RM_FreightBilldt ff on ff.PJVDT =b.PJdt and ff.pjvno=b.pjno and a.divcode=ff.divcode
+
+left join fa_slmas g on g.slcode=b.Supcd
+inner join po_car d on d.CARCODE =a.Carcode 
+left join rm_plant p on p.plcode=  b.PLCode
+inner join pp_divmas f on f.divcode=a.divcode
+where a.arrdate between  @Fdate and @Tdate  and a.Divcode=@divcode and ff.lrno is null
+ 

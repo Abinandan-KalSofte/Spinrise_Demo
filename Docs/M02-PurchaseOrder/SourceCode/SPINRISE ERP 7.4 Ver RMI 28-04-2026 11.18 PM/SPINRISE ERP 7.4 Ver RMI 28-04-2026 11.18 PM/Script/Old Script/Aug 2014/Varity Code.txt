@@ -1,0 +1,79 @@
+alter table rm_Var add drawno	varchar	(10)
+go
+alter table rm_Var  add	oldvarcode varchar	(10)
+
+go
+alter table RM_ARRIVAL  add cccode varchar	(10)
+
+go
+CREATE TABLE [dbo].[rmi_doc_para](
+[TC] [varchar](20) NOT NULL,
+[STDOCNO] [decimal](6, 0) NULL
+) ON [PRIMARY]
+
+GO
+inset into rmi_doc_para values('PURCHASE REQUISITION',1)
+go 
+--ksp_IG_rStockReport_period_form9 '01','2014-07-01','2014-07-31'  
+alter PROC ksp_IG_rStockReport_period_form9             
+@Divcode varchar(5),            
+@Fdate varchar(15),            
+@Tdate varchar(15)   
+AS            
+     
+select x.Divcode,x.Product_code,b.DESCRIPTION,sum(OPack)OPack,sum(OKgs)OKgs,sum(OLoose)OLoose,            
+sum(PROD_PACKS) as PROD_PACKS,sum(Rec_kgs) as Rec_kgs,sum(Dep_Pack) as Dep_Pack,             
+sum(Dep_kgs) as Dep_kgs,sum(ORPacks) as ORPacks,sum(ORKgs) as ORKgs,sum(OIPacks) as OIPacks,sum(OIKgs) as OIKgs,            
+sum(PLoose)PLoose,sum(CPack)CPack,sum(CKgs)CKgs,sum(CLoose)CLoose,sum(TranPack) [TranPack],sum(TranKgs) [TranKgs],        
+d.DIV_PRINTNAME,d.DIV_UNITNAME ,sum(IssNett_Kgs) as IssNett_Kgs         
+FROM ( Select Divcode,Product_code,Date,sum(PROD_PACKS+ORPacks-(PPROD_PACKS+TPROD_PACKS+SPROD_PACKS+OIPacks)) as OPack,            
+sum(Receipts+ORKgs-(PROD_iss+TRN_ISS+SAL_ISS+OIKgs)) as OKgs, sum(LooseKgs) as OLoose,            
+0 as PROD_PACKS,0 as Rec_kgs,0 as Dep_Pack,0 as Dep_kgs,0 as ORPacks,0 as ORKgs,0 as OIPacks,0 as OIKgs,          
+0 as PLoose,0 as CPack,0 as CKgs,0 as CLoose,0 [TranPack],0 [TranKgs]  ,0 as IssNett_Kgs             
+from yarnstock1           
+where Divcode=@Divcode and Date<@Fdate           
+group by Divcode,Product_code,Date            
+          
+UNION ALL           
+           
+Select Divcode,Product_code,Date,0,0,0,sum(PROD_PACKS),sum(Receipts),sum(SPROD_PACKS)as Dep_Pack,          
+sum(SAL_ISS)as Dep_kgs,sum(ORPacks),sum(ORKgs),sum(OIPacks),sum(OIKgs),          
+sum(LooseKgs) ,0,0,0,0 [TranPack],0 [TranKgs]   ,0 as IssNett_Kgs            
+from yarnstock1           
+where Divcode=@Divcode and Date between @Fdate and @Tdate           
+group by Divcode,Product_code,Date            
+      
+UNION ALL           
+           
+Select Divcode,Product_code,Date,0,0,0,0,0,0 as Dep_Pack,          
+0 as Dep_kgs,0,0,0,0,          
+0 ,0,0,0,0 [TranPack],0 [TranKgs],sum(IssNett_Kgs)IssNett_Kgs           
+from yarnstock1           
+where Divcode=@Divcode and Date between @Fdate and @Tdate           
+group by Divcode,Product_code,Date         
+          
+UNION ALL           
+---- Start for Transfer ----          
+Select Divcode,Product_code,Date,0,0,0,0,0,0 as Dep_Pack,0 Dep_kgs,0,0,0,0,0 ,0,0,0,          
+sum(PPROD_PACKS+TPROD_PACKS) [TranPack],sum(PROD_iss+TRN_ISS) [TranKgs]    ,0 as IssNett_Kgs          
+from yarnstock1           
+where Divcode=@Divcode and Date between @Fdate and @Tdate           
+group by Divcode,Product_code,Date            
+---- End for Transfer ----          
+UNION ALL            
+          
+Select Divcode,Product_code,Date,0 as OPack,0 as OKgs, 0 as OLoose,0 as PROD_PACKS,0 as Rec_kgs,0 as Dep_Pack,             
+0 as Dep_kgs,0 as ORPacks,0 as ORKgs,0 as OIPacks,0 as OIKgs,0 as PLoose,      
+sum(PROD_PACKS+ORPacks-(PPROD_PACKS+TPROD_PACKS+SPROD_PACKS+OIPacks)) as CPack,sum(Receipts+ORKgs-(PROD_iss+TRN_ISS+SAL_ISS+OIKgs)) as CKgs,          
+sum(LooseKgs) as CLoose ,0 [TranPack],0 [TranKgs]  ,0 as IssNett_Kgs        
+from yarnstock1           
+where Divcode=@Divcode and Date<=@Tdate           
+group by Divcode,Product_code,Date            
+      
+            
+)x inner join  ig_rproduct b ON x.Divcode=b.divcode and x.product_code=b.product_code  AND form9 ='Y'      
+--LEFT OUTER JOIN ig_producttype c ON c.PRODUCT_TYPE = b.PRODUCT_TYPE      
+LEFT OUTER JOIN PP_DIVMAS d ON  x.Divcode=d.DIVCODE       
+WHERE x.divcode=@Divcode       
+     
+group by x.Divcode,x.Product_code,b.DESCRIPTION,d.DIV_PRINTNAME,d.DIV_UNITNAME      

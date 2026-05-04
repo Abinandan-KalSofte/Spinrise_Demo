@@ -1,0 +1,12 @@
+create procedure KspSetupMIXING
+--KspSetupMIXING '01'  
+@divcode varchar(02)  
+as  
+begin    
+select a.mixgrpcd,MIXGRPNAME,cntcd,cntname,pd.DIV_PRINTNAME,pd.DIV_UNITNAME  
+from RM_COUNT A  
+inner join PP_DIVMAS pd on pd.DIVCODE=@divcode  
+inner join rm_mixgrp B ON B.MIXGRPCD=A.mixgrpcd
+ order by a.mixgrpcd  
+end  
+

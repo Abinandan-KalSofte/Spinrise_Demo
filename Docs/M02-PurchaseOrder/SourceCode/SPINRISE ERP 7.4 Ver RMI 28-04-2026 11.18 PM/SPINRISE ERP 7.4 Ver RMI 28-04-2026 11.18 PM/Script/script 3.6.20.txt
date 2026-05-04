@@ -1,0 +1,2 @@
+
+alter table rm_delsched add Divcode varchar(2)

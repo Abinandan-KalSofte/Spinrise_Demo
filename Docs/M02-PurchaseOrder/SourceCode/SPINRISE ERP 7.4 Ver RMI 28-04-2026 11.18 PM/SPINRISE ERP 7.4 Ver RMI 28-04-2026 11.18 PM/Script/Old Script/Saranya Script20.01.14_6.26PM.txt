@@ -1,0 +1,19 @@
+CREATE TABLE [dbo].[RM_FibreRange](
+	[FibreProperty] [varchar](50) NOT NULL,
+	[Maximum] [numeric](4, 2) NOT NULL,
+	[Minimum] [numeric](4, 2) NOT NULL,
+	[Range] [varchar](20) NOT NULL
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[RM_FibreRange] ADD  CONSTRAINT [DF_RM_FibreRange_Maximum]  DEFAULT ((0)) FOR [Maximum]
+GO
+
+ALTER TABLE [dbo].[RM_FibreRange] ADD  CONSTRAINT [DF_RM_FibreRange_Minimum]  DEFAULT ((0)) FOR [Minimum]
+GO
+
+

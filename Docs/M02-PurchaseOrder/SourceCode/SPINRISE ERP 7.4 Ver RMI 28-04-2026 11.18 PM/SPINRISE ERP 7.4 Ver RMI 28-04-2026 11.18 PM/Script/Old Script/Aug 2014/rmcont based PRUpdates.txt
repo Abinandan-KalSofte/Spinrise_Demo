@@ -1,0 +1,168 @@
+    CREATE TABLE [dbo].[RM_PRH](
+	[divcode] [varchar](2) NOT NULL,
+	[prno] [numeric](6, 0) NOT NULL,
+	[prdate] [datetime] NOT NULL,
+	[refno] [varchar](20) NULL,
+	[itype] [varchar](1) NULL,
+	[REQNAME] [varchar](25) NULL,
+	[userId] [varchar](25) NULL,
+	[APPFLG] [varchar](1) NULL,
+ CONSTRAINT [PK_RM_PRH] PRIMARY KEY NONCLUSTERED 
+(
+	[divcode] ASC,
+	[prno] ASC,
+	[prdate] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+ALTER TABLE RM_PARAM ADD Manual_IndNo VARCHAR (1)
+go
+CREATE TABLE [dbo].[RM_PRL](
+	[divcode] [varchar](2) NOT NULL,
+	[prno] [numeric](6, 0) NOT NULL,
+	[prdate] [datetime] NOT NULL,
+	[prsno] [numeric](5, 0) NOT NULL,
+	[varcode] [varchar](10) NULL,
+	[qtyind] [numeric](12, 3) NULL,
+	[qtyindKG] [numeric](12, 3) NULL,
+	[qtyreqd] [numeric](12, 3) NULL,
+	[qtyreqdKG] [numeric](12, 3) NULL,
+	[qtyord] [numeric](12, 3) NULL,
+	[qtyordKG] [numeric](12, 3) NULL,
+	[qtyrec] [numeric](12, 3) NULL,
+	[qtyrecKG] [numeric](12, 3) NULL,
+	[reqddate] [datetime] NULL,
+	[prstatus] [char](1) NULL,
+	[remarks] [varchar](50) NULL,
+	[pend_flag] [char](1) NULL,
+	[REMARK1] [varchar](25) NULL,
+	[RATE] [numeric](13, 4) NULL,
+	[VALUE] [numeric](13, 2) NULL,
+	[curstock] [decimal](15, 4) NULL,
+	[Packtype] [varchar](10) NULL,
+ CONSTRAINT [PK_RM_PRL] PRIMARY KEY NONCLUSTERED 
+(
+	[divcode] ASC,
+	[prno] ASC,
+	[prdate] ASC,
+	[prsno] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+    
+create trigger [dbo].[updRMCONT] on [dbo].[RM_CONT] for update as    
+DECLARE    
+     @cnt numeric,        
+     @divcode VARCHAR(2),        
+     @PRDATE DATETIME,  
+    @PRSNO NUMERIC(5,0),  
+     @iPRNO NUMERIC(5,0) ,  
+     @VARCODE varchar (10),  
+     @BBFLAG VARCHAR(1),  
+     @ORDKGS decimal (18 ,3)    
+BEGIN    
+SELECT @divcode =DIVCODE,@iPRNO =ISNULL(IPRNO,0),@PRDATE=PRDATE,@PRSNO=PRSNO,@VARCODE=VARCODE,  
+ @BBFLAG=BBFLAG, @ORDKGS = ORDKGS FROM DELETED       
+ IF @iPRNO <>0   
+  BEGIN   
+     select @cnt = count(*) from RM_PRL where   
+      DIVCODE = @divcode AND PRNO =@iPRNO AND   
+      PRDATE =@PRDATE AND  PRSNO =@PRSNO AND VARCODE=@VARCODE       
+   if @cnt <> 0         
+   BEGIN  
+    UPDATE RM_PRL SET  qtyordKG = ISNULL(qtyordKG,0) - ISNULL( @ORDKGS,0)  
+        WHERE DIVCODE = @divcode AND PRNO =@iPRNO AND   
+        PRDATE =@PRDATE AND  PRSNO =@PRSNO AND VARCODE=@VARCODE                 
+   end    
+  END   
+    
+ SELECT @divcode =DIVCODE,@iPRNO =ISNULL(IPRNO,0),@PRDATE=PRDATE,@PRSNO=PRSNO,@VARCODE=VARCODE,  
+ @BBFLAG=BBFLAG, @ORDKGS = ORDKGS FROM INSERTED            
+ IF @iPRNO <>0   
+  BEGIN   
+     select @cnt = count(*) from RM_PRL where   
+      DIVCODE = @divcode AND PRNO =@iPRNO AND   
+      PRDATE =@PRDATE AND  PRSNO =@PRSNO AND VARCODE=@VARCODE       
+   if @cnt <> 0         
+   BEGIN  
+    UPDATE RM_PRL SET  qtyordKG = ISNULL(qtyordKG,0) + ISNULL( @ORDKGS,0)  
+        WHERE DIVCODE = @divcode AND PRNO =@iPRNO AND   
+        PRDATE =@PRDATE AND  PRSNO =@PRSNO AND VARCODE=@VARCODE                 
+   end    
+  END  
+  
+  
+END    
+go
+
+/****** Object:  Trigger dbo.delcgtrn    Script Date: 26/07/2000 05:09:35 ******/      
+CREATE trigger delrmCont on dbo.rm_Cont for delete as      
+--delcgtrn      
+DECLARE      
+     @cnt numeric,        
+     @divcode VARCHAR(2),        
+     @PRDATE DATETIME,  
+  @PRSNO NUMERIC(5,0),  
+     @iPRNO NUMERIC(5,0) ,  
+     @VARCODE varchar (10),  
+     @BBFLAG VARCHAR(1),  
+     @ORDKGS decIMAL (18 ,3 )  
+BEGIN      
+    SELECT @divcode =DIVCODE,@iPRNO =ISNULL(IPRNO,0),@PRDATE=PRDATE,@PRSNO=PRSNO,@VARCODE=VARCODE,  
+ @BBFLAG=BBFLAG, @ORDKGS = ORDKGS FROM DELETED       
+ IF @iPRNO <>0   
+  BEGIN   
+     select @cnt = count(*) from RM_PRL where   
+      DIVCODE = @divcode AND PRNO =@iPRNO AND   
+      PRDATE =@PRDATE AND  PRSNO =@PRSNO AND VARCODE=@VARCODE       
+   if @cnt <> 0         
+   BEGIN  
+    UPDATE RM_PRL SET  qtyordKG = ISNULL(qtyordKG,0) - ISNULL( @ORDKGS,0)  
+        WHERE DIVCODE = @divcode AND PRNO =@iPRNO AND   
+        PRDATE =@PRDATE AND  PRSNO =@PRSNO AND VARCODE=@VARCODE                 
+   end    
+  END   
+    
+  
+               
+END 
+
+go
+
+  
+CREATE trigger insrmcont on dbo.rm_Cont for insert as         
+DECLARE        
+     @cnt numeric,        
+     @divcode VARCHAR(2),        
+     @PRDATE DATETIME,  
+  @PRSNO NUMERIC(5,0),  
+     @iPRNO NUMERIC(5,0) ,  
+     @VARCODE varchar (10),  
+     @BBFLAG VARCHAR(1),  
+     @ORDKGS DECIMAL (18,3)  
+       
+       
+BEGIN        
+   
+ SELECT @divcode =DIVCODE,@iPRNO =ISNULL(IPRNO,0),@PRDATE=PRDATE,@PRSNO=PRSNO,@VARCODE=VARCODE,  
+ @BBFLAG=BBFLAG, @ORDKGS = ORDKGS FROM INSERTED            
+ IF @iPRNO <>0   
+  BEGIN   
+     select @cnt = count(*) from RM_PRL where   
+      DIVCODE = @divcode AND PRNO =@iPRNO AND   
+      PRDATE =@PRDATE AND  PRSNO =@PRSNO AND VARCODE=@VARCODE       
+   if @cnt <> 0         
+   BEGIN  
+    UPDATE RM_PRL SET  qtyordKG = ISNULL(qtyordKG,0) + ISNULL( @ORDKGS,0)  
+        WHERE DIVCODE = @divcode AND PRNO =@iPRNO AND   
+        PRDATE =@PRDATE AND  PRSNO =@PRSNO AND VARCODE=@VARCODE                 
+   end    
+  END  
+ END
+
+go  
+
+
+

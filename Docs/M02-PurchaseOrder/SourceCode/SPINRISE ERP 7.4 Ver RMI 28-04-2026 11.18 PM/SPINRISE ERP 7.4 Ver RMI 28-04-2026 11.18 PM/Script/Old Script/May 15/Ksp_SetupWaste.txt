@@ -1,0 +1,13 @@
+alter procedure Ksp_SetupWaste
+@divcode varchar(02)
+as
+begin
+
+
+select isnull(a.product_code,'')product_code,isnull(a.description,'') as description,isnull(a.short_code,'') short_code,
+case when a.wastetype='S' then 'Saleable' else 'Usable' end as wasteType,0 as st_per,pd.DIV_PRINTNAME,pd.DIV_UNITNAME from 
+ig_rproduct a 
+inner join PP_DIVMAS pd on pd.DIVCODE=a.DIVCODE
+where (wastetype like 'U%' or wastetype like 'S%') and  a.divcode = @divcode
+order by a.PRODUCT_CODE
+end

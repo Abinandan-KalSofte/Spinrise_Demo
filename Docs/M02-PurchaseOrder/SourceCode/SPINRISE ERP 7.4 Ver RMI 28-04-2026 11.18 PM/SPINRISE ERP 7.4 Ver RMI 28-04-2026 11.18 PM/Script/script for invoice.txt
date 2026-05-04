@@ -1,0 +1,1 @@
+alter table RM_CINVHD add cons_gstinno varchar(25)

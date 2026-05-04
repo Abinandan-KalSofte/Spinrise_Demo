@@ -1,0 +1,22 @@
+    
+          
+CREATE FUNCTION [dbo].[Cont_DiscountAmount]                            
+(@divcode varchar(2),                              
+@Contno numeric(10),              
+@Contdt VARCHAR(15),          
+@Varcode VARCHAR(15)          
+         
+)                          
+returns decimal(20,2)           
+AS                              
+BEGIN                              
+Declare @amt decimal(20,2)                              
+(SELECT @amt=isnull(amt,0)                            
+FROM                              
+(          
+   select  sum(DRate) amt from RM_ContDiscntRate aa where  aa.divcode=@divcode and aa.ContNo=@contno and aa.contdt =@Contdt    
+and aa.varcode =@Varcode       
+                  
+)ss  )                            
+Return (@amt)                              
+END 

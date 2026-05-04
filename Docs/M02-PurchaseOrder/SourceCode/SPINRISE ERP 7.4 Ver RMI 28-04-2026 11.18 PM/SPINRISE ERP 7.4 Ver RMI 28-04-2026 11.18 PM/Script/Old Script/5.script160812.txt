@@ -1,0 +1,1 @@
+alter table ig_rpacknos add tisskgs numeric(10,3)

@@ -1,0 +1,416 @@
+alter table rm_lot add trash_et numeric(9,2)
+go
+alter table RM_BALE add trash_et numeric(9,2)
+go
+
+alter table rm_lot add Gdivcode varchar(2)
+go
+
+
+
+
+alter table rm_arrival add FAq  numeric(12,2)
+go
+alter table rm_arrival add sci  numeric(12,2)
+go
+alter table rm_arrival add bb  numeric(12,2)
+go
+alter table rm_arrival add rd  numeric(12,2)
+go
+alter table rm_arrival add sci  numeric(12,2)
+go
+alter table rm_lot add STAPLEN5 numeric(12,3)
+go
+alter table rm_lot add ADDUSERNAME varchar(10)
+
+go
+alter table rm_lot add ModUSERNAME varchar(10)
+
+go
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[RM_ISSUE_RETURN](
+	[DIVCODE] [varchar](2) NOT NULL,
+	[ISSTYPE] [char](2) NOT NULL,
+	[DOCNO] [decimal](6, 0) NOT NULL,
+	[DOCDT] [datetime] NOT NULL,
+	[ISSDOCNO] [decimal](6, 0) NOT NULL,
+	[ISSDOCDT] [datetime] NOT NULL,
+	[CATCD] [char](1) NOT NULL,
+	[LOTNO] [smallint] NOT NULL,
+	[LOTDT] [datetime] NOT NULL,
+	[MIXGRP] [varchar](25) NULL,
+	[BALENO] [smallint] NOT NULL,
+	[ISSKGS] [decimal](7, 3) NOT NULL,
+	[LOTTYPE] [char](1) NOT NULL,
+	[USERID] [varchar](5) NULL,
+	[ACTISSKGS] [decimal](8, 3) NULL,
+	[arrdt] [datetime] NULL,
+	[VARCODE] [varchar](10) NULL,
+ CONSTRAINT [PK_ISSUE_RETURN] PRIMARY KEY CLUSTERED 
+(
+	[DIVCODE] ASC,
+	[DOCNO] ASC,
+	[DOCDT] ASC,
+	[CATCD] ASC,
+	[LOTNO] ASC,
+	[LOTDT] ASC,
+	[BALENO] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[Rm_mixingStock](
+	[ISSNO] [numeric](5, 0) NULL,
+	[ISSDT] [datetime] NULL,
+	[CATCD] [char](1) NULL,
+	[LOTNO] [smallint] NULL,
+	[LOTDT] [datetime] NULL,
+	[ISSKGS] [decimal](15, 3) NULL,
+	[ISSBALE] [int] NULL,
+	[VARCODE] [varchar](10) NULL,
+	[RATEKG] [decimal](10, 2) NULL,
+	[MIXKGS] [decimal](10, 2) NULL,
+	[MIXBALES] [int] NULL,
+	[isstype] [varchar](2) NULL,
+	[divcode] [varchar](2) NULL
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[Rm_mixingStock] ADD  CONSTRAINT [DF__Rm_mixing__MIXKG__480531EA]  DEFAULT (0) FOR [MIXKGS]
+GO
+
+ALTER TABLE [dbo].[Rm_mixingStock] ADD  CONSTRAINT [DF__Rm_mixing__MIXBA__48F95623]  DEFAULT (0) FOR [MIXBALES]
+GO
+
+
+alter table rm_lot add faflag varchar(2)
+go
+
+alter table rm_lot add IDPer numeric(9,2)
+go
+alter table rm_lot add welfarePer numeric(9,2)
+go
+alter table rm_lot add duty_Wt numeric(15,3)
+
+go
+alter table rm_lot add DutyValue numeric(15,3)
+go
+alter table rm_lot add Advance_amt numeric(15,3)
+go
+
+alter table rm_lot add ACGSTAMT numeric(9,2)
+go
+alter table rm_lot add ASGSTAMT numeric(9,2)
+go
+alter table rm_lot add AIGSTAMT numeric(9,2)
+go
+  alter table fa_purhd add AdvanceAmt numeric(20,2)  
+go
+  alter table rm_param add purbillapproval varchar(10)
+  Go
+  
+  alter table rm_lot add
+  purappruser	varchar(150),
+purappdate	varchar(150),
+purappflg	varchar(5),
+purpreparedby	varchar(150),
+purpredate	varchar(150)
+Go
+
+
+alter table IG_RPACKDT add repack_flg varchar(2)
+
+
+go
+
+
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[ig_Rsrhd](
+	[DIVCODE] [varchar](2) NOT NULL,
+	[DOC_TYPE] [varchar](2) NOT NULL,
+	[DOC_NO] [varchar](8) NOT NULL,
+	[DATE] [datetime] NOT NULL,
+	[CUST_CODE] [varchar](7) NULL,
+	[INV_TYPE] [varchar](2) NOT NULL,
+	[INV_NO] [varchar](8) NOT NULL,
+	[MATL_VALUE] [decimal](10, 2) NOT NULL,
+	[CESS_PER] [decimal](5, 2) NOT NULL,
+	[CESS_AMT] [decimal](8, 2) NOT NULL,
+	[CHARITY] [decimal](10, 2) NOT NULL,
+	[BED_AMT] [decimal](10, 2) NOT NULL,
+	[AED_AMT] [decimal](10, 2) NOT NULL,
+	[TAX_FLAG] [char](1) NOT NULL,
+	[TAX_AMT] [decimal](10, 2) NOT NULL,
+	[FREIGHT] [decimal](10, 2) NOT NULL,
+	[INS_PER] [numeric](5, 2) NULL,
+	[INS_AMT] [decimal](10, 2) NOT NULL,
+	[TOTAL_AMT] [decimal](10, 2) NOT NULL,
+	[USER_ID] [varchar](5) NULL,
+	[ENTDATE] [datetime] NULL,
+	[remarks] [varchar](50) NULL,
+	[purflg] [char](1) NULL,
+	[OTH_CHARGES] [numeric](15, 3) NULL,
+	[Edu_Amt] [decimal](10, 2) NULL,
+	[Hsc_Amt] [decimal](10, 2) NULL,
+	[Handling_Rate] [numeric](12, 2) NULL,
+	[Rnd_Off] [numeric](12, 2) NULL,
+	[Others] [numeric](12, 2) NULL,
+	[Loose_Kgs] [numeric](15, 2) NULL,
+	[LKgs_Flg] [varchar](1) NULL,
+	[spackno] [decimal](6, 0) NULL,
+	[epackno] [decimal](6, 0) NULL,
+	[LSC_AMT] [decimal](10, 2) NULL,
+	[Approved] [varchar](10) NULL,
+	[CEX_INV_NO] [varchar](8) NULL,
+	[CEX_INV_TYPE] [varchar](2) NULL,
+	[PACKING_CHRG] [numeric](15, 2) NULL,
+	[ATAX_AMT] [numeric](15, 2) NULL,
+	[DESPATCH_TO] [varchar](4) NULL,
+	[AgentComm_Amt] [numeric](12, 2) NULL,
+	[GPNO] [varchar](10) NULL,
+	[GPDATE] [datetime] NULL,
+	[tcs_amt] [numeric](12, 2) NULL,
+	[ECONTCS_AMT] [numeric](12, 2) NULL,
+	[HSONTCS_AMT] [numeric](12, 2) NULL
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+
+
+go
+
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[ig_Rsrdt](
+	[DIVCODE] [varchar](2) NOT NULL,
+	[DOC_TYPE] [varchar](2) NOT NULL,
+	[DOC_NO] [varchar](8) NOT NULL,
+	[INV_TYPE] [varchar](2) NOT NULL,
+	[INV_NO] [varchar](8) NOT NULL,
+	[PRODUCT_CODE] [varchar](8) NOT NULL,
+	[PACKS] [decimal](5, 0) NOT NULL,
+	[NETT_KGS] [decimal](8, 3) NOT NULL,
+	[GROSS_KGS] [decimal](8, 3) NOT NULL,
+	[RATE_EX] [decimal](7, 3) NOT NULL,
+	[RATE_NETT] [decimal](7, 3) NOT NULL,
+	[VALUE] [decimal](10, 2) NOT NULL,
+	[CHARITY] [decimal](10, 2) NOT NULL,
+	[TAX_PER] [decimal](5, 2) NOT NULL,
+	[BED_PER] [decimal](5, 2) NOT NULL,
+	[AED_PER] [decimal](5, 2) NOT NULL,
+	[LSC_PER] [decimal](5, 2) NOT NULL,
+	[TAX_AMT] [decimal](10, 2) NOT NULL,
+	[BED_AMT] [decimal](10, 2) NOT NULL,
+	[AED_AMT] [decimal](10, 2) NOT NULL,
+	[LSC_AMT] [decimal](10, 2) NOT NULL,
+	[cess_amt] [numeric](15, 2) NULL,
+	[LOTCODE] [varchar](12) NULL,
+	[GODOWN_CODE] [varchar](2) NULL,
+	[Edu_Per] [decimal](5, 2) NULL,
+	[Edu_Amt] [decimal](10, 2) NULL,
+	[Hsc_Per] [decimal](5, 2) NULL,
+	[Hsc_Amt] [decimal](10, 2) NULL,
+	[Handling_Rate] [numeric](12, 2) NULL,
+	[Rnd_Off] [numeric](12, 2) NULL,
+	[Others] [numeric](12, 2) NULL,
+	[Spack_No] [numeric](9, 0) NULL,
+	[Epack_No] [numeric](9, 0) NULL,
+	[Loose_Kgs] [numeric](15, 3) NULL,
+	[frt_amt] [decimal](15, 2) NULL,
+	[ins_amt] [decimal](15, 2) NULL,
+	[oldGodown_code] [varchar](2) NULL,
+	[SRTYPE] [varchar](2) NULL,
+	[ATAX_PER] [decimal](5, 2) NULL,
+	[ATAX_AMT] [numeric](15, 2) NULL,
+	[PACK_CHRG] [numeric](9, 2) NULL,
+	[tcs_amt] [numeric](12, 2) NULL,
+	[ECONTCS_AMT] [numeric](12, 2) NULL,
+	[HSONTCS_AMT] [numeric](12, 2) NULL
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+
+
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[ig_RRepackhd](
+	[Divcode] [varchar](2) NOT NULL,
+	[DocNo] [varchar](10) NOT NULL,
+	[DocDt] [datetime] NOT NULL,
+	[FromProduct] [varchar](6) NOT NULL,
+	[FromPackType] [char](1) NOT NULL,
+	[ToProduct] [varchar](6) NOT NULL,
+	[ToPackType] [char](1) NOT NULL,
+	[ProdPacks] [int] NULL,
+	[Prodkgs] [numeric](15, 3) NULL,
+	[ConvPacks] [int] NULL,
+	[ConvKgs] [numeric](15, 3) NULL,
+	[LooseKgs] [numeric](8, 3) NULL,
+	[Usrid] [varchar](10) NULL,
+	[EntryDate] [datetime] NULL,
+	[ModUsrId] [varchar](10) NULL,
+	[ModDate] [datetime] NULL,
+	[pack_wt] [numeric](7, 3) NULL,
+	[convpack_wt] [numeric](7, 3) NULL,
+	[ConvCone_wt] [numeric](5, 3) NULL,
+	[ConvPKgs] [numeric](15, 3) NULL,
+	[ConvLkgs] [numeric](15, 3) NULL,
+	[Tarewt] [numeric](6, 3) NULL
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[ig_RRepackhd] ADD  DEFAULT ((0)) FOR [Tarewt]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[TMP_TABLEFORM9](
+	[DIVCODE] [varchar](2) NOT NULL,
+	[LOCALIP] [varchar](50) NOT NULL,
+	[OPNQTYCOTTON] [numeric](15, 3) NULL,
+	[OPNVALCOTTON] [numeric](15, 3) NULL,
+	[OPNQTYCWASTE] [numeric](15, 3) NULL,
+	[OPNVALCWASTE] [numeric](15, 3) NULL,
+	[MONQTYREC] [numeric](15, 3) NULL,
+	[MONVALREC] [numeric](15, 3) NULL,
+	[MONQTYCWPRD] [numeric](15, 3) NULL,
+	[MONVALCWPRD] [numeric](15, 3) NULL,
+	[SGQTYCWPRD] [numeric](15, 3) NULL,
+	[SGVALCWPRD] [numeric](15, 3) NULL,
+	[TRGQTYCOTTON] [numeric](15, 3) NULL,
+	[TRGVALCOTTON] [numeric](15, 3) NULL,
+	[RETQTYCOTTON] [numeric](15, 3) NULL,
+	[RETVALCOTTON] [numeric](15, 3) NULL,
+	[ISUQTYCOTTON] [numeric](15, 3) NULL,
+	[ISUVALCOTTON] [numeric](15, 3) NULL,
+	[ISUQTYCWASTE] [numeric](15, 3) NULL,
+	[ISUVALCWATE] [numeric](15, 3) NULL,
+	[rqtycw] [numeric](15, 3) NULL,
+	[rvalue] [numeric](15, 3) NULL
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+
+
+
+
+
+
+alter table ig_wastetrn add  Divcode varchar(2)
+
+
+
+
+
+
+go
+
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[Rm_baletemp](
+	[slcode] [varchar](8) NULL,
+	[supplotno] [varchar](30) NULL,
+	[Arrivallotno] [int] NULL,
+	[varcode] [varchar](10) NULL,
+	[baleno] [smallint] NULL,
+	[millGRossWT] [numeric](15, 3) NULL,
+	[Transflag] [varchar](1) NULL
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+
+
+alter table rm_param add  FrieghtCalCulateTax  varchar(2)
+go
+alter table rm_param add  SURCalCulateTax  varchar(2)
+go
+alter table rm_param add  insCalCulateTax  varchar(2)
+go

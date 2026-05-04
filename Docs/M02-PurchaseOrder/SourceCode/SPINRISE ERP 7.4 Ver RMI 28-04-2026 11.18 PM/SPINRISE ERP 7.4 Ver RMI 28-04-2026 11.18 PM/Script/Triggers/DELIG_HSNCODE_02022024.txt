@@ -1,0 +1,24 @@
+
+CREATE TRIGGER [dbo].[DELIG_HSNCODE] ON [dbo].IG_HSNCODE FOR DELETE AS                                     
+DECLARE                                                                  
+@HSNCODE varchar(10),  
+@sno int  
+BEGIN    
+  
+	select @HSNCODE=CODE from deleted  
+  
+	set @sno=(select count(HSNCODE) from 
+	(
+		SELECT HSN HSNCODE FROM RM_LOT where HSN=@HSNCODE
+			UNION ALL
+		SELECT HSN HSNCODE FROM RM_CONT where HSN=@HSNCODE
+			UNION ALL
+		SELECT HSN HSNCODE FROM RM_VAR where HSN=@HSNCODE
+	) x  
+	where HSNCODE=@HSNCODE)  
+	if isnull(@sno,0)> 0    
+	begin   
+		rollback  
+		RAISERROR ('Dependencies exists. Unable to delete the record at this time', 16 ,10)	
+	end   
+END

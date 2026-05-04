@@ -1,0 +1,13 @@
+ALTER TABLE RM_cont ADD fappflg varchar(1) DEFAULT 'N'
+go
+ALTER TABLE RM_lot ADD Fappflg varchar(1) DEFAULT 'N'
+go
+ALTER TABLE RM_lot ADD FADDUSERNAME varchar(35) 
+go
+ALTER TABLE RM_lot ADD FADDDATE datetime
+go
+ALTER TABLE RM_lot ADD trash_et NUMERIC(6,2)
+go
+ALTER TABLE po_car ADD ccode VARCHAR(4)
+go
+ALTER TABLE RM_bale ADD trash_et NUMERIC(6,2)

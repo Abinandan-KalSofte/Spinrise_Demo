@@ -1,0 +1,254 @@
+alter TRIGGER [updPurjvline]      
+ON [dbo].[FA_PURJVLINE]      
+FOR  UPDATE      
+AS      
+ DECLARE @cnt      NUMERIC,      
+         @gl       VARCHAR(7),      
+         @jvtc     NUMERIC(3),      
+         @crd      DECIMAL(16, 2),      
+         @dbt      DECIMAL(16, 2),      
+         @divcod   VARCHAR(2),      
+         @tc1      NUMERIC(3),      
+         @vocno1   NUMERIC(6),      
+         @vocdt1   DATETIME,      
+         @vocsno1  NUMERIC(2),      
+         @accode1  VARCHAR(7),      
+         @narr1    VARCHAR(700),      
+         @narr2    VARCHAR(700),      
+         @deb      NUMERIC(12, 2),      
+         @cre      NUMERIC(12, 2),      
+         @fdeb     NUMERIC(12, 2),      
+         @fcre     NUMERIC(12, 2),      
+         @ldat     DATETIME,      
+         @rfno     VARCHAR(10),      
+         @rfdt     DATETIME,      
+         @TRNTYPE  VARCHAR(2),  
+         @lbillno  varchar(20),  
+         @lbilldt datetime      
+       
+ IF (      
+        SELECT  ISNULL(APPFLG, 'N')      
+        FROM   INSERTED      
+    )='Y'      
+ BEGIN      
+  
+     SELECT @DIVCOD = DIVCODE, @tc1 = TC, @vocno1 = VOCNO, @vocdt1 = VOCDT, @vocsno1 =       
+            VOCSNO, @accode1 = GLCODE, @NARR1 = NARRATION1, @NARR2 =       
+            NARRATION2, @DEB = DEBIT, @CRE = CREDIT, @FDEB = FDEBIT, @FCRE =       
+            FCREDIT      
+     FROM   DELETED                           
+     SELECT @rfno = ref_no, @rfdt = ref_date, @TRNTYPE = TRNTYPE,  
+     @lbillno = lbillno,@lbilldt = lbilldt      
+     FROM   FA_PURJVHEAD      
+     WHERE  divcode = @DIVCOD AND tc = @tc1 AND vocno = @vocno1 AND vocdt = @vocdt1                                     
+     SELECT @ldat = DATEADD(      
+                DAY, -1*DAY(DATEADD(MONTH, 1, @vocdt1)), DATEADD(MONTH, 1, @vocdt1)      
+            )                   
+           
+     SELECT @jvtc = fromjvtc      
+     FROM   FA_PARAM                     
+     IF @@rowcount=0      
+     BEGIN      
+         SET @jvtc = 40                  
+         INSERT INTO fa_param      
+           (fromjvtc)      
+         VALUES      
+           (40)      
+     END      
+     ELSE                  
+     IF @jvtc IS NULL      
+     BEGIN      
+         SET @jvtc = 40                  
+         UPDATE fa_param      
+         SET    fromjvtc = 40      
+     END            
+           
+     SELECT @cnt = COUNT(*)      
+     FROM   fa_tcmas      
+     WHERE  tc = @jvtc            
+           
+     IF @cnt=0      
+         INSERT INTO fa_tcmas      
+           (tc, tchead, tcabbr)      
+         VALUES      
+           (@jvtc, 'General Journal', 'GJV')       
+           
+     --INSERTION BLOCK                  
+     SELECT @DIVCOD = DIVCODE, @tc1 = TC, @vocno1 = VOCNO, @vocdt1 = VOCDT, @vocsno1 =       
+            VOCSNO, @accode1 = GLCODE, @NARR1 = NARRATION1, @NARR2 =       
+            NARRATION2, @DEB = DEBIT, @CRE = CREDIT, @FDEB = FDEBIT, @FCRE =       
+            FCREDIT      
+     FROM   INSERTED                   
+           
+     SELECT @ldat = DATEADD(      
+                DAY, -1*DAY(DATEADD(MONTH, 1, @vocdt1)), DATEADD(MONTH, 1, @vocdt1)      
+            )       
+           
+     -- SL Code                 
+           
+     IF ISNUMERIC(SUBSTRING(@accode1, 1, 1))=0      
+     BEGIN      
+         SELECT @gl = glcode      
+         FROM   FA_PRTY      
+         WHERE  prtytyp = SUBSTRING(@accode1, 1, 2)                  
+               
+         INSERT INTO FA_CSTRN      
+           (divcode, tc, vocno, vocdt, vocsno, slcode, narration1, narration2,       
+            debit, credit, fdebit, fcredit, trntype)      
+         SELECT ins.divcode, ins.tc, ins.vocno, ins.vocdt, ins.vocsno, ins.GLcode,       
+                ins.narration1, ins.narration2, ISNULL(ins.debit, 0), ISNULL(ins.credit, 0),       
+                ISNULL(ins.fdebit, 0), ISNULL(ins.fcredit, 0), 'PU'      
+         FROM   INSERTED ins       
+               
+         -- Control A/c Updations      
+         -- Credit Amount                  
+               
+         IF ISNULL(@CRE, 0)>0      
+         BEGIN      
+             SELECT @cnt = COUNT(*)      
+             FROM   FA_CGTRN      
+             WHERE  glcode = @gl AND tc = @jvtc AND vocno = 999999 AND vocsno =       
+                    2 AND vocdt = @ldat AND divcode = @divcod AND trntype =       
+                    'AB'                  
+                   
+             IF @cnt>0      
+                 UPDATE FA_CGTRN      
+                 SET    credit = ISNULL(credit, 0)+ISNULL(@CRE, 0), fcredit =       
+                        ISNULL(fcredit, 0)+ISNULL(@FCRE, 0)      
+                 WHERE  glcode = @gl AND tc = @jvtc AND vocno = 999999 AND       
+                        vocsno = 2 AND vocdt = @ldat AND divcode = @divcod AND       
+                        trntype = 'AB'      
+             ELSE      
+                 INSERT INTO FA_CGTRN      
+                   (divcode, tc, vocno, vocdt, vocsno, glcode, narration1,       
+                    credit, fcredit, trntype)      
+                 SELECT ins.divcode, @jvtc, 999999, @ldat, 2, @gl,       
+                        'Summary-Credit Total', ISNULL(ins.credit, 0), ISNULL(ins.fcredit, 0),       
+                        'AB'      
+                 FROM   INSERTED ins      
+         END      
+         ELSE -- Debit Amount                  
+               
+         IF ISNULL(@DEB, 0)>0      
+         BEGIN      
+             SELECT @cnt = COUNT(*)      
+             FROM   FA_CGTRN      
+             WHERE  glcode = @gl AND tc = @jvtc AND vocno = 999999 AND vocsno =       
+                    1 AND vocdt = @ldat AND divcode = @divcod AND trntype =       
+                    'AB'                  
+                   
+             IF @cnt>0      
+                 UPDATE FA_CGTRN      
+                 SET    debit = ISNULL(debit, 0)+ISNULL(@DEB, 0), fdebit =       
+                        ISNULL(fdebit, 0)+ISNULL(@FDEB, 0)      
+                 WHERE  glcode = @gl AND tc = @jvtc AND vocno = 999999 AND       
+                        vocsno = 1 AND vocdt = @ldat AND divcode = @divcod AND       
+                        trntype = 'AB'      
+             ELSE      
+                 INSERT INTO FA_CGTRN      
+                   (divcode, tc, vocno, vocdt, vocsno, glcode, narration1,       
+                    debit, fdebit, trntype)      
+                 SELECT ins.divcode, @jvtc, 999999, @ldat, 1, @gl,       
+                        'Summary-Debit Total', ISNULL(ins.debit, 0), ISNULL(ins.fdebit, 0),       
+                        'AB'      
+                 FROM   INSERTED ins      
+         END      
+     END      
+     ELSE      
+     BEGIN      
+         -- Credit Amount
+         -- 
+         IF (ISNULL(@CRE, 0) > 0 AND ISNULL(@deb,0)>0) AND ISNUMERIC(SUBSTRING(@accode1, 1, 1))<>0
+         BEGIN
+			IF (@deb-@cre) > 0  
+			 IF ISNULL(@DEB, 0)>0 AND ISNUMERIC(SUBSTRING(@accode1, 1, 1))<>0      
+				 INSERT INTO FA_CGTRN      
+				   (divcode, tc, vocno, vocdt, vocsno, glcode, narration1,       
+					narration2, debit, fdebit, trntype)      
+				 SELECT ins.divcode, ins.tc, ins.vocno, ins.vocdt, ins.vocsno,       
+						ins.GLCODE, ins.narration1, ins.narration2,ABS( ISNULL(ins.debit, 0)-ISNULL(ins.Credit, 0)),       
+						ISNULL(ins.fdebit, 0), 'PU'      
+				 FROM   INSERTED ins      
+			
+			ELSE
+				 INSERT INTO FA_CGTRN      
+				   (divcode, tc, vocno, vocdt, vocsno, glcode, narration1,       
+					narration2, credit, fcredit, trntype)      
+				 SELECT ins.divcode, ins.tc, ins.vocno, ins.vocdt, ins.vocsno,       
+						ins.GLCODE, ins.narration1, ins.narration2, abs(ISNULL(ins.credit, 0)-ISNULL(ins.Debit, 0)),       
+						ISNULL(ins.fcredit, 0), 'PU'      
+				 FROM   INSERTED ins     
+		  END 		  
+        ELSE
+         begin	                                   
+			 IF ISNULL(@CRE, 0)>0 AND ISNUMERIC(SUBSTRING(@accode1, 1, 1))<>0      
+			 BEGIN      
+				 INSERT INTO FA_CGTRN      
+				   (divcode, tc, vocno, vocdt, vocsno, glcode, narration1,       
+					narration2, credit, fcredit, trntype)      
+				 SELECT ins.divcode, ins.tc, ins.vocno, ins.vocdt, ins.vocsno,       
+						ins.GLCODE, ins.narration1, ins.narration2, ISNULL(ins.credit, 0),       
+						ISNULL(ins.fcredit, 0), 'PU'      
+				 FROM   INSERTED ins      
+			 END      
+	               
+			 IF ISNULL(@DEB, 0)>0 AND ISNUMERIC(SUBSTRING(@accode1, 1, 1))<>0      
+				 INSERT INTO FA_CGTRN      
+				   (divcode, tc, vocno, vocdt, vocsno, glcode, narration1,       
+					narration2, debit, fdebit, trntype)      
+				 SELECT ins.divcode, ins.tc, ins.vocno, ins.vocdt, ins.vocsno,       
+						ins.GLCODE, ins.narration1, ins.narration2, ISNULL(ins.debit, 0),       
+						ISNULL(ins.fdebit, 0), 'PU'      
+				 FROM   INSERTED ins      
+	    END			 
+     END      
+             
+       
+       
+ -- AR/AP Record Creation                    
+--29/06/2011                          
+      IF substring(@accode1,1,1) = 'D'                     
+      begin                    
+         IF isnull(@deb,0) > 0                                                
+            INSERT INTO fa_arecm (divcode, slcode, invdt, invtc, invno,                    
+               invsno, narr1, narr2, invamt, amtdue,trntype)                    
+            VALUES(@divcod,@accode1, @vocdt1, @tc1,@vocno1,                    
+               @vocsno1,@narr1, @narr2, @deb,                     
+               @deb,'PU')                    
+         ELSE                                               
+            IF isnull(@cre,0) > 0                     
+               INSERT INTO fa_arcrd (divcode, slcode, vocdt, tc, vocno,                    
+                  vocsno, narr1, narr2, credit,balance,trntype,BillNo,BillDt)                    
+               VALUES (@divcod,@accode1,@vocdt1,@tc1,@vocno1,                    
+                  @vocsno1, @narr1,@narr2,@cre,                    
+                  @cre,'PU',@lbillno,@lbilldt)                                            
+   end                          
+      ELSE                    
+  begin                    
+         -- Creditors                    
+  IF substring(@accode1,1,1) = 'C'                                              
+            IF isnull(@deb,0) > 0                                                   
+               INSERT INTO fa_apdbt (divcode, slcode, vocdt, tc, vocno,                    
+                  vocsno, narr1, narr2, debit, balance,trntype,BillNo,BillDt)                    
+               VALUES(@divcod, @accode1, @vocdt1, @tc1,                    
+                  @vocno1, @vocsno1, @narr1, @narr2,                    
+                  @deb, @deb,'PU',@lbillno,@lbilldt)                    
+            ELSE                    
+                                
+               IF isnull(@cre,0) > 0                                                     
+                 INSERT INTO fa_apaym (divcode,slcode,vocdt,tc,vocno,                    
+                 vocsno, billno, billdt, narr1, narr2,                     
+                 billamt,amtpaid,amtdue,trntype)                    
+                 VALUES(@divcod,@accode1,@vocdt1,@tc1,                    
+                 @vocno1,@vocsno1,@lbillno,@lbilldt,@narr1,                    
+                 @narr2,@cre,0,@cre,'PU')                    
+       
+      end                    
+ END
+ 
+ 
+ 
+ 
+ 
+ 
+ 

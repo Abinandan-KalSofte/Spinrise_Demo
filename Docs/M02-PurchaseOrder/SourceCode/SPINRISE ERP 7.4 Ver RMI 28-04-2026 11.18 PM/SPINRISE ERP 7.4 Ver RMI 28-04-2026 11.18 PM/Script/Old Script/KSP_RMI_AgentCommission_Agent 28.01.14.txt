@@ -1,0 +1,26 @@
+
+-- KSP_RMI_AgentCommission_Agent '01','2013-07-01','2013-07-31','C1A0001','D9S0010'    
+CREATE PROC KSP_RMI_AgentCommission_Agent    
+(    
+ @Divcode varchar(5),              
+ @FDate varchar(15),          
+ @TDate varchar(15),          
+ @FAgent varchar(10),          
+ @TAgent varchar(10)  
+)    
+AS    
+BEGIN    
+SELECT C.LOTNO,C.LOTDT,B.PLOTNO,B.PLOTDT,A.CONTNO,A.CONTDT,A.BRKCD,D.slname 'Agent',A.SUPCD,E.slname 'Supplier',    
+C.BILLNO,C.BILLDT,A.VARCODE,F.VARNAME 'Vareity',C.BALES,A.ORDQTY,C.NETWT,C.TOTLANDCOST,A.CommPer,A.COMMAMT,    
+G.DIV_PRINTNAME,G.DIV_UNITNAME    
+FROM RM_CONT A     
+INNER JOIN RM_ARRIVAL B ON B.CONTNO = A.CONTNO AND B.CONTDT = A.CONTDT    
+LEFT JOIN RM_LOT C ON C.DIVCODE = B.DIVCODE AND C.ARRNO = B.ARRNO AND C.LOTNO = B.LOTNO AND C.lotdt = B.lotdt    
+LEFT JOIN FA_SLMAS D ON D.slcode=A.BRKCD    
+LEFT JOIN FA_SLMAS E ON E.slcode=A.SUPCD    
+LEFT JOIN RM_VAR F ON F.VARCODE = A.VARCODE    
+LEFT JOIN PP_DIVMAS G ON G.DIVCODE=A.DIVCODE    
+WHERE     
+A.DIVCODE = @Divcode AND A.CONTDT BETWEEN @FDate AND @TDate AND A.BRKCD BETWEEN @FAgent AND @TAgent    
+END    
+GO

@@ -1,0 +1,275 @@
+          
+
+-- Sp_MixingCost_abs_new '01','2020-06-01','2020-06-23','2020'          
+
+alter PROC Sp_MixingCost_abs_new                  
+
+(          
+
+ @Divcode varchar(5),          
+
+ @FromDate varchar(15),          
+
+ @ToDate varchar(15),    
+
+ @LOTYEAR VARCHAR(10),
+ @IssueType varchar(300)      
+
+)          
+
+as                  
+
+BEGIN          
+
+select distinct X.varcode,cntcd,x.cntname,--docno,x.docdt,
+X.Catcd,X.lotno,X.lotdt,slname,count(Bales) AS BALE,UNIT,            
+
+SUM(Kgs) AS netkg, isnull(ratekg,0) as ratekg,SUM(Value) AS Amount,AVG(ratecandy) AS RATECANDY,            
+
+bblflg,x.DIVNAME,x.ADD1,x.DIV_PRINTNAME,x.DIV_UNITNAME,rv.VARNAME,sum(x.GRWT) as GRSWGT,sum(isnull(x.TAREWT,0)) TAREWT       
+
+FROM(             
+
+select distinct h.cntcd,b.Catcd,a.lotno,a.lotdt,b.supcd,            
+
+Unit=(case when bblflg='B' then 'Bales' else 'Borah' end),B.varcode,a.docno,(a.baleno) as Bales,bblflg,
+
+a.DOCDT,            
+
+(A.ISSKGS) as Kgs,d.cntname,
+
+case when weightflg='M' then rmb.GRWT else rmb.PGRSWT end  GRWT  ,
+
+
+
+case when weightflg='M' then  rmb.TAREWT else rmb.PTAREWT end TAREWT ,             
+
+ratekg, ROUND((ratekg)*355.6187,0) as ratecandy,ROUND(ratekg*(a.ISSKGS),2) as VALUE,p.DIVNAME
+
+,p.ADD1,p.DIV_PRINTNAME,p.DIV_UNITNAME            
+
+from rm_issb a 
+
+ left join rm_lot b on  a.lotno=b.lotno and a.catcd=b.catcd and a.lotdt=b.lotdt and a.divcode=b.divcode
+
+ and a.Varcode=b.VARCODE
+
+inner join rm_issh h on  a.docno=h.docno and a.docdt=h.docdt and a.isstype=h.isstype
+
+ and a.divcode=h.divcode
+
+inner join RM_COUNT AS d on   h.divcode=d.divcode AND h.cntcd = d.cntcd   
+
+inner join PP_DIVMAS p on   a.DIVCODE=p.DIVCODE  
+
+left join rm_bale rmb on  a.lottype=rmb.lottype and a.lotno=rmb.lotno and a.lotdt=rmb.lotdt 
+
+and a.catcd=rmb.catcd and a.baleno=rmb.baleno   and a.Varcode=rmb.VARCODE and rmb.DIVCODE=a.divcode
+
+  where B.LOTYEAR=@LOTYEAR   AND H.divcode=@Divcode       
+
+AND H.DOCDT Between @FromDate and  @ToDate  and h.ISSTYPE in (select items from dbo.split(@IssueType,','))           
+
+--group by h.cntcd,b.Catcd,a.lotno,a.lotdt,b.supcd,B.varcode,bblflg,ratekg,a.docno,a.docdt,p.DIVNAME,p.ADD1
+
+--,p.DIV_PRINTNAME,p.DIV_UNITNAME,d.cntname,rmb.GRWT,rmb.TAREWT 
+
+ )X
+
+ left join   fa_slmas f on x.supcd=f.slcode 
+
+ left join RM_VAR rv    on   x.varcode=rv.VARCODE        
+
+          
+
+GROUP BY X.varcode,cntcd,X.Catcd,X.lotno,X.lotdt,slname,--docno,x.docdt,
+bblflg,ratekg,UNIT
+
+,x.DIVNAME,x.ADD1,x.DIV_PRINTNAME,x.DIV_UNITNAME,rv.VARNAME,x.cntname--,x.GRWT,x.TAREWT           
+
+ORDER BY X.LOTNO            
+
+END     
+
+    
+
+select sum(ISSKGS) 	from rm_issb a 
+
+ --left join rm_lot b on  a.lotno=b.lotno and a.catcd=b.catcd and a.lotdt=b.lotdt and a.divcode=b.divcode
+
+ --and a.Varcode=b.VARCODE
+
+inner join rm_issh h on  a.docno=h.docno and a.docdt=h.docdt and a.isstype=h.isstype
+
+ and a.divcode=h.divcode
+ where a.DOCDT>='2020-06-01' and a.ISSTYPE in('PB','PR')
+
+
+
+go
+
+
+
+
+
+-- ksp_mixnumber_wisenew '03','2019-06-01','2019-06-26','2019'      
+
+-- if you add any new column in Proc then add to EXIssueListMixwise table for Excel
+
+                 
+
+alter Procedure ksp_mixnumber_wisenew                                                                     
+
+@divcode varchar(2),                                                                                            
+
+@FromDate AS varchar(15),                                                                                               
+
+@ToDate AS Varchar(15),                  
+
+@lotyear AS Varchar(10) ,
+ @IssueType varchar(300)                    
+
+                                                                                     
+
+As                        
+
+begin                      
+
+                      
+
+select distinct                     
+
+docno,    
+
+--mixgrpcd as mixgrp,                    
+
+cntcode as mixgrp,  
+
+docdt,varcode,catcd,cntname ,catname,lotno,sum(bale) as bale,                      
+
+unit ,round(sum(isnull(netkgs,0)),3)netkg                    
+
+,sum(isnull(quintal,0)) ratequin,                      
+
+sum(isnull(Amount,0)) AS amount,avg(ratekg) as avgrate,plotno,                    
+
+round(avg(ratekg*355.616),0)as ratecandy,                      
+
+mixgrpcd,cntcode,DIV_PRINTNAME,DIV_UNITNAME   from (                    
+
+SELECT c.DOCDT, a.CNTCODE AS CNTCD, d.mixgrpcd, a.VARCODE, a.LOTNO, COUNT(b.BALENO) AS bale,                     
+
+(CASE WHEN a.bblflg = 'R' THEN 'Borah' ELSE 'Bales' END) AS Unit, SUM(ISNULL(b.ISSKGS, 0)) AS 'netkgs', a.PLOTNO, AVG(a.RATEKG) AS 'quintal',                     
+
+SUM(ISNULL(b.ISSKGS, 0)) * a.RATEKG AS AMOUNT, a.RATEKG, ROUND(a.RATEKG * 355.616, 0) AS ratecandy, ISNULL(c.DOCNO, 0) AS docno,                     
+
+a.catcd,f.CATNAME ,p.DIV_PRINTNAME,p.DIV_UNITNAME, c.cntcd AS cntcode  ,d.cntname                  
+
+FROM dbo.RM_ISSB AS b   
+
+INNER JOIN                    
+
+dbo.RM_ISSH AS c ON b.DIVCODE = c.DIVCODE AND b.ISSTYPE = c.ISSTYPE AND b.DOCDT = c.DOCDT AND b.DOCNO = c.DOCNO    
+
+left JOIN                    
+
+ dbo.RM_BALE AS e ON e.DIVCODE = b.DIVCODE AND e.lottype = b.LOTTYPE AND e.LOTNO = b.LOTNO AND e.CATCD = b.CATCD AND                     
+
+e.BALENO = b.BALENO left JOIN                    
+
+dbo.RM_LOT AS a ON e.lotdt = a.LOTDT AND b.DIVCODE = a.DIVCODE AND b.CATCD = a.CATCD AND b.LOTNO = a.LOTNO AND                     
+
+b.lotdt = a.LOTDT   
+
+                   
+
+left JOIN dbo.RM_CAT as f ON b.CATCD=f.CATCD         
+
+inner join PP_DIVMAS p on p.DIVCODE=b.DIVCODE                     
+
+LEFT OUTER JOIN dbo.RM_COUNT AS d ON c.cntcd = d.cntcd  and c.divcode=d.divcode                  
+
+WHERE (b.LOTTYPE in ('A','T')) AND (a.DIVCODE = @divcode) AND (a.REJFLG = 'N') AND (b.issued = 'N' OR b.issued = 'Y')           
+
+AND (a.LOTYEAR = @lotyear)       and c.ISSTYPE in (select items from dbo.split(@IssueType,','))                
+
+and c.docdt  between @Fromdate  and @Todate                       
+
+GROUP BY d.mixgrpcd, a.BBLFLG, a.RATEKG, a.RATECY, a.VARCODE, a.LOTNO, c.DOCDT, a.CNTCODE, a.PLOTNO, c.DOCNO, a.CATCD,f.CATNAME, c.cntcd,DIV_PRINTNAME,DIV_UNITNAME ,d.cntname                    
+
+) xxx                        
+
+group by varcode,lotno,DOCDT,unit,plotno,                    
+
+docno,                    
+
+catcd,catname,mixgrpcd,cntcode,DIV_PRINTNAME,DIV_UNITNAME,cntname,CNTCD                    
+
+order by cntcode                      
+
+                      
+
+END 
+
+go
+
+/*  
+  MixingCost_abs '01','2020-06-01','2020-06-23','2020','po'                
+*/  
+CREATE PROC MixingCost_abs                           
+(                    
+ @Divcode varchar(5),                   
+ @FromDate varchar(15),                   
+ @ToDate varchar(15),             
+ @LOTYEAR VARCHAR(10),    
+ @IssueType varchar(300)               
+)                
+as                            
+BEGIN                  
+select distinct X.varcode,cntcd,x.cntname,docno,x.docdt,X.Catcd,X.lotno,X.lotdt,slname,  
+count(Bales) AS BALE,UNIT,SUM(Kgs) AS netkg, isnull(ratekg,0) as ratekg,SUM(Value) AS Amount,  
+AVG(ratecandy) AS RATECANDY,bblflg,x.DIVNAME,x.ADD1,x.DIV_PRINTNAME,x.DIV_UNITNAME,rv.VARNAME,  
+sum(x.GRWT) as GRSWGT,sum(isnull(x.TAREWT,0)) TAREWT FROM(select distinct h.cntcd,b.Catcd,a.lotno,  
+a.lotdt,b.supcd,unit=(case when bblflg='B' then 'Bales' else 'Borah' end),B.varcode,a.docno,  
+(a.baleno) as Bales,bblflg,a.DOCDT,(A.ISSKGS) as Kgs,d.cntname,      
+case when weightflg='M' then rmb.GRWT else rmb.PGRSWT end GRWT ,      
+case when weightflg='M' then  rmb.TAREWT else rmb.PTAREWT end TAREWT,ratekg,   
+ROUND((ratekg)*355.6187,0) as ratecandy,ROUND(ratekg*(a.ISSKGS),2) as VALUE,p.DIVNAME      
+,p.ADD1,p.DIV_PRINTNAME,p.DIV_UNITNAME                  
+From rm_issb a       
+left join rm_lot b on  a.lotno=b.lotno and a.catcd=b.catcd and a.lotdt=b.lotdt and   
+a.divcode=b.divcode and a.Varcode=b.VARCODE      
+inner join rm_issh h on  a.docno=h.docno and a.docdt=h.docdt and a.isstype=h.isstype      
+and a.divcode=h.divcode      
+inner join RM_COUNT AS d on   h.divcode=d.divcode AND h.cntcd = d.cntcd         
+inner join PP_DIVMAS p on   a.DIVCODE=p.DIVCODE        
+left join rm_bale rmb on  a.lottype=rmb.lottype and a.lotno=rmb.lotno and a.lotdt=rmb.lotdt       
+and a.catcd=rmb.catcd and a.baleno=rmb.baleno   and a.Varcode=rmb.VARCODE and rmb.DIVCODE=a.divcode      
+Where B.LOTYEAR=@LOTYEAR   AND H.divcode=@Divcode             
+AND H.DOCDT Between @FromDate and  @ToDate   
+-- and h.ISSTYPE in (select items from dbo.split(@IssueType,','))                 
+--group by h.cntcd,b.Catcd,a.lotno,a.lotdt,b.supcd,B.varcode,bblflg,ratekg,a.docno,a.docdt,p.DIVNAME,p.ADD1      
+--,p.DIV_PRINTNAME,p.DIV_UNITNAME,d.cntname,rmb.GRWT,rmb.TAREWT       
+)X      
+left join   fa_slmas f on x.supcd=f.slcode       
+left join RM_VAR rv    on   x.varcode=rv.VARCODE              
+GROUP BY X.varcode,cntcd,X.Catcd,X.lotno,X.lotdt,slname,docno,x.docdt,      
+bblflg,ratekg,UNIT,x.DIVNAME,x.ADD1,x.DIV_PRINTNAME,x.DIV_UNITNAME,rv.VARNAME,  
+x.cntname--,x.GRWT,x.TAREWT                 
+ORDER BY X.LOTNO                  
+      
+END           
+      
+          
+      
+--select sum(ISSKGS)  from rm_issb a       
+      
+-- --left join rm_lot b on  a.lotno=b.lotno and a.catcd=b.catcd and a.lotdt=b.lotdt and a.divcode=b.divcode      
+      
+-- --and a.Varcode=b.VARCODE      
+      
+--inner join rm_issh h on  a.docno=h.docno and a.docdt=h.docdt and a.isstype=h.isstype      
+      
+-- and a.divcode=h.divcode      
+-- where a.DOCDT>='2020-06-01' and a.ISSTYPE in('PB','PR')      
+      

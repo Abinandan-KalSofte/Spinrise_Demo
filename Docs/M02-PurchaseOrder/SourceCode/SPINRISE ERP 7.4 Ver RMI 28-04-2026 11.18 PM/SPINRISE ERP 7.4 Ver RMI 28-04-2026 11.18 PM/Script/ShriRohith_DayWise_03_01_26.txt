@@ -1,0 +1,48 @@
+CREATE proc KSP_RMIDAY_IssueDetails          
+(          
+@Divcode varchar(20),        
+@DivAbbr varchar(100) ,         
+@Fdate Varchar(15),          
+@Tdate Varchar(15),          
+@Ipadd Varchar(18),          
+@PrintDiv varchar(4)          
+)          
+as        
+begin       
+select  cast( day(a.Docdt) as int) Day, cast(month(a.docdt) as varchar)+' - '+cast(datename(mm,a.Docdt) as varchar) Month          
+,c.Varname,sum(a.ISSKGS)/1000 ISSKGS ,          
+d.div_printname,d.DIV_UNITNAME          
+          
+ from rm_issb a          
+inner join Rm_issh b on a.Divcode=b.Divcode and a.Docno=b.Docno and a.Docdt=b.Docdt          
+inner join rm_Var c on a.Varcode=c.Varcode          
+inner join pp_Divmas d on d.Divcode=a.DIVCODE          
+INNER JOIN rm_issuetype ISM ON ISM.issue_code =a.ISSTYPE AND ISM.Isstype='P' and isnull(ism.yr_flg,'N')<>'Y'         
+inner join RM_ProductprintDet e on e.Divcode=@PrintDiv and a.Varcode=e.varcode and e.IPadd=@Ipadd          
+where          
+ a.Divcode in (select items from dbo.Split(@Divcode ,','))          
+and       d.ABBR  in (select items from dbo.Split(@DivAbbr ,','))   and       
+a.Docdt between @Fdate and @tdate           
+group by c.Varname,a.Docdt,d.div_printname,d.DIV_UNITNAME          
+      
+union all      
+      
+select  cast( day(a.Docdt) as int) Day, cast(month(a.docdt) as varchar)+' - '+cast(datename(mm,a.Docdt) as varchar) Month          
+,c.Varname,sum(a.ISSKGS)/1000 ISSKGS ,          
+d.div_printname,d.DIV_UNITNAME          
+          
+ from rm_issb a          
+inner join Rm_issh b on a.Divcode=b.Divcode and a.Docno=b.Docno and a.Docdt=b.Docdt          
+inner join rm_Var c on a.Varcode=c.Varcode          
+inner join pp_Divmas d on d.Divcode=a.DIVCODE         
+INNER JOIN rm_issuetype ISM ON ISM.issue_code =a.ISSTYPE AND ISM.Isstype='P' and isnull(ism.yr_flg,'N')<>'Y'         
+inner join RM_ProductprintDet e on e.Divcode=@PrintDiv and a.Varcode=e.varcode and e.IPadd=@Ipadd          
+where          
+ a.Divcode in (select items from dbo.Split(@Divcode ,','))          
+and      d.ABBR  in (select items from dbo.Split(@DivAbbr ,','))   and       
+a.Docdt between @Fdate and @tdate           
+group by c.Varname,a.Docdt,d.div_printname,d.DIV_UNITNAME          
+order by cast(month(a.docdt) as varchar)+' - '+cast(datename(mm,a.Docdt) as varchar)  , cast( day(a.Docdt )  as int )        
+        
+--delete from RM_ProductprintDet   where Divcode=@PrintDiv   and IPadd=@Ipadd       
+end

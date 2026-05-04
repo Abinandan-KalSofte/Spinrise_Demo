@@ -1,0 +1,4 @@
+ALTER TABLE RM_GOD ADD Godowntype VARCHAR(1) DEFAULT 'G'
+GO
+UPDATE RM_GOD SET Godowntype = 'G'
+GO

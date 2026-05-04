@@ -1,0 +1,30 @@
+CREATE TABLE [dbo].[RM_ISSUE_RETURN]
+(
+	[DIVCODE] [varchar](2) NOT NULL,
+	[ISSTYPE] [char](2) NOT NULL,
+	[DOCNO] [decimal](6, 0) NOT NULL,
+	[DOCDT] [datetime] NOT NULL,
+	[ISSDOCNO] [decimal](6, 0) NOT NULL,
+	[ISSDOCDT] [datetime] NOT NULL,
+	[CATCD] [char](1) NOT NULL,
+	[LOTNO] [smallint] NOT NULL,
+	[LOTDT] [datetime] NOT NULL,
+	[MIXGRP] [varchar](25) NULL,
+	[BALENO] [smallint] NOT NULL,
+	[ISSKGS] [decimal](7, 3) NOT NULL,
+	[LOTTYPE] [char](1) NOT NULL,
+	[USERID] [varchar](5) NULL,
+	[ACTISSKGS] [decimal](8, 3) NULL,
+	[arrdt] [datetime] NULL,
+	[VARCODE] [varchar](10) NULL,
+ CONSTRAINT [PK_ISSUE_RETURN] PRIMARY KEY CLUSTERED 
+(
+	[DIVCODE] ASC,
+	[DOCNO] ASC,
+	[DOCDT] ASC,
+	[CATCD] ASC,
+	[LOTNO] ASC,
+	[lotdt] ASC,
+	[BALENO] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]

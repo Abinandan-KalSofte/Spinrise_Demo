@@ -1,0 +1,12 @@
+Alter procedure penidingbillpassRMI              
+@Divcode varchar(2),              
+@Fromdt varchar(15),  
+@Todt varchar(15),  
+@fno varchar(15),  
+@Tno varchar(15),
+@Lotyear varchar(5)  
+as              
+select Distinct d.divname,H.Divcode,h.pjno,h.PJTC,H.SUPCD ,s.slname,h.lotno,h.LOTDT ,h.BILLNO ,H.BILLDT,H.TOTLANDCOST           
+from RM_LOT H,PP_DIVMAS D,FA_SLMAS s where h.Divcode=@Divcode and h.LOTDT  between @Fromdt and @Todt   
+and h.DIVCODE=d.DIVCODE and s.slcode=h.SUPCD and h.PJNO is null and h.lotno between @fno and @tno  
+AND h.LOTYEAR = @Lotyear AND OPFLG='N'

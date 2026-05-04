@@ -1,0 +1,1 @@
+ALTER TABLE RM_LOT ADD pinvval numeric(15,3)

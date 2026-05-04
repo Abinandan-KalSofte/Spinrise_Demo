@@ -1,0 +1,49 @@
+    
+    
+/*            
+  KSP_RMI_lotallowance '01','59','2022-09-12','a','4','2022-09-17'             
+*/                                             
+alter Procedure KSP_RMI_lotallowance        
+(      
+@Divcode varchar(03),        
+@Lotno varchar(8),        
+@LotDT Varchar(15),        
+@LotType Varchar(03) ,    
+@DBno varchar(8),        
+@DBDT Varchar(15)    
+)      
+AS                                                
+BEGIN                              
+Select       
+pd.div_logo,pd.div_printname,pd.div_unitname,pd.add1,pd.add2,pd.add3,pd.city,pd.pincode,pd.statename,pd.HOCountry,            
+pd.gstinno,pd.gststatecode,pd.cinno,pd.email,pd.webaddr,pd.phone1,Sl.slname,    
+Sl.add1 as sadd1,Sl.add2 as sadd2,Sl.add3 as sadd3,            
+Sl.city as scity,Sl.pin as spin,Sl.state as sstate,Sl.gstinno as sgstinno,    
+Sl.gststatecode as sstatecode, Sl.slname as cname,Sl.add1 as cadd1,Sl.add2 as cadd2,    
+Sl.add3 as cadd3,Sl.city as ccity,Sl.pin as cpin,Sl.state as cstate,            
+Sl.gstinno as cgstinno,Sl.gststatecode as cstatecode,hd.ASno as docno,Hd.Adate as docdt,    
+l.billno as billsno,l.billdt as billsdt,case when RateFlag='W' then Vr.VARNAME else 'Rate Difference' end pdesc,vr.HSN as hsncode,'KGS' as uom,    
+case when RateFlag='W' then hd.AllowanceDebit_Kgs  else 0 end qty,al.ARatecy as rate,hd.DBTaxableAmt as value,hd.cgstper,hd.sgstper,hd.igstper,            
+hd.cgstamt as cgst,hd.sgstamt as sgst,hd.igstamt as igst,hd.roff, hd.Dbamt as totamt,hd.ARemarks    
+,isnull(hd.WgtDiffAmt,0)+isnull(RateDiffAmt,0) as matl_value, k.name as bname,k.branch as bbranch,k.ADD1 as badd,k.Acno as baccno    
+,k.IFSCCode as ifsc,l.plotno,l.lotno as milllotno,l.BALES,ar.prno ,isnull(amt,0) amt  ,al.ARatecy  ,hd.WeightDiff,
+hd.ExMoisturePer,hd.ExMoistureWgt,hd.ExTrashPer,hd.ExTrashWgt, hd.AllowanceDebit_Kgs
+FROM rm_lotallowance hd    
+left join (select ASno,ADate ,lotno,Lotdt, divcode,ARatecy ,RateDiffAmt amt,'R' RateFlag from rm_lotallowance where isnull(ARatecy,0)>0
+union all
+select ASno,ADate ,lotno,Lotdt, divcode,0 ARatecy ,WgtDiffAmt amt,'W' RateFlag  from rm_lotallowance where AKgs>0
+) al on al.ASno=hd.ASno and al.ADate=hd.ADate and al.Lotno =hd.Lotno and al.Lotdt =hd.Lotdt and hd.Divcode=al.Divcode
+LEFT OUTER JOIN RM_Lot L ON L.LotNo=hd.lotno and L.Divcode=hd.Divcode   and hd.lotdt =l.LOTDT                                                    
+INNER JOIN Fa_SlMas Sl ON Sl.SlCode=l.supcd                                                          
+left JOIN RM_Var Vr ON Vr.VarCode=L.VarCode     
+LEFT OUTER JOIN PP_DIVMAS pd ON pd.DIVCODE = hd.DIVCODE                                                     
+--LEFT OUTER JOIN po_car Car ON Car.CARCODE=Hd.Carrier_Code                                                  
+LEFT OUTER JOIN IG_BANK k ON k.BANK_CODE = pd.BANK_CODE                                               
+LEFT JOIN rm_arrival ar on ar.DIVCODE=l.divcode and ar.lotno=l.lotno and ar.lotdt=l.lotdt     
+and ar.ARRNO =l.ARRNO and ar.ARRDATE =l.ARRDT and ar.VARCODE =l.VARCODE                       
+WHERE Hd.asno=@DBno --and Hd.ADate=@DBDT    
+and Hd.Divcode=@Divcode and isnull(l.OPFLG,'N')<>'Y'      
+and hd.Lotno= @Lotno  and hd.lotdt =@LotDT --and l.LOTTYPE =@LotType    
+END             
+    
+    

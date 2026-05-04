@@ -5,15 +5,20 @@ namespace Spinrise.Application.Areas.Purchase.PurchaseOrder.Interfaces;
 
 public interface IPurchaseOrderService
 {
-    Task<PODefaultsDto>                         GetDefaultsAsync(string divCode);
-    Task<POPreCheckResultDto>                   RunPreChecksAsync(string divCode);
-    Task<IEnumerable<PRLineDto>>                GetDeleteReasonsAsync();
-    Task<PagedResult<POSummaryResponseDto>>     GetPaginatedAsync(string divCode, POListQueryDto query);
-    Task<PODetailResponseDto?>                  GetByIdAsync(string contNo, DateTime contDt, string divCode);
-    Task<IEnumerable<PRLineDto>>                GetPendingPRLinesAsync(PRLineFilterDto filter);
-    Task<(string ContNo, IReadOnlyList<string> Warnings)> CreateAsync(CreatePODto dto, string userId, string? ipAddr, string? host);
-    Task<IReadOnlyList<string>>                 UpdateAsync(UpdatePODto dto, string userId, string? ipAddr, string? host);
-    Task<(int Result, string Message)>          DeleteAsync(PODeleteRequestDto dto, string deletedBy);
-    Task<POApprovalStatusDto?>                  GetApprovalStatusAsync(string contNo, DateTime contDt, string divCode);
-    Task<int>                                   ApproveAsync(POApprovalActionDto dto);
+    Task<PagedResult<POSummaryResponseDto>>  GetListAsync(POListQueryDto query);
+    Task<POSummaryCounts>                    GetSummaryAsync(string divCode);
+    Task<PODetailResponseDto?>               GetDetailAsync(decimal contNo, DateTime contDt, string divCode);
+    Task<PODefaultsDto>                      GetDefaultsAsync(string divCode);
+    Task<IEnumerable<PODeleteReasonDto>>     GetDeleteReasonsAsync();
+    Task<IEnumerable<POPreCheckResultDto>>   RunPreChecksAsync(string divCode);
+    Task<GSTConfigDto?>                      GetGSTConfigAsync(string supplierCode);
+    Task<IEnumerable<PRLineDto>>             GetPendingPRLinesAsync(string divCode, DateTime contDt, int sortBy, string? supplierCode, string? plant);
+    Task<IEnumerable<PRLineDto>>             FilterPRLinesAsync(string divCode, DateTime contDt, PRLineFilterDto filter);
+
+    Task<(bool Success, string Message, decimal? ContNo, IReadOnlyList<string> Warnings)> CreateAsync(CreatePODto dto, string userId);
+    Task<(bool Success, string Message, IReadOnlyList<string> Warnings)>                  UpdateAsync(decimal contNo, UpdatePODto dto, string userId);
+    Task<(bool Success, string Message)>                                                   DeleteAsync(PODeleteRequestDto dto, string userId);
+
+    Task<POApprovalStatusDto?>               GetApprovalStatusAsync(decimal contNo, DateTime contDt, string divCode);
+    Task<(bool Success, string Message)>     ApproveAsync(POApprovalActionDto dto, string approverId);
 }

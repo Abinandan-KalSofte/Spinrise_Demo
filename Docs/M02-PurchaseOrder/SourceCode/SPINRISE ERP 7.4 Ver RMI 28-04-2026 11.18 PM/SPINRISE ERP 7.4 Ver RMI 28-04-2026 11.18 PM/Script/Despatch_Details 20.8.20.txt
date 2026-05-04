@@ -1,0 +1,36 @@
+
+/*
+      SP_RM_Despatch '01','110','2020-06-30'
+*/
+
+create Procedure SP_RM_Despatch
+(
+@Divcode varchar(02),
+@DocNo varchar(15),
+@Docdt varchar(15)
+)
+as
+Begin
+SELECT e.div_logo,e.DIV_PRINTNAME,e.div_unitname,e.add1,e.add2,e.add3,e.CITY,e.PINCODE,e.statename,
+e.phone1,e.email,e.webaddr,e.cinno,e.gstinno,d.slname,d.add1 as sadd1,d.add2 as sadd2,
+d.add3 as sadd3,d.city as scity,d.pin as spin,d.state as sstate,d.country as scountry,
+d.phone1 as sphone,d.email as semail,d.gstinno as sgstno,d.GSTSTATECODE as sgstcode,
+f.slname as agent,a.docNo,a.docDate,a.invNo,a.invDate,g.PayTerm_Desc,a.Deliverydate as onboard,
+a.carcode as modeoftrans,a.truckno,i.DName as deltype,a.PackSlipNo,a.PackingDate,h.CARNAME Transportname,
+b.contno,b.contdt,c.VARNAME,b.uom,b.Qty as qtybale,b.GrossWt,b.TareWt,b.QtyKGS as netwtkg,
+b.INV_QtyKGS,b.Rate as ratekgs,b.Disc_Rate,b.NetRate,b.remarks,b.APPUSER,b.appdate,b.value
+
+FROM RM_DespatchHD a
+INNER JOIN  RM_DespatchDT b ON b.DivCode=a.DivCode and a.docno=b.docno and a.docdate=b.DocDate 
+INNER JOIN RM_VAR c on c.VARCODE=b.varcode
+LEFT JOIN FA_Slmas d ON  d.slcode=a.slcode
+LEFT JOIN PP_DIVMAS e ON  e.divcode=a.DivCode 
+LEFT JOIN FA_SLMAS_1 f ON f.slcode=a.AgentCode 
+LEFT JOIN Ig_PayTerm g ON g.PayTerm_Code=a.PaymentTerm 
+LEFT JOIN po_car h ON h.carcode=a.trans_code 
+LEFT JOIN IM_DlvTerm i ON i.DCode=a.deltype 
+
+Where a.DIVCODE = @Divcode and a.docNo = @DocNo and a.docDate=@Docdt
+--ORDER BY  ASC
+End
+    

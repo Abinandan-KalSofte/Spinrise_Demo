@@ -1,3 +1,4 @@
+global using Microsoft.Extensions.Logging;
 global using Spinrise.Application.DTOs;
 global using Spinrise.Application.DTOs.Users;
 global using Spinrise.Application.DTOs.Auth;

@@ -4,13 +4,15 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 // Add services to the container
@@ -78,9 +80,6 @@ builder.Services.AddAuthorization(options =>
         .RequireAuthenticatedUser()
         .Build();
 });
-
-// Allow public access to health checks and auth endpoints
-// These must have [AllowAnonymous] attribute on the action methods
 
 builder.Services.AddCors(options =>
 {
@@ -150,12 +149,17 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// Enable Dapper to map underscore-separated column names (e.g. MAC_NO) to
-// PascalCase properties (e.g. MacNo) across all queries.
 Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
+// M01 — SpinriseSaranya database
 builder.Services.AddScoped<IDbConnectionFactory, DbConnectionFactory>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// M02 — JAT database
+builder.Services.AddScoped<IJATDbConnectionFactory, JATDbConnectionFactory>();
+builder.Services.AddScoped<IJATUnitOfWork, JATUnitOfWork>();
+builder.Services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
+builder.Services.AddScoped<IPurchaseOrderService, PurchaseOrderService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
@@ -167,16 +171,14 @@ builder.Services.AddScoped<IDatewisePrReportRepository, DatewisePrReportReposito
 builder.Services.AddScoped<IPurchaseReportService, QuestPdfPurchaseRequisitionService>();
 builder.Services.AddScoped<ILookupRepository, LookupRepository>();
 builder.Services.AddScoped<ILookupService, LookupService>();
-builder.Services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
-builder.Services.AddScoped<IPurchaseOrderService, PurchaseOrderService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddSingleton<IRefreshTokenStore, InMemoryRefreshTokenStore>();
 builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
-builder.Services.AddScoped<IAuthUserStore, DbAuthUserStore>();    // DB-backed: PP_PASSWD
+builder.Services.AddScoped<IAuthUserStore, DbAuthUserStore>();
 
 var app = builder.Build();
 
-// CORS must be applied BEFORE authentication and HTTPS redirect to handle preflight requests
+// CORS must be before authentication and HTTPS redirect
 app.UseCors("Frontend");
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
@@ -208,16 +210,10 @@ try
 catch (ReflectionTypeLoadException ex)
 {
     foreach (var loaderException in ex.LoaderExceptions)
-    {
         Console.WriteLine(loaderException?.Message);
-    }
-
     throw;
 }
 
 await app.RunAsync();
 
-public  partial class Program
-{
-}
-
+public partial class Program { }

@@ -1,0 +1,36 @@
+USE [Pallavaa]
+GO
+
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+CREATE TRIGGER [dbo].[UPDATEVARIETY] ON [dbo].[RM_VAR] FOR Update AS   
+Declare    
+	@VARCODE VARCHAR(10), @VARNAME  varchar(50),@CATCD varchar(1),@IMPORTED varchar(1),
+	@drawno varchar(10),@oldvarcode varchar(20),@VARTYPE varchar(1),@SHADENO varchar(20),@Denier varchar(20),
+	@LENGTH varchar(20),@CATTYPE varchar(1) 
+	 
+  Begin  
+	Select @VARCODE =VARCODE, @VARNAME=VARNAME ,@CATCD=CATCD,@IMPORTED=IMPORTED,@drawno=drawno,
+	@oldvarcode=oldvarcode,@VARTYPE=VARTYPE,@SHADENO=SHADENO,@Denier=Denier,@LENGTH=LENGTH,@CATTYPE=CATTYPE
+	FROM Inserted
+
+	IF (SELECT cOUNT(*) FROM RM_VAR WHERE VARCODE=@VARCODE )>0 
+	    BEGIN 
+		UPDATE sricheran..[RM_VAR] SET VARNAME=@VARNAME,CATCD=@CATCD,IMPORTED=@IMPORTED,
+		drawno =@drawno, oldvarcode=@oldvarcode,VARTYPE =@VARTYPE , SHADENO=@SHADENO,
+		Denier = @Denier, LENGTH=@LENGTH ,CATTYPE=@CATTYPE
+		WHERE VARCODE =@VARCODE
+		END
+		
+  End                
+    
+
+GO
+
+

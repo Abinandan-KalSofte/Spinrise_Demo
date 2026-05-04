@@ -1,0 +1,14 @@
+create table RM_ArrivalData(divcode varchar(2),DocNo numeric(5),Docdt Datetime,Sno numeric(3),Supcd varchar(8),ArrNo numeric(8),Arrdate Datetime,lotNo numeric(8),lotdt datetime,ContNo numeric(8),Contdt datetime,varcode varchar(14),BaleNo numeric(5),GrossWt numeric(9,3),TareWt numeric(9,3),NetWt numeric(9,3),User_id varchar(10),entdate Datetime,ArrivalFlg varchar(2),LotFlg varchar(2))
+go
+create table RM_IssDataBCH(Divcode varchar(2),Docno numeric(4),Docdt datetime,ISSTYPE varchar(3) ,ISSTO varchar(2),cntcd varchar(10),MIXGRP varchar(7),entdate datetime,User_id varchar(10))
+go
+create table RM_IssDataBCL(Divcode varchar(2),Docno numeric(4),Docdt datetime,sno int ,Lotno numeric(4),lotdt datetime,arrno numeric(4),arrdt datetime,varcode varchar(10),Baleno numeric(4),GrossWt numeric(10,3),TareWt numeric(10,3),Netwt numeric(9,3),Catcd varchar(1),LOTTYPE varchar(1),Lotyear numeric(4))
+
+go
+alter table RM_IssDataBCH add IssFlg varchar(1)
+
+alter table RM_issh add IssRQDocDt datetime 
+go
+alter table  RM_issh add IssRqDocNo numeric(4)
+
+--select  varcode+','+convert(varchar,baleno)+','+convert(varchar,LOTNO)+','+convert(varchar,lotdt,103), lot_year,favaourablewgt, *from rm_bale where lotdt>='2019-03-01' and isnull(issued,'N')='n' and DIVCODE='01'

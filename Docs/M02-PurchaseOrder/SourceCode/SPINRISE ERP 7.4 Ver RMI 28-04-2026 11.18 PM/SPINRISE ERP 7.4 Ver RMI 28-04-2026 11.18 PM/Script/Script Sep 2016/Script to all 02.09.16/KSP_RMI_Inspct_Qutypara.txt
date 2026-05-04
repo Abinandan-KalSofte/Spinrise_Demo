@@ -1,0 +1,19 @@
+ALTER PROC KSP_RMI_Inspct_Qutypara    
+(    
+ @divcode VARCHAR(5),    
+ @Lot_No NUMERIC(5),    
+ @LDate VARCHAR(10)    
+)    
+AS    
+BEGIN    
+ SELECT a.LOTNO,a.LOTDT,a.LOTTYPE,a.PNETWT as PTYWGT,a.GRSWGT,a.TAREWT,a.NETWT,a.BALES,a.STAPLEN,a.MICRONAIRE,a.TRASH_PER,    
+ a.PLOTNO,a.UNIRATIO,a.SCI,a.SFI,a.ELG,a.GTEX,b.DIVNAME,b.DIV_PRINTNAME,b.DIV_UNITNAME,c.VARNAME,d.CATNAME,e.SPName    
+ FROM RM_LOT a inner join     
+ PP_DIVMAS b ON b.DIVCODE = a.DIVCODE    
+ LEFT JOIN RM_VAR c ON c.VARCODE=a.VARCODE    
+ left join RM_CAT d ON d.CATCD=a.CATCD    
+ LEFT JOIN RM_SpotPass e ON e.SpCode=a.SPOTPasser    
+ WHERE    
+ a.DIVCODE = @divcode AND a.LOTNO = @Lot_No AND a.LOTDT = @LDate  
+END    
+

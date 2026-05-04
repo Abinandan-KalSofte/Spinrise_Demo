@@ -1,0 +1,1139 @@
+  
+  
+    
+ALTER TRIGGER [dbo].[INSPURHD]  ON [dbo].[FA_PURHD] FOR INSERT AS                                                                                     
+DECLARE                                                                                    
+  @ldt  datetime,                                                                                     
+  @gl varchar(7),  @cnt    numeric(2), @vatgl   varchar(7),                                                                                    
+  @NR1     varchar(30), @NR2     varchar(30), @WCRD    numeric(3),                                                                                    
+  @divcod varchar(2), @slcode1 varchar(7), @pjvdt1 datetime,                                                                                    
+  @tc1 numeric(2), @pjvno1 numeric(6), @billamt1 numeric(12,2),                                                                                    
+  @fbillamt1 numeric(12,2),                                                                                    
+  @billno1 varchar(10),@billdt1 datetime,@jvtc numeric(2),                                                                                    
+  @tdsper1 numeric(5,2),@tdsgl1 varchar(7),                                                                                    
+  @tdsamt1 numeric(12,2),@ftdsamt1 numeric(12,2),@duedt1 datetime,                                                                                    
+  @mahimai numeric(12,2),@levy numeric(12,2),                                                                                    
+  @mahgl varchar(7),@levgl varchar(7),                                                                                      
+  @CashDisGL varchar(7),@TradeDisGL varchar(7),@LryFrieghtGL varchar(7),                                                                        
+  @BEDGL varchar(7),@CessGL varchar(7),@EDCessGL varchar(7),                                                                        
+  @HSCessGL varchar(7),@TaxGL varchar(7),@CSTGL varchar(7),                                                                        
+  @OtherTaxGL varchar(7),@RlyFrieghtGL varchar(7),@InsuranceGL varchar(7),                                                                        
+  @CommissionGL varchar(7),@LCInterestGL varchar(7),@DrNoteGL varchar(7),                                                                        
+  @CharityGL varchar(7),@DamageGL varchar(7),@ClearanceGL varchar(7),                                                                        
+  @OthersGL varchar(7),@CustomsGL varchar(7),@BrCommissionGL varchar(7), @BrCode varchar(7),@v_gvocno numeric(12),                                                                      
+  @CashDisAmount numeric(12,2),@TradeDisAmount numeric(12,2),@LryFrieghtAmount numeric(12,2),                                                                        
+  @BEDAmount numeric(12,2),@CessAmount numeric(12,2),@EDCessAmount numeric(12,2),                                                                        
+  @HSCessAmount numeric(12,2),@TaxAmount numeric(12,2),@CSTAmount numeric(12,2),                                                                        
+  @OtherTaxAmount numeric(12,2),@RlyFrieghtAmount numeric(12,2),@InsuranceAmount numeric(12,2),                                                                        
+  @CommissionAmount numeric(12,2),@LCInterestAmount numeric(12,2),@DrNoteAmount numeric(12,2),                                                                        
+  @CharityAmount numeric(12,2),@DamageAmount numeric(12,2),@ClearanceAmount numeric(12,2),                                                                        
+  @OthersAmount numeric(12,2),@CustomsAmount numeric(12,2),@BrcommissionAmount numeric(12,2),                                                                  
+  @TAXCODE VARCHAR(20),@TAXFLG VARCHAR(2),@cgnarr3 varchar(150),@csnarr3 varchar(150),     
+  @Purtype varchar(2),@module numeric(2),                                                 
+  @GlCode Varchar(7), @AssAmt Numeric(15,2),@AssAmtGL Varchar(7) ,                                              
+  @AedAmt Numeric(15,2), @AedGL Varchar(7),                          
+  @SurAmt Numeric(15,2), @SurGl Varchar(7),                                              
+  @ASurAmt Numeric(15,2), @ASurGl Varchar(7),                               
+  @FreightAmt Numeric(15,2), @FreightGL Varchar(7),                                              
+  @PackAmt Numeric(15,2), @PackGL Varchar(7),                              
+  @Freight2Amt Numeric(15,2), @Freight2GL Varchar(7), @Pack2Amt Numeric(15,2), @Pack2GL Varchar(7),                                             
+  @Insurance2Amt  Numeric(15,2), @Insurance2GL Varchar(7), @RoundOffAmt  Numeric(15,2), @RoundOffGL Varchar(7),                              
+  @PurchaseGL varchar(7),@AddTaxCode varchar(5),                    
+@AddTaxAmount numeric(15,2),@AddTaxGL varchar(7),@ATaxStatus varchar(2),                    
+@othersTaxableAmt numeric(15,3),@othersTaxableGL varchar(7),                                          
+@AdjustAmt numeric(15,3),@AdjustGL varchar(7),                    
+@DutyPer numeric(5,2),@ExciseGL varchar(7),@ExciseAmt numeric(15,2),@OnExciseAmount numeric(15,2)                       
+                                             
+DECLARE @CenvatFlg char(1),@Cenvt numeric(15,2),@CGL1 Varchar(7),@CGL2 Varchar(7),@c1 numeric(15,2), @c2 numeric(15,2),                                     
+  @GLDivision varchar(2), @narration varchar(255)                                                                                         
+BEGIN                                                                                    
+                                                                        
+SET @CashDisAmount=0                                                                        
+set @TradeDisAmount=0                                     
+set @LryFrieghtAmount=0                                                                        
+SET @BEDAmount =0                                                    
+SET @CessAmount =0                                                                       
+SET @EDCessAmount=0                                                                        
+SET @HSCessAmount=0                                                                      
+SET @TaxAmount=0                                                                      
+SET @CSTAmount=0                                                                        
+SET @OtherTaxAmount=0                                                                      
+SET @RlyFrieghtAmount=0                                                                      
+SET @InsuranceAmount=0                                                                        
+SET @CommissionAmount=0                                                                      
+SET @LCInterestAmount=0                                                                      
+SET @DrNoteAmount=0                                                                        
+SET @CharityAmount=0                                                                      
+SET @DamageAmount=0                                                                      
+SET @ClearanceAmount=0                                                                       
+SET @OthersAmount=0                                                                      
+SET @CustomsAmount=0                                                                      
+SET @BrcommissionAmount=0                                                                      
+set @OthersTaxableAmt=0                    
+set @AddTaxAmount=0                    
+set @AdjustAmt=0                    
+                    
+SET @AssAmt=0                                                                      
+SET @AedAmt=0                                                
+SET @SurAmt=0                                              
+SET @ASurAmt=0                                              
+SET @FreightAmt=0                                              
+SET @PackAmt=0                                         
+SET @Freight2Amt=0                              
+SET @Pack2Amt=0                              
+SET @Insurance2Amt=0                              
+SET @RoundOffAmt=0                              
+                                            
+SELECT @jvtc = fromjvtc  from FA_PARAM                                   
+if @@rowcount = 0                                                                                    
+    BEGIN                                             
+  set @jvtc = 40 --30                                                                                    
+  insert into fa_param(fromjvtc) values(40)--30                                                                                    
+           END                                     
+    else                                                                                    
+  if @jvtc is null                                                               
+  BEGIN                                                                                   
+    set @jvtc = 40 --30                                                                                    
+      update fa_param set fromjvtc = 40 --30                                                                                    
+  END                                                                                     
+           select @cnt = count(*) from fa_tcmas where tc = @jvtc                                                                                    
+           if @cnt = 0                                                                                     
+  insert into fa_tcmas(tc,tchead,tcabbr)                                                                             
+  values(@jvtc,'General Journal','GJV')                                                                                    
+       select @divcod = divcode,@slcode1 = slcode,@pjvdt1 = pjvdt,                                                                                    
+   @tc1 = tc,@pjvno1 = pjvno,@pjvdt1 = pjvdt,                                                                                    
+   @billamt1 = billamt,                                                                                    
+---(isnull(mahimai,0)+isnull(levy,0)),                                                                                    
+   @fbillamt1 = fbillamt,                                                                                    
+---(isnull(mahimai,0)+isnull(levy,0)),                                                                                    
+   @tdsamt1 = tdsamt,@ftdsamt1 = ftdsamt,                                                                                    
+   @billno1 = billno,@billdt1 =billdt,@duedt1 = duedt from inserted                                                                                    
+--   @mahimai = mahimai,@levy = levy from inserted                                       
+   SELECT @ldt = DATEADD(DAY,-1*DAY(DATEADD(MONTH,1,@pjvdt1)),DATEADD(MONTH,1,@pjvdt1))                                                                                     
+   SELECT  @WCRD = CRDDAYS FROM FA_SLMAS WHERE SLCODE=@SLCODE1                                                                                    
+   select  @tdsgl1 = TDSGL FROM FA_PARAM                                                                                     
+--,@mahgl = mahimai,@levgl = levy FROM FA_PARAM                                                                                     
+/*UPDATES CGTRN FOR GLCODE (CTRL_ ACCOUNT) AND CSTRN FOR SLCODE */                                                                                    
+select @gl = glcode from fa_prty where prtytyp = substring(@SLCODE1,1,2)                                            
+Select @cgnarr3=slname from fa_slmas where slcode=@SLCODE1                                                                              
+Select @csnarr3=glhead from fa_glmas where glcode in (select glcode from fa_tcmas where tc=@tc1)                           
+SET @v_gvocno = 999999                                                          
+                                                              
+/* Bill Amount */                                                                                    
+/*party's slcode updations in cstrn table */                           
+                                                          
+   insert into fa_cstrn (DIVCODE,TC,VOCNO,VOCDT,VOCSNO,SLCODE,NARRATION1,                                                                                 
+   NARRATION2,CREDIT,fcredit,chqno,chqdt,trntype,narration3)                                                                               
+   values(@divcod,@tc1,@pjvno1,@pjvdt1,2,@SLCODE1,'Purchase Bill','',                                                                                    
+   isnull(@billamt1,0),isnull(@fbillamt1,0),@billno1,@billdt1,'PU',@csnarr3)                                           
+                                                                                  
+--change 170608                                       
+/*ACCOUNTS PAYABLE UPDATION INTO APAYM TABLE */                                                                                 
+                                                                        
+                                                                  
+                                                                       
+SELECT @CashDisAmount = CashDisAmt, @TradeDisAmount = TradeDisAmt, @LryFrieghtAmount = LryFrieghtAmt,@BEDAmount =BEDAmt,                                                                
+       @CessAmount=cessAmt,@edcessAmount=edcessAmt,@hscessAmount=hscessAmt,@taxAmount=TaxAmount,@insuranceAmount=InsuranceAmt,@cstAmount=CSTAmt,                                                                
+       @OthertaxAmount=OtherTaxAmt,@rlyFrieghtAmount=RlyFrieghtAmt,                         
+       @commissionAmount=CommissionAmt,@lcinterestAmount=LCinterestAmt,@drnoteAmount=DRNoteAmtAmt,                                                                
+       @charityAmount=charity,@damageAmount=DamageAmt,@othersAmount=OthersAmt,@customsAmount=CustomsDutyAmt,                                                                
+       @BrcommissionAmount=BrCommissionAmt, @TAXCODE=TaxName,@PurType = PurchaseType,@module=module ,@AssAmt=AssessableAmt,                                        
+       @aedAmt=AedAmt,@SurAmt=SurchageAmt,@ASurAmt=ASurchageAmt,@FreightAmt=Freight1Amt,@PackAmt=Pack1Amt, @Cenvt=CENVAT,                                    
+       @GLDivision=DIVCODE, @narration=Narration,@Freight2Amt=Freight2Amt,@Pack2Amt=Pack2Amt,@Insurance2Amt=Insurance2Amt,@RoundOffAmt=RoundOff,                    
+       @othersTaxableAmt= othertaxableAmt,@AddTaxCode= AddtaxCode,@AddTAxAmount= addtaxAmount,@AdjustAmt=AdjustAmt,@DutyPer=DUTYPER ,@BrCode=BRCODE                                                              
+From FA_PURHD WHERE PJVNO=@PJVNO1 AND PJVDT =@PJVDT1 AND DIVCODE =@DIVCOD AND TC=@TC1                                   
+                                                                           
+select  @cnt = count(*) from fa_apaym where divcode=@divcod and slcode=@slcode1 and VOCDT=@pjvdt1 and TC=@tc1 and VOCNO=@pjvno1 and BILLNO=@BILLNO1 and BILLDT=@BILLDT1 and trntype='PU'                                                            
+                      
+SET @OnExciseAmount = Isnull(@BEDAmount,0) + Isnull(@CessAmount,0) +Isnull(@edcessAmount,0)+ Isnull(@hscessAmount,0)                      
+                                                                                  
+IF @CNT = 0                                                                                  
+  insert into fa_apaym (DIVCODE,SLCODE,VOCDT,TC,VOCNO,VOCSNO,BILLNO,BILLDT,                                                                    
+  BILLAMT,AMTDUE,DUEDT,NARR1,CRDAYS,trntype)                                                                                    
+  VALUES (@divcod ,@SLCODE1,@pjvdt1, @tc1,@pjvno1,1,@BILLNO1,@BILLDT1,                                                                   
+  @billamt1,@billamt1,@duedt1,'Purchase Bill',@WCRD,'PU')                                                                                    
+ELSE                                                                                  
+  update fa_apaym set billamt=@BILLAMT1,amtdue=@billamt1-isnull(amtpaid,0) WHERE divcode=@divcod and slcode=@slcode1 and VOCDT=@pjvdt1 and TC=@tc1 and VOCNO=@pjvno1 and BILLNO=@BILLNO1 and BILLDT=@BILLDT1 and trntype='PU'                                 
+  
+     
+     
+        
+                           
+/*mahimi & levy a/c Updated */                                                                                    
+/*if isnull(@mahimai,0) >0                                                                                     
+        begin                                                                                    
+           insert into FA_CGTRN (divcode,tc,vocno,vocdt,vocsno,glcode,                                                     
+           narration1,credit,trntype)                                                                                    
+           values(@divcod,@tc1,@pjvno1,@pjvdt1,1,                                                                                   
+           @mahgl,'Purchase Bill On',isnull(@mahimai,0),'PU',@cgnarr3)                                                                  
+   end                                                                                    
+if isnull(@levy,0) >0                                           
+    Begin                                                                                    
+       insert into FA_CGTRN (divcode,tc,vocno,vocdt,vocsno,glcode,                                                               
+  narration1,credit,trntype)                                                                                    
+       values(@divcod,@tc1,@pjvno1,@pjvdt1,1,                                                                                    
+       @levgl,'Purchase Bill On',isnull(@levy,0),'PU',@cgnarr3)                                                                                    
+    End*/                                                                               
+ /* control account updation in cgtrn table */                                                                                    
+    select  @cnt = count(*) from fa_cgtrn                                                                                    
+           where glcode = @gl and tc=@jvtc and vocno=999999                                                                                  
+           and trntype = 'AB' and vocsno = 2 and                                                                               
+           vocdt=@ldt and divcode = @divcod                                                                                    
+         if @cnt > 0                                                                                     
+            update fa_cgtrn                                                                                    
+       set credit= isnull(credit,0) + isnull(@billamt1,0)                                                                                    
+            where glcode = @gl and tc=@jvtc and vocno=999999 and trntype = 'AB'                                                    
+     and vocsno=2 and vocdt=@ldt and divcode=@divcod                                                                                    
+         else                                                                                     
+              BEGIN                        
+                insert into fa_cgtrn (divcode,tc,vocno,vocdt,vocsno,                                                     
+              glcode,narration1,credit,TRNTYPE)                                                                                    
+              values (@divcod,@jvtc,999999,@ldt,2,@gl,            
+              'Summary-Credit Total',isnull(@billamt1,0),'AB')                                                      
+              PRINT 'a'                        
+              END                         
+                                                       
+IF @module=6                                                      
+BEGIN                                                      
+                                                      
+ SELECT @CashDisGL = CashDisGL ,@TradeDisGL = TradeDisGL,@LryFrieghtGL=LryFrieghtGL,@BEDGL =bedgl,                                                                      
+        @CessGl=cessgl,@edcessgl=edcessgl,@hscessgl=hscessgl,@taxgl=TaxGL,@cstgl=CSTGL,@Othertaxgl=OtherTaxGL,                                                                      
+        @rlyFrieghtgl=RlyFrieghtGl,@insurancegl=InsuranceGL,@commissiongl=CommissionGL,@lcinterestgl=LCinterestGL,                                        
+        @drnotegl=DRNoteAmtGL,@charitygl=charity,@damagegl=DamageGL,@othersgl=OthersGL,@customsgl=CustomsDutyGL,                                                                      
+        @BrCommissionGL=BrCommissionGl,@AddTaxGl=AddtaxGl,@othersTaxableGL= otherstaxableamtGL ,@ADJUSTGL= ADJUSTGL,                    
+ @ExciseGL=ExciseGL                                                                      
+ From RM_PARAM_FA WHERE TCCODE=@TC1 AND DIVCODE= @GLdivision                                                                         
+                                                                  
+ SELECT @TAXFLG=ITCTAXSTATUS FROM IG_TAX WHERE TAX_CODE = @TAXCODE                                                                  
+                     
+ SELECT @ATaxStatus=ITCTAXSTATUS FROM IG_TAX WHERE TAX_CODE = @ADDTAXCODE                                                                                       
+                                                                       
+-- Cash Discount                          
+--  SET @v_cnt = 0                                                                       
+                                                                               
+   IF ISNULL(@CashDisAmount,0) >0  AND (@CashDisGL IS NOT NULL AND @CashDisGL <> '')                                                                                  
+   BEGIN                                                                                
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@CashDIsGL,'') ) <= 0                                                                                   
+                                                                                
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,credit,trntype,narration3)                                                                               
+VALUES(@Divcod,@CashDisGL,@Pjvno1,@pjvdt1,1,@tc1,@narration,ISNULL(@CashDisAmount,0),'PU',@cgnarr3)                                                                                
+   ELSE                                                                                
+       UPDATE fa_cgtrn SET credit = ISNULL(credit,0) +ISNULL(@CashDisAmount, 0)                                                                                
+       WHERE divcode = @divcod AND glcode = @CashDisgl AND vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype = 'PU'                                                                 
+    END                                                     
+                                                                         
+-- Trade Discount                                                                        
+--  SET @v_cnt = 0                                                                                
+                                                                               
+   IF ISNULL(@TradeDisAmount,0) >0  AND (@TradeDisGL IS NOT NULL AND @TradeDisGL <> '')                                                                                  
+  BEGIN                                                                                
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@TradeDIsGL,'') ) <= 0                                                                               
+                                                                                
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc, narration1,credit,trntype,narration3)                                                      
+        VALUES(@Divcod,@TradeDisGL,@Pjvno1,@pjvdt1,1,@tc1,@narration,ISNULL(@TradeDisAmount,0),'PU',@cgnarr3)                                                                       
+   ELSE                                                                                
+               UPDATE fa_cgtrn                                                                                
+               SET credit =ISNULL(credit,0) + ISNULL(@TradeDisAmount, 0)                                                                                
+               WHERE divcode = @divcod AND glcode = @TradeDisgl AND                                  
+               vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                                
+               trntype = 'PU'                                                                                 
+   END                                                                              
+                   
+--BED                                                                           
+IF isnull(@Dutyper,0)< 100                       
+BEGIN                      
+                       
+   SET @BEDAmount = ISNULL(@BEDAmount,0) * (isnull(@Dutyper,0)/100)                      
+                      
+END                       
+                      
+                      
+                      
+                                                
+   IF ISNULL(@BEDAmount,0) >0  AND (@BEDgl IS NOT NULL AND @BEDgl <> '')                                                                                      
+ BEGIN                                    
+print @BEDAmount                                                                    
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@BEDgl,'') ) <= 0                                                                                       
+                                                           
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                                   
+        VALUES(@Divcod,@BEDgl,@Pjvno1,@pjvdt1,1,@tc1,@narration,ISNULL(@BEDAmount,0),'PU',@cgnarr3)                                                                            
+   ELSE                                                                                  
+              UPDATE fa_cgtrn                                                 
+              SET Debit =ISNULL(DEBIT,0) + ISNULL(@BEDamount, 0)                                                                   
+              WHERE divcode = @divcod AND glcode = @BEDgl AND                                                         
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                                    
+              trntype = 'PU'                     
+   END                                                                       
+        
+--Cess                                  
+IF isnull(@Dutyper,0)< 100                      
+BEGIN                      
+                       
+   SET @CessAmount = ISNULL(@CessAmount,0) * (isnull(@Dutyper,0)/100)                      
+                      
+END                       
+                         
+                      
+                                                              
+   IF ISNULL(@CessAmount,0) >0  AND (@Cessgl IS NOT NULL AND @Cessgl <> '')                                                                                      
+ BEGIN                                
+print @CessAmount                                                                        
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@Cessgl,'') ) <= 0                                                                                       
+                                                                                    
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                                  
+        VALUES(@Divcod,@Cessgl,@Pjvno1,@pjvdt1,1,@tc1,@narration,ISNULL(@CessAmount,0),'PU',@cgnarr3)                                                                
+   ELSE                                                                                    
+              UPDATE fa_cgtrn                                                                                    
+              SET Debit =ISNULL(DEBIT,0) + ISNULL(@CessAmount, 0)                                                                                    
+              WHERE divcode = @divcod AND glcode = @Cessgl AND                                                                                    
+            vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                       
+              trntype = 'PU'                                                                                     
+   END                                                                                  
+                                                                                  
+--EDCess                                 
+                                 
+IF isnull(@Dutyper,0)< 100                       
+BEGIN                    
+                       
+   SET @EDCessAmount = ISNULL(@EDCessAmount,0) * (isnull(@Dutyper,0)/100)                      
+                      
+END                      
+                                                       
+   IF ISNULL(@EDCessAmount,0) >0  AND (@EDCessgl IS NOT NULL AND @EDCessgl <> '')                                          
+ BEGIN                                
+print @EDCessAmount                                                                        
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@EDCessgl,'') ) <= 0                                                                                       
+                                                                                    
+ INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                              
+        VALUES(@Divcod,@EDCessgl,@Pjvno1,@pjvdt1,1,@tc1,@narration,ISNULL(@EDCessAmount,0),'PU',@cgnarr3)                                                                                    
+   ELSE                                                                          
+              UPDATE fa_cgtrn                                                                                    
+              SET Debit =ISNULL(DEBIT,0) + ISNULL(@EDCessAmount, 0)                                                                                    
+              WHERE divcode = @divcod AND glcode = @EDCessgl AND                                                                                    
+      vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                                    
+              trntype = 'PU'                                                                                     
+   END                                                                                  
+                                                                                  
+--HSCess                                      
+IF isnull(@Dutyper,0)< 100                       
+BEGIN                      
+                       
+   SET @HSCessAmount = ISNULL(@HSCessAmount,0) * (isnull(@Dutyper,0)/100)                      
+                      
+END                                                                    
+   IF ISNULL(@HSCessAmount,0) >0  AND (@HSCessgl IS NOT NULL AND @HSCessgl <> '')                                                                      
+ BEGIN                                                                                
+   print @HSCessAmount                    
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@HSCessgl,'') ) <= 0                                                 
+                                                                                    
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                                   
+        VALUES(@Divcod,@HSCessgl,@Pjvno1,@pjvdt1,1,@tc1,@narration,ISNULL(@HSCessAmount,0),'PU',@cgnarr3)                                                                                    
+   ELSE                                                                      
+         UPDATE fa_cgtrn                                                                                    
+              SET Debit = ISNULL(DEBIT,0) + ISNULL(@HSCessAmount, 0)                                                                  
+              WHERE divcode = @divcod AND glcode = @HSCessgl AND                                                                                    
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                                    
+              trntype = 'PU'                                                                                     
+   END                                                 
+                                                                                
+--Tax                                                                      
+IF @TAXFLG='Y'                                                                  
+ BEGIN                                                                  
+   IF ISNULL(@TaxAmount,0) >0 AND (@Taxgl IS NOT NULL AND @Taxgl <> '')                                                                                  
+ BEGIN                                                                                
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@Taxgl,'') ) <= 0                                                                            
+                       
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                        
+        VALUES(@Divcod,@Taxgl,@Pjvno1,@pjvdt1,1,@tc1,@narration,ISNULL(@taxAmount,0),'PU',@cgnarr3)                                                                                
+   ELSE                                                                                
+              UPDATE fa_cgtrn                                                                                
+              SET Debit = ISNULL(DEBIT,0) + ISNULL(@taxAmount, 0)                                                                                
+              WHERE divcode = @divcod AND glcode = @Taxgl AND                                    
+      vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                                
+              trntype = 'PU'                                                                     
+   END                                                                              
+   END                                                                  
+                    
+--Additional Tax                                                                      
+IF @ATAXSTATUS='Y'                                                                  
+ BEGIN                                                    
+   IF ISNULL(@ADDTaxAmount,0) >0  AND (@ADDTaxgl IS NOT NULL AND @Taxgl <> '')                      
+print @ADDTaxAmount                                                                          
+ BEGIN                                                                                
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@ADDTaxgl,'') ) <= 0                                                                            
+                       
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                        
+        VALUES(@Divcod,@ADDTaxgl,@Pjvno1,@pjvdt1,1,@tc1,@narration,ISNULL(@ADDtaxAmount,0),'PU',@cgnarr3)                                                                                
+   ELSE                                                                                
+              UPDATE fa_cgtrn                                                                                
+              SET Debit = ISNULL(DEBIT,0) + ISNULL(@ADDtaxAmount, 0)                                                                                
+              WHERE divcode = @divcod AND glcode = @ADDTaxgl AND                                                                                
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                                
+              trntype = 'PU'                                                                     
+   END                                                                              
+   END                                                                  
+                    
+                    
+--CST                                     
+   IF ISNULL(@CSTAmount,0) >0  AND (@CSTgl IS NOT NULL AND @CSTgl <> '')                                                                
+ BEGIN                                                                                
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@CSTgl,'') ) <= 0                                                                                   
+                                       
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                              
+        VALUES(@Divcod,@CSTgl,@Pjvno1,@pjvdt1,1,@tc1,@narration,ISNULL(@CSTAmount,0),'PU',@cgnarr3)                                                                                
+   ELSE                                                                                
+             UPDATE fa_cgtrn                                                                                
+ SET Debit = ISNULL(DEBIT,0) + ISNULL(@CSTAmount, 0)                                                                                
+              WHERE divcode = @divcod AND glcode = @CSTgl AND                                                                                
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                                
+ trntype = 'PU'                                                                                 
+   END                                                       
+                                                                              
+--OtherTax                                                                      
+   IF ISNULL(@OtherTaxAmount,0) >0  AND (@OtherTaxgl IS NOT NULL AND @OtherTaxgl <> '')                                                                                  
+ BEGIN                                                                                
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@OtherTaxgl,'') ) <= 0                             
+                                                                                
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                               
+        VALUES(@Divcod,@OtherTaxgl,@Pjvno1,@pjvdt1,1,@tc1,@narration,ISNULL(@OtherTaxAmount,0),'PU',@cgnarr3)                                                                                
+   ELSE                                                                                
+              UPDATE fa_cgtrn                                         
+              SET Debit = ISNULL(DEBIT,0) + ISNULL(@OtherTaxAmount, 0)                                             
+              WHERE divcode = @divcod AND glcode = @OtherTaxgl AND                                                      
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                                
+            trntype = 'PU'                                                                                 
+   END                                                                     
+                                                         
+                                                                      
+                                     
+                                      
+--insurance                                                                      
+                                  
+                                  
+   IF ISNULL(@insuranceAmount,0) >0  AND (@insurancegl IS NOT NULL AND @insurancegl <> '')                                                                 
+ BEGIN                                                                                
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@insurancegl,'') ) <= 0           
+                                                              
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                               
+        VALUES(@Divcod,@insurancegl,@Pjvno1,@pjvdt1,1,@tc1,@narration,ISNULL(@insuranceAmount,0),'PU',@cgnarr3)                                                                                
+                                   
+   ELSE                                  
+                                                                                   
+              UPDATE fa_cgtrn                                                            
+              SET Debit =ISNULL(DEBIT,0) + ISNULL(@insuranceAmount, 0)                                   
+              WHERE divcode = @divcod AND glcode = @insurancegl AND                                                                                
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                                
+              trntype = 'PU'                                                
+                                 
+       --PRINT @insurancegl                                  
+   END                                                
+  --Charity                                                                      
+ IF ISNULL(@CharityAmount,0) >0  AND (@Charitygl IS NOT NULL AND @Charitygl <> '')                                          
+                                  
+ BEGIN                                                                                
+                                  
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@Charitygl,'') ) <= 0                                                                                   
+                                                                               
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                     
+  VALUES(@Divcod,@Charitygl,@Pjvno1,@pjvdt1,1,@tc1,@narration,ISNULL(@CharityAmount,0),'PU',@cgnarr3)                                                    
+   ELSE                                       
+                                                                          
+              UPDATE fa_cgtrn                                                                                
+              SET Debit =ISNULL(DEBIT,0) + ISNULL(@CharityAmount, 0)                                                                                
+              WHERE divcode = @divcod AND glcode = @Charitygl AND                                                                                
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                              
+              trntype = 'PU'                                                                                 
+   END                                                                                                    
+                                                                     
+                                                                              
+--Damage                                                                      
+   IF ISNULL(@DamageAmount,0) >0  AND (@Damagegl IS NOT NULL AND @Damagegl <> '')                                      
+                                                                           
+ BEGIN                                                                                
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@Damagegl,'') ) <= 0                                                                                   
+                                                  
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                               
+        VALUES(@Divcod,@Damagegl,@Pjvno1,@pjvdt1,1,@tc1,@narration,ISNULL(@DamageAmount,0),'PU',@cgnarr3)                                                                                
+  ELSE                                                                                
+              UPDATE fa_cgtrn                                                                                
+              SET Debit = ISNULL(DEBIT,0) + ISNULL(@DamageAmount, 0)                                                                                
+              WHERE divcode = @divcod AND glcode = @Damagegl AND                                                                                
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                                
+              trntype = 'PU'                                                                                 
+   END                                                                  
+  --Clearance                                                             
+   IF ISNULL(@ClearanceAmount ,0) >0  AND (@ClearanceGL IS NOT NULL AND @ClearanceGL <> '')                                                                                  
+ BEGIN                                                                                
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@ClearanceGL,'') ) <= 0                                                           
+                                                                                
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                
+        VALUES(@Divcod,@ClearanceGL,@Pjvno1,@pjvdt1,1,@tc1,@narration,ISNULL(@ClearanceAmount ,0),'PU',@cgnarr3)                                                                                
+   ELSE                                                                                
+     UPDATE fa_cgtrn                                                                          
+              SET Debit = ISNULL(DEBIT,0) + ISNULL(@ClearanceAmount , 0)                                                                                
+              WHERE divcode = @divcod AND glcode = @ClearanceGL AND                                                                                
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                                
+              trntype = 'PU'                                                                                 
+   END                                                                              
+                                                                            
+--Others - NON TAXABLE AMOUNT                                                                     
+   IF ISNULL(@OthersAmount,0) >0  AND (@Othersgl IS NOT NULL AND @Othersgl <> '')                                                                  
+ BEGIN                                                                                
+print @OthersAmount                    
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@Othersgl,'') ) <= 0                                                      
+                                                                                
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                   
+        VALUES(@Divcod,@Othersgl,@Pjvno1,@pjvdt1,1,@tc1,@narration,ISNULL(@OthersAmount,0),'PU',@cgnarr3)                                                                                
+   ELSE                                                                                
+              UPDATE fa_cgtrn                                                                                
+              SET Debit =ISNULL(DEBIT,0) + ISNULL(@OthersAmount, 0)                                                                                
+              WHERE divcode = @divcod AND glcode = @Othersgl AND                                                                                
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                          
+          trntype = 'PU'                                          
+   END                     
+                                                                             
+--Others - TAXABLE AMOUNT                    
+                                                                     
+IF ISNULL(@othersTaxableAmt,0) >0  AND (@othersTaxableGL IS NOT NULL AND @othersTaxableGL <> '')                                                                  
+                  
+ BEGIN                                                                                
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@othersTaxableGL,'') ) <= 0                                                      
+                                                                                
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                    
+        VALUES(@Divcod,@othersTaxableGL,@Pjvno1,@pjvdt1,1,@tc1,@narration,ISNULL(@othersTaxableAmt,0),'PU',@cgnarr3)                                                                                
+   ELSE                                                                                
+              UPDATE fa_cgtrn                                                                                
+              SET Debit =ISNULL(DEBIT,0) + ISNULL(@othersTaxableAmt, 0)                                                                                
+              WHERE divcode = @divcod AND glcode = @othersTaxableGL AND                                                                                
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                            
+          trntype = 'PU'                                                                
+   END                                                                              
+                                                              
+                                                              
+-- Customss                                                                      
+   IF ISNULL(@CustomsAmount,0) >0  AND (@Customsgl IS NOT NULL AND @Customsgl <> '')                                                                                  
+ BEGIN                                                                                
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@Customsgl,'') ) <= 0                                                          
+                                                              
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                   
+        VALUES(@Divcod,@Customsgl,@Pjvno1,@pjvdt1,1,@tc1,@narration,ISNULL(@CustomsAmount,0),'PU',@cgnarr3)                                                                                
+   ELSE                                                                                
+              UPDATE fa_cgtrn                                                                                
+              SET Debit = ISNULL(DEBIT,0) + ISNULL(@CustomsAmount, 0)                                                                           
+              WHERE divcode = @divcod AND glcode = @Customsgl AND                                                                                
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                                
+             trntype = 'PU'                                                                            
+   END                    
+                    
+                    
+-- Excise Duty A/c                      
+IF isnull(@Dutyper,0)< 100                       
+                      
+BEGIN                       
+ SET @ExciseAmt = isnull(@OnExciseAmount,0) - (Isnull(@BEDAmount,0) + Isnull(@CessAmount,0) +Isnull(@edcessAmount,0)+ Isnull(@hscessAmount,0))                      
+ PRINT 'C'                    
+  PRINT @ExciseAmt                    
+   IF ISNULL(@ExciseAmt,0) >0    AND (@ExciseGL IS NOT NULL AND @ExciseGL <> '')                  
+ BEGIN                               
+ PRINT 'd'                                                                         
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@Excisegl,'') ) <= 0                                                              
+                                                                           
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                   
+        VALUES(@Divcod,@Excisegl,@Pjvno1,@pjvdt1,1,@tc1,@narration,ISNULL(@ExciseAmt,0),'PU',@cgnarr3)                                                                                    
+   ELSE                              
+                                                                         
+              UPDATE fa_cgtrn                                                                                    
+              SET Debit = ISNULL(DEBIT,0) + ISNULL(@ExciseAmt, 0)                                                                               
+              WHERE divcode = @divcod AND glcode = @Excisegl AND                                                                                    
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                        
+                                               
+              trntype = 'PU'                                 
+   END                          
+end                      
+                    
+                    
+--Adjustment Value                    
+                    
+IF ISNULL(@AdjustAmt,0) >0                    
+                    
+ BEGIN                              
+print 'a'                                                        
+print @adjustAmt                    
+   IF ISNULL(@AdjustAmt,0) >0  AND (@AdjustGL IS NOT NULL AND @AdjustGL <> '')                                                                    
+ BEGIN                                                                                
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@AdjustGL,'') ) <= 0                                                                            
+                       
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                             
+        VALUES(@Divcod,@Taxgl,@Pjvno1,@pjvdt1,1,@tc1,@narration,ISNULL(@AdjustAmt,0),'PU',@cgnarr3)                                                                                
+   ELSE                                                                                
+              UPDATE fa_cgtrn                                                                                
+              SET Debit = ISNULL(DEBIT,0) + ISNULL(@AdjustAmt, 0)                                                
+              WHERE divcode = @divcod AND glcode = @AdjustGL AND                                                                                
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                              
+              trntype = 'PU'                                                                     
+   END                    
+end                    
+                    
+if ISNULL(@AdjustAmt,0) <0                    
+begin                    
+print 'b'                    
+print @adjustAmt                    
+print @AdjustGL                    
+                    
+   IF abs(ISNULL(@AdjustAmt,0)) >0  AND (@AdjustGL IS NOT NULL AND @AdjustGL <> '')                                                                                  
+ BEGIN                                                                                
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@AdjustGL,'') ) <= 0                                                                            
+                       
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,credit,trntype,narration3)                                                      
+        VALUES(@Divcod,@AdjustGL,@Pjvno1,@pjvdt1,1,@tc1,@narration,abs(ISNULL(@AdjustAmt,0)),'PU',@cgnarr3)                                                                                
+   ELSE                                                                                
+              UPDATE fa_cgtrn                                                                                
+SET credit = ISNULL(credit,0) + abs(ISNULL(@AdjustAmt, 0))                                                                                
+              WHERE divcode = @divcod AND glcode = @AdjustGL AND                                                                                
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                                
+              trntype = 'PU'                                                                     
+   END                      
+                                                                              
+   END                                                                  
+                    
+                    
+                                                       
+/*--Lorry Frieght Amount                Hide BY Vinoth                                                            
+--  SET @v_cnt = 0                                                          
+                                                                               
+   IF ISNULL(@LryFrieghtAmount,0) >0  AND (@LryFrieghtgl IS NOT NULL AND @LryFrieghtgl <> '')                                                                  
+ BEGIN                                                                                
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@LryFrieghtgl,'') ) <= 0                                                                                   
+                                                                                
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                   
+        VALUES(@Divcod,@LryFrieghtgl,@Pjvno1,@pjvdt1,1,@tc1,'Lorry Frieght Charge',ISNULL(@LryFrieghtAmount,0),'PU',@cgnarr3)                                                                                
+   ELSE                                                                  
+              UPDATE fa_cgtrn                                                                                
+              SET Debit = ISNULL(DEBIT,0) +ISNULL(@LryFrieghtAmount, 0)                                                                                
+              WHERE divcode = @divcod AND glcode = @LryFrieghtgl AND                                                               
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                                
+         trntype = 'PU'                                                                                 
+   END       */                                        
+                                                                      
+  /*         --Commission                              
+   IF ISNULL(@CommissionAmount,0) >0  AND (@Commissiongl IS NOT NULL AND @Commissiongl <> '')                                                                                  
+ BEGIN                                                                                
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@Commissiongl,'') ) <= 0                                                                                   
+                                                                                
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                               
+        VALUES(@Divcod,@Commissiongl,@Pjvno1,@pjvdt1,1,@tc1,@narration,ISNULL(@CommissionAmount,0),'PU',@cgnarr3)                                                                                
+   ELSE                                           
+              UPDATE fa_cgtrn                                                                                
+    SET Debit = ISNULL(DEBIT,0) + ISNULL(@CommissionAmount, 0)                              
+              WHERE divcode = @divcod AND glcode = @Commissiongl AND                                                                                
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                                
+              trntype = 'PU'                                                                        
+   END                                                                              
+          */                                                    
+                                                                      
+  /*                                                                            
+                                                                      
+--LCinterest                                                           
+   IF ISNULL(@LCinterestAmount,0) >0  AND (@LCinterestgl IS NOT NULL AND @LCinterestgl <> '')                                      
+ BEGIN                                                                             
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@LCinterestgl,'') ) <= 0                                                                                   
+                                                                                
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                               
+        VALUES(@Divcod,@LCinterestgl,@Pjvno1,@pjvdt1,1,@tc1,'LCinterest',ISNULL(@LCinterestAmount,0),'PU',@cgnarr3)                                                                                
+   ELSE                                                                                
+              UPDATE fa_cgtrn                                                                                
+              SET Debit =ISNULL(DEBIT,0) + ISNULL(@LCinterestAmount, 0)                                                           
+     WHERE divcode = @divcod AND glcode = @LCinterestgl AND                                     
+      vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                           
+              trntype = 'PU'                                                                                 
+   END                                                                              
+                                                                              
+--DrNote                                                                   
+   IF ISNULL(@DrNoteAmount,0) >0  AND (@DrNotegl IS NOT NULL AND @DrNotegl <> '')                                                                                  
+ BEGIN                                                                                
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@DrNotegl,'') ) <= 0                                                                                   
+                                                                                
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                              
+        VALUES(@Divcod,@DrNotegl,@Pjvno1,@pjvdt1,1,@tc1,'DrNote',ISNULL(@DrNoteAmount,0),'PU',@cgnarr3)                                                                                
+   ELSE                                                                                
+              UPDATE fa_cgtrn                                                                                
+              SET Debit = ISNULL(DEBIT,0) + ISNULL(@DrNoteAmount, 0)                                                            
+              WHERE divcode = @divcod AND glcode = @DrNotegl AND                                                                                
+          vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                                
+      trntype = 'PU'                                                              
+   END   */                                   
+                                     
+/*--RlyFrieght  Hide BY Vinoth                                                                       
+   IF ISNULL(@RlyFrieghtAmount,0) >0  AND (@RlyFrieghtgl IS NOT NULL AND @RlyFrieghtgl <> '')                                                                                  
+ BEGIN                                                                                
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@RlyFrieghtgl,'') ) <= 0                                                                                   
+                                                             
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                               
+        VALUES(@Divcod,@RlyFrieghtgl,@Pjvno1,@pjvdt1,1,@tc1,'RlyFrieght',ISNULL(@RlyFrieghtAmount,0),'PU',@cgnarr3)                                                                                
+   ELSE                                                                                
+              UPDATE fa_cgtrn                                                                                
+              SET Debit =ISNULL(DEBIT,0) + ISNULL(@RlyFrieghtAmount, 0)                                                                                
+              WHERE divcode = @divcod AND glcode = @RlyFrieghtgl AND                                                                                
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                                
+            trntype = 'PU'                                                                              
+   END             */          
+                                                                  
+                                                                      
+/*--Brcommission Hide by Vinoth                                                                     
+   IF ISNULL(@BrcommissionAmount,0) >0  AND (@Brcommissiongl IS NOT NULL AND @Brcommissiongl <> '')                                                                                
+ BEGIN                                                                                
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@Brcommissiongl,'') ) <= 0                                                                                   
+                                                                                
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                 
+        VALUES(@Divcod,@Brcommissiongl,@Pjvno1,@pjvdt1,1,@tc1,'Brcommission',ISNULL(@BrcommissionAmount,0),'PU',@cgnarr3)                                                                                
+   ELSE                                                                                
+              UPDATE fa_cgtrn                                                                               
+              SET Debit = ISNULL(DEBIT,0) + ISNULL(@BrcommissionAmount, 0)                                                       
+              WHERE divcode = @divcod AND glcode = @Brcommissiongl AND                                                
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                                
+              trntype = 'PU'                                                                                 
+   END */          
+       
+       
+       
+ ---- Agent Commission         
+                                                   
+         --  /*            
+                                                    
+ IF ISNULL(@BrcommissionAmount,0) >0  AND (@Brcommissiongl IS NOT NULL AND @Brcommissiongl <> '')                        
+ BEGIN     
+    INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,    
+    narration1,debit,trntype,narration3)                                                        
+    VALUES(@Divcod,@Brcommissiongl,@Pjvno1,@pjvdt1,2,@tc1,                                                        
+    'Commission for the Cotton Purchase for the Pjv No.' + convert(varchar,@Pjvno1) + ' Party. '  + @cgnarr3          
+    ,ISNULL(@BrcommissionAmount, 0),'PU',@cgnarr3)                                         
+ END                               
+                            
+                            
+                            
+IF (NOT ISNULL(@BrcommissionAmount,0) =0 )   
+AND (@BrCode IS NOT NULL AND @BrCode <> '')  AND (@Brcommissiongl IS NOT NULL AND @Brcommissiongl <> '')                                                           
+BEGIN                        
+     PRINT @brcode  
+     PRINT @BrcommissionAmount  
+       
+       INSERT INTO fa_cstrn (divcode,slcode,vocdt,tc,vocno,vocsno,                                                     
+       narration1,CREDIT,trntype,narration3)                                                        
+       VALUES(@Divcod,@BrCode,@pjvdt1,@tc1,@Pjvno1,3,                                  
+       'Commission for the Cotton Purchase for the Pjv No.' + convert(varchar,@Pjvno1)                              
+       ,ISNULL(@BrcommissionAmount, 0),'PU',@csnarr3)                                                                           
+       set @cnt = 0                                                 
+                      
+       SELECT @gl = glcode  FROM fa_prty                                                        
+       WHERE prtytyp = substring(@BrCode,1,2)                                                        
+                                                        
+     SELECT @cnt = COUNT(*)  FROM fa_cgtrn                                           
+   WHERE divcode = @Divcod AND glcode = @gl AND                                         
+       vocdt = @ldt AND tc = @jvtc   
+       --AND vocno = @v_gvocno AND                                                       
+        and vocno=999999  and  
+       vocsno = 2 AND trntype = 'AB'                                                        
+                                                        
+       IF @cnt > 0                                                         
+          UPDATE fa_cgtrn                     
+          SET CREDIT = ISNULL(CREDIT, 0) + ISNULL(@BrcommissionAmount, 0)                                                          WHERE divcode = @Divcod AND glcode = @gl AND                                                        
+             vocdt = @ldt AND tc = @jvtc   
+             AND vocno = 999999 --'@v_gvocno  
+              AND vocsno = 2 AND trntype = 'AB'                                                        
+              ELSE                                                        
+                                                        
+
+              insert into fa_cgtrn (divcode,tc,vocno,vocdt,vocsno,                                                     
+              glcode,narration1,credit,TRNTYPE)                                                                                    values (@divcod,@jvtc,999999,@ldt,2,@gl,            
+              'Summary-Credit Total',ISNULL(@BrcommissionAmount, 0),'AB')                                                      
+  
+   
+END                               
+                     
+        
+    --    */
+        
+  --=====================================                                                                         
+                                                      
+                                                      
+end                                                      
+                                                      
+IF @module=3                                                    
+                     
+BEGIN                                                    
+                                                    
+ SELECT @CashDisGL = CashDisGL ,@BEDGL =bedgl,                                                                    
+        @CessGl=cessgl,@edcessgl=edcessgl,@hscessgl=hscessgl,                                                                    
+        @insurancegl=InsuranceGL,                                          
+        @othersgl=OthersGL,@aedGl=AedGl,@SurGl=surChargeGl,@ASurGL=ASurchargeGl,@FreightGl=freightGl,@PackGl=Pack1Gl ,                            
+        @Freight2GL=Freight2GL,@Pack2GL=Pack2GL,@Insurance2GL=Insurance2GL,@RoundOffGL=RoundOff,@PurchaseGL=PurchaseGL                            
+  From IN_FAPARAM WHERE divcode=@Divcod                                                                       
+                                                    
+                                                
+--SELECT @GlCode=GLCODE FROM FA_TCMAS WHERE TC =@tc1                                             
+SELECT @CGL1 = CenvatGl,  @CGL2 = CenvatGl2,@CenvatFlg= CenvatFlg FROM IN_PARA                                                                            
+                                          
+--CENVAT Updation                                      
+                                          
+IF @Cenvt > 0 AND  @CenvatFlg='Y'                                             
+ begin                                                                            
+                                        
+IF len(@CGL1) > 2 OR len(@CGL2) >2                                                                          
+begin                                                             
+                                 
+  if len(@CGL1) = 6 AND len(@CGL2) = 6  AND @CGL1<>@CGL2                                                                                    
+ begin                                                        
+              SET @c1 = (@cenvt)/2                                                                             
+ SET @c2 = @cenvt - @c1                                                                             
+ END                                                        
+  ELSE                                                        
+ BEGIN                                                        
+  SET @c1 = (@cenvt)                                                        
+ end                                                        
+                                                                            
+  if isnull(@cenvt,0) > 0                                        
+   begin                                                    
+      IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@CGL1,'') ) > 0                                                                                   
+     begin                                                                                  
+           UPDATE FA_CGTRN SET debit = isnull(debit,0) + isnull(@c1,0) WHERE VOCNO= @pjvno1 AND                                                                                  
+           VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@CGL1,'')                                                                                  
+        END                                                         
+     ELSE                                                                                  
+     begin                                                
+  insert into FA_CGTRN (divcode,tc,vocno,vocdt,vocsno,glcode,                                                                                    
+         narration1,debit,trntype,narration3)                                                                                      
+         values(@divcod,@tc1,@pjvno1,@pjvdt1,1,@CGL1,'CENVAT',isnull(@c1,0),'PU',@cgnarr3)                                                                    
+     End                           
+   IF     @CGL1<>@CGL2                                           
+      IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@CGL2,'') ) > 0                                                                                
+ begin                                  
+          UPDATE FA_CGTRN SET debit = isnull(debit,0) + isnull(@c2,0) WHERE VOCNO= @pjvno1 AND                                                                                  
+           VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@CGL2,'')                                                                                  
+     END                                                          
+     ELSE                                                                           
+ begin                                                                          
+       insert into FA_CGTRN (divcode,tc,vocno,vocdt,vocsno,glcode,                                                                                    
+       narration1,debit,trntype,narration3)                                                                                      
+              values(@divcod,@tc1,@pjvno1,@pjvdt1,1,@CGL2,'CENVAT',isnull(@c2,0),'PU',@cgnarr3)                     
+ End                                                         
+   END                                                                  
+ end                                                                            
+end                                                                    
+select   @PurchaseGL = glcode from fa_tcmas where tc=@tc1                                                                   
+-- Ass Amt                                                                   
+                                                    
+   IF ISNULL(@AssAmt,0) >0  AND (@PurchaseGL IS NOT NULL AND @PurchaseGL <> '')                                                                                
+   BEGIN          
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@PurchaseGL,'') ) <= 0                                                                                 
+                                                    
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                             
+        VALUES(@Divcod,@PurchaseGL,@Pjvno1,@pjvdt1,1,@tc1,'Ass Amt',ISNULL(@AssAmt,0),'PU',@cgnarr3)                                                                              
+   ELSE                                                                              
+       UPDATE fa_cgtrn SET debit = ISNULL(debit,0) +ISNULL(@AssAmt, 0)                   
+       WHERE divcode = @divcod AND glcode = @PurchaseGL AND vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype = 'PU'                                                               
+    END                                                        
+                                      
+-- Cash Discount                                                                    
+                                                    
+   IF ISNULL(@CashDisAmount,0) >0  AND (@CashDisGL IS NOT NULL AND @CashDisGL <> '')                                                                                
+   BEGIN                                                                              
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@CashDIsGL,'') ) <= 0                                              
+                                                                              
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,credit,trntype,narration3)                                                                             
+        VALUES(@Divcod,@CashDisGL,@Pjvno1,@pjvdt1,1,@tc1,'Cash Discount',ISNULL(@CashDisAmount,0),'PU',@cgnarr3)                                                                              
+   ELSE                                                                              
+       UPDATE fa_cgtrn SET credit = ISNULL(credit,0) +ISNULL(@CashDisAmount, 0)                                                                              
+       WHERE divcode = @divcod AND glcode = @CashDisgl AND vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype = 'PU'                                                               
+    END                                     
+                                      
+--Pack Amount                                                                     
+                                                                     
+   IF ISNULL(@PackAmt,0) >0  AND (@PackGl IS NOT NULL AND @PackGl <> '')                                                                                
+ BEGIN                                                                              
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@PackGl,'') ) <= 0                                                                                 
+                                                                              
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                             
+        VALUES(@Divcod,@PackGl,@Pjvno1,@pjvdt1,1,@tc1,'Pack Amt',ISNULL(@PackAmt,0),'PU',@cgnarr3)                                                                              
+   ELSE                                                   
+              UPDATE fa_cgtrn                                                           
+              SET Debit =ISNULL(DEBIT,0) + ISNULL(@PackAmt, 0)                                                                              
+              WHERE divcode = @divcod AND glcode = @PackGl AND                                                                              
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                              
+              trntype = 'PU'                                                                               
+   END                                      
+                                                      
+--BED                                                                     
+                                                                     
+   IF ISNULL(@BEDAmount,0) >0  AND (@BEDgl IS NOT NULL AND @BEDgl <> '') AND @CenvatFlg<>'Y'                                                                                 
+ BEGIN                                                                              
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@BEDgl,'') ) <= 0                                         
+                                                  
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                         
+        VALUES(@Divcod,@BEDgl,@Pjvno1,@pjvdt1,1,@tc1,'BED',ISNULL(@BEDAmount,0),'PU',@cgnarr3)                                                                              
+   ELSE                                                                              
+              UPDATE fa_cgtrn                                                                    
+              SET Debit =ISNULL(DEBIT,0) + ISNULL(@BEDamount, 0)                                                                              
+              WHERE divcode = @divcod AND glcode = @BEDgl AND                                                                              
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                              
+              trntype = 'PU'                                                                               
+   END                                    
+                                                                 
+--Cess                                                                    
+   IF ISNULL(@CessAmount,0) >0  AND (@Cessgl IS NOT NULL AND @Cessgl <> '')                                                                                
+BEGIN                                                                              
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@Cessgl,'') ) <= 0                      
+                                                                              
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                            
+        VALUES(@Divcod,@Cessgl,@Pjvno1,@pjvdt1,1,@tc1,'Cess',ISNULL(@CessAmount,0),'PU',@cgnarr3)                                                                              
+   ELSE                                                                              
+              UPDATE fa_cgtrn                                                                              
+              SET Debit =ISNULL(DEBIT,0) + ISNULL(@CessAmount, 0)                        
+              WHERE divcode = @divcod AND glcode = @Cessgl AND                                                                              
+      vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                              
+              trntype = 'PU'                                                                               
+   END                                      
+                                                                
+--EDCess                                                                    
+   IF ISNULL(@EDCessAmount,0) >0  AND (@EDCessgl IS NOT NULL AND @EDCessgl <> '')  AND @CenvatFlg<>'Y'                                                                                
+ BEGIN                                                                              
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@EDCessgl,'') ) <= 0                                                                                 
+                                                                              
+ INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                             
+        VALUES(@Divcod,@EDCessgl,@Pjvno1,@pjvdt1,1,@tc1,'EDCess',ISNULL(@EDCessAmount,0),'PU',@cgnarr3)                                                                              
+   ELSE                                                                              
+              UPDATE fa_cgtrn                                                                              
+              SET Debit =ISNULL(DEBIT,0) + ISNULL(@EDCessAmount, 0)                                                                              
+              WHERE divcode = @divcod AND glcode = @EDCessgl AND                                                                              
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                      
+              trntype = 'PU'                                    
+   END                            
+                                                                   
+--HSCess                                                                    
+   IF ISNULL(@HSCessAmount,0) >0  AND (@HSCessgl IS NOT NULL AND @HSCessgl <> '')   AND @CenvatFlg<>'Y'                                                                               
+ BEGIN                                   
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@HSCessgl,'') ) <= 0                                                                                 
+                                                                              
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                             
+        VALUES(@Divcod,@HSCessgl,@Pjvno1,@pjvdt1,1,@tc1,'HSCess',ISNULL(@HSCessAmount,0),'PU',@cgnarr3)                                                                              
+   ELSE                                                                              
+          UPDATE fa_cgtrn                                                       
+              SET Debit = ISNULL(DEBIT,0) + ISNULL(@HSCessAmount, 0)                                               
+              WHERE divcode = @divcod AND glcode = @HSCessgl AND                                           
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                         
+              trntype = 'PU'                                                                               
+   END                                     
+                                  
+--BAED Amt                                                                    
+   IF ISNULL(@AedAmt,0) >0  AND (@AedGl IS NOT NULL AND @AedGl <> '') AND @CenvatFlg<>'Y'                                                                              
+ BEGIN                                                                              
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@AedGl,'') ) <= 0                                            
+                                                                              
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                             
+        VALUES(@Divcod,@AedGl,@Pjvno1,@pjvdt1,1,@tc1,'AED Amt',ISNULL(@AedAmt,0),'PU',@cgnarr3)                                                                              
+   ELSE                                                                              
+              UPDATE fa_cgtrn                       
+              SET Debit = ISNULL(DEBIT,0) + ISNULL(@AedAmt, 0)                                                                              
+              WHERE divcode = @divcod AND glcode = @AedGl AND                                                      
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                 
+              trntype = 'PU'                                                                            
+   END                                         
+                                      
+--Freight Amt                                                                
+   IF ISNULL(@FreightAmt,0) >0  AND (@FreightGl IS NOT NULL AND @FreightGl <> '')                                                                                
+ BEGIN                                                                              
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@FreightGl,'') ) <= 0                                                                                 
+                                                           
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                             
+        VALUES(@Divcod,@FreightGl,@Pjvno1,@pjvdt1,1,@tc1,'Freight Amt',ISNULL(@FreightAmt,0),'PU',@cgnarr3)                                                 
+   ELSE                                                                             
+              UPDATE fa_cgtrn                                                       
+              SET Debit = ISNULL(DEBIT,0) + ISNULL(@FreightAmt, 0)                                                                              
+              WHERE divcode = @divcod AND glcode = @FreightGl AND                                                                              
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                              
+              trntype = 'PU'                                                                               
+   END                                     
+                                   
+--Surcharge Amt                                                                 
+   IF ISNULL(@SurAmt,0) >0  AND (@SurGl IS NOT NULL AND @SurGl <> '')                                                                                
+ BEGIN                                                                              
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@SurGl,'') ) <= 0                                                                                 
+                                                                      
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                             
+        VALUES(@Divcod,@SurGl,@Pjvno1,@pjvdt1,1,@tc1,'Surcharge Amt',ISNULL(@SurAmt,0),'PU',@cgnarr3)                                                                              
+   ELSE                                                                              
+              UPDATE fa_cgtrn                                                       
+              SET Debit = ISNULL(DEBIT,0) + ISNULL(@SurAmt, 0)                                                               
+              WHERE divcode = @divcod AND glcode = @SurGl AND                                                                              
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                              
+              trntype = 'PU'                                                                               
+   END                                     
+                                      
+-- ASurcharge Amt                                                                 
+   IF ISNULL(@ASurAmt,0) >0  AND (@ASurGl IS NOT NULL AND @ASurGl <> '')                                              
+ BEGIN                                                                              
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@ASurGl,'') ) <= 0                                                                                 
+                                 
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                             
+        VALUES(@Divcod,@ASurGl,@Pjvno1,@pjvdt1,1,@tc1,'ASurcharge Amt',ISNULL(@ASurAmt,0),'PU',@cgnarr3)                                 ELSE                                                                              
+              UPDATE fa_cgtrn                          
+              SET Debit = ISNULL(DEBIT,0) + ISNULL(@ASurAmt, 0)                                
+              WHERE divcode = @divcod AND glcode = @ASurGl AND                                                                              
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                              
+              trntype = 'PU'                                                                               
+   END                                     
+                                                           
+                                                                      
+--insurance                                                                    
+   IF ISNULL(@insuranceAmount,0) >0  AND (@insurancegl IS NOT NULL AND @insurancegl <> '')                                                      
+ BEGIN                                                                              
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@insurancegl,'') ) <= 0                                                                                 
+                                                            
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                             
+        VALUES(@Divcod,@insurancegl,@Pjvno1,@pjvdt1,1,@tc1,'insurance',ISNULL(@insuranceAmount,0),'PU',@cgnarr3)                                                             
+                                 
+   ELSE                                
+                                                                                 
+              UPDATE fa_cgtrn                                                                              
+              SET Debit =ISNULL(DEBIT,0) + ISNULL(@insuranceAmount, 0)                                                                              
+              WHERE divcode = @divcod AND glcode = @insurancegl AND           
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                              
+              trntype = 'PU'                                                                               
+ -- PRINT @tc1                                
+   END                                              
+                                                             
+                                  
+--Others                                                                    
+   IF ISNULL(@OthersAmount,0) >0  AND (@Othersgl IS NOT NULL AND @Othersgl <> '')                                                                                
+ BEGIN                                                                              
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@Othersgl,'') ) <= 0                                                                                 
+         
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                             
+        VALUES(@Divcod,@Othersgl,@Pjvno1,@pjvdt1,1,@tc1,'Others',ISNULL(@OthersAmount,0),'PU',@cgnarr3)                                                                              
+   ELSE                                                                              
+              UPDATE fa_cgtrn                                                                              
+              SET Debit =ISNULL(DEBIT,0) + ISNULL(@OthersAmount, 0)                                                         
+              WHERE divcode = @divcod AND glcode = @Othersgl AND                                                                              
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                        
+              trntype = 'PU'                                                                               
+   END                              
+                            
+                            
+--Freight2amt                        
+   IF ISNULL(@Freight2Amt,0) >0  AND (@Freight2GL IS NOT NULL AND @Freight2GL <> '')                                                               
+ BEGIN                                                                              
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@Freight2GL,'') ) <= 0                                                    
+                                                            
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                             
+        VALUES(@Divcod,@Freight2GL,@Pjvno1,@pjvdt1,1,@tc1,'Freight2Amt',ISNULL(@Freight2Amt,0),'PU',@cgnarr3)                                                                              
+                                 
+   ELSE                   
+                                                                                 
+              UPDATE fa_cgtrn                                                                              
+              SET Debit =ISNULL(DEBIT,0) + ISNULL(@Freight2Amt, 0)                                                                              
+              WHERE divcode = @divcod AND glcode = @Freight2GL AND                                                                              
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                              
+              trntype = 'PU'                                                                               
+   PRINT  @Freight2Amt                              
+   END                                 
+                            
+--Pack2Amt                                                                 
+   IF ISNULL(@Pack2Amt,0) >0  AND (@Pack2GL IS NOT NULL AND @Pack2GL <> '')                                                               
+ BEGIN                                      
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@Pack2GL,'') ) <= 0                                                                                 
+                                                            
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                             
+        VALUES(@Divcod,@Pack2GL,@Pjvno1,@pjvdt1,1,@tc1,'Pack2Amt',ISNULL(@Pack2Amt,0),'PU',@cgnarr3)                                                                              
+                                 
+   ELSE                                
+                                                                                 
+              UPDATE fa_cgtrn                                                                              
+              SET Debit =ISNULL(DEBIT,0) + ISNULL(@Pack2Amt, 0)                                                                              
+              WHERE divcode = @divcod AND glcode = @Pack2GL AND                                                                              
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                              
+              trntype = 'PU'                                                                               
+         PRINT    @Pack2Amt                           
+   END                               
+                            
+--Insurance2Amt                                                                 
+   IF ISNULL(@Insurance2Amt,0) >0  AND (@Insurance2GL IS NOT NULL AND @Insurance2GL <> '')   
+ BEGIN                                        
+   IF (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@Insurance2GL,'') ) <= 0                                                                                 
+                                                            
+        INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                             
+        VALUES(@Divcod,@Insurance2GL,@Pjvno1,@pjvdt1,1,@tc1,'Insurance2Amt',ISNULL(@Insurance2Amt,0),'PU',@cgnarr3)                   
+                                 
+   ELSE                                
+                                                                                 
+              UPDATE fa_cgtrn                                                                              
+              SET Debit =ISNULL(DEBIT,0) + ISNULL(@Insurance2Amt, 0)                                                                              
+              WHERE divcode = @divcod AND glcode = @Insurance2GL AND                                         
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                              
+              trntype = 'PU'                                                                               
+ PRINT  @Insurance2Amt                              
+   END                               
+                            
+--RoundOff Amt                                                
+                      
+IF (NOT ISNULL(@RoundOffAmt,0) =0 ) AND (@RoundOffGL IS NOT NULL AND @RoundOffGL <> '')                                     
+   BEGIN                                    
+      IF @RoundOffAmt >0                                     
+        BEGIN                                    
+          if (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@RoundOffGL,'')) =0                                   
+                    INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,debit,trntype,narration3)                                                                             
+                       VALUES(@Divcod,@RoundOffGL,@Pjvno1,@pjvdt1,1,@tc1,'RoundOff',ABS(ISNULL(@RoundOffAmt,0)),'PU',@cgnarr3)                      
+          ELSE                                    
+              begin                      
+       if (SELECT  isnull(debit,0) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@RoundOffGL,'')) > 0                       
+                begin                      
+                 UPDATE fa_cgtrn                                                                              
+                SET Debit =ISNULL(DEBIT,0) + ISNULL(@RoundOffAmt, 0)                                                                              
+                WHERE divcode = @divcod AND glcode = @RoundOffGL AND                                                                              
+                vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                              
+                trntype = 'PU'                                   
+                end                      
+              else                      
+           UPDATE fa_cgtrn                                                              
+                       SET credit =ISNULL(credit,0) + abs(ISNULL(@RoundOffAmt, 0))                      
+                       WHERE divcode = @divcod AND glcode = @RoundOffGL AND                                                                              
+                       vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                              
+                       trntype = 'PU'                         
+              end                        
+                         
+         END                                          
+      ELSE                                    
+       BEGIN                                      
+         if (SELECT COUNT(*) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@RoundOffGL,''))=0                                   
+                INSERT INTO fa_cgtrn (divcode,glcode,vocno,vocdt,vocsno,tc,narration1,Credit,trntype,narration3)                                                                             
+                 VALUES(@Divcod,@RoundOffGL,@Pjvno1,@pjvdt1,1,@tc1,'RoundOff',ABS(ISNULL(@RoundOffAmt,0)),'PU',@cgnarr3)                      
+         ELSE                                    
+           begin                      
+   if (SELECT  isnull(credit,0) FROM FA_CGTRN WHERE VOCNO= @pjvno1 AND VOCDT =@pjvdt1 AND DIVCODE =@Divcod AND GLCODE= isnull(@RoundOffGL,'')) > 0                       
+             begin                      
+              UPDATE fa_cgtrn                                                                              
+              SET credit =ISNULL(credit,0) +abs( ISNULL(@RoundOffAmt, 0))                      
+              WHERE divcode = @divcod AND glcode = @RoundOffGL AND                                                                              
+              vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                           
+              trntype = 'PU'                                                                               
+            end                      
+          else                      
+              UPDATE fa_cgtrn                                                                              
+              SET debit =ISNULL(debit,0) + ISNULL(@RoundOffAmt, 0)                                                                              
+              WHERE divcode = @divcod AND glcode = @RoundOffGL AND                                                                              
+          vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                                              
+              trntype = 'PU'                                             
+          end                      
+         END                                    
+   END                             
+                                                           
+end                                                    
+end                   
+                
+              
+              
+              
+              
+              
+              
+                               
+                                    
+                                  

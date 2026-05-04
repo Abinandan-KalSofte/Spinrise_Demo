@@ -1,0 +1,26 @@
+
+CREATE TRIGGER [dbo].[DELRM_MIXGRP] ON [dbo].RM_MIXGRP FOR DELETE AS                                     
+DECLARE                                                                  
+@MIXGRPCD varchar(10),  
+@sno int  
+BEGIN    
+  
+	select @MIXGRPCD=MIXGRPCD from deleted  
+  
+	set @sno=(select count(MIXGRPCD) from 
+	(
+		SELECT MIXGRP MIXGRPCD FROM RM_ISSUE_RETURN where MIXGRP=@MIXGRPCD		
+			UNION ALL
+		SELECT MIXGRPCD MIXGRPCD FROM RM_COUNT where MIXGRPCD=@MIXGRPCD		
+			UNION ALL
+		SELECT MIXGRP MIXGRPCD FROM RM_ISSH where MIXGRP=@MIXGRPCD		
+			UNION ALL
+		SELECT MIXGRP MIXGRPCD FROM RM_ISSREQH where MIXGRP=@MIXGRPCD		
+	) x  
+	where MIXGRPCD=@MIXGRPCD)  
+	if isnull(@sno,0)> 0    
+	begin   
+		rollback  
+		RAISERROR ('Dependencies exists. Unable to delete the record at this time', 16 ,10)	
+	end   
+END

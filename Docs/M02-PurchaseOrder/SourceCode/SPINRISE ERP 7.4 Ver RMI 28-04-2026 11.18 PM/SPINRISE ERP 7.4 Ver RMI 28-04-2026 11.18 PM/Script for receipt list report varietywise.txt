@@ -1,0 +1,231 @@
+
+
+	--	If @Type <> 'ALL' 
+	--	Begin
+	--				If @Catchk = '1' 
+	--					If @Category = 'A' 
+	--						   Begin
+	--						   SELECT * INTO TMP_RMI_VARPUR FROM (select a.areacd as areacd,areaname,a.varcode,b.varname,lotno, 
+	--							a.catcd,bales=bales, unit=(case bblflg when 'B' then 'Bales' else 'Borah' end),@SQLCond as ratekgs,
+	--							ratekg, ratequtl=round((isnull(ratecy,0)/355.6187),2),value=A.TOTLANDCOST,value1=(@SQLCond*round((isnull(ratecy,0)/355.6187),2)),a.Ratecy,
+	--							a.plotno,fa.slcode,fa.slname from rm_lot a inner join rm_var b on a.catcd=b.catcd and a.varcode=b.varcode 
+	--							left join rm_area c on a.areacd = c.areacode inner join fa_slmas fa on a.supcd=fa.slcode where 
+	--							@tmptypestr = @Type and a.divcode=@divcode and a.arrdt Between @Fdate and @Tdate
+	--						  End 
+	--					Else
+	--						  Begin
+	--						  SELECT * INTO TMP_RMI_VARPUR FROM (select a.areacd as areacd,areaname,a.varcode,b.varname,lotno, 
+	--						   a.catcd,bales=bales, unit=(case bblflg when 'B' then 'Bales' else 'Borah' end),@SQLCond as ratekgs,ratekg, 
+	--						   ratequtl=round((isnull(ratecy,0)/355.6187),2),value=A.TOTLANDCOST,value1=(@SQLCond*round((isnull(ratecy,0)/355.6187),2)),
+	--						   a.Ratecy,a.plotno,fa.slcode,fa.slname from rm_lot a inner join rm_var b on a.catcd=b.catcd and a.varcode=b.varcode 
+	--						   left join rm_area c on a.areacd = c.areacode inner join fa_slmas fa on a.supcd=fa.slcode  where a.catcd=@category
+	--						   and @tmptypestr = @Type and a.divcode=@divcode and a.arrdt Between @Fdate and @Tdate
+	--						 End
+	--				Else
+	--					Begin
+	--					SELECT * INTO TMP_RMI_VARPUR FROM (select a.areacd as areacd,areaname,a.varcode,b.varname,lotno,ratekg, a.catcd,
+	--					bales=bales, unit=(case bblflg when 'B' then 'Bales' else 'Borah' end),@SQLCond as ratekgs,
+	--					ratequtl=round((isnull(ratecy,0)/355.6187),2),value=A.TOTLANDCOST,value1=(@SQLCond*round((isnull(ratecy,0)/355.6187),2)),
+	--					a.Ratecy,a.plotno,fa.slcode,fa.slname from rm_lot a inner join rm_var b on a.varcode=b.varcode and a.catcd = b.catcd 
+	--					left join rm_area c on a.areacd = c.areacode inner join fa_slmas fa on a.supcd=fa.slcode where 
+	--					@tmptypestr = @Type and a.divcode=@divcode and a.arrdt Between  @Fdate and @Tdate
+	--				   End
+ --   Else
+	--		Begin
+	--		SELECT * INTO TMP_RMI_VARPUR FROM (select a.areacd as areacd,areaname,a.varcode,b.varname,lotno,ratekg, 
+	--		a.catcd,bales=bales, unit=(case bblflg when 'B' then 'Bales' else 'Borah' end),@SQLCond as ratekgs, 
+	--		ratequtl=round((isnull(ratecy,0)/355.6187),2),value=A.TOTLANDCOST,value1=(@SQLCond*round((isnull(ratecy,0)/355.6187),2)),
+	--		a.Ratecy,a.plotno,fa.slcode,fa.slname from rm_lot a inner join rm_var b on a.varcode=b.varcode and a.catcd = b.catcd 
+	--		left join rm_area c on a.areacd = c.areacode inner join fa_slmas fa on a.supcd=fa.slcode where a.divcode=@divcode 
+	--		and  (a.catcd=@category or @category='A') and a.arrdt Between @Fdate and @Tdate
+	--		End
+			
+	--End 
+    
+
+	--End 
+
+
+	
+alter Procedure Ksp_receiptlistvariety_abs
+(
+@divcode varchar(5),
+@Fdate varchar(15),
+@Tdate varchar(15),
+@Catchk varchar(5),
+@Category varchar(15),
+@Type varchar(5)
+)
+As
+Begin
+	--select * from TMP_RMI_VARPUR
+declare @tmptypestr varchar(250)
+
+  declare @SQLCond varchar(200)
+
+	 If @Type = 'A' 
+       set  @tmptypestr = 'a.LotType'
+    Else
+       set @tmptypestr = 'a.TransferType'
+
+    
+
+	 
+	 	If @Type <> 'ALL' 
+		Begin
+					
+					If @Catchk = '1' 
+						If @Category = 'A' 
+							   Begin
+							   SELECT * INTO TMP_RMI_VARPUR FROM (select a.areacd as areacd,areaname,a.varcode,b.varname,lotno, 
+								a.catcd,bales=bales, unit=(case bblflg when 'B' then 'Bales' else 'Borah' end),@SQLCond as ratekgs,
+								ratekg, ratequtl=round((isnull(ratecy,0)/355.6187),2),value=A.TOTLANDCOST,value1=(@SQLCond*round((isnull(ratecy,0)/355.6187),2)),a.Ratecy,
+								a.plotno,fa.slcode,fa.slname from rm_lot a inner join rm_var b on a.catcd=b.catcd and a.varcode=b.varcode 
+								left join rm_area c on a.areacd = c.areacode inner join fa_slmas fa on a.supcd=fa.slcode where 
+								@tmptypestr = @Type and a.divcode=@divcode and a.arrdt Between @Fdate and @Tdate ) x
+							  End 
+						Else
+							  Begin
+							  SELECT * INTO TMP_RMI_VARPUR FROM (select a.areacd as areacd,areaname,a.varcode,b.varname,lotno, 
+							   a.catcd,bales=bales, unit=(case bblflg when 'B' then 'Bales' else 'Borah' end),@SQLCond as ratekgs,ratekg, 
+							   ratequtl=round((isnull(ratecy,0)/355.6187),2),value=A.TOTLANDCOST,value1=(@SQLCond*round((isnull(ratecy,0)/355.6187),2)),
+							   a.Ratecy,a.plotno,fa.slcode,fa.slname from rm_lot a inner join rm_var b on a.catcd=b.catcd and a.varcode=b.varcode 
+							   left join rm_area c on a.areacd = c.areacode inner join fa_slmas fa on a.supcd=fa.slcode  where a.catcd=@category
+							   and @tmptypestr = @Type and a.divcode=@divcode and a.arrdt Between @Fdate and @Tdate ) x
+							 End
+					Else
+						Begin
+						SELECT * INTO TMP_RMI_VARPUR FROM (select a.areacd as areacd,areaname,a.varcode,b.varname,lotno,ratekg, a.catcd,
+						bales=bales, unit=(case bblflg when 'B' then 'Bales' else 'Borah' end),@SQLCond as ratekgs,
+						ratequtl=round((isnull(ratecy,0)/355.6187),2),value=A.TOTLANDCOST,value1=(@SQLCond*round((isnull(ratecy,0)/355.6187),2)),
+						a.Ratecy,a.plotno,fa.slcode,fa.slname from rm_lot a inner join rm_var b on a.varcode=b.varcode and a.catcd = b.catcd 
+						left join rm_area c on a.areacd = c.areacode inner join fa_slmas fa on a.supcd=fa.slcode where 
+						@tmptypestr = @Type and a.divcode=@divcode and a.arrdt Between  @Fdate and @Tdate ) x
+					   End
+		End
+    Else
+			Begin
+			SELECT * INTO TMP_RMI_VARPUR FROM (select a.areacd as areacd,areaname,a.varcode,b.varname,lotno,ratekg, 
+			a.catcd,bales=bales, unit=(case bblflg when 'B' then 'Bales' else 'Borah' end),@SQLCond as ratekgs, 
+			ratequtl=round((isnull(ratecy,0)/355.6187),2),value=A.TOTLANDCOST,value1=(@SQLCond*round((isnull(ratecy,0)/355.6187),2)),
+			a.Ratecy,a.plotno,fa.slcode,fa.slname from rm_lot a inner join rm_var b on a.varcode=b.varcode and a.catcd = b.catcd 
+			left join rm_area c on a.areacd = c.areacode inner join fa_slmas fa on a.supcd=fa.slcode where a.divcode=@divcode 
+			and  (a.catcd=@category or @category='A') and a.arrdt Between @Fdate and @Tdate ) x
+			End
+			
+	 
+    
+
+
+
+	 --  -- If vrectype = "A" Then
+  --  --    tmptypestr = "a.LotType"
+  --  --Else
+  --  --    tmptypestr = "a.TransferType"
+  --  --End If
+  --  --Set RS2 = New Recordset
+  --  --If UCase(CustID) = "SKS" Then
+  --  --    SQLCond = " round(favaourablewgt,3) "
+  --  --Else
+  --  --    SQLCond = " round(netwt,3) "
+  --  --End I
+
+End 
+GO
+
+
+
+alter Procedure Ksp_receiptlistvariety
+(
+@divcode varchar(5),
+@Fdate varchar(15),
+@Tdate varchar(15),
+@Catchk varchar(5),
+@Category varchar(15),
+@Type varchar(5)
+)
+As
+Begin
+  
+  declare @tmptypestr varchar(250)
+
+   If @Type = 'A' 
+       set  @tmptypestr = 'a.LotType'
+    Else
+       set @tmptypestr = 'a.TransferType'
+    
+
+
+	If @Type <> 'ALL' 
+    Begin
+			If @Catchk ='1' 
+				Begin
+						If @Category = 'A' 
+						Begin
+						SELECT * into TMP_RMI_VARPUR  FROM (select a.areacd as areacd,areaname,a.varcode,b.varname,lotno, a.catcd,bales=bales, 
+							unit=(case bblflg when 'B' then 'Bales' else 'Borah' end), round(favaourablewgt,3)  as ratekgs,ratekg, 
+							ratequtl=round((isnull(ratecy,0)/355.6187),2),value=A.TOTLANDCOST,value1=( round(favaourablewgt,3) *round((isnull(ratecy,0)/355.6187),2)),
+							a.Ratecy,a.plotno,fa.slcode,fa.slname from rm_lot a inner join rm_var b on a.catcd=b.catcd and a.varcode=b.varcode
+							left join rm_area c on a.areacd = c.areacode inner join fa_slmas fa on a.supcd=fa.slcode where  @tmptypestr = @Type
+							and a.divcode=@divcode and a.arrdt Between @Fdate and @Tdate)X
+							End
+						Else
+						 Begin
+							SELECT * into TMP_RMI_VARPUR FROM (select a.areacd as areacd,areaname,a.varcode,b.varname,lotno, a.catcd,bales=bales, 
+								unit=(case bblflg when 'B' then 'Bales' else 'Borah' end), round(favaourablewgt,3)  as ratekgs,ratekg, 
+								ratequtl=round((isnull(ratecy,0)/355.6187),2),value=A.TOTLANDCOST,value1=( round(favaourablewgt,3) *round((isnull(ratecy,0)/355.6187),2)),
+								a.Ratecy,a.plotno,fa.slcode,fa.slname from rm_lot a inner join rm_var b on a.catcd=b.catcd and a.varcode=b.varcode
+								left join rm_area c on a.areacd = c.areacode inner join fa_slmas fa on a.supcd=fa.slcode  where a.catcd=@Category
+								and @tmptypestr = @Type and a.divcode=@divcode and a.arrdt Between @Fdate and @Tdate)X
+
+						End 
+				End 
+
+			Else
+			   Begin
+			   SELECT * into TMP_RMI_VARPUR FROM (select a.areacd as areacd,areaname,a.varcode,b.varname,lotno,ratekg, a.catcd,bales=bales, 
+				unit=(case bblflg when 'B' then 'Bales' else 'Borah' end), round(favaourablewgt,3)  as ratekgs, 
+				ratequtl=round((isnull(ratecy,0)/355.6187),2),value=A.TOTLANDCOST,value1=( round(favaourablewgt,3) *round((isnull(ratecy,0)/355.6187),2)),
+				a.Ratecy,a.plotno,fa.slcode,fa.slname from rm_lot a inner join rm_var b on a.varcode=b.varcode and a.catcd = b.catcd  
+				left join rm_area c on a.areacd = c.areacode inner join fa_slmas fa on a.supcd=fa.slcode where @tmptypestr = @Type
+				and a.divcode=@divcode and a.arrdt Between @Fdate and @Tdate)X
+			  End 
+			 
+
+	
+		
+	End
+			
+
+    Else
+     Begin       
+			SELECT * into TMP_RMI_VARPUR FROM (select a.areacd as areacd,areaname,a.varcode,b.varname,lotno,ratekg, a.catcd,bales=bales, 
+			unit=(case bblflg when 'B' then 'Bales' else 'Borah' end), round(favaourablewgt,3)  as ratekgs,
+			ratequtl=round((isnull(ratecy,0)/355.6187),2),value=A.TOTLANDCOST,value1=( round(favaourablewgt,3) *round((isnull(ratecy,0)/355.6187),2)),
+			a.Ratecy,a.plotno,fa.slcode,fa.slname from rm_lot a inner join rm_var b on a.varcode=b.varcode and a.catcd = b.catcd
+			left join rm_area c on a.areacd = c.areacode inner join fa_slmas fa on a.supcd=fa.slcode where a.divcode=@divcode 
+			and (a.catcd=@Category or @Category='A')  and a.arrdt Between @Fdate and @Tdate)X
+			
+     End 
+
+	 
+		
+		  -- If vrectype = "A" Then
+    --    tmptypestr = "a.LotType"
+    --Else
+    --    tmptypestr = "a.TransferType"
+    --End If
+    --If UCase(CustID) = "SKS" Then
+    --    SQLCond = " round(favaourablewgt,3) "
+    --Else
+    --    SQLCond = " round(netwt,3) "
+    --End If
+
+End 
+
+
+
+
+
+
+

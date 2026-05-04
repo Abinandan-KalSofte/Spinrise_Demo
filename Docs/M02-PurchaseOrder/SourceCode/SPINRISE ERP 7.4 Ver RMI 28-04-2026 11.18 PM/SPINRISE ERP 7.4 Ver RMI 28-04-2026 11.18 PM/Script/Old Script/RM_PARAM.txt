@@ -1,0 +1,1 @@
+ALTER TABLE RM_PARAM add Transflg CHAR(1)

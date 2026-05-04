@@ -1,0 +1,80 @@
+-- ksp_mixnumber_wisenew '01','2018-11-01','2018-11-26','2018'                      
+alter Procedure ksp_mixnumber_wisenew                                                                     
+@divcode varchar(2),                                                                                            
+@FromDate AS varchar(15),                                                                                               
+@ToDate AS Varchar(15),                  
+@lotyear AS Varchar(10)                  
+                                                                                     
+As                        
+begin                      
+                      
+select distinct                     
+docno,                    
+docdt,varcode,catcd,cntname ,catname,lotno,sum(bale) as bale,                      
+unit ,round(sum(isnull(netkgs,0)),3)netkg                    
+,sum(isnull(quintal,0)) ratequin,                      
+sum(isnull(Amount,0)) AS amount,avg(ratekg) as avgrate,plotno,                    
+round(avg(ratekg*355.616),0)as ratecandy,                      
+mixgrpcd,cntcode,DIV_PRINTNAME,DIV_UNITNAME,mixgrpcd as mixgrp from (                    
+SELECT c.DOCDT, a.CNTCODE AS CNTCD, d.mixgrpcd, a.VARCODE, a.LOTNO, COUNT(b.BALENO) AS bale,                     
+(CASE WHEN a.bblflg = 'R' THEN 'Borah' ELSE 'Bales' END) AS Unit, SUM(ISNULL(b.ISSKGS, 0)) AS 'netkgs', a.PLOTNO, AVG(a.RATEKG) AS 'quintal',                     
+SUM(ISNULL(b.ISSKGS, 0)) * a.RATEKG AS AMOUNT, a.RATEKG, ROUND(a.RATEKG * 355.616, 0) AS ratecandy, ISNULL(c.DOCNO, 0) AS docno,                     
+a.catcd,f.CATNAME ,p.DIV_PRINTNAME,p.DIV_UNITNAME, c.cntcd AS cntcode  ,d.cntname,CATNAME as mixgrp                  
+FROM dbo.RM_BALE AS e INNER JOIN                    
+dbo.RM_ISSB AS b ON e.DIVCODE = b.DIVCODE AND e.lottype = b.LOTTYPE AND e.LOTNO = b.LOTNO AND e.CATCD = b.CATCD AND                     
+e.BALENO = b.BALENO INNER JOIN                    
+dbo.RM_LOT AS a ON e.lotdt = a.LOTDT AND b.DIVCODE = a.DIVCODE AND b.CATCD = a.CATCD AND b.LOTNO = a.LOTNO AND                     
+b.lotdt = a.LOTDT INNER JOIN                    
+dbo.RM_ISSH AS c ON b.DIVCODE = c.DIVCODE AND b.ISSTYPE = c.ISSTYPE AND b.DOCDT = c.DOCDT AND b.DOCNO = c.DOCNO                     
+INNER JOIN dbo.RM_CAT as f ON a.CATCD=f.CATCD         
+inner join PP_DIVMAS p on p.DIVCODE=a.DIVCODE                     
+LEFT OUTER JOIN dbo.RM_COUNT AS d ON c.cntcd = d.cntcd  and c.divcode=d.divcode                  
+WHERE (b.LOTTYPE in ('A','T')) AND (a.DIVCODE = @divcode) AND (a.REJFLG = 'N') AND (b.issued = 'N' OR b.issued = 'Y')           
+AND (a.LOTYEAR = @lotyear)                    
+and c.docdt  between @Fromdate  and @Todate                       
+GROUP BY d.mixgrpcd, a.BBLFLG, a.RATEKG, a.RATECY, a.VARCODE, a.LOTNO, c.DOCDT, a.CNTCODE, a.PLOTNO, c.DOCNO, a.CATCD,f.CATNAME, c.cntcd,DIV_PRINTNAME,DIV_UNITNAME ,d.cntname ,f.catcd                   
+) xxx 
+
+group by varcode,lotno,DOCDT,unit,plotno,                    
+docno,                    
+catcd,catname,mixgrpcd,cntcode,DIV_PRINTNAME,DIV_UNITNAME,cntname,mixgrp                     
+order by cntcode                      
+                      
+END 
+
+Go
+
+
+
+-- Ksp_RMI_Purchasedaybooklist '01','2017-11-01','2017-11-30'                        
+ alter PROCEDURE Ksp_RMI_Purchasedaybooklist                        
+  (                        
+ @divcode AS varchar(10),                        
+  @fdate AS varchar(10),                        
+   @tdate AS varchar(10)                        
+  )                          
+ AS                        
+ BEGIN                        
+                       
+                      
+SELECT a.PJNO AS vno,a.PJDT AS vdate,a.BILLNO AS inv,a.BILLDT AS inv_dt,a.LOTNO,fs.OLDSLCODE AS pc,fs.slname                        
+ ,v.VARNAME AS vac,v.VARNAME,CASE WHEN (pd.STATE_CODE=fs.state_code) THEN '1' ELSE '2' END tp,a.BALES AS qty,a.SICAAmt AS sl                      
+ ,a.CHARITYAMT AS ch,a.NETWT AS qtl,a.PJAMT AS basic_val,a.VATAMT AS vat,a.CashDisAmt AS discount,                      
+ a.BillValue AS val,a.TOTLANDCOST AS camt,a.OTHERSAMT AS ulc,0 AS acno,0 AS rc,pd2.DIV_PRINTNAME,pd2.DIV_UNITNAME            
+ ,a.HSN,a.cgstper,a.cgstamt,a.sgstper,a.sgstamt,a.igstper,a.igstamt,fs.gstinno as supp_gstinno  ,arr.contno pono,arr.contdt podt,a.ARRNO,a.arrdt arrdate,GRSWGT as GrossWt,COMM_wt as commwt,  
+   a.be_no AS beno,a.be_date AS bedt        
+                         
+  FROM RM_LOT a                        
+ LEFT OUTER JOIN FA_SLMAS fs ON fs.slcode = a.SUPCD           
+ left join  rm_arrival arr on arr.divcode=a.divcode and arr.arrno=a.arrno and a.arrdt=arr.arrdate  and a.varcode=arr.varcode                
+ LEFT OUTER JOIN PP_DIVMAS pd ON pd.DIVCODE = a.DIVCODE AND fs.state_code=pd.STATE_CODE                      
+ LEFT OUTER JOIN PP_DIVMAS pd2 ON a.DIVCODE=pd2.DIVCODE                      
+ LEFT OUTER JOIN RM_VAR v ON a.VARCODE=v.VARCODE                      
+ WHERE a.DIVCODE=@divcode and a.LOTDT BETWEEN @fdate AND @tdate   and isnull(a.opflg,'N')<>'Y'                    
+ --AND a.PJDT BETWEEN @fdate AND @tdate                       
+ END                          
+         
+ GO        
+         
+         
+      

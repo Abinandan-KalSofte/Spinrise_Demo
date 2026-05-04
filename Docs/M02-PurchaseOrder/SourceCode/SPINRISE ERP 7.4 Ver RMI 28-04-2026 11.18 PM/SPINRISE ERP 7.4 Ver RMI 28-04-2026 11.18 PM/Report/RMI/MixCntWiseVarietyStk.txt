@@ -1,0 +1,39 @@
+alter  Procedure [dbo].[MixCntWiseVarietyStk]   
+ @yfdate varchar(15),@yldate  varchar(15),      
+ @lotyear  varchar(4),@f_date  varchar(15),      
+ @t_date  varchar(15),@divcode varchar(2),      
+ @CatCD varchar(3)       
+as      
+Select Distinct Result.CntCd,Result.CntName,  
+isnull((SELECT isnull(mixgrpname,'') FROM RM_MIXGRP h, RM_COUNT i WHERE h.MIXGRPCD=i.mixgrpcd AND h.DivCode=i.divcode AND h.divcode='01'AND i.cntcd=Result.CntCode ),'') AS  MixGrpName,Result.CntCode as MixGrp,Result.varcode,Result.VarName,Sum(Result.Bales
+) as Bales,SUM(Result.Stock) as CloKgs,Result.CatCd,SUM(Val) as Value,0 as IssBales,0 as IssKgs,  
+'Stock' as Type from(select isnull(a.CntCd,'') as Cntcd,isnull(a.CntName,'') as Cntname  
+,isnull(a.AllMixCount,'') AS cntcode,a.varcode,a.lotno,a.lotdt,isnull(a.catcd,' ') as catcd,a.varname,    
+(a.bales-isnull(b.bales,0)) as bales,round(isnull(a.stock,0)-isnull(b.isskgs,0),3) stock,    
+val=round((isnull(a.stock,0)-isnull(b.isskgs,0))*a.RATE,2),a.plotno,a.ratecandy,A.RATE AS ratekg from       
+(select distinct Cnt.CntCd,Cnt.CntName,a.AllMixCount,a.LOTNO,a.LOTDT,A.catcd ,c.varcode,c.VARNAME,    
+a.BALES AS BALES,round(isnull(a.FavaourableWgt,0),2) 'Stock', IsNull(ratekg, 0) 'Rate',  
+round(isnull(ratecy,0)/355.6187,2) 'val',isnull(a.PLOTNO,' ')as PLOTNO,round((ratecy),0) as ratecandy,ISSBAL     
+from rm_lot a,rm_var c,RM_Count Cnt         
+where a.AllMixCount=cnt.cntCd and  a.Divcode=cnt.Divcode  and  (a.rejflg= 'N' or a.rejdt>@YFDate)and a.DIVCODE =@DivCode and a.varcode =c.varcode and A.LOTDT <= @F_Date  and a.lotyear=@LotYear AND (BALES-isnull(ISSBAL,0))>0)a
+LEFT JOIN 
+(SELECT LOTNO,LOTDT,CATCD,SUM(BALES) AS BALES,SUM(KGS)AS Isskgs FROM(  SELECT LOTNO,LOTDT,CATCD,COUNT(BALENO) AS BALES,0 AS KGS FROM(  SELECT A.LOTNO,A.LOTDT,A.CATCD,A.BALENO AS BALENO,0 AS KGS  FROM RM_BALE B,RM_ISSB A WHERE A.DIVCODE=B.DIVCODE AND     
+A.DIVCODE=@Divcode AND status in ('AC','AW')and A.ISSUED='Y' AND A.LOTNO=B.LOTNO AND A.LOTDT=B.LOTDT AND     
+A.DIVCODE=B.DIVCODE AND A.BALENO=B.BALENO and a.docdt<=@F_Date and a.docdt between @YFDate and @YLDate  AND    
+ A.CATCD=B.CATCD GROUP BY A.LOTNO,A.LOTDT,A.CATCD,A.BALENO)X GROUP BY LOTNO,LOTDT,CATCD Union     
+SELECT A.LOTNO,A.LOTDT,A.CATCD,0 AS BALES,SUM(A.ISSKGS) AS KGS  FROM RM_BALE B,RM_ISSB A WHERE  A.DIVCODE=B.DIVCODE AND A.DIVCODE=@DivCode AND status in ('AC','AW') and A.LOTNO=B.LOTNO AND A.LOTDT=B.LOTDT AND    
+A.DIVCODE=B.DIVCODE AND A.BALENO=B.BALENO and a.docdt<=@F_Date and  a.docdt between @YFDate and @YLDate GROUP BY A.LOTNO,A.LOTDT,A.CATCD)Y GROUP BY LOTNO,LOTDT,CATCD )b 
+on a.lotno=b.lotno and a.lotdt=b.lotdt  and a.catcd=b.catcd  group by a.CntCd,   
+a.CntName,a.AllMixCount,a.lotno,a.lotdt,a.catcd,a.varname,a.plotno,a.varcode,a.ratecandy , a.Val, a.bales, b.bales, a.stock, b.isskgs, ISSBAL,A.RATE )Result       
+GROUP BY Result.CntCd,Result.CntName,Result.CntCode,Result.varcode,Result.VarName,Result.CatCd      
+Union All        
+select Distinct isnull(Cnt.CntCd,'')as Cntcd,isnull(Cnt.CntName,'') as Cntname,  
+isnull((SELECT isnull(mixgrpname,'') FROM RM_MIXGRP h WHERE h.MIXGRPCD=cnt.mixgrpcd AND h.divcode='01'),'') AS MixGrpName,isnull(c.CntCode,'') as Mixgrp,e.Varcode,e.VarName,0,0,'',0,  
+COUNT(Bales) as IssBales,SUM(ISNULL(IssKgs,0)) as IssKgs,'Issue' as Type From rm_issb a      
+INNER JOIN rm_issh b ON a.DivCode=b.Divcode and a.DocNo=b.DocNo and a.Docdt=b.DocDt      
+INNER JOIN rm_lot c ON c.DivCode=a.Divcode and c.LotNo=a.LotNo and c.Lotdt=a.LotDt and c.LotType=a.LotType  
+--LEFT OUTER JOIN rm_MixGrp d ON d.DivCode=a.Divcode and d.MixGrpCd=c.CntCode      
+LEFT OUTER JOIN rm_Count Cnt ON Cnt.cntcd=c.allmixcount and cnt.divcode=c.divcode     
+LEFT OUTER JOIN rm_Var e ON e.VarCode=a.Varcode   
+where b.DocDt =@f_date  and b.Divcode=@Divcode       
+Group BY Cnt.CntCd,Cnt.CntName,e.VarName,e.Varcode,c.CntCode,cnt.mixgrpcd  

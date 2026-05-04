@@ -1,0 +1,58 @@
+  
+     
+	 
+	 alter table RM_FibreTestDT add PBaleno VArchar(20)
+	 go
+    
+alter View VW_ArrivalDetails      
+as      
+select distinct a.DIVCODE, a.arrno docno,a.ARRDATE docdt,lot.lotno,lot.lotdt, lot.ARRNO ,lot.arrdt, a.varcode,lot.Line_No,lot.SUPCD ,      
+sl.slname ,v.varname,bale.BALENO ,bale.PGRSWT PGRWT ,bale.GRWT,bale.GRWT-bale.PGRSWT Diffgrswt,      
+bale.MOITURE inv_MOI,lot.PlCode,pl.PLName ,lot.billno,lot.billdt,bale.favaourablewgt NETWT ,bale.Comm_Wt ,isnull(bale.partybaleno,'') partybaleno      
+from RM_ARRIVAL  a       
+   
+inner join rm_lot lot on lot.lotno=a.lotno and lot.lotdt=a.lotdt and lot.divcode=a.divcode and a.varcode=lot.varcode and a.lottype=lot.lottype      
+inner join RM_BALE bale on  a.LOTNO=bale.lotno and a.lotdt =bale.lotdt  and a.VARCODE =bale.VARCODE       
+and a.DIVCODE =bale.DIVCODE and lot.lottype=bale.lottype      
+inner join FA_SLMAS sl on sl.slcode=lot.SUPCD       
+inner join RM_VAR v  on v.varcode=a.varcode      
+left join RM_Plant pl on pl.PLCode =lot.PlCode      
+left join (select IssDocno ,IssDocdt ,a.Divcode,baleno,a.lotno,a.lotdt,a.Varcode   from RM_FibreTestHD a  
+inner join RM_FibreTestDT b on a.Docno =b.Docno and a.Docdt =b.Docdt and a.Divcode =b.Divcode   
+)ts on ts.divcode=a.divcode and ts.IssDocno=a.ARRNO and ts.IssDocdt=a.ARRDATE and lot.LOTNO =ts.LotNo and ts.LotDT =lot.LOTDT and lot.VARCODE =ts.Varcode   
+and ts.BaleNO =bale.BALENO    
+where a.ARRDATE >='2021-04-01'  and ts.IssDocno is null    
+
+
+
+     go
+ --Exec KSP_FibreTestResult '01','2021-03-10','2021-09-02','10.81.234.7'  
+  
+alter proc KSP_FibreTestResult  
+(  
+@Divcode Varchar(2),  
+@Fdate varchar(10),  
+@Tdate varchar(10),  
+@IPADD VArchar(18)  
+)  
+as  
+begin  
+if object_ID('RPT_Fibre_Test_Result') is not null drop table RPT_Fibre_Test_Result  
+select   
+convert(varchar,a.IssDocdt ,3) Test_date,sl.slname  Supplier,V.VARNAME  Fibre,pl.PLName  Plant,a.Line_no  Line , a.lotno Mill_lot_No,a.billno Invoice_No,  
+convert(varchar,a.lotdt ,3) Date_of_Production,a.Batch_No  Batch_No,isnull(PBaleno,'')  Supplier_Bale_No,BaleNO Bale_No, INVGrssWt Gross_Wt_Invoice  ,ActGrossWt  Gross_Wt_Actual ,GrossWtDiff  Weight_Diff_Kgs,  
+InvoiceMoiture 'Invoice_Moisture %' ,MRHOTAIRAVG 'MR% (Hot Air)',MROHAUS 'MR% (OHAUS)',INVVsHOTAir 'Invoice Vs. Hot Air',InvVsOHAUS 'Invoice Vs. OHAUS',   
+MRHOTAIR1 'MR% (Hot Air) 1', MRHOTAIR2'MR% (Hot Air) 2'  
+,MROHAUS1 'MR% (OHAUS)1',MROHAUS2 'MR% (OHAUS)2',MROHAUS3 'MR% (OHAUS)3',MROHAUS4 'MR% (OHAUS)4',MROHAUS5 'MR% (OHAUS)5',MROHAUS6 'MR% (OHAUS)6',MROHAUS7 'MR% (OHAUS)7',MROHAUS8 'MR% (OHAUS)8',  
+MROHAUS9 'MR% (OHAUS)9', MROHAUS10 'MR% (OHAUS)10'  
+  
+into RPT_Fibre_Test_Result  
+from RM_FibreTestHD a   
+inner join RM_FibreTestDT b on a.Docno =b.Docno and a.Docdt =b.Docdt and a.Divcode =b.Divcode   
+inner join FA_SLMAS sl on sl.slcode=a.slcode     
+inner join RM_VAR v  on v.varcode=b.varcode    
+left join RM_Plant pl on pl.PLCode =a.PlCode   
+where a.Docdt between @Fdate and @Tdate and a.Divcode =@Divcode    
+and a.varcode in (select varcode from RM_ProductprintDet where divcode =@Divcode and IPadd =@IPADD )  
+and a.slcode in (select supcd  from RM_ProductprintDet where divcode =@Divcode and IPadd =@IPADD )  
+end

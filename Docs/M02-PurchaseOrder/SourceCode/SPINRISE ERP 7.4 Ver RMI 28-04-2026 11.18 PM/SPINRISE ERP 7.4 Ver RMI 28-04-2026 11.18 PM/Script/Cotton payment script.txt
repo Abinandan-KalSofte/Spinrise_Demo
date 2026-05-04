@@ -1,0 +1,165 @@
+       
+
+/****** Object:  Table [dbo].[RM_MIS_CottonPayAdv1]    Script Date: 12/26/2017 20:39:22 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[RM_MIS_CottonPayAdv1]') AND type in (N'U'))
+DROP TABLE [dbo].[RM_MIS_CottonPayAdv1]
+GO
+
+
+
+CREATE TABLE [dbo].[RM_MIS_CottonPayAdv1](
+	[Sno] [numeric](6, 0) NULL,
+	[SuppName] [varchar](100) NULL,
+	[Station] [varchar](100) NULL,
+	[AgentName] [varchar](100) NULL,
+	[Quality] [varchar](100) NULL,
+	[Pur_type] [varchar](20) NULL,
+	[Spot] [varchar](30) NULL,
+	[Req_StapLen25] [varchar](30) NULL,
+	[Req_Gtax] [numeric](5, 2) NULL,
+	[Req_MicroNaire] [numeric](5, 2) NULL,
+	[Req_TrashPer] [numeric](5, 2) NULL,
+	[Req_Moiture] [numeric](5, 2) NULL,
+	[Test_StapLen25] [numeric](5, 2) NULL,
+	[Test_Gtax] [numeric](5, 2) NULL,
+	[Test_MicroNaire] [numeric](5, 2) NULL,
+	[Test_TrashPer] [numeric](5, 2) NULL,
+	[Test_Moiture] [numeric](5, 2) NULL,
+	[PO_no] [varchar](20) NULL,
+	[PO_dt] [datetime] NULL,
+	[Po_by] [varchar](50) NULL,
+	[PriceConfir_dt] [datetime] NULL,
+	[PriceConfir_by] [varchar](50) NULL,
+	[BulkRec_dt] [datetime] NULL,
+	[BulkRec_by] [varchar](50) NULL,
+	[BulkTest_dt] [datetime] NULL,
+	[BulkTest_by] [varchar](50) NULL,
+	[LotApp_dt] [datetime] NULL,
+	[LotApp_by] [varchar](50) NULL,
+	[Invoice_dt] [datetime] NULL,
+	[Invoice_by] [varchar](50) NULL,
+	[PartyWt_Kgs] [numeric](12, 3) NULL,
+	[PartyWt_Candy] [numeric](12, 3) NULL,
+	[MillWt_Kgs] [numeric](12, 3) NULL,
+	[MillWt_Candy] [numeric](12, 3) NULL,
+	[Less_Kgs] [numeric](12, 3) NULL,
+	[Less_Candy] [numeric](12, 3) NULL,
+	[Netwt_Kgs] [numeric](12, 3) NULL,
+	[PNetwt_Candy] [numeric](12, 3) NULL,
+	[WtDiff_Kgs] [numeric](12, 3) NULL,
+	[WtDiff_Candy] [numeric](12, 3) NULL,
+	[Wted_by] [varchar](50) NULL,
+	[SpotRate_Candy] [numeric](12, 2) NULL,
+	[SpotRate_bales] [numeric](12, 2) NULL,
+	[LorryFre_Candy] [numeric](12, 2) NULL,
+	[LorryFre_bales] [numeric](12, 2) NULL,
+	[CST_Candy] [numeric](12, 2) NULL,
+	[CST_bales] [numeric](12, 2) NULL,
+	[Debit_Candy] [numeric](12, 2) NULL,
+	[Debit_bales] [numeric](12, 2) NULL,
+	[FORRate_Candy] [numeric](12, 2) NULL,
+	[FORRate_bales] [numeric](12, 2) NULL,
+	[RatePerKg_Candy] [numeric](12, 2) NULL,
+	[RatePerKg_bales] [numeric](12, 2) NULL,
+	[LorryNo] [varchar](30) NULL,
+	[LorryIN_Dt] [datetime] NULL,
+	[LorryIN_Time] [datetime] NULL,
+	[LorryOut_Dt] [datetime] NULL,
+	[LorryOut_Time] [datetime] NULL,
+	[BillAmt] [numeric](12, 2) NULL,
+	[DebitAmt] [numeric](12, 2) NULL,
+	[FreightAmt] [numeric](12, 2) NULL,
+	[STax] [numeric](12, 2) NULL,
+	[Pay80PerAmt] [numeric](12, 2) NULL,
+	[BalAmt] [numeric](12, 2) NULL,
+	[TotBillAmt] [numeric](12, 2) NULL,
+	[DealingStartDt] [datetime] NULL,
+	[BulkRectDt] [datetime] NULL,
+	[Pay80PerDt] [datetime] NULL,
+	[Pay100PerDt] [datetime] NULL,
+	[Per80PayTerm] [varchar](50) NULL,
+	[Per80Noofday] [numeric](4, 0) NULL,
+	[Per80Duedt] [datetime] NULL,
+	[Per80ActPaiddt] [datetime] NULL,
+	[Per100PayTerm] [varchar](50) NULL,
+	[Per100Noofday] [numeric](4, 0) NULL,
+	[Per100Duedt] [datetime] NULL,
+	[Per100ActPaiddt] [datetime] NULL,
+	[TotBale] [numeric](5, 0) NULL,
+	[TaxPer] [numeric](5, 2) NULL,
+	[dbreason] [numeric](5, 0) NULL,
+	[Remarks] [varchar](100) NULL
+) ON [PRIMARY]
+
+GO
+
+
+
+
+
+
+   
+   go   
+ --exec     ksp_MIS_RM_CottonPayRpt   '392','2015-12-01 00:00:00.000'     
+alter    PROC ksp_MIS_RM_CottonPayRpt                 
+@Divcode varchar(5),                
+@LotNo numeric(10),                
+@LotDt varchar(15)                
+As                
+Delete from RM_MIS_CottonPayAdv1                
+INSERT INTO RM_MIS_CottonPayAdv1 (                
+Sno,SuppName,Station,AgentName,Quality,Pur_type,Spot,                
+Req_StapLen25,Req_Gtax,Req_MicroNaire,Req_TrashPer,Req_Moiture,Test_StapLen25,Test_Gtax,Test_MicroNaire,Test_TrashPer,Test_Moiture,                
+po_no,PO_dt,Po_by,PriceConfir_dt,PriceConfir_by,BulkRec_dt,BulkRec_by,BulkTest_dt,BulkTest_by,LotApp_dt,LotApp_by,Invoice_dt,Invoice_by,                
+PartyWt_Kgs,PartyWt_Candy,MillWt_Kgs,MillWt_Candy,Less_Kgs,Less_Candy,Netwt_Kgs,PNetwt_Candy,WtDiff_Kgs,                
+WtDiff_Candy,Wted_by,                
+SpotRate_Candy,SpotRate_bales,LorryFre_Candy,LorryFre_bales,CST_Candy,CST_bales,                
+Debit_Candy,Debit_bales,FORRate_Candy,FORRate_bales,RatePerKg_Candy,RatePerKg_bales,                
+LorryNo,LorryIN_Dt,LorryIN_Time,LorryOut_Dt,LorryOut_Time,                
+BillAmt,DebitAmt,FreightAmt,STax,Pay80PerAmt,BalAmt,TotBillAmt,                
+DealingStartDt,BulkRectDt,Pay80PerDt,Pay100PerDt,                
+Per80PayTerm,Per80Noofday,Per80Duedt,Per100PayTerm,Per100Noofday,Per100Duedt,                
+TotBale,TaxPer,dbreason,Remarks)                
+SELECT c.DIVCODE, e.slname [Party], h.AREANAME as [Station], f.slname AS [Agent], a.VARCODE [Quality],                 
+del.DelDESC as [Pur_type], c.LOTNO, d.STAPLEN25 as Req_STAPLEN, d.GTEX as Req_GTEX,                
+d.MICRONAIRE as Req_MICRONAIRE, d.TRASH_PER as Req_TRASH_PER,d.MOITURE as Rec_MOITURE,c.STAPLEN as Rec_STAPLEN,                
+c.GTEX AS Rec_GTEX, c.MICRONAIRE AS Rec_MICRONAIRE,c.TRASH_PER AS Rec_TRASH_PER,c.MOITURE AS Rec_MOITURE,                 
+a.CONTNO,a.CONTDT as [PO Dt] ,'P.THIRUMOORTHI' as [Po_by],                
+a.CONTDT AS [PriceConfir_dt],'M.D' as [PriceConfir_by], b.ARRDATE as [BulkRec_dt],  emp.WNAME as [BulkRec_by],                 
+b.ARRDATE AS BulkTest_dt,'QAD' as [BulkTest_by], b.ARRDATE AS LotApp_dt,'V.P' as LotApp_by,                
+c.BILLDT as Invoice_dt, c.BILLNO as Invoice_by,                
+c.PNETWT as PartyWt_Kgs,(c.PNETWT/355.6160) as PartyWt_Candy,c.GRSWGT as MillWt_Kgs,                
+(c.GRSWGT/355.6160)  as MillWt_Candy,                 
+b.GROSSWT-c.GRSWGT AS Less_Kgs,(c.GRSWGT-b.GROSSWT)/355.616 as Less_Candy,c.NETWT as Netwt_Kgs,                
+(c.NETWT/355.616) as Netwt_Candy,                
+c.NETWT-c.PNETWT AS WtDiff_Kgs,(c.NETWT-c.PNETWT)/355.616 as WtDiff_Candy,                 
+emp.WNAME AS Wted_by,                 
+(c.ASSVALUE)/(c.NETWT/355.616)  AS SpotRate_Candy,                
+(c.ASSVALUE) AS [SpotRate_bales],                 
+(c.LRFRTAMT / (c.NETWT/355.616)) AS LorryFre_Candy, c.LRFRTAMT as LorryFre_bales,                
+(c.VATAMT / (c.NETWT/355.616)) AS CST_Candy,c.VATAMT AS CST_bales, (case when  i.dbreason='02'  then  c.DBAMT/(c.NETWT/355.616)    else 0 end )AS Debit_Candy  , c.DBAMT AS Debit_bales,                
+((c.ASSVALUE+(case when a.DLYTYPE='S' then ISNULL(c.LRFRTAMT,0) else 0 end)+  ISNULL(c.VATAMT,0)-ISNULL(c.DBAMT,0))/ (c.NETWT/355.616)) AS FORRate_Candy,                
+ (c.ASSVALUE+(case when a.DLYTYPE='S' then ISNULL(c.LRFRTAMT,0) else 0 end)+ISNULL(c.VATAMT,0)-ISNULL(c.DBAMT,0)) AS FORRate_bales,                
+(((c.ASSVALUE+(case when a.DLYTYPE='S' then ISNULL(c.LRFRTAMT,0) else 0 end)+ISNULL(c.VATAMT,0)-ISNULL(c.DBAMT,0)) /(c.NETWT/355.616)) / 355.6160) AS RatePerKg_Candy,                
+(((c.ASSVALUE+(case when a.DLYTYPE='S' then ISNULL(c.LRFRTAMT,0) else 0 end)+ISNULL(c.VATAMT,0)-ISNULL(c.DBAMT,0)) /(c.NETWT/355.616)) / 355.6160) AS RatePerKg_bales,                
+b.LORRYNOS, b.LR_InDt LorryIN_Dt, b.LR_InTime LorryIN_Time,                 
+b.LR_OutDt LorryOut_Dt,b.LR_OutTime LorryOut_Time,c.fbillvalue AS BillAmt, c.DBAMT AS DebitAmt,                
+c.LRFRTAMT AS FreightAmt,c.SCAMT as STax,0 as Pay80PerAmt,c.fbillvalue+c.dbamt+c.dbamt AS BalAmt,                
+c.fbillvalue AS TotBillAmt, a.CONTDT AS DealingStartDt, b.ARRDATE AS BulkRectDt, null as Pay80PerDt,                
+null AS Pay100PerDt,a.Terms1,a.Terms1Days,dateadd(day,a.Terms1Days,b.ARRDATE),a.Terms2,a.Terms2Days,dateadd(day,a.Terms2Days,b.ARRDATE),c.BALES,c.TAX_PER,i.dbreason
+,a.remarks Remarks               
+FROM RM_LOT AS c INNER JOIN                
+RM_ARRIVAL AS b ON c.DIVCODE = b.DIVCODE AND c.ARRNO = b.ARRNO                 
+AND c.ARRDT = b.ARRDATE AND c.VARCODE = b.VARCODE INNER JOIN                
+RM_CONT AS a ON b.DIVCODE = a.DIVCODE AND b.CONTNO = a.CONTNO                 
+AND b.CONTDT = a.CONTDT AND b.VARCODE = a.VARCODE INNER JOIN                
+FA_SLMAS AS e ON c.SUPCD = e.slcode left JOIN                
+FA_SLMAS AS f ON c.BRKCD = f.slcode     
+    
+                
+LEFT OUTER JOIN RM_SAMPLE AS d ON a.SNO = d.SNO AND a.DIVCODE = d.DIVCODE AND                 
+a.SUPCD = d.SUPCODE AND a.VARCODE = d.VARCODE LEFT OUTER JOIN RM_AREA AS h ON a.AREACODE = h.AREACODE                
+LEFT OUTER JOIN rm_delivery del ON del.Delcode=a.DLYTYPE                
+LEFT OUTER JOIN RM_WEIGHNMENT AS emp ON emp.divcode=b.DIVCODE and emp.CODE=b.weignment and c.opflg ='N'     
+left  OUTER  join     rm_lotallowance i on i.divcode =c.divcode and  i.lotno =c.lotno  and i.lotdt  =c.lotdt and i.asno = c.asno and  i .adate = c.adate and  i.dbno  =c.dbno  AND  I.DBDT =C.DBDT               
+WHERE c.DIVCODE=@Divcode and c.LOTNO=@LotNo and c.LOTDT=@LotDt AND C.OPFLG ='N'

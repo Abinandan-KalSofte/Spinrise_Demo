@@ -1,0 +1,19 @@
+CREATE TABLE [dbo].[RM_Accvar](
+	[AccVarcode] [varchar](10) NULL,
+	[AccVarName] [varchar](35) NULL
+) ON [PRIMARY]
+
+go
+alter table rm_var add AccVarcode varchar(10)
+
+go
+
+
+
+alter table Rm_param add FrieghtCalCulateTax varchar(1)
+go
+alter table Rm_param add SURCalCulateTax varchar(1)
+go
+alter table Rm_param add insCalCulateTax varchar(1)
+go
+alter table rm_param add CesswithTax  varchar(1)

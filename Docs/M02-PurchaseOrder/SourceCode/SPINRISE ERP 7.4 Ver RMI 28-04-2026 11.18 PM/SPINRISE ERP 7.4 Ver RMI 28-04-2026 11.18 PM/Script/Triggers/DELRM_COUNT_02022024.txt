@@ -1,0 +1,22 @@
+
+CREATE TRIGGER [dbo].[DELRM_COUNT] ON [dbo].RM_COUNT FOR DELETE AS                                     
+DECLARE                                                                  
+@CNTCD varchar(10),  
+@sno int  
+BEGIN    
+  
+	select @CNTCD=CNTCD from deleted  
+  
+	set @sno=(select count(CNTCD) from 
+	(
+		SELECT CNTCD CNTCD FROM RM_ISSH where MIXGRP=@CNTCD		
+			UNION ALL
+		SELECT CNTCD CNTCD FROM RM_ISSRH where CNTCD=@CNTCD		
+	) x  
+	where CNTCD=@CNTCD)  
+	if isnull(@sno,0)> 0    
+	begin   
+		rollback  
+		RAISERROR ('Dependencies exists. Unable to delete the record at this time', 16 ,10)	
+	end   
+END

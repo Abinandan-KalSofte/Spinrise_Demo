@@ -1,0 +1,24 @@
+  
+  
+ CREATE Proc sp_issuesreport_return   
+ (  
+ @Divcode AS varchar(5),  
+  @isstype AS VARCHAR(25),  
+ @date AS varchar(10),  
+ @dcno AS varchar(10)  
+  
+ )  
+  as     
+ Select e.docdt ,a.VARCODE,a.LotNo,a.LotDt,grwt,b.tarewt,isnull(b.moiSture_ET,0) as moiture,b.netwt,isnull(b.IsQty,0)'IsQty',isnull(C.ActIssKgs,0) 'AIKgs',isnull(C.ActIssKgs,0)-isnull(b.IsQty,0) 'Excess',     
+ c.Baleno,c.actisskgs,f.MIXGRPNAME,g.cntname,e.ordno,h.divname,h.ADD1,h.ADD2,h.ADD3,h.CITY,h.PINCODE,h.HOState,h.PHONE1 , h.EMAIL, h.WEBADDR, h.FAX, V.VarName, h.DIV_PRINTNAME, h.DIV_UNITNAME, h.DIV_LOGO    
+ from rm_lot a inner join rm_bale b on a.Divcode = b.Divcode And a.Varcode = b.Varcode And a.LOTNO = b.LOTNO And a.LOTDT = b.LOTDT And a.catcd = b.catcd  inner join    
+  rm_issb c  on  b.DIVCODE=c.DIVCODE AND b.LOTNO=c.LOTNO AND b.BALENO=c.BALENO AND b.VARCODE=c.VARCODE AND b.CATCD=c.CATCD and c.lotdt=b.lotdt     
+  inner join  rm_issuetype d on c.ISSTYPE=d.issue_code   inner join RM_ISSH e  on e.Divcode = C.Divcode And e.docNo = C.docNo And e.DOCDT = C.DOCDT And e.ISSTYPE = C.ISSTYPE    
+  left join RM_MIXGRP f on e.DIVCODE=f.DIVCODE AND  e.MIXGRP=f.MIXGRPCD     
+ left join RM_COUNT g on e.DIVCODE=g.Divcode and   e.cntcd=g.cntcd  inner join pp_divmas h  on a.DIVCODE=h.DIVCODE     
+ inner join rm_var v  on  a.Varcode = V.Varcode And a.catcd = V.catcd   
+ INNER JOIN RM_ISSrtnb rm ON rm.LOTNO=a.LOTNO AND rm.lotdt=a.LOTDT AND a.LOTTYPE=rm.LOTTYPE   
+ Where     
+ a.divcode =@Divcode and rm.docno =1 AND rm.DOCDT=@date and  a.lotyear=YEAR(@date) AND rm.ISSTYPE=@isstype   
+   
+   

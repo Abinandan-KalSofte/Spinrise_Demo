@@ -31,6 +31,7 @@ public class PRLineResponseDto
     public string? LastPoSupplierName { get; set; }
     public bool IsSample { get; set; }
     public long? SubCostCode { get; set; }
+    public string? SubCostName { get; set; }
     public string? CategoryCode { get; set; }
     public string? DrawNo { get; set; }
     public string? CatNo { get; set; }

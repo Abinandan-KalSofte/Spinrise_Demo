@@ -1,0 +1,217 @@
+--Exec KSP_RMIAGEING_MIS'01','2014-10-06'      
+ALTER PROC KSP_RMIAGEING_MIS(        
+@divcode VARCHAR(2),        
+@ToDate VARCHAR(14))        
+as        
+BEGIN        
+        
+        
+if exists (select * from sys.objects where name='TMP_RMIAgeing' and type='U')        
+drop table TMP_RMIAgeing        
+        
+SELECT a.varcode,rv.VARNAME,ISNULL(sum(bales1),0) AS b1,ISNULL(sum(value1),0) AS  v1,ISNULL(sum(bales2),0) AS b2,ISNULL(sum(value2),0) AS v2,        
+ISNULL(sum(bales3),0) AS b3,ISNULL(sum(value3),0) AS v3,ISNULL(sum(bales4),0) AS  b4,ISNULL(sum(value4),0) AS v4,ISNULL(sum(bales5),0) AS b5,  ISNULL(sum(value5),0) AS v5,       
+ISNULL(sum(bales1),0) +ISNULL(sum(bales2),0)+ISNULL(sum(bales3),0)+ISNULL(sum(bales4),0)      
++ISNULL(sum(bales5),0) AS b6,  ISNULL(sum(value1),0)        
++ISNULL(sum(value2),0)+ISNULL(sum(value3),0)+ISNULL(sum(value4),0)+ISNULL(sum(value5),0) AS v6  ,DIVCODE      
+INTO TMP_RMIAgeing        
+        
+FROM (        
+        
+--'1st Period'        
+--dtFromDate = Format(DateAdd("d", -90, U), "yyyy-mm-dd")        
+--dtToDate = Format(DateAdd("d", -0, U), "yyyy-mm-dd")        
+--dtITDate = Format(DateAdd("d", -0, U), "yyyy-mm-dd")        
+        
+--?dtFromDate        
+--2014-01-01   ex : 2014-01-02        
+--?dtToDate        
+--2014-04-01    ex : 2014-04-02        
+--?dtITDate        
+--2014-04-01    ex : 2014-04-02        
+        
+        
+SELECT varcode,isnull(sum(stkbal),0) Bales1 ,isnull(sum(stkVal),0) value1,0 Bales2 ,0 value2,0 Bales3  ,0 value3,0 Bales4 ,0 value4 ,0 Bales5 ,0 value5  ,DIVCODE      
+FROM (      
+SELECT varcode ,SUM(rbal)-SUM(ibal) AS stkbal,CAST(SUM(rval)-SUM(ival) AS NUMERIC(25,2)) AS stkVal,DIVCODE  FROM (        
+SELECT varcode, SUM(bales) AS rbal,SUM(rvalue) AS rval,0 AS ibal,0 AS ival,DIVCODE FROM (        
+SELECT lotno,lotdt,varcode,SUM(bales)AS bales,sum(netwt) AS netwt,sum(netwt)*SUM(ratekg) AS rValue,  SUM(ratekg) AS ratekg,DIVCODE FROM (        
+SELECT lotno,lotdt,varcode,COUNT(baleno) AS bales,SUM(FAVAOURABLEWGT) AS netwt, 0 AS ratekg,DIVCODE  FROM RM_bale        
+WHERE DIVCODE=@divcode AND (ISNULL(Status,'AC')='AC' OR REJDT>@ToDate) GROUP BY lotno,lotdt,varcode  ,DIVCODE      
+Union All        
+SELECT lotno,lotdt,varcode,0 AS bales,0 AS netwt, ratekg AS ratekg,DIVCODE FROM RM_lot        
+WHERE DIVCODE=@divcode and Lotyear =year(DATEAdd(d,-90,@ToDate)) GROUP BY lotno,lotdt,varcode,ratekg,DIVCODE)  y WHERE lotdt BETWEEN DATEAdd(d,-90,@ToDate) AND @ToDate GROUP BY lotno,lotdt,varcode  ,DIVCODE      
+) x GROUP BY varcode  ,DIVCODE      
+Union All        
+SELECT varcode,0 AS rbal, 0 AS rval, SUM(bales) AS ibal,SUM(rvalue) AS ival,DIVCODE FROM (        
+SELECT lotno,lotdt,varcode,SUM(bales)AS bales,sum(netwt) AS netwt,sum(netwt)*SUM(ratekg) AS rValue,  SUM(ratekg) AS ratekg,DIVCODE FROM (        
+SELECT lotno,lotdt,varcode,COUNT(baleno) AS bales,SUM(isskgs) AS netwt, 0 AS ratekg,DIVCODE FROM RM_issb        
+WHERE DIVCODE=@divcode AND lotdt BETWEEN DATEADD(D,-90,@ToDate) AND @ToDate        
+AND docdt BETWEEN DATEADD(D,-90,@ToDate) AND @ToDate GROUP BY lotno,lotdt,varcode  ,DIVCODE      
+Union All        
+SELECT lotno,lotdt,varcode,0 AS bales,0 AS netwt, ratekg AS ratekg,DIVCODE FROM RM_lot        
+WHERE DIVCODE=@divcode and Lotyear =YEAR(DATEADD(D,-90,@ToDate)) GROUP BY lotno,lotdt,varcode,ratekg  ,DIVCODE      
+) y WHERE lotdt BETWEEN DATEADD(D,-90,@ToDate) AND @ToDate        
+GROUP BY lotno,lotdt,varcode  ,DIVCODE      
+) x GROUP BY varcode,DIVCODE) c GROUP by varcode,DIVCODE)A        
+GROUP BY A.varcode  ,DIVCODE      
+        
+--'2nd Period'        
+--dtFromDate = Format(DateAdd("d", -180, U), "yyyy-mm-dd")        
+--dtToDate = Format(DateAdd("d", -91, U), "yyyy-mm-dd")        
+--2013-10-03        
+--2013-12-31        
+UNION ALL        
+        
+SELECT varcode,0 Bales1 ,0 value1,isnull(sum(stkbal),0) Bales2 ,isnull(sum(stkVal),0) value2,0 Bales3  ,0 value3,0 Bales4 ,0 value4 ,0 Bales5 ,0 value5,DIVCODE FROM (        
+SELECT varcode ,SUM(rbal)-SUM(ibal) AS stkbal,CAST(SUM(rval)-SUM(ival) AS NUMERIC(25,2)) AS stkVal ,DIVCODE FROM (        
+SELECT varcode, SUM(bales) AS rbal,SUM(rvalue) AS rval,0 AS ibal,0 AS ival,DIVCODE FROM (        
+SELECT lotno,lotdt,varcode,SUM(bales)AS bales,sum(netwt) AS netwt,sum(netwt)*SUM(ratekg) AS rValue,  SUM(ratekg) AS ratekg,DIVCODE FROM (        
+SELECT lotno,lotdt,varcode,COUNT(baleno) AS bales,SUM(FAVAOURABLEWGT) AS netwt, 0 AS ratekg,DIVCODE FROM  RM_bale        
+WHERE DIVCODE=@divcode AND (ISNULL(Status,'AC')='AC' OR REJDT>@ToDate) GROUP BY lotno,lotdt,varcode,DIVCODE        
+Union All        
+SELECT lotno,lotdt,varcode,0 AS bales,0 AS netwt, ratekg AS ratekg,DIVCODE FROM RM_lot        
+WHERE DIVCODE=@divcode and Lotyear =year(DATEADD(d,-180,@ToDate)) GROUP BY lotno,lotdt,varcode,ratekg,DIVCODE)  y WHERE lotdt BETWEEN DATEADD(d,-180,@ToDate) AND DATEADD(d,-91,@ToDate) GROUP BY lotno,lotdt,varcode  ,DIVCODE      
+) x GROUP BY varcode  ,DIVCODE      
+Union All        
+SELECT varcode,0 AS rbal, 0 AS rval, SUM(bales) AS ibal,SUM(rvalue) AS ival,DIVCODE FROM (        
+SELECT lotno,lotdt,varcode,SUM(bales)AS bales,sum(netwt) AS netwt,sum(netwt)*SUM(ratekg) AS rValue,  SUM(ratekg) AS ratekg,DIVCODE FROM (        
+SELECT lotno,lotdt,varcode,COUNT(baleno) AS bales,SUM(isskgs) AS netwt, 0 AS ratekg,DIVCODE FROM RM_issb        
+WHERE DIVCODE=@divcode AND lotdt BETWEEN DATEADD(d,-180,@ToDate) AND DATEADD(d,-91,@ToDate)        
+AND docdt BETWEEN DATEADD(d,-180,@ToDate) AND @ToDate  GROUP BY lotno,lotdt,varcode  ,DIVCODE      
+Union All        
+SELECT lotno,lotdt,varcode,0 AS bales,0 AS netwt, ratekg AS ratekg,DIVCODE FROM RM_lot        
+WHERE DIVCODE=@divcode and Lotyear =YEAR(DATEADD(d,-180,@ToDate)) GROUP BY lotno,lotdt,varcode,ratekg  ,DIVCODE      
+) y WHERE lotdt BETWEEN DATEADD(d,-180,@ToDate) AND DATEADD(d,-91,@ToDate)        
+GROUP BY lotno,lotdt,varcode  ,DIVCODE      
+) x GROUP BY varcode,DIVCODE) c GROUP by varcode,DIVCODE)b        
+GROUP BY b.varcode  ,DIVCODE      
+UNION ALL        
+--'3rd Period        
+--dtFromDate = Format(DateAdd("d", -270, U), "yyyy-mm-dd")        
+--dtToDate = Format(DateAdd("d", -181, U), "yyyy-mm-dd")'        
+        
+--dtFromDate        
+--2013-07-05        
+--dtToDate        
+--2013-10-02        
+        
+        
+SELECT varcode,0 Bales1 ,0 value1,0 Bales2 ,0 value2,isnull(sum(stkbal),0) Bales3  ,isnull(sum(stkVal),0) value3 ,0 Bales4 ,0 value4,0 Bales5 ,0 value5  ,DIVCODE      
+FROM (SELECT varcode ,SUM(rbal)-SUM(ibal) AS stkbal,CAST(SUM(rval)-SUM(ival) AS NUMERIC(25,2)) AS stkVal  ,DIVCODE      
+FROM (  SELECT varcode, SUM(bales) AS rbal,SUM(rvalue) AS rval,0 AS ibal,0 AS ival,DIVCODE FROM (        
+SELECT lotno,lotdt,varcode,SUM(bales)AS bales,sum(netwt) AS netwt,sum(netwt)*SUM(ratekg) AS rValue,  SUM(ratekg) AS ratekg,DIVCODE FROM (        
+SELECT lotno,lotdt,varcode,COUNT(baleno) AS bales,SUM(FAVAOURABLEWGT) AS netwt, 0 AS ratekg,DIVCODE FROM  RM_bale        
+WHERE DIVCODE=@divcode AND (ISNULL(Status,'AC')='AC' OR REJDT>@ToDate) GROUP BY lotno,lotdt,varcode ,DIVCODE       
+Union All        
+SELECT lotno,lotdt,varcode,0 AS bales,0 AS netwt, ratekg AS ratekg,DIVCODE FROM RM_lot        
+WHERE DIVCODE=@divcode and Lotyear =year(DATEADD(d,-270,@ToDate)) GROUP BY lotno,lotdt,varcode,ratekg,DIVCODE)  y WHERE lotdt BETWEEN DATEADD(d,-270,@ToDate) AND DATEADD(d,-181,@ToDate) GROUP BY lotno,lotdt,varcode ,DIVCODE ) x GROUP BY varcode ,DIVCODE 
+   
+    
+     
+Union All        
+SELECT varcode,0 AS rbal, 0 AS rval, SUM(bales) AS ibal,SUM(rvalue) AS ival,DIVCODE FROM (      
+SELECT lotno,lotdt,varcode,SUM(bales)AS bales,sum(netwt) AS netwt,sum(netwt)*SUM(ratekg) AS rValue,  SUM(ratekg) AS ratekg,DIVCODE FROM (        
+SELECT lotno,lotdt,varcode,COUNT(baleno) AS bales,SUM(isskgs) AS netwt, 0 AS ratekg,DIVCODE FROM RM_issb        
+WHERE DIVCODE=@divcode AND lotdt BETWEEN DATEADD(d,-270,@ToDate) AND DATEADD(d,-181,@ToDate)        
+AND docdt BETWEEN DATEADD(d,-270,@ToDate) AND @ToDate  GROUP BY lotno,lotdt,varcode  ,DIVCODE      
+Union All        
+SELECT lotno,lotdt,varcode,0 AS bales,0 AS netwt, ratekg AS ratekg,DIVCODE FROM RM_lot        
+WHERE DIVCODE=@divcode and Lotyear =year(DATEADD(d,-270,@ToDate)) GROUP BY lotno,lotdt,varcode,ratekg  ,DIVCODE      
+) y WHERE lotdt BETWEEN DATEADD(d,-270,@ToDate) AND DATEADD(d,-181,@ToDate)        
+GROUP BY lotno,lotdt,varcode  ,DIVCODE      
+) x GROUP BY varcode,DIVCODE) c GROUP by varcode,DIVCODE)c        
+GROUP BY c.varcode  ,DIVCODE      
+UNION ALL        
+        
+--'4th Period'        
+--    dtFromDate = Format(DateAdd("d", -365, U), "yyyy-mm-dd")        
+--    dtToDate = Format(DateAdd("d", -271, U), "yyyy-mm-dd")        
+        
+--    ?dtFromDate        
+--2013-04-01        
+--?dtToDate        
+--2013-07-04        
+        
+        
+SELECT varcode,0 Bales1 ,0 value1,0 Bales2 ,0 value2,0 Bales3 ,0 value3,isnull(sum(stkbal),0) Bales4  ,isnull(sum(stkVal),0) value4 ,0 Bales5 ,0 value5  ,DIVCODE      
+FROM (        
+SELECT varcode ,SUM(rbal)-SUM(ibal) AS stkbal,CAST(SUM(rval)-SUM(ival) AS NUMERIC(25,2)) AS stkVal ,DIVCODE       
+FROM (        
+SELECT varcode, SUM(bales) AS rbal,SUM(rvalue) AS rval,0 AS ibal,0 AS ival,DIVCODE FROM (        
+SELECT lotno,lotdt,varcode,SUM(bales)AS bales,sum(netwt) AS netwt,sum(netwt)*SUM(ratekg) AS rValue,  SUM(ratekg) AS ratekg,DIVCODE FROM (        
+SELECT lotno,lotdt,varcode,COUNT(baleno) AS bales,SUM(FAVAOURABLEWGT) AS netwt, 0 AS ratekg,DIVCODE FROM  RM_bale        
+WHERE DIVCODE=@divcode AND (ISNULL(Status,'AC')='AC' OR REJDT>@ToDate) GROUP BY lotno,lotdt,varcode  ,DIVCODE      
+Union All        
+SELECT lotno,lotdt,varcode,0 AS bales,0 AS netwt, ratekg AS ratekg,DIVCODE FROM RM_lot        
+WHERE DIVCODE=@divcode and Lotyear =YEAR(DateAdd(d, -365, @ToDate)) GROUP BY  lotno,lotdt,varcode,ratekg,DIVCODE) y       
+WHERE lotdt BETWEEN  DateAdd(d, -365, @ToDate) AND DateAdd(d, -271, @ToDate)  GROUP BY lotno,lotdt,varcode  ,DIVCODE      
+) x GROUP BY varcode,x.DIVCODE        
+Union All        
+SELECT varcode,0 AS rbal, 0 AS rval, SUM(bales) AS ibal,SUM(rvalue) AS ival,DIVCODE FROM (        
+SELECT lotno,lotdt,varcode,SUM(bales)AS bales,sum(netwt) AS netwt,sum(netwt)*SUM(ratekg) AS rValue,  SUM(ratekg) AS ratekg,DIVCODE FROM (        
+SELECT lotno,lotdt,varcode,COUNT(baleno) AS bales,SUM(isskgs) AS netwt, 0 AS ratekg,DIVCODE FROM RM_issb        
+WHERE DIVCODE=@divcode AND lotdt BETWEEN DateAdd(d, -365, @ToDate) AND DateAdd(d, -271, @ToDate)        
+AND docdt BETWEEN DateAdd(d, -365, @ToDate) AND @ToDate  GROUP BY lotno,lotdt,varcode  ,DIVCODE      
+Union All        
+SELECT lotno,lotdt,varcode,0 AS bales,0 AS netwt, ratekg AS ratekg,DIVCODE FROM RM_lot        
+WHERE DIVCODE=@divcode and Lotyear =YEAR(DateAdd(d, -365, @ToDate)) GROUP BY  lotno,lotdt,varcode,ratekg  ,DIVCODE      
+) y WHERE lotdt BETWEEN DateAdd(d, -365, @ToDate) AND DateAdd(d, -271, @ToDate)        
+GROUP BY lotno,lotdt,varcode  ,DIVCODE      
+) x GROUP BY varcode,DIVCODE) c GROUP by varcode,DIVCODE)d        
+GROUP BY d.varcode  ,DIVCODE      
+        
+UNION ALL        
+        
+--'5th Period        
+--   dtFromDate = Format(DateAdd("d", -366, U), "yyyy-mm-dd")        
+--   dtToDate = Format(DateAdd("d", -366, U), "yyyy-mm-dd")        
+--   strSQL = gStockStatement_Age(dtFromDate, dtToDate, dtITDate, True, U)'        
+        
+        
+--?dtFromDate        
+--2013-03-31        
+--?dtToDate        
+--2013-03-31        
+        
+SELECT varcode,0 Bales1 ,0 value1,0 Bales2 ,0 value2,0 Bales3 ,0 value3,0 Bales4 ,0        
+value4,isnull(sum(stkbal),0) Bales5 ,isnull(sum(stkVal),0) value5,DIVCODE FROM (        
+SELECT varcode ,SUM(rbal)-SUM(ibal) AS stkbal,SUM(rval)-SUM(ival)AS stkVal,DIVCODE FROM (        
+SELECT varcode, SUM(bales) AS rbal,SUM(rvalue) AS rval,0 AS ibal,0 AS ival,DIVCODE FROM (        
+SELECT lotno,lotdt,varcode,SUM(bales)AS bales,sum(netwt) AS netwt,sum(netwt)*SUM(ratekg) AS rValue,  SUM(ratekg) AS ratekg,DIVCODE FROM (        
+SELECT lotno,lotdt,varcode,COUNT(baleno) AS bales,SUM(FAVAOURABLEWGT) AS netwt, 0 AS ratekg,DIVCODE  FROM RM_bale        
+WHERE DIVCODE=@divcode AND (ISNULL(Status,'AC')='AC' OR REJDT>@ToDate) GROUP BY lotno,lotdt,varcode  ,DIVCODE      
+Union All        
+SELECT lotno,lotdt,varcode,0 AS bales,0 AS netwt, ratekg AS ratekg,DIVCODE FROM RM_lot        
+WHERE DIVCODE=@divcode and Lotyear =year(DATEADD(d,-366,@ToDate)) GROUP BY lotno,lotdt,varcode,ratekg,DIVCODE)  y WHERE lotdt <= DATEADD(d,-366,@ToDate) GROUP BY lotno,lotdt,varcode  ,DIVCODE      
+) x GROUP BY varcode  ,DIVCODE      
+Union All        
+SELECT varcode,0 AS rbal, 0 AS rval, SUM(bales) AS ibal,SUM(rvalue) AS ival,DIVCODE FROM (        
+SELECT lotno,lotdt,varcode,SUM(bales)AS bales,sum(netwt) AS netwt,sum(netwt)*SUM(ratekg) AS rValue,  SUM(ratekg) AS ratekg,DIVCODE FROM (        
+SELECT lotno,lotdt,varcode,COUNT(baleno) AS bales,SUM(isskgs) AS netwt, 0 AS ratekg,DIVCODE FROM RM_issb        
+WHERE DIVCODE=@divcode AND lotdt <= DATEADD(d,-366,@ToDate)        
+AND docdt <= @ToDate  GROUP BY lotno,lotdt,varcode  ,DIVCODE      
+Union All        
+SELECT lotno,lotdt,varcode,0 AS bales,0 AS netwt, ratekg AS ratekg,DIVCODE FROM RM_lot        
+WHERE DIVCODE=@divcode and Lotyear =YEAR(DATEADD(d,-366,@ToDate)) GROUP BY lotno,lotdt,varcode,ratekg  ,DIVCODE      
+) y WHERE lotdt <= DATEADD(d,-366,@ToDate)        
+GROUP BY lotno,lotdt,varcode  ,DIVCODE      
+) x GROUP BY varcode,DIVCODE) c GROUP by varcode,DIVCODE)e        
+GROUP BY e.varcode,DIVCODE)A        
+INNER JOIN RM_VAR rv ON rv.varcode = A.varcode        
+WHERE        
+ISNULL(bales1,0) +ISNULL(bales2,0)+ISNULL(bales3,0)+ISNULL(bales4,0)+ISNULL(bales5,0) > 0        
+        
+GROUP BY a.varcode  ,rv.VARNAME  ,DIVCODE      
+        
+  SELECT varcode,VARNAME,b1,v1,b2,v2,b3,v3,b4,v4,b5,v5,b6,v6,@ToDate ToDate,TR.DIVCODE,pd.DIV_PRINTNAME,pd.DIV_UNITNAME      
+    FROM TMP_RMIAgeing TR      
+  INNER JOIN PP_DIVMAS pd ON pd.DIVCODE=tr.DIVCODE      
+        
+        
+END       
+
+
+
+
+ 

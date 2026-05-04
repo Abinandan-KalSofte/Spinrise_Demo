@@ -1,0 +1,1 @@
+ALTER TABLE rm_param ADD WeightFlg VARCHAR(1)

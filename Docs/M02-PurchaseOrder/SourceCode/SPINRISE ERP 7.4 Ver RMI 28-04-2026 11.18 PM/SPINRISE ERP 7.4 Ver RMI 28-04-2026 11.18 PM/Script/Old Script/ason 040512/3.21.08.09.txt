@@ -1,0 +1,4 @@
+ALTER TABLE PPC_BLEND_MAS ADD ejectbale numeric(9,2)
+go
+ALTER TABLE PPC_BLEND_MAS ADD effdate datetime
+go

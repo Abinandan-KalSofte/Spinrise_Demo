@@ -1,0 +1,9 @@
+
+CREATE TABLE [dbo].[RM_DelReason](
+	[Code] [varchar](4) NULL,
+	[Description] [varchar](50) NULL
+) ON [PRIMARY]
+
+go
+
+alter table rm_trans_log add DelReason varchar(4)

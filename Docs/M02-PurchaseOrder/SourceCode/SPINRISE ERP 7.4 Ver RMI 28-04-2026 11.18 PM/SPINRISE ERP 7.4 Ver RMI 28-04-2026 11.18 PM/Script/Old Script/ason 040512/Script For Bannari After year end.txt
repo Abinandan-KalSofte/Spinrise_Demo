@@ -1,0 +1,21 @@
+--update script after year end process
+
+update rm_lot SET ISSBAL = issbales from (select a.catcd,a.lotno,a.lotdt,a.divcode,Bales,a.Netwt,SUM(b.isskgs) AS 
+ISSWET,count(b.baleno) as issbales,bales-count(b.baleno) as Closingbales,a.Netwt-sum(b.isskgs) as Closingwt  
+from rm_lot a ,rm_issb b,rm_bale c where a.lotdt<='2010-03-31' and (a.rejflg='N' or a.rejdt>'2010-03-31') and 
+a.divcode='01' and lotyear='2010' and a.lotno=c.lotno and a.lotdt=c.lotdt and a.divcode=c.divcode and a.catcd=c.catcd 
+and b.baleno=c.baleno and a.lotno=b.lotno and a.lotdt=b.lotdt and a.divcode=b.divcode and a.catcd=b.catcd and b.docdt 
+between '2010-04-01' and '2011-03-31' AND b.ISSUED='Y' group by a.catcd,a.lotno,a.lotdt,a.divcode,bales,a.netwt )z,rm_lot a 
+where a.divcode='01' and a.lotno=z.lotno and a.lotdt=z.lotdt and a.catcd=z.catcd and a.divcode=z.divcode 
+and lotyear='2010'
+
+
+
+update rm_lot SET isswt=ISNULL(ISSWET,0) from (select a.catcd,a.lotno,a.lotdt,a.divcode,Bales,a.Netwt,SUM(b.isskgs) AS 
+ISSWET,count(b.baleno) as issbales,bales-count(b.baleno) as Closingbales,a.Netwt-sum(b.isskgs) as Closingwt  
+from rm_lot a ,rm_issb b,rm_bale c where a.lotdt<='2010-03-31' and (a.rejflg='N' or a.rejdt>'2010-03-31') and 
+a.divcode='01' and lotyear='2010' and a.lotno=c.lotno and a.lotdt=c.lotdt and a.divcode=c.divcode and a.catcd=c.catcd 
+and b.baleno=c.baleno and a.lotno=b.lotno and a.lotdt=b.lotdt and a.divcode=b.divcode and a.catcd=b.catcd and b.docdt 
+between '2010-04-01' and '2011-03-31' group by a.catcd,a.lotno,a.lotdt,a.divcode,bales,a.netwt )z,rm_lot a 
+where a.divcode='01' and a.lotno=z.lotno and a.lotdt=z.lotdt and a.catcd=z.catcd and a.divcode=z.divcode 
+and lotyear='2010'

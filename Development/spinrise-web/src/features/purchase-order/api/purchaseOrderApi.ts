@@ -1,72 +1,48 @@
 import { apiHelpers } from '@/shared/api/client'
 import type {
-  PagedResult,
-  PODefaultsDto,
-  POPreCheckResultDto,
-  POSummaryDto,
-  PODetailDto,
-  PRLineDto,
-  PRLineFilterQuery,
-  POApprovalStatusDto,
-  POApprovalActionRequest,
-  PODeleteRequest,
-  DeleteReasonDto,
+  PagedResult, POListQuery, POSummaryResponse,
+  PODetailResponse, POSummaryCounts,
+  PODefaultsDto, PODeleteReasonDto, GSTConfigDto,
+  PRLineDto, PRLineFilter,
+  POApprovalStatus, POApprovalAction,
   CreatePORequest,
-  UpdatePORequest,
 } from '../types'
 
 const BASE = 'rmi/po'
 
-function buildQS(params: Record<string, string | number | boolean | undefined | null>): string {
-  const p = new URLSearchParams()
-  for (const [k, v] of Object.entries(params)) {
-    if (v !== undefined && v !== null && v !== '') p.set(k, String(v))
-  }
-  return p.toString()
-}
-
 export const purchaseOrderApi = {
-  getPaginated: (query: {
-    page?: number
-    pageSize?: number
-    searchText?: string
-    fromDate?: string
-    toDate?: string
-    supplierCode?: string
-  } = {}) => {
-    const qs = buildQS(query)
-    return apiHelpers.get<PagedResult<POSummaryDto>>(qs ? `${BASE}?${qs}` : BASE)
-  },
+  getPaginated: (query: POListQuery) =>
+    apiHelpers.get<PagedResult<POSummaryResponse>>(BASE, { params: query }),
+
+  getSummary: () =>
+    apiHelpers.get<POSummaryCounts>(`${BASE}/summary`),
 
   getDefaults: () =>
     apiHelpers.get<PODefaultsDto>(`${BASE}/defaults`),
 
-  preChecks: () =>
-    apiHelpers.get<POPreCheckResultDto>(`${BASE}/pre-checks`),
-
   getDeleteReasons: () =>
-    apiHelpers.get<DeleteReasonDto[]>(`${BASE}/delete-reasons`),
+    apiHelpers.get<PODeleteReasonDto[]>(`${BASE}/delete-reasons`),
 
-  getPRLines: (filter: PRLineFilterQuery) => {
-    const qs = buildQS(filter as Record<string, string | number | boolean | undefined | null>)
-    return apiHelpers.get<PRLineDto[]>(qs ? `${BASE}/pr-lines?${qs}` : `${BASE}/pr-lines`)
-  },
+  getGSTConfig: (supplierCode: string) =>
+    apiHelpers.get<GSTConfigDto>(`${BASE}/gst-config`, { params: { supplierCode } }),
 
-  getById: (contNo: string, contDt: string) =>
-    apiHelpers.get<PODetailDto>(`${BASE}/${encodeURIComponent(contNo)}/${encodeURIComponent(contDt)}`),
+  getPRLines: (filter: PRLineFilter) =>
+    apiHelpers.get<PRLineDto[]>(`${BASE}/pr-lines`, { params: filter }),
+
+  getById: (contNo: number, contDt: string) =>
+    apiHelpers.get<PODetailResponse>(`${BASE}/${contNo}/${encodeURIComponent(contDt)}`),
 
   create: (dto: CreatePORequest) =>
-    apiHelpers.post<{ contNo: string }>(`${BASE}`, dto),
+    apiHelpers.post<{ contNo: number; warnings: string[] }>(BASE, dto),
 
-  update: (contNo: string, contDt: string, dto: UpdatePORequest) =>
-    apiHelpers.put<void>(`${BASE}/${encodeURIComponent(contNo)}/${encodeURIComponent(contDt)}`, dto),
+  delete: (contNo: number, contDt: string, deleteReasonCode: string) =>
+    apiHelpers.delete(`${BASE}/${contNo}/${encodeURIComponent(contDt)}`, {
+      data: { deleteReasonCode },
+    }),
 
-  delete: (contNo: string, contDt: string, dto: PODeleteRequest) =>
-    apiHelpers.delete(`${BASE}/${encodeURIComponent(contNo)}/${encodeURIComponent(contDt)}`, { data: dto }),
+  getApprovalStatus: (contNo: number, contDt: string) =>
+    apiHelpers.get<POApprovalStatus>(`${BASE}/${contNo}/${encodeURIComponent(contDt)}/approval`),
 
-  getApprovalStatus: (contNo: string, contDt: string) =>
-    apiHelpers.get<POApprovalStatusDto>(`${BASE}/${encodeURIComponent(contNo)}/${encodeURIComponent(contDt)}/approval`),
-
-  approve: (contNo: string, contDt: string, dto: POApprovalActionRequest) =>
-    apiHelpers.post<void>(`${BASE}/${encodeURIComponent(contNo)}/${encodeURIComponent(contDt)}/approve`, dto),
+  approve: (contNo: number, contDt: string, action: POApprovalAction) =>
+    apiHelpers.post(`${BASE}/${contNo}/${encodeURIComponent(contDt)}/approve`, action),
 }

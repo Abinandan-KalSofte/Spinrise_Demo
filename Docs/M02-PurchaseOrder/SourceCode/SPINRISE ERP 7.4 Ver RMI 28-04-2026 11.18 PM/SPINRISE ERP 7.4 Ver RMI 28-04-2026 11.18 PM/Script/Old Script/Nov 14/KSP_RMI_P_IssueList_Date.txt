@@ -1,0 +1,73 @@
+--KSP_RMI_P_IssueList_Date  '01','2014-11-01','2014-11-25','A','ALL'              
+CREATE PROC KSP_RMI_P_IssueList_Date           
+(                    
+ @Divcode VARCHAR(2),                    
+ @FDate VARCHAR(10),                    
+ @TDate VARCHAR(10),                
+ @IssueType VARCHAR(10),                
+ @LotType VARCHAR(10)                
+)                    
+AS                    
+BEGIN                    
+SELECT x.DOCDT,x.DOCNO,X.cntcd,X.cntname,X.VARCODE,X.VARNAME,X.LOTNO,X.LOTYEAR,                  
+SUM(ISNULL(BALES,0))AS BALES,SUM(ISNULL(NETWT,0))AS NETWT,                    
+SUM(ISNULL(INVWT,0))AS INVWT,X.[Rate/Qtl],X.TOTLANDCOST,X.RATECY,X.DIV_PRINTNAME,X.DIV_UNITNAME,                  
+--CONVERT(VARCHAR,X.LOTNO)+'/'+RIGHT(CONVERT(VARCHAR,((X.LOTYEAR))),2)+'-'+RIGHT(CONVERT(VARCHAR,(X.LOTYEAR)+1),2)LotNO_FYear,                  
+X.CATCD,X.CATNAME,CONVERT(VARCHAR,X.LOTNO)+'/'+right(X.AYEAR,5) AS LotNO_FYear  ,SUM(ISNULL(X.ISSKGS,0))  AS ISSKGS              
+FROM                    
+(select distinct a.docno, a.docdt,F.cntcd,G.cntname,A.VARCODE, b.varname,A.LOTNO,C.LOTYEAR,                  
+count(a.baleno) as bales,0 as netwt,0 as invwt,                    
+C.RATEKG*100 AS 'Rate/Qtl',C.TOTLANDCOST,C.RATECY AS RATECY,D.DIV_PRINTNAME,D.DIV_UNITNAME,                  
+C.CATCD,H.CATNAME,py.AYEAR ,0 as ISSKGS                  
+from rm_issb a                    
+INNER JOIN RM_ISSH F ON F.DIVCODE = a.DIVCODE AND F.DOCNO = a.DOCNO AND F.DOCDT = a.DOCDT AND F.ISSTYPE = a.ISSTYPE                    
+LEFT JOIN rm_var b ON b.VARCODE = a.VARCODE                    
+LEFT JOIN RM_LOT C ON C.DIVCODE=A.DIVCODE AND C.LOTNO=A.LOTNO AND C.LOTDT=A.lotdt AND C.LOTTYPE=A.LOTTYPE AND                     
+C.VARCODE=A.VARCODE   and c.catcd = a.catcd              
+LEFT OUTER JOIN PP_YEAR py on C.LOTDT BETWEEN py.AYFDATE AND py.AYLDATE              
+LEFT JOIN PP_DIVMAS D ON D.DIVCODE=A.DIVCODE                    
+LEFT JOIN RM_COUNT G ON G.Divcode=F.DIVCODE AND G.cntcd=F.cntcd AND G.mixgrpcd=F.MIXGRP                    
+LEFT JOIN RM_CAT H ON H.CATCD=C.CATCD                  
+where a.issued='Y' and a.Divcode=@Divcode and a.docdt between @FDate and  @TDate AND                
+((@IssueType='A' AND a.ISSTYPE IN (SELECT isstype FROM  rm_issb))  OR                  
+(@IssueType<> 'A' AND a.ISSTYPE IN (SELECT isstype FROM  rm_issb WHERE isstype =@IssueType )))AND                
+((@LotType ='ALL' AND a.LOTTYPE IN (SELECT LOTTYPE FROM  rm_issb))  OR                  
+(@LotType <> 'ALL'  AND a.LOTTYPE IN (SELECT LOTTYPE FROM  rm_issb WHERE LOTTYPE =@LotType  )))                 
+AND C.LOTYEAR=year(a.docdt)      
+--AND a.lotno =41            
+group by a.docno, a.docdt,F.cntcd,G.cntname,A.VARCODE,b.varname,A.LOTNO,C.LOTYEAR,C.RATEKG,C.TOTLANDCOST,C.RATECY,                    
+D.DIV_PRINTNAME,D.DIV_UNITNAME,C.CATCD,H.CATNAME,py.AYEAR               
+            
+Union All                    
+            
+select a.docno, a.docdt,F.cntcd,G.cntname, A.VARCODE,b.varname, A.LOTNO,C.LOTYEAR,                  
+0 as BALES, sum(ISNULL(a.actisskgs,0))as netwt,                    
+sum(ISNULL(c.pnetwt,0))as invwt,C.RATEKG*100 AS 'Rate/Qtl',C.TOTLANDCOST,C.RATECY AS RATECY,                    
+E.DIV_PRINTNAME,E.DIV_UNITNAME,                  
+C.CATCD,H.CATNAME,py.AYEAR,sum(a.ISSKGS) as ISSKGS               
+from rm_issb a                    
+INNER JOIN RM_ISSH F ON F.DIVCODE = a.DIVCODE AND F.DOCNO = a.DOCNO AND F.DOCDT = a.DOCDT AND F.ISSTYPE = a.ISSTYPE                    
+LEFT JOIN rm_var b ON b.VARCODE = a.VARCODE                    
+LEFT JOIN RM_LOT C ON C.DIVCODE=A.DIVCODE AND C.LOTNO=A.LOTNO AND C.LOTDT=A.lotdt AND C.LOTTYPE=A.LOTTYPE AND                     
+C.VARCODE=A.VARCODE     and c.catcd = a.catcd            
+LEFT OUTER JOIN PP_YEAR py on C.LOTDT BETWEEN py.AYFDATE AND py.AYLDATE                 
+LEFT JOIN rm_bale D ON D.DIVCODE=A.DIVCODE AND D.LOTNO=A.LOTNO AND D.lotdt=A.lotdt AND D.lottype=A.LOTTYPE AND                     
+D.BALENO=A.BALENO    and d.VARCODE =a.VARCODE and d.CATCD = a.CATCD           
+LEFT JOIN PP_DIVMAS E ON E.DIVCODE=A.DIVCODE                    
+LEFT JOIN RM_COUNT G ON G.Divcode=F.DIVCODE AND G.cntcd=F.cntcd AND G.mixgrpcd=F.MIXGRP                    
+LEFT JOIN RM_CAT H ON H.CATCD=C.CATCD                  
+where a.issued='Y' and a.Divcode=@Divcode and a.docdt between @FDate and @TDate AND                 
+((@IssueType='A' AND a.ISSTYPE IN (SELECT isstype FROM  rm_issb))  OR                  
+(@IssueType<> 'A' AND a.ISSTYPE IN (SELECT isstype FROM  rm_issb WHERE isstype =@IssueType )))AND                
+((@LotType ='ALL' AND a.LOTTYPE IN (SELECT LOTTYPE FROM  rm_issb))  OR                  
+(@LotType <> 'ALL'  AND a.LOTTYPE IN (SELECT LOTTYPE FROM  rm_issb WHERE LOTTYPE =@LotType  )))                
+AND C.LOTYEAR=year(a.docdt)      
+--AND a.lotno =41        
+group by a.docno, a.docdt,F.cntcd,G.cntname,A.VARCODE,b.varname,A.LOTNO,C.LOTYEAR,C.RATEKG,C.TOTLANDCOST,C.RATECY,                    
+E.DIV_PRINTNAME,E.DIV_UNITNAME,C.CATCD,H.CATNAME,py.AYEAR)X                    
+GROUP BY x.DOCNO,x.DOCDT,X.cntcd,X.cntname,X.VARCODE,X.VARNAME,X.LOTNO,X.LOTYEAR,X.[Rate/Qtl],X.TOTLANDCOST,X.RATECY,                    
+X.DIV_PRINTNAME,X.DIV_UNITNAME,X.CATCD,X.CATNAME,X.AYEAR--,X.ISSKGS                  
+ORDER BY X.docdt,X.docno,X.CNTCD,X.VARCODE                 
+            
+END          
+          

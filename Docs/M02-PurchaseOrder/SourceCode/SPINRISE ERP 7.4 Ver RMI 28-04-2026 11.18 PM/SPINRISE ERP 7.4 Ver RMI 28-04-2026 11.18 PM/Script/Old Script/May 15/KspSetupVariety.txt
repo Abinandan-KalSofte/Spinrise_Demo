@@ -1,0 +1,11 @@
+alter procedure KspSetupVariety
+--KspSetupVariety '01'
+@divcode varchar(02)
+as
+begin
+
+select varcode,varname,catcd,
+'imported'=CASE WHEN imported='Y' THEN 'Yes' else 'No' end ,pd.DIV_PRINTNAME,pd.DIV_UNITNAME  from rm_var 
+inner join PP_DIVMAS pd on pd.DIVCODE=@divcode
+ order by varcode
+end

@@ -1,0 +1,111 @@
+
+ alter table rm_param add RIncidentAmt_Roff  tinyint ,RspotExpamt_Roff tinyint
+
+ GO
+
+ 
+alter table rm_cont add perbaletruckbale varchar(5), commperbale numeric(15,2) , 
+incidentcharge numeric(15,2), spotexpense numeric(15,2), TRASH_PER numeric(15,2)
+
+GO
+
+alter table rm_lot add 
+lot_spotexpense	numeric(15,2),
+lot_incidentcharge	numeric(15,2),
+TypeTruckbale	varchar(50),
+Lotincidentchargeamt	numeric(15,2),
+Lotspotexpenseamt	numeric(15,2)
+
+GO
+
+-- old
+alter table RM_FIBRENORMS add maturityratio	numeric(15,2),
+FQI	numeric(15),
+SFC	numeric(15,1)
+GO
+alter table rm_lot add contamination numeric(15)
+GO
+       alter table rm_acceptqty add ipadd varchar(25)
+ GO
+
+
+
+  alter table rm_cont add
+  grade	varchar(32),
+MIC	varchar(32),
+strength	varchar(32),
+moisture	varchar(32),
+trash	varchar(32),
+freightperbale	numeric(9),
+rmpaycode	numeric(9,2)
+
+GO
+
+
+alter table fa_purhd add faincidentcharge numeric(15,2),faspotexpense numeric(15,2)
+
+GO
+
+alter table rm_param_fa add IncidentchargeGL numeric(15,2),spotexpenseGL numeric(15,2)
+
+GO
+
+
+
+alter table rm_param_fa alter column IncidentchargeGL varchar(7)
+go
+alter table rm_param_fa alter column spotexpenseGL varchar(7)
+go
+
+
+alter table insurance add ipaddress varchar(50)
+GO
+
+
+
+alter table rm_lot add colorgrade numeric(15,2), FibreSFI numeric(15,2),
+FISI numeric(15,2) 
+GO
+
+alter table ig_tax add RCMCGST_GLCODE varchar(15), RCMSGST_GLCODE varchar(15), RCMIGST_GLCODE varchar(15)
+
+GO
+
+
+
+alter table RM_FreightBillHD add  TDSFLG	varchar(5)
+alter table RM_FreightBillHD add TDS_AssAmt	numeric(15,2)
+alter table RM_FreightBillHD add TDSTypeCode	varchar(15)
+alter table RM_FreightBillHD add Tdsmanual	varchar(15)
+
+GO
+
+
+alter table RM_FreightBillHD add pjvtc decimal(15),PJVNO decimal(15),PJVDT datetime,
+RCMFLG varchar(5),RCMITCFLG varchar(5)
+GO
+alter table RM_FreightBillHD add Frt_Docno decimal(15)
+GO
+
+
+
+
+CREATE TABLE [dbo].[RM_FA_PAYMENTGL](
+	[Divcode] [varchar](2) NOT NULL,
+	[TC] [smallint] NOT NULL,
+	[AssValue_GL] [varchar](7) NULL,
+	[CGST_GL] [varchar](7) NULL,
+	[SGST_GL] [varchar](7) NULL,
+	[IGST_GL] [varchar](7) NULL,
+	[Roundoff_GL] [varchar](7) NULL,
+	[Others_GL] [varchar](7) NULL,
+	[Discount_GL] [varchar](7) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Divcode] ASC,
+	[TC] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+  

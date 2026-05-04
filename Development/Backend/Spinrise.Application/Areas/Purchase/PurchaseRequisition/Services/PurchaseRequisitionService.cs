@@ -4,17 +4,23 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
 {
     private readonly IPurchaseRequisitionRepository _repo;
     private readonly IUnitOfWork _uow;
+    private readonly ILogger<PurchaseRequisitionService> _log;
 
-    public PurchaseRequisitionService(IPurchaseRequisitionRepository repo, IUnitOfWork uow)
+    public PurchaseRequisitionService(
+        IPurchaseRequisitionRepository repo,
+        IUnitOfWork uow,
+        ILogger<PurchaseRequisitionService> log)
     {
         _repo = repo;
         _uow  = uow;
+        _log  = log;
     }
 
     // ── Pre-checks (V1, V2, V3 + all po_para flags) ───────────────────────────
 
     public async Task<PreCheckResult> RunPreChecksAsync(string divCode)
     {
+        _log.LogInformation("PR PreChecks | DivCode={DivCode}", divCode);
         await _uow.BeginAsync();
         try { return await _repo.RunPreChecksAsync(divCode.Trim()); }
         finally { await _uow.CommitAsync(); }
@@ -26,18 +32,23 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
         string divCode, string? prNo, DateTime? fromDate, DateTime? toDate,
         string? depCode, string? status)
     {
+        _log.LogInformation("PR GetAll | DivCode={DivCode} PrNo={PrNo} Status={Status}", divCode, prNo, status);
         await _uow.BeginAsync();
         try
         {
-            return await _repo.GetAllAsync(
+            var result = await _repo.GetAllAsync(
                 divCode.Trim(), prNo?.Trim(), fromDate, toDate,
                 depCode?.Trim(), status?.Trim());
+            var list = result.ToList();
+            _log.LogInformation("PR GetAll | DivCode={DivCode} Returned={Count}", divCode, list.Count);
+            return list;
         }
         finally { await _uow.CommitAsync(); }
     }
 
     public async Task<PRStatusSummaryDto> GetStatusSummaryAsync(string divCode, PRListQueryDto query)
     {
+        _log.LogInformation("PR GetStatusSummary | DivCode={DivCode}", divCode);
         await _uow.BeginAsync();
         try { return await _repo.GetStatusSummaryAsync(divCode.Trim(), query); }
         finally { await _uow.CommitAsync(); }
@@ -45,17 +56,28 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
 
     public async Task<PagedResult<PRSummaryResponseDto>> GetPaginatedAsync(string divCode, PRListQueryDto query)
     {
+        _log.LogInformation("PR GetPaginated | DivCode={DivCode} Page={Page} PageSize={PageSize} Status={Status}",
+            divCode, query.Page, query.PageSize, query.Status);
         await _uow.BeginAsync();
-        try { return await _repo.GetPaginatedAsync(divCode.Trim(), query); }
+        try
+        {
+            var result = await _repo.GetPaginatedAsync(divCode.Trim(), query);
+            _log.LogInformation("PR GetPaginated | DivCode={DivCode} Total={Total} Page={Page}",
+                divCode, result.TotalCount, query.Page);
+            return result;
+        }
         finally { await _uow.CommitAsync(); }
     }
 
     public async Task<PRHeaderResponseDto?> GetByIdAsync(string divCode, long prNo, DateTime? startDate = null, DateTime? endDate = null)
     {
+        _log.LogInformation("PR GetById | DivCode={DivCode} PrNo={PrNo}", divCode, prNo);
         await _uow.BeginAsync();
         try
         {
             var header = await _repo.GetByIdAsync(divCode.Trim(), prNo, startDate, endDate);
+            if (header is null)
+                _log.LogWarning("PR GetById | NotFound | DivCode={DivCode} PrNo={PrNo}", divCode, prNo);
             return header?.ToResponseDto();
         }
         finally { await _uow.CommitAsync(); }
@@ -67,6 +89,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
         string divCode, string depCode, string itemCode,
         DateTime yfDate, DateTime ylDate, PreCheckResult flags)
     {
+        _log.LogInformation("PR GetItemInfo | DivCode={DivCode} ItemCode={ItemCode}", divCode, itemCode);
         await _uow.BeginAsync();
         try
         {
@@ -75,6 +98,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
 
             if (raw is null)
             {
+                _log.LogWarning("PR GetItemInfo | ItemNotFound | DivCode={DivCode} ItemCode={ItemCode}", divCode, itemCode);
                 await _uow.CommitAsync();
                 return null;
             }
@@ -115,6 +139,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
 
     public async Task<IEnumerable<PRItemHistoryDto>> GetItemHistoryAsync(string divCode, string itemCode)
     {
+        _log.LogInformation("PR GetItemHistory | DivCode={DivCode} ItemCode={ItemCode}", divCode, itemCode);
         await _uow.BeginAsync();
         try
         {
@@ -143,6 +168,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
 
     public async Task<IEnumerable<PRDeleteReasonDto>> GetDeleteReasonsAsync()
     {
+        _log.LogInformation("PR GetDeleteReasons");
         await _uow.BeginAsync();
         try { return await _repo.GetDeleteReasonsAsync(); }
         finally { await _uow.CommitAsync(); }
@@ -154,6 +180,8 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
         CreatePRHeaderDto dto, string divCode, AuditContext audit)
     {
         divCode = divCode.Trim();
+        _log.LogInformation("PR Create | Start | DivCode={DivCode} DepCode={DepCode} Lines={LineCount} User={UserId}",
+            divCode, dto.DepCode, dto.Lines.Count, audit.UserId);
 
         IReadOnlyList<string> lineWarnings = [];
 
@@ -167,6 +195,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             if (setupFailure is not null)
             {
                 await _uow.CommitAsync();
+                _log.LogWarning("PR Create | Rejected | DivCode={DivCode} User={UserId} Reason={Reason}", divCode, audit.UserId, setupFailure);
                 return (false, setupFailure, null, []);
             }
 
@@ -181,6 +210,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
                 if (dto.PrDate.Date < maxPrDate.Date || dto.PrDate.Date > today)
                 {
                     await _uow.CommitAsync();
+                    _log.LogWarning("PR Create | Rejected | DivCode={DivCode} User={UserId} Reason={Reason}", divCode, audit.UserId, PRMessages.InvalidPrDate);
                     return (false, PRMessages.InvalidPrDate, null, []);
                 }
             }
@@ -189,6 +219,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             if (!await _repo.DepartmentExistsAsync(divCode, dto.DepCode.Trim()))
             {
                 await _uow.CommitAsync();
+                _log.LogWarning("PR Create | Rejected | DivCode={DivCode} User={UserId} Reason={Reason}", divCode, audit.UserId, PRMessages.DepartmentNotFound);
                 return (false, PRMessages.DepartmentNotFound, null, []);
             }
 
@@ -196,6 +227,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             if (flags.PendingPoDetailsEnabled && string.IsNullOrWhiteSpace(dto.IType))
             {
                 await _uow.CommitAsync();
+                _log.LogWarning("PR Create | Rejected | DivCode={DivCode} User={UserId} Reason={Reason}", divCode, audit.UserId, PRMessages.OrderTypeRequired);
                 return (false, PRMessages.OrderTypeRequired, null, []);
             }
 
@@ -203,13 +235,15 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             if (flags.PurTypeFlgEnabled && string.IsNullOrWhiteSpace(dto.PoGroupCode))
             {
                 await _uow.CommitAsync();
+                _log.LogWarning("PR Create | Rejected | DivCode={DivCode} User={UserId} Reason={Reason}", divCode, audit.UserId, PRMessages.PoGroupRequired);
                 return (false, PRMessages.PoGroupRequired, null, []);
             }
 
-            // V9: requester name required when flag active
-            if (flags.RequireRequesterName && string.IsNullOrWhiteSpace(dto.ReqName))
+            // Requester name always required
+            if (string.IsNullOrWhiteSpace(dto.ReqName))
             {
                 await _uow.CommitAsync();
+                _log.LogWarning("PR Create | Rejected | DivCode={DivCode} User={UserId} Reason={Reason}", divCode, audit.UserId, PRMessages.RequesterRequired);
                 return (false, PRMessages.RequesterRequired, null, []);
             }
 
@@ -217,6 +251,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             if (flags.RequireRefNo && string.IsNullOrWhiteSpace(dto.RefNo))
             {
                 await _uow.CommitAsync();
+                _log.LogWarning("PR Create | Rejected | DivCode={DivCode} User={UserId} Reason={Reason}", divCode, audit.UserId, PRMessages.RefNoRequired);
                 return (false, PRMessages.RefNoRequired, null, []);
             }
 
@@ -224,6 +259,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             if (dto.Lines.Count == 0)
             {
                 await _uow.CommitAsync();
+                _log.LogWarning("PR Create | Rejected | DivCode={DivCode} User={UserId} Reason={Reason}", divCode, audit.UserId, PRMessages.NoLineItems);
                 return (false, PRMessages.NoLineItems, null, []);
             }
 
@@ -234,6 +270,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             if (lineError is not null)
             {
                 await _uow.CommitAsync();
+                _log.LogWarning("PR Create | Rejected | DivCode={DivCode} User={UserId} Reason={Reason}", divCode, audit.UserId, lineError);
                 return (false, lineError, null, []);
             }
 
@@ -252,12 +289,18 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
 
             for (var i = 0; i < dto.Lines.Count; i++)
             {
-                var line = dto.Lines[i].ToEntity(divCode, prNo, i + 1);
+                var line = dto.Lines[i].ToEntity(divCode, prNo, header.PrDate, i + 1);
                 await _repo.InsertLineAsync(line);
                 await _repo.InsertAuditLogAsync(header, line, AuditMod.Add, audit);
             }
 
             await _uow.CommitAsync();
+
+            if (lineWarnings.Count > 0)
+                _log.LogWarning("PR Create | LineWarnings | DivCode={DivCode} PrNo={PrNo} Count={Count}", divCode, prNo, lineWarnings.Count);
+            _log.LogInformation("PR Create | Done | DivCode={DivCode} PrNo={PrNo} Lines={LineCount} User={UserId}",
+                divCode, prNo, dto.Lines.Count, audit.UserId);
+
             return (true, "Purchase Requisition created successfully.", (long?)prNo, lineWarnings);
         }
         catch { await _uow.RollbackAsync(); throw; }
@@ -269,6 +312,8 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
         UpdatePRHeaderDto dto, string divCode, AuditContext audit)
     {
         divCode = divCode.Trim();
+        _log.LogInformation("PR Update | Start | DivCode={DivCode} PrNo={PrNo} Lines={LineCount} User={UserId}",
+            divCode, dto.PrNo, dto.Lines.Count, audit.UserId);
 
         IReadOnlyList<string> lineWarnings = [];
 
@@ -281,6 +326,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             if (fetched is null)
             {
                 await _uow.CommitAsync();
+                _log.LogWarning("PR Update | Rejected | DivCode={DivCode} PrNo={PrNo} User={UserId} Reason={Reason}", divCode, dto.PrNo, audit.UserId, PRMessages.PrNotFound);
                 return (false, PRMessages.PrNotFound, []);
             }
 
@@ -290,6 +336,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             if (updateLockMsg is not null)
             {
                 await _uow.CommitAsync();
+                _log.LogWarning("PR Update | Rejected | DivCode={DivCode} PrNo={PrNo} User={UserId} Reason={Reason}", divCode, dto.PrNo, audit.UserId, updateLockMsg);
                 return (false, updateLockMsg, []);
             }
 
@@ -298,24 +345,28 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             if (!await _repo.DepartmentExistsAsync(divCode, dto.DepCode.Trim()))
             {
                 await _uow.CommitAsync();
+                _log.LogWarning("PR Update | Rejected | DivCode={DivCode} PrNo={PrNo} User={UserId} Reason={Reason}", divCode, dto.PrNo, audit.UserId, PRMessages.DepartmentNotFound);
                 return (false, PRMessages.DepartmentNotFound, []);
             }
 
-            if (flags.RequireRequesterName && string.IsNullOrWhiteSpace(dto.ReqName))
+            if (string.IsNullOrWhiteSpace(dto.ReqName))
             {
                 await _uow.CommitAsync();
+                _log.LogWarning("PR Update | Rejected | DivCode={DivCode} PrNo={PrNo} User={UserId} Reason={Reason}", divCode, dto.PrNo, audit.UserId, PRMessages.RequesterRequired);
                 return (false, PRMessages.RequesterRequired, []);
             }
 
             if (flags.RequireRefNo && string.IsNullOrWhiteSpace(dto.RefNo))
             {
                 await _uow.CommitAsync();
+                _log.LogWarning("PR Update | Rejected | DivCode={DivCode} PrNo={PrNo} User={UserId} Reason={Reason}", divCode, dto.PrNo, audit.UserId, PRMessages.RefNoRequired);
                 return (false, PRMessages.RefNoRequired, []);
             }
 
             if (dto.Lines.Count == 0)
             {
                 await _uow.CommitAsync();
+                _log.LogWarning("PR Update | Rejected | DivCode={DivCode} PrNo={PrNo} User={UserId} Reason={Reason}", divCode, dto.PrNo, audit.UserId, PRMessages.NoLineItems);
                 return (false, PRMessages.NoLineItems, []);
             }
 
@@ -326,6 +377,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             if (lineError is not null)
             {
                 await _uow.CommitAsync();
+                _log.LogWarning("PR Update | Rejected | DivCode={DivCode} PrNo={PrNo} User={UserId} Reason={Reason}", divCode, dto.PrNo, audit.UserId, lineError);
                 return (false, lineError, []);
             }
 
@@ -346,24 +398,28 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             if (updatedRows <= 0)
             {
                 await _uow.RollbackAsync();
+                _log.LogWarning("PR Update | Rejected | DivCode={DivCode} PrNo={PrNo} User={UserId} Reason={Reason}", divCode, dto.PrNo, audit.UserId, PRMessages.PrNotFound);
                 return (false, PRMessages.PrNotFound, []);
             }
 
-            // Soft-delete existing lines then re-insert (VB6 pattern).
-            // Read max prsno BEFORE soft-deleting — soft-delete keeps rows physically in PO_PRL
-            // (sets AmdFlg='Y'), so new inserts must continue the sequence past the current max
-            // to avoid PK collision on (divcode, prno, prdate, prsno).
-            var maxPrSNo = await _repo.GetMaxPrSNoAsync(divCode, dto.PrNo);
-            await _repo.SoftDeleteLinesAsync(divCode, dto.PrNo);
+            // Physical delete all existing lines then re-insert the submitted set.
+            // This keeps po_prl at exactly N rows per PR with sequential prsno 1..N.
+            await _repo.SoftDeleteLinesAsync(divCode, dto.PrNo, existing.PrDate);
 
             for (var i = 0; i < dto.Lines.Count; i++)
             {
-                var line = dto.Lines[i].ToEntity(divCode, dto.PrNo, maxPrSNo + i + 1);
+                var line = dto.Lines[i].ToEntity(divCode, dto.PrNo, existing.PrDate, i + 1);
                 await _repo.InsertLineAsync(line);
                 await _repo.InsertAuditLogAsync(header, line, AuditMod.Modify, audit);
             }
 
             await _uow.CommitAsync();
+
+            if (lineWarnings.Count > 0)
+                _log.LogWarning("PR Update | LineWarnings | DivCode={DivCode} PrNo={PrNo} Count={Count}", divCode, dto.PrNo, lineWarnings.Count);
+            _log.LogInformation("PR Update | Done | DivCode={DivCode} PrNo={PrNo} Lines={LineCount} User={UserId}",
+                divCode, dto.PrNo, dto.Lines.Count, audit.UserId);
+
             return (true, "Purchase Requisition updated successfully.", lineWarnings);
         }
         catch { await _uow.RollbackAsync(); throw; }
@@ -383,6 +439,8 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             return (false, PRMessages.DeleteReasonRequired);
 
         divCode = divCode.Trim();
+        _log.LogInformation("PR Delete | Start | DivCode={DivCode} PrNo={PrNo} Reason={ReasonCode} User={UserId}",
+            divCode, prNo, deleteReasonCode, audit.UserId);
 
         // ── Phase 1: validation (read-only) ──────────────────────────────────
         PurchaseRequisitionHeader existing;
@@ -393,6 +451,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             if (header is null)
             {
                 await _uow.CommitAsync();
+                _log.LogWarning("PR Delete | Rejected | DivCode={DivCode} PrNo={PrNo} User={UserId} Reason={Reason}", divCode, prNo, audit.UserId, PRMessages.PrNotFound);
                 return (false, PRMessages.PrNotFound);
             }
 
@@ -400,6 +459,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             if (deleteLockMsg is not null)
             {
                 await _uow.CommitAsync();
+                _log.LogWarning("PR Delete | Rejected | DivCode={DivCode} PrNo={PrNo} User={UserId} Reason={Reason}", divCode, prNo, audit.UserId, deleteLockMsg);
                 return (false, deleteLockMsg);
             }
 
@@ -407,12 +467,14 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
             if (await _repo.IsLinkedToEnquiryAsync(divCode, prNo))
             {
                 await _uow.CommitAsync();
+                _log.LogWarning("PR Delete | Rejected | DivCode={DivCode} PrNo={PrNo} User={UserId} Reason={Reason}", divCode, prNo, audit.UserId, PRMessages.LinkedToEnquiry);
                 return (false, PRMessages.LinkedToEnquiry);
             }
 
             if (!await _repo.DeleteReasonExistsAsync(deleteReasonCode.Trim()))
             {
                 await _uow.CommitAsync();
+                _log.LogWarning("PR Delete | Rejected | DivCode={DivCode} PrNo={PrNo} User={UserId} Reason={Reason}", divCode, prNo, audit.UserId, PRMessages.DeleteReasonInvalid);
                 return (false, PRMessages.DeleteReasonInvalid);
             }
 
@@ -425,10 +487,11 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
         await _uow.BeginAsync(startTransaction: true);
         try
         {
-            var deleted = await _repo.DeleteAsync(divCode, prNo, deleteReasonCode.Trim());
+            var deleted = await _repo.DeleteAsync(divCode, prNo, existing.PrDate, deleteReasonCode.Trim());
             if (deleted <= 0)
             {
                 await _uow.RollbackAsync();
+                _log.LogWarning("PR Delete | Rejected | DivCode={DivCode} PrNo={PrNo} User={UserId} Reason={Reason}", divCode, prNo, audit.UserId, PRMessages.PrNotFound);
                 return (false, PRMessages.PrNotFound);
             }
 
@@ -437,6 +500,7 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
                 await _repo.InsertAuditLogAsync(existing, line, AuditMod.Delete, audit);
 
             await _uow.CommitAsync();
+            _log.LogInformation("PR Delete | Done | DivCode={DivCode} PrNo={PrNo} User={UserId}", divCode, prNo, audit.UserId);
             return (true, "Purchase Requisition deleted successfully.");
         }
         catch { await _uow.RollbackAsync(); throw; }
@@ -445,16 +509,15 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
     // ── Delete line ───────────────────────────────────────────────────────────
 
     public async Task<(bool Success, string Message)> DeleteLineAsync(
-        string divCode, long prNo, int prSNo, string deleteReasonCode, AuditContext audit,
+        string divCode, long prNo, int prSNo, string? deleteReasonCode, AuditContext audit,
         DateTime? startDate = null, DateTime? endDate = null)
     {
         if (string.IsNullOrWhiteSpace(divCode) || prNo <= 0 || prSNo <= 0)
             return (false, PRMessages.PrNotFound);
 
-        if (string.IsNullOrWhiteSpace(deleteReasonCode))
-            return (false, PRMessages.DeleteReasonRequired);
-
         divCode = divCode.Trim();
+        _log.LogInformation("PR DeleteLine | Start | DivCode={DivCode} PrNo={PrNo} PrSNo={PrSNo} User={UserId}",
+            divCode, prNo, prSNo, audit.UserId);
 
         // ── Phase 1: validation (read-only) ──────────────────────────────────
         PurchaseRequisitionHeader header;
@@ -462,11 +525,6 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
         await _uow.BeginAsync();
         try
         {
-            if (!await _repo.DeleteReasonExistsAsync(deleteReasonCode.Trim()))
-            {
-                await _uow.CommitAsync();
-                return (false, PRMessages.DeleteReasonInvalid);
-            }
 
             var existing = await _repo.GetByIdAsync(divCode, prNo, startDate, endDate);
             if (existing is null)
@@ -500,16 +558,18 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
         try
         {
             var deleted = await _repo.DeleteLineAsync(
-                divCode, prNo, prSNo, deleteReasonCode.Trim());
+                divCode, prNo, header.PrDate, prSNo, deleteReasonCode?.Trim() ?? string.Empty);
             if (deleted <= 0)
             {
                 await _uow.RollbackAsync();
+                _log.LogWarning("PR DeleteLine | Rejected | DivCode={DivCode} PrNo={PrNo} PrSNo={PrSNo} User={UserId} Reason={Reason}", divCode, prNo, prSNo, audit.UserId, PRMessages.PrNotFound);
                 return (false, PRMessages.PrNotFound);
             }
 
             await _repo.InsertAuditLogAsync(header, targetLine, AuditMod.Delete, audit);
 
             await _uow.CommitAsync();
+            _log.LogInformation("PR DeleteLine | Done | DivCode={DivCode} PrNo={PrNo} PrSNo={PrSNo} User={UserId}", divCode, prNo, prSNo, audit.UserId);
             return (true, "Purchase Requisition line deleted successfully.");
         }
         catch { await _uow.RollbackAsync(); throw; }
@@ -693,10 +753,12 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
         if (header.IsApprovalLocked)
             return PRMessages.PrApprovalLocked;
 
-        if (header.PrStatus.Equals("CONVERTED",  StringComparison.OrdinalIgnoreCase)
-         || header.PrStatus.Equals("RECEIVED",   StringComparison.OrdinalIgnoreCase)
-         || header.PrStatus.Equals("CANCELLED",  StringComparison.OrdinalIgnoreCase)
-         || header.PrStatus.Equals("APPROVED",   StringComparison.OrdinalIgnoreCase))
+        if (header.PrStatus.Equals("CONVERTED",      StringComparison.OrdinalIgnoreCase)
+         || header.PrStatus.Equals("RECEIVED",       StringComparison.OrdinalIgnoreCase)
+         || header.PrStatus.Equals("CANCELLED",      StringComparison.OrdinalIgnoreCase)
+         || header.PrStatus.Equals("FINAL_APPROVED", StringComparison.OrdinalIgnoreCase)
+         || header.PrStatus.Equals("L2_APPROVED",    StringComparison.OrdinalIgnoreCase)
+         || header.PrStatus.Equals("L1_APPROVED",    StringComparison.OrdinalIgnoreCase))
             return PRMessages.PrAlreadyConverted;
 
         return null;

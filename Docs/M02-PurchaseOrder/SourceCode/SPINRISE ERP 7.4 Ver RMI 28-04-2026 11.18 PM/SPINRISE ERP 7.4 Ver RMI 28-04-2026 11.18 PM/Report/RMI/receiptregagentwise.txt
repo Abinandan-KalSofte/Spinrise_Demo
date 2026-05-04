@@ -1,0 +1,10 @@
+ALTER VIEW receiptregagentwise AS   
+select distinct a.lotdt,a.lotno,a.lotyear,c.brkcd as brkcd,b.prmark,a.pjno,b.contno as pono,c.dlytype,a.varcode,  
+a.bales,isnull(a.favaourablewgt,0) as favaourablewgt,a.ratecy,a.pjamt,a.taxamt,a.ldgulg,a.freght,a.totlandcost,(a.totlandcost)  
+as totalvalue,e.slname as supplier,f.slname as broker,A.NETWT,A.FNETWT,A.PNETWT,A.AREACD,a.fbillno,g.AREANAME,b.CARCODE,h.CARNAME trnsname,a.RATEKG
+from  rm_lot a,rm_arrival b,rm_cont c,fa_slmas e,fa_slmas f,RM_AREA g,PO_CAR h where a.lotno = b.lotno And b.contno = c.contno and b.contdt=c.contdt And   
+a.lotdt = b.lotdt and a.divcode=b.divcode and a.divcode=c.divcode  and a.supcd=e.slcode  and a.supcd=c.supcd   
+AND a.BRKCD*=f.slcode AND a.AREACD=g.AREACODE AND b.CARCODE=h.CARCODE
+and c.brkcd between 'CA 0001' and 'CAY0002' and a.lotdt between '2010-04-01' and '2010-06-10'  AND A.DIVCODE='01'   
+AND OPFLG<>'Y' AND LOTYEAR='2010'   
+  

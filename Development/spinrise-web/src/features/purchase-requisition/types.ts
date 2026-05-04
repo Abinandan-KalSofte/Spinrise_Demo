@@ -40,6 +40,36 @@ export interface SubCostLookup {
   sccName: string
 }
 
+export interface SupplierLookup {
+  supCode: string
+  supName: string
+}
+
+export interface VarietyLookup {
+  varCode:  string
+  varName:  string
+  hsnCode:  string
+  cgstPer:  number
+  sgstPer:  number
+  igstPer:  number
+  taxCode:  string
+}
+
+export interface AreaLookup {
+  areaCode: string
+  areaName: string
+}
+
+export interface PaymentModeLookup {
+  pmCode: string
+  pmName: string
+}
+
+export interface CurrencyLookup {
+  currCode: string
+  currName: string
+}
+
 // ── PR Line local form state ──────────────────────────────────────────────────
 
 export interface PRLineFormItem {
@@ -49,6 +79,7 @@ export interface PRLineFormItem {
   itemName: string
   uom: string
   currentStock: number | null
+  minLevel: number | null
   qtyRequired: number
   requiredDate: string | null
   place: string
@@ -58,6 +89,7 @@ export interface PRLineFormItem {
   costCentreCode: string
   budgetGroupCode: string
   subCostCode: number | null
+  subCostName?: string | null
   isSample: boolean
   lastPoRate: number | null
   lastPoDate: string | null
@@ -175,6 +207,7 @@ export interface PRLineResponse {
   costCentreCode?: string
   budgetGroupCode?: string
   subCostCode?: number
+  subCostName?: string
   lastPoRate?: number
   lastPoDate?: string
   lastPoSupplierCode?: string
@@ -269,9 +302,10 @@ export interface PreCheckResult {
 }
 
 export const PR_STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  OPEN:      { label: 'Open',      color: 'blue'    },
-  PENDING:   { label: 'Pending',   color: 'orange'  },  // G19: Added for submitted PRs
-  APPROVED:  { label: 'Approved',  color: 'purple'  },
+  OPEN:           { label: 'Open',                  color: 'blue'   },
+  L1_APPROVED:    { label: 'First Level Approved',  color: 'orange' },
+  L2_APPROVED:    { label: 'Second Level Approved', color: 'purple' },
+  FINAL_APPROVED: { label: 'Final Approved',        color: 'green'  },
   RECEIVED:  { label: 'Received',  color: 'cyan'    },
   CANCELLED: { label: 'Cancelled', color: 'red'     },
   CONVERTED: { label: 'Converted', color: 'green'   },

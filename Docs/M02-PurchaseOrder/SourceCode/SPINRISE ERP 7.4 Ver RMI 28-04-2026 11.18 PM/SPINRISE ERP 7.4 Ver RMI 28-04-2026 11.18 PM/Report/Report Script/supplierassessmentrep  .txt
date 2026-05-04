@@ -1,0 +1,34 @@
+Alter PROCEDURE sp_supplierassessmentrep  
+@divcode AS varchar(10),@supcd AS varchar(10),@yfdate AS varchar(10),@yldate AS varchar(10),@fdate AS varchar(10),  
+@tdate AS varchar(10) AS   
+
+SELECT contno,contdt,slname,duedate,sum(conqty) AS conqty,sum(ordqty) AS ordqty,sum(cancelqty) AS cancelqty,sum(recvdqty) AS recvqty,sum(intimeqty)AS intimeqty  
+,sum(lateqty) AS lateqty,sum(pendingcurrent) AS pendingcurrent,sum(pendinglate) AS pendinglate FROM (  
+
+select  a.contno,a.contdt ,slname,duedate,0 AS conqty,isnull(sum(ordqty),0) AS ordqty,isnull(CancelBales,0) CancelQty,isnull(Sum(quantity),0) recvdqty,0 AS intimeqty,0 AS lateqty,0 AS pendingcurrent,0 AS pendinglate  
+from rm_cont a,rm_arrival b,fa_slmas c where a.CONTNO=b.contno AND a.CONTDT=b.contdt AND a.SUPCD=b.supcd 
+AND a.DIVCODE=b.divcode AND A.VARCODE=B.VARCODE AND a.supcd=c.slcode and a.CONTDT between @fdate and @tdate 
+and a.supcd = @supcd AND a.DIVCODE =@divcode  GROUP BY a.CONTNO,a.CONTDT,c.slname,a.duedate,a.CancelBales   
+UNION all   
+SELECT a.contno,a.contdt,slname,duedate,0 AS conqty,0 AS ordqty,0 AS cancelqty,0 AS recvdqty,isnull(Sum(quantity),0) intimeqty,0 AS lateqty,0 AS pendingcurrent,0 AS pendinglate FROM RM_ARRIVAL a,rm_cont b,FA_SLMAS c Where   
+a.CONTNO=b.contno AND a.CONTDT=b.contdt AND a.SUPCD=b.supcd AND a.DIVCODE=b.divcode AND a.supcd=c.slcode 
+AND A.VARCODE=B.VARCODE AND a.Divcode=@divcode and a.Arrdate<=b.duedate AND a.CONTDT between @fdate and @tdate 
+and a.supcd = @supcd GROUP BY a.CONTNO,a.CONTDT,slname,duedate  
+UNION all  
+SELECT a.contno,a.contdt,slname,duedate,0 AS conqty,0 AS ordqty,0 AS cancelqty,0 AS recvdqty,0 intimeqty,
+isnull(Sum(quantity),0) AS lateqty,0 AS pendingcurrent,0 AS pendinglate FROM RM_ARRIVAL a,rm_cont b,FA_SLMAS c 
+Where a.CONTNO=b.contno AND a.CONTDT=b.contdt AND a.SUPCD=b.supcd AND a.DIVCODE=b.divcode AND a.supcd=c.slcode 
+AND A.VARCODE=B.VARCODE AND a.Divcode=@divcode and a.Arrdate>b.duedate AND a.CONTDT between @fdate and @tdate 
+and a.supcd = @supcd GROUP BY a.CONTNO,a.CONTDT,slname,duedate  
+UNION all  
+SELECT a.contno,a.contdt,slname,duedate,0 AS conqty,0 AS ordqty,0 AS cancelqty,0 AS recvdqty,0 intimeqty,0 AS lateqty,  
+sum(ordqty-quantity) pendingcurrent,0 AS pendinglate FROM RM_ARRIVAL a,rm_cont b,FA_SLMAS c Where   
+a.CONTNO=b.contno AND a.CONTDT=b.contdt AND a.SUPCD=b.supcd AND a.DIVCODE=b.divcode AND a.supcd=c.slcode AND 
+A.VARCODE=B.VARCODE AND a.Divcode=@divcode and b.duedate>=@tdate AND a.CONTDT between @fdate and @tdate and 
+a.supcd = @supcd GROUP BY a.CONTNO,a.CONTDT,slname,duedate  
+UNION all  
+SELECT a.contno,a.contdt,slname,duedate,isnull(Sum(quantity),0) AS conqty,0 AS ordqty,0 AS cancelqty,0 AS recvdqty,0 intimeqty,0 AS lateqty  
+,0 AS pendingcurrent,sum(ordqty-quantity) AS pendinglate FROM RM_ARRIVAL a,rm_cont b,FA_SLMAS c Where   
+a.CONTNO=b.contno AND a.CONTDT=b.contdt AND a.SUPCD=b.supcd AND a.DIVCODE=b.divcode AND a.supcd=c.slcode AND A.VARCODE=B.VARCODE AND a.Divcode=@divcode AND a.CONTDT between @fdate and @tdate and a.supcd = @supcd 
+GROUP BY a.CONTNO,a.CONTDT,slname,duedate  
+)s GROUP BY contno,contdt,slname,duedate ORDER BY contno

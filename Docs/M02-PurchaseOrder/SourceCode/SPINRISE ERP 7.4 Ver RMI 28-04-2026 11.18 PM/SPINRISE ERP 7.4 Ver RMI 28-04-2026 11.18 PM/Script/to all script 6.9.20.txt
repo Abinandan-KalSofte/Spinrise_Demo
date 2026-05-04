@@ -1,0 +1,48 @@
+alter table rm_acont add SupFileName varchar(45)
+go
+alter table rm_param_fa add SocialWelfareGL varchar(8)
+go
+alter table rm_param_fa add IDGL varchar(8)
+go
+alter table rm_param_fa add SICAGL varchar(8)
+go
+alter table rm_param_fa add AntidumpdutyGL varchar(8)
+go
+alter table rm_param_fa add FibreDisc_GL varchar(8)
+go
+alter table fa_purhd add SICA_Amt numeric(15,2)
+go
+alter table fa_purhd add SocialWelfare_Amt numeric(15,2)
+go
+alter table fa_purhd add ID_Amt numeric(15,2)
+go
+alter table fa_purhd add FibreDisc_Amt numeric(15,2)
+go
+
+  alter table RM_CONT add  Prepared_by Varchar(5)
+
+go
+
+
+	  go
+alter table rm_prh  add FL_Flag varchar(1)
+go
+alter table rm_prh  add FL_userID varchar(8)
+go
+alter table rm_prh  add FL_Date datetime
+go
+alter table rm_prh  add FL_IPadd varchar(15)
+
+go
+	 
+create View Vw_PRDetail
+as
+	  select  a.divcode,a.prno,a.prdate,b.varcode,b.prsno,b.qtyind,b.qtyindkg,
+	  ISNULL(qtyind,0)-ISNULL(qtyord,0) BALQTY,ISNULL(qtyindKG,0)-ISNULL(qtyordKG,0)  BALQTYKG,c.varname  from rm_prh a
+inner join rm_prl b on a.prno=b.prno and a.prdate=b.prdate and a.divcode=b.divcode 
+inner join rm_var c on c.varcode=b.varcode
+where   ISNULL(qtyind,0)-ISNULL(qtyord,0) >0 and ISNULL(qtyindKG,0)-ISNULL(qtyordKG,0) >0  and isnull(FL_Flag,'N')<>'Y'
+
+
+
+go

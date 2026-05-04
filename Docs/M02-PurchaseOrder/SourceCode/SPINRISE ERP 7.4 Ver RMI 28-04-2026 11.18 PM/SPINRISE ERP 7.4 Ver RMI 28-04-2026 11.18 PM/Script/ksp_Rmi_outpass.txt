@@ -1,0 +1,65 @@
+
+
+ /*        
+
+ Created By  : Annamalai S         
+
+ Created Dt  : 19-03-2021        
+
+ Reason   : waste out pass dll print        
+
+ ksp_Rmi_outpass '01','1','2021-04-15'        
+
+ */        
+
+ CREATE Proc ksp_Rmi_outpass        
+
+ (        
+
+ @Divcode varchar(3),        
+
+ @DocNo  varchar(10),        
+
+ @DocDt  varchar(12)        
+
+)        
+
+AS        
+
+ BEGIN        
+
+  select         
+
+   docno doc_no,docdate doc_date,'' OutTime,'' WBTicketNo,'RMI Sales ' Material ,VechicleNo Vehicle_no,
+
+   --(isnull(packs,0)) totBags,
+
+   (select (isnull(Quantity,0)) from Rm_Outpassdt b where a.divcode=b.divcode and a.docno=b.docno and a.docdate=b.docdate ) totBags ,       
+
+   Driver_Name ,(isnull(WbNetWt,0) )WbNetWt ,isnull((Total_Grskgs),0) InvTotKgs ,(isnull(WBWtDiff,0))WBWtDiff        
+
+   ,pd.div_printname DivName ,isnull(add1,'')add1,isnull(add2,'')add2,isnull(add3,'')add3,isnull(city,'')city,isnull(pincode,'')Pincode        
+
+   ,isnull(add1,'')+','+isnull(add2,'')+','+isnull(add3,'')+','+isnull(city,'')+',Pin : '+isnull(pincode,'') Adds        
+
+   ,pd.PHONE1 phoneNo        
+
+   ,'Sup' Sign1,'Desp.Dept' Sign2,'G.M' Sign3        
+
+  FROM        
+
+   Rm_Outpasshd a        
+
+   inner join pp_divmas pd on a.divcode=pd.divcode         
+
+  WHERE         
+
+   a.divcode=@divcode and a.docno=@DocNo and a.docdate=@DocDt        
+
+        
+
+ END      
+
+ 
+
+ 

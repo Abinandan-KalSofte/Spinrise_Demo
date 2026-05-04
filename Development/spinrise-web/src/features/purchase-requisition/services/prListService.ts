@@ -1,7 +1,7 @@
 import { purchaseRequisitionApi } from '../api/purchaseRequisitionApi'
 import type { PRPaginatedFilters } from '../api/purchaseRequisitionApi'
 type SummaryFilters = Omit<PRPaginatedFilters, 'page' | 'pageSize'>
-import { lookupApi } from '../api/lookupApi'
+import { lookupApi } from '@/shared/lookup/api/lookupApi'
 import { purchaseReportService } from '@/features/purchase-reports/services/purchaseReportService'
 
 /**

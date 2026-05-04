@@ -1,0 +1,37 @@
+    
+      
+-- SP_Cotton_mix '01','2018-06-01','B213'              
+              
+CREATE PROCEDURE SP_Cotton_mix                                
+(                                  
+ @Divcode VARCHAR(2),                    
+ @Docdt VARCHAR(20),      
+ @Mixgrp VARCHAR(20)                                                                
+)                                  
+AS                                  
+BEGIN      
+IF @Mixgrp='A'     
+BEGIN     
+ Select slname,b.varcode,areaname,b.PLOTNO,a.lotno,a.lotdt,b.bales,prno,lorrynos,      
+ f.DIV_PRINTNAME,f.DIV_UNITNAME,b.NETWT,b1.mixgrp        
+ From RM_issReqb a,RM_issReqH b1,rm_lot b,fa_slmas c,rm_area d,rm_arrival e,PP_DIVMAS f       
+ Where a.Divcode = b.Divcode And a.lotno = b.lotno And a.Lotdt = b.Lotdt       
+ And b.supcd = c.slcode And b.areacd = d.areacode and b.arrno*=e.arrno       
+ and a.docno=b1.docno and a.docdt=b1.docdt and a.divcode=b1.divcode and a.DIVCODE=f.DIVCODE         
+ and a.docdt=@Docdt and a.divcode=@Divcode      
+ order by a.lotno      
+END    
+ELSE    
+BEGIN    
+  Select slname,b.varcode,areaname,b.PLOTNO,a.lotno,a.lotdt,b.bales,prno,lorrynos,      
+ f.DIV_PRINTNAME,f.DIV_UNITNAME,b.NETWT,b1.mixgrp         
+ From RM_issReqb a,RM_issReqH b1,rm_lot b,fa_slmas c,rm_area d,rm_arrival e,PP_DIVMAS f       
+ Where a.Divcode = b.Divcode And a.lotno = b.lotno And a.Lotdt = b.Lotdt       
+ And b.supcd = c.slcode And b.areacd = d.areacode and b.arrno*=e.arrno       
+ and a.docno=b1.docno and a.docdt=b1.docdt and a.divcode=b1.divcode and a.DIVCODE=f.DIVCODE       
+  and b1.mixgrp=@Mixgrp  and a.docdt=@Docdt and a.divcode=@Divcode      
+ order by a.lotno      
+    
+      
+END     
+End      

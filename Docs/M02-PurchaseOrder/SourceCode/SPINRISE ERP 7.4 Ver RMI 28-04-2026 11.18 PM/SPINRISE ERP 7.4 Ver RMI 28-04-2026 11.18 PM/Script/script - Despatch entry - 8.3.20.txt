@@ -1,0 +1,101 @@
+
+CREATE TABLE [dbo].[RM_DespatchHD](
+	[DivCode] [varchar](2) not NULL,
+	[docNo] [numeric](7, 0) not NULL,
+	[docDate] [datetime] not NULL,
+	[SLCode] [varchar](7) NULL,
+	[AgentCode] [varchar](7) NULL,
+	[invNo] [varchar](25) NULL,
+	[invDate] [datetime] NULL,
+	[PaymentTerm] [varchar](8) NULL,
+	[Deliverydate] [datetime] NULL,
+	[carcode] [varchar](10) NULL,
+	Trans_Code varchar(8) null,
+	[RateUnit] [varchar](20) NULL,
+	[deltype] [varchar](2) NULL,
+	[TruckNo] [varchar](15) NULL,
+	[PackSlipNo] [varchar](15) NULL,
+	[PackingDate] [datetime] NULL,
+	[HostID] [varchar](20) NULL,
+	[CreatedBy] [varchar](8) NULL,
+	[CreatedDate] [datetime] NULL,
+	[ModifiedBy] [varchar](8) NULL,
+	[ModifiedDate] [datetime] NULL,
+	TotNetWT numeric(10,3),
+	TotInvWt numeric(10,3),
+	TotGrossWt numeric(10,3),
+	TotTareWt numeric(10,3)
+	primary key (docno,docdate,divcode)
+) 
+
+
+go
+
+
+CREATE TABLE [dbo].[RM_DespatchDT](
+	[DivCode] [varchar](2) not NULL,
+	[DocNo] [numeric](7, 0) not NULL,
+	[DocDate] [datetime] not NULL,
+	[DocSno] [numeric](6, 0) NULL,
+	[ContNo] [numeric](6, 0) NULL,
+	[ContDt] [datetime] NULL,
+	[VarCode] [varchar](10) not NULL,
+	[uom] [varchar](4) NULL,
+	[Qty] [numeric](5) NULL,
+	[GrossWt] [numeric](12, 3) NULL,
+	[TareWt] [numeric](10, 3) NULL,
+	[QtyKGS] [numeric](10, 3) NULL,
+	INV_QtyKGS numeric(10,3) not null,	
+	[Rate] [numeric](15, 7) NULL,
+	[Value] [numeric](25, 2) NULL,
+	[APPFLG] [varchar](2) NULL,
+	[remarks] [varchar](50) NULL,
+	[appdate] [datetime] NULL,
+	[APPUSER] [varchar](8) NULL,
+	[RVDQTY] [numeric](5, 0) NULL,
+	[RVDKGS] [numeric](10, 3) NULL,
+	ORDDivcode varchar(2) null
+	primary key (divcode,docno,docdate,varcode),
+	constraint RM_DespatchDTFKEY foreign KEy (docno,docdate,divcode) references RM_Despatchhd(docno,docdate,divcode) 
+
+) 
+
+go
+
+
+
+
+
+
+
+
+CREATE TABLE [dbo].[RM_DespatchBale](
+	[DivCode] [varchar](2) NOT NULL,
+	[DocNo] [numeric](7, 0) NOT NULL,
+	[DocDate] [datetime] NOT NULL,
+	[DocSno] [numeric](6, 0) NULL,
+	[ContNo] [numeric](4, 0) NULL,
+	[ContDt] [datetime] NULL,
+	[VarCode] [varchar](10) NOT NULL,
+	[Baleno] [numeric](10) not NULL,
+	[GrossWt] [numeric](9,3) NULL,
+	[TareWt] [numeric](9, 3) NULL,
+	[Netwt] [numeric](9, 3) NOT NULL,
+	[MoisturePer] [numeric](9, 2) NOT NULL,
+	[Invqty] [numeric](9, 3) NOT NULL,
+
+PRIMARY KEY CLUSTERED 
+(
+	[DivCode] ASC,
+	[DocNo] ASC,
+	[DocDate] ASC,
+	[VarCode] ASC,
+	Baleno asc
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+
+
+
+

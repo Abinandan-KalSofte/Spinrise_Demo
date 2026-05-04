@@ -1,0 +1,82 @@
+alter PROCEDURE sp_marketcomrep        
+(        
+ @Divcode VARCHAR (3),        
+ @fdate VARCHAR(15),        
+ @tdate VARCHAR(15),        
+ @lotyear VARCHAR(5)        
+)        
+AS           
+BEGIN        
+select         
+a.arrdate,a.supcd,f.slname,ISNULL(a.areacode,'') AS AREACODE,ISNULL(b.areaname,'') as areaname,        
+a.varcode,c.VARNAME,bale=(case when a.bbflag = 'B' then a.quantity else 0 end),    
+bora=(case when a.bbflag='R' then a.quantity  else 0 end),        
+unit=case when a.bbflag = 'B' then 'Bales' else 'Borahs' end, round(l.Favaourablewgt,2) as netwt,    
+round(L.Favaourablewgt *  l.ratekg,2) as  'Value',        
+L.LOTNO,L.BILLNO,L.BILLDT,L.PJDT,L.PJNO,FBILLNO ,FBILLDT,isnull(a.ratecy,0)as ratecy,    
+ISNULL(TAXAMT,0) AS TAX,A.ARRNO,b.L_OR_U as LUIT ,      
+b.state,f.add1,f.add2,d.DLYTYPE,p.DIVNAME,P.ADD1,P.DIV_PRINTNAME,P.DIV_UNITNAME,l.RATEUNIt      
+From   rm_arrival a,fa_slmas f,rm_area b,rm_var c,rm_lot l,RM_CONT d,PP_DIVMAS P      
+Where a.supcd = f.slcode and a.areacode=b.areacode   and a.varcode=c.varcode and     
+a.arrdate between @fdate and @tdate and l.lotno=a.lotno and a.CATCD='C'        
+AND L.LOTDT =A.LOTDT  AND L.LOTTYPE=A.LOTTYPE and l.lotyear=@lotyear and a.divcode=l.divcode     
+and a.divcode=@Divcode AND   a.DIVCODE=d.DIVCODE AND a.CONTNO=d.CONTNO AND a.DIVCODE=p.DIVCODE and     
+a.CONTDT=d.CONTDT AND a.SUPCD=d.SUPCD AND a.VARCODE=d.VARCODE          
+order by L.LOTNO        
+END 
+
+go
+CREATE Procedure Ksp_Materialtransferreceipt    
+---Ksp_Materialtransferreceipt '01','22','2015-06-11'    
+@divcode varchar(02),    
+@lotno varchar(20),    
+@lotdate varchar(20),    
+@lotyear VARCHAR(20)  
+as    
+begin    
+SELECT    
+    RM_LOT."LOTNO",    
+    RM_LOT."LOTDT",    
+    RM_LOT."LOTTYPE",    
+    RM_LOT."NETWT",    
+    RM_LOT."BALES",    
+    RM_LOT."PLOTNO",    
+    RM_LOT."PNETWT",    
+    PP_DIVMAS."ADD2",    
+    PP_DIVMAS."ADD3",    
+    PP_DIVMAS."CITY",    
+    PP_DIVMAS."PINCODE",    
+    PP_DIVMAS."PHONE1",    
+    PP_DIVMAS."FAX",    
+    PP_DIVMAS."EMAIL",    
+    PP_DIVMAS."WEBADDR",    
+    PP_DIVMAS."HOState",    
+    PP_DIVMAS."HOCountry",    
+    PP_DIVMAS."DIV_PRINTNAME",    
+    PP_DIVMAS."DIV_LOGO",    
+    FA_SLMAS."slname",    
+    FA_SLMAS."add1",    
+    FA_SLMAS."add2",    
+    FA_SLMAS."add3",    
+    FA_SLMAS."city",    
+    FA_SLMAS."pin",    
+    FA_SLMAS."state",    
+    FA_SLMAS."country",    
+    rm_var."VARNAME",fa.slname agent,ra.AREANAME,rm_lot.brkcd    
+FROM    
+    RM_LOT RM_LOT     
+    INNER JOIN PP_DIVMAS PP_DIVMAS ON    
+        RM_LOT."DIVCODE" = PP_DIVMAS."DIVCODE"    
+    INNER JOIN FA_SLMAS FA_SLMAS ON    
+        RM_LOT."SUPCD" = FA_SLMAS."slcode"    
+    INNER JOIN rm_var rm_var ON    
+        RM_LOT."VARCODE" = rm_var."VARCODE" AND    
+        RM_LOT."CATCD" = rm_var."CATCD"    
+        inner join fa_slmas fa on fa.slcode=rm_lot.brkcd    
+        inner join rm_area ra on ra.AREACODE=rm_lot.AREACD    
+where rm_lot.divcode=@divcode and rm_lot.lotno=@lotno and rm_lot.lotdt=@lotdate            
+and rm_lot.lotyear=@lotyear  
+    
+        
+end    
+    

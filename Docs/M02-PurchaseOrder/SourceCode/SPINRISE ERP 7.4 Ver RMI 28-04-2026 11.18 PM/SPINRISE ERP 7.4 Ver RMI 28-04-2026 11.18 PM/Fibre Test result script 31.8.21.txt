@@ -1,0 +1,158 @@
+
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[RM_FibreTestHD](
+	[Divcode] [varchar](2) NOT NULL,
+	[Docno] [decimal](4, 0) NOT NULL,
+	[Docdt] [date] NOT NULL,
+	[IssDocno] [decimal](5, 0) NOT NULL,
+	[IssDocdt] [date] NOT NULL,
+	[slcode] [varchar](8) NOT NULL,
+	[Billno] [varchar](18) NULL,
+	[Billdt] [date] NOT NULL,
+	[LotNo] [decimal](5, 0) NOT NULL,
+	[LotDT] [date] NOT NULL,
+	[ArrNo] [decimal](5, 0) NOT NULL,
+	[ArrDT] [date] NOT NULL,
+	Varcode varchar(10),
+	Line_no Varchar(10),
+	PlCode Varchar(4),
+	Batch_No VArchar(8),
+	Remarks VArchar(40),
+	
+	[CreatedBy] [varchar](8) NULL,
+	[CreatedDate] [datetime] NULL,
+	[ModifiedBy] [varchar](8) NULL,
+	[ModifiedDate] [datetime] NULL,
+	[HostID] [varchar](15) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Docno] ASC,
+	[Docdt] ASC,
+	[Divcode] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+
+
+GO
+
+/****** Object:  Table [dbo].[RM_FibreTestDT]    Script Date: 26/08/2021 18:22:43 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[RM_FibreTestDT](
+	[Divcode] [varchar](2) NOT NULL,
+	[Docno] [decimal](4, 0) NOT NULL,
+	[Docdt] [date] NOT NULL,
+	[DOCSNO] [smallint] NOT NULL,
+	[LOTNO] [decimal](4, 0) NOT NULL,
+	[LOTDT] [date] NOT NULL,
+	[Varcode] [varchar](10) NULL,
+	BaleNO [decimal](10, 0) NOT NULL,
+    INVGrssWt  [decimal](9, 3) NOT NULL,
+    ActGrossWt [decimal](9, 3) NOT NULL,
+    GrossWtDiff  [decimal](9, 3) NOT NULL,
+    NetWt  [decimal](9, 3) NOT NULL,
+    CommWt  [decimal](9, 3) NOT NULL,
+    InvoiceMoiture  [decimal](9, 2) NOT NULL,
+    MRHOTAIR1  [decimal](9, 2) NOT NULL,
+    MRHOTAIR2  [decimal](9, 2) NOT NULL,
+    MRHOTAIRAVG  [decimal](9, 2) NOT NULL,
+    MROHAUS1  [decimal](9, 2) NOT NULL,
+    MROHAUS2 [decimal](9, 2) NOT NULL,
+    MROHAUS3  [decimal](9, 2) NOT NULL,
+    MROHAUS4  [decimal](9, 2) NOT NULL,
+    MROHAUS5  [decimal](9, 2) NOT NULL,
+    MROHAUS6  [decimal](9, 2) NOT NULL,
+    MROHAUS7  [decimal](9, 2) NOT NULL,
+    MROHAUS8 [decimal](9, 2) NOT NULL,
+    MROHAUS9  [decimal](9, 2) NOT NULL,
+    MROHAUS10  [decimal](9, 2) NOT NULL,
+    MROHAUS  [decimal](9, 2) NOT NULL,   
+  
+    INVVsHOTAir  [decimal](9, 2) NOT NULL,
+    InvVsOHAUS  [decimal](9, 2) NOT NULL,
+
+PRIMARY KEY CLUSTERED 
+(
+	[Docno] ASC,
+	[Docdt] ASC,
+	[Divcode] ASC,
+	[LOTNO] ASC,
+	[LOTDT] ASC,
+	BaleNo Asc
+
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[RM_FibreTestDT]  WITH CHECK ADD  CONSTRAINT [fk_RM_FibreTestdt] FOREIGN KEY([Docno], [Docdt], [Divcode])
+REFERENCES [dbo].[RM_FibreTestHD] ([Docno], [Docdt], [Divcode])
+GO
+
+ALTER TABLE [dbo].[RM_FibreTestdt] CHECK CONSTRAINT [fk_RM_FibreTestDT]
+GO
+
+
+create View VW_IssueDetails  
+as  
+select distinct a.DIVCODE, a.docno,a.docdt,b.lotno,b.lotdt, lot.ARRNO ,lot.arrdt, b.varcode,lot.Line_No,lot.SUPCD ,  
+sl.slname ,v.varname,bale.BALENO ,bale.PGRSWT PGRWT ,bale.GRWT,bale.GRWT-bale.PGRSWT Diffgrswt,  
+bale.MOITURE inv_MOI,lot.PlCode,pl.PLName ,lot.billno,lot.billdt,bale.favaourablewgt NETWT ,bale.Comm_Wt   
+from rm_issh a   
+inner join rm_issb b on a.docno=b.docno and a.docdt=b.docdt and a.divcode=b.divcode  
+inner join rm_lot lot on lot.lotno=b.lotno and lot.lotdt=b.lotdt and lot.divcode=b.divcode and b.varcode=lot.varcode and b.lottype=lot.lottype  
+inner join RM_BALE bale on bale.BALENO =b.BALENO and b.LOTNO=bale.lotno and b.BALENO = bale.BALENO and b.lotdt =bale.lotdt  and b.VARCODE =bale.VARCODE   
+and b.DIVCODE =bale.DIVCODE and b.lottype=bale.lottype  
+inner join FA_SLMAS sl on sl.slcode=lot.SUPCD   
+inner join RM_VAR v  on v.varcode=b.varcode  
+left join RM_Plant pl on pl.PLCode =lot.PlCode  
+left join (select IssDocno ,IssDocdt ,Divcode  from RM_FibreTestHD )ts on ts.divcode=a.divcode and ts.IssDocno=a.docno and ts.IssDocdt=a.DOCDT
+where a.docdt>='2021-04-01'  and ts.IssDocno is null
+  
+ 
+go
+
+
+ --Exec KSP_FibreTestResult '01','2021-03-10','2021-09-02','10.81.234.7'
+
+create proc KSP_FibreTestResult
+(
+@Divcode Varchar(2),
+@Fdate varchar(10),
+@Tdate varchar(10),
+@IPADD VArchar(18)
+)
+as
+begin
+if object_ID('RPT_Fibre_Test_Result') is not null drop table RPT_Fibre_Test_Result
+select 
+convert(varchar,a.IssDocdt ,3) Test_date,sl.slname 	Supplier,V.VARNAME 	Fibre,pl.PLName 	Plant,a.Line_no 	Line	, a.lotno Mill_lot_No,a.billno	Invoice_No,
+convert(varchar,a.lotdt ,3) Date_of_Production,a.Batch_No 	Batch_No,BaleNO	Bale_No,	INVGrssWt Gross_Wt_Invoice 	,ActGrossWt  Gross_Wt_Actual ,GrossWtDiff 	Weight_Diff_Kgs,
+InvoiceMoiture 'Invoice_Moisture %'	,MRHOTAIRAVG 'MR% (Hot Air)',MROHAUS 'MR% (OHAUS)',INVVsHOTAir	'Invoice Vs. Hot Air',InvVsOHAUS	'Invoice Vs. OHAUS', 
+MRHOTAIR1 'MR% (Hot Air) 1',	MRHOTAIR2'MR% (Hot Air) 2'
+,MROHAUS1 'MR% (OHAUS)1',MROHAUS2 'MR% (OHAUS)2',MROHAUS3 'MR% (OHAUS)3',MROHAUS4 'MR% (OHAUS)4',MROHAUS5 'MR% (OHAUS)5',MROHAUS6 'MR% (OHAUS)6',MROHAUS7 'MR% (OHAUS)7',MROHAUS8 'MR% (OHAUS)8',
+MROHAUS9 'MR% (OHAUS)9', MROHAUS10 'MR% (OHAUS)10'
+
+into RPT_Fibre_Test_Result
+from RM_FibreTestHD a 
+inner join RM_FibreTestDT b on a.Docno =b.Docno and a.Docdt =b.Docdt and a.Divcode =b.Divcode 
+inner join FA_SLMAS sl on sl.slcode=a.slcode   
+inner join RM_VAR v  on v.varcode=b.varcode  
+left join RM_Plant pl on pl.PLCode =a.PlCode 
+where a.Docdt between @Fdate and @Tdate and a.Divcode =@Divcode  
+and a.varcode in (select varcode from RM_ProductprintDet where divcode =@Divcode and IPadd =@IPADD )
+and a.slcode in (select supcd  from RM_ProductprintDet where divcode =@Divcode and IPadd =@IPADD )
+end

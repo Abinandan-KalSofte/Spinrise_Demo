@@ -1,0 +1,12 @@
+
+alter procedure Ksp_SetupCarrier
+--Ksp_SetupCarrier '01'
+@divcode varchar(02)
+As
+begin
+
+select a.CARCODE,a.CARNAME,pd.DIV_PRINTNAME,pd.DIV_UNITNAME from Po_Car a
+inner join PP_DIVMAS pd on pd.DIVCODE=@divcode
+where pd.DivCode=@divcode
+order by a.carcode
+end

@@ -1,0 +1,45 @@
+CREATE TABLE [dbo].[RM_BPPRODUCTION](
+	[DIVCODE] [varchar](2) NOT NULL,
+	[BPNO] [int] NOT NULL,
+	[BPDATE] [datetime] NOT NULL,
+	[SNO] [int] NOT NULL,
+	[ARRNO] [int] NOT NULL,
+	[ARRDATE] [datetime] NOT NULL,
+	[SUPCD] [varchar](10) NULL,
+	[AREACODE] [varchar](4) NULL,
+	[BRKCD] [varchar](10) NULL,
+	[PLOTNO] [varchar](10) NULL,
+	[VARCODE] [varchar](10) NOT NULL,
+	[CNTCODE] [varchar](10) NULL,
+	[PRNO] [varchar](20) NULL,
+	[PRMARK] [varchar](15) NULL,
+	[GCNO] [varchar](40) NULL,
+	[CARCODE] [varchar](10) NULL,
+	[LORRYNOS] [varchar](50) NULL,
+	[BBFLAG] [char](1) NULL,
+	[BPQUANTITY] [smallint] NULL,
+	[BPGROSSWT] [decimal](10, 3) NULL,
+	[BPTAREWT] [decimal](10, 3) NULL,
+	[BPNETWT] [decimal](15, 3) NULL,
+	[QUANTITY] [smallint] NULL,
+	[GROSSWT] [decimal](15, 3) NULL,
+	[TAREWT] [decimal](10, 3) NULL,
+	[NETWT] [decimal](15, 3) NULL,
+	[CATCD] [char](3) NOT NULL,
+	[LOTNO] [smallint] NULL,
+	[LOTDT] [datetime] NULL,
+	[LOTTYPE] [char](1) NULL,
+	[GODOWN] [varchar](3) NULL,
+	[INWARDNO] [numeric](18, 0) NULL,
+	[INWARDDATE] [datetime] NULL,
+	[GINCODE] [varchar](7) NULL,
+	[LRNO] [varchar](25) NULL,
+	[WEIGNMENT] [varchar](25) NULL
+) ON [PRIMARY]
+
+
+
+GO
+
+alter table rm_cat add balepress varchar(1)
+update rm_cat set balepress='N'

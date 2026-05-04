@@ -1,0 +1,178 @@
+--EXEC SP_S_QUALITY_PARAMETER '01','2013-04-01','2013-06-29','2013-04-01','2013-06-06'            
+alter PROCEDURE SP_S_QUALITY_PARAMETER(        
+    @Divcode  VARCHAR(2),        
+    @FDate    VARCHAR(10),        
+    @TDate    VARCHAR(10),        
+    @yfdate   VARCHAR(10),        
+    @CDate    VARCHAR(10)        
+)        
+AS        
+SELECT a.divname, a.ARRNO, a.ARRDATE, a.CONTNO, a.CONTDT, a.LOTNO, a.LOTDT,         
+a.BALES, a.ISSBAL,ISNULL(b.Closingbales,0)Closingbales, a.TOTLANDCOST, a.RateQty, a.STAPLEN,         
+a.MICRONAIRE, a.TRASH_PER, a.PLOTNO, a.STAPLEN50, a.UNIRATIO, a.STRENGTH,         
+a.SCI, a.FQI, a.ELG, a.RD, a.bb, a.Grade, a.AREANAME, a.slname, a.AgentName,         
+a.VARNAME, a.DIV_PRINTNAME, a.DIV_UNITNAME, a.VARCODE,A.CONTRATECY,a.RATEKG,A.ORDQTY        
+FROM(        
+SELECT DISTINCT F.DIVNAME, A.ARRNO, A.ARRDATE, A.CONTNO, A.CONTDT,         
+B.LOTNO, B.LOTDT, B.BALES, B.TOTLANDCOST, RateQty = ROUND(B.NETWT, 2),         
+B.STAPLEN, B.MICRONAIRE, B.TRASH_PER, B.ISSBAL, B.PLOTNO,         
+B.STAPLEN50, B.UNIRATIO, B.STRENGTH, B.SCI, B.FQI, B.ELG,         
+B.RD, B.bb, B.Grade, C.AREANAME, G.slname, D.slname AS         
+AgentName, E.VARNAME, F.DIV_PRINTNAME, F.DIV_UNITNAME, b.VARCODE,b.RATEKG,         
+b.DIVCODE,
+(SELECT N.CANDYRATE FROM RM_CONT N WHERE N.CONTNO=A.CONTNO AND N.CONTDT=A.CONTDT AND N.DIVCODE=A.DIVCODE)CONTRATECY,      
+(SELECT K.ORDQTY  FROM RM_CONT K WHERE K.CONTNO=A.CONTNO AND K.CONTDT=A.CONTDT   AND K.DIVCODE=A.DIVCODE)ORDQTY                         
+FROM   RM_ARRIVAL A        
+INNER JOIN RM_LOT B  ON  A.DIVCODE = B.DIVCODE AND a.LOTNO = b.LOTNO AND a.lotdt = b.LOTDT        
+LEFT JOIN RM_AREA C  ON  A.AREACODE = C.AREACODE        
+LEFT JOIN FA_SLMAS D ON  A.BRKCD = D.slcode        
+LEFT JOIN RM_VAR E   ON  A.VARCODE = E.VARCODE        
+LEFT JOIN PP_DIVMAS F ON  A.DIVCODE = F.DIVCODE        
+LEFT JOIN FA_SLMAS G ON  G.slcode = A.SUPCD        
+WHERE  A.DIVCODE = @Divcode AND A.ARRDATE BETWEEN @FDate AND @TDate AND  ISNULL(B.OPFLG, 'N') = 'N')a, 
+(
+	SELECT x.divcode, x.varcode, x.lotno, x.lotdt, SUM(x.opbales) - SUM(x.issbales)Closingbales        
+        FROM(
+        	SELECT b.divcode, b.varcode, B.LOTNO, B.LOTDT, SUM(ISNULL(b.bales, 0)) AS opbales, 0 AS issbales
+        	FROM   rm_lot b
+        	WHERE  B.DIVCODE = @Divcode AND B.lotyear IN (YEAR(@yfdate)) AND (b.lotdt <= @CDate OR 
+        	UPPER(OPFLG) = 'Y') AND BALES > 0 AND (B.rejflg = 'N' OR B.rejdt >= @CDate)        
+GROUP BY  b.varcode, b.LOTNO, b.LOTDT, b.divcode        
+UNION        
+SELECT b.divcode, b.varcode, B.LOTNO, B.LOTDT, 0 AS  opbales, COUNT(c.baleno) AS issbales        
+FROM   rm_lot b, rm_issb c        
+WHERE  C.ISSUED = 'Y' AND B.DIVCODE = C.DIVCODE AND B.DIVCODE = @Divcode AND (b.lotdt < @CDate OR 
+UPPER(OPFLG) = 'Y') AND  docdt BETWEEN @yfdate AND @CDate AND b.lotno = c.lotno AND B.lotyear IN (YEAR(@yfdate)) 
+AND b.lotdt = c.lotdt AND b.lottype = c.lottype AND b.catcd = c.catcd AND docdt <= @CDate        
+GROUP BY b.varcode, B.LOTNO, B.LOTDT, b.divcode        
+UNION  
+SELECT b.divcode, E.VARCODE, e.LOTNO, e.lotdt, 0 AS   opbales, COUNT(*) AS issbales        
+FROM   rm_bale e, rm_lot b        
+WHERE  (e.rejflg = 'Y' AND e.rejdt <= @CDate) AND e.DIVCODE = @Divcode AND e.lotno = b.lotno AND e.lotdt = b.lotdt AND         
+e.lottype = b.lottype AND e.catcd = b.catcd AND  STATUS = 'RJ'        
+GROUP BY e.varcode, e.LOTNO, e.lotdt, b.divcode )x        
+GROUP BY  x.divcode, x.varcode, x.LOTNO, x.LOTDT)b        
+ WHERE  a.LOTNO = b.lotno AND a.LOTDT = b.lotdt AND a.DIVCODE = b.divcode AND   a.VARCODE = b.varcode 
+GO
+alter procedure [dbo].[VarietyWiseStk]           
+@Date1 as varchar(10),          
+@Date2 as varchar(10),          
+@date3 as varchar(10),          
+@Div as varchar(2),          
+@Cond as varchar(10)           
+as          
+begin          
+if @cond='ALL'            
+ select a.supcd,a.CatName,A.sLNAME,varcode,varname,a.lotno,a.lotdt,isnull(a.catcd,' ') as catcd,a.varname,pd.DIV_PRINTNAME,pd.DIV_UNITNAME,          
+(isnull(a.bales,0)-isnull(b.bales,0)-isnull(c.isbales,0)) as bales          
+,round(isnull(a.stock,0)-isnull(b.isskgs,0)-isnull(c.iskgs,0),3) stock,val=round((isnull(a.stock,0)-isnull(b.isskgs,0)-isnull(c.iskgs,0))*a.RATE,2),          
+a.plotno,a.ratecandy,A.RATE AS ratekg,isnull(a.bales,0)-isnull(b.bales,0) opbal,isnull(a.stock,0)-isnull(b.isskgs,0) opkg,(isnull(a.stock,0)-isnull(b.isskgs,0))*a.rate opval,b.isskgs*a.rate isval,C.ISBALES  ,C.ISKGS, C.ISKGS*A.RATE ACTISVAL from          
+ 
+(          
+select distinct a.supcd,CatName,SLNAME,a.LOTNO,a.LOTDT,A.catcd ,c.varcode,c.VARNAME,a.BALES AS BALES,isnull(a.favaourablewgt,0) 'Stock',          
+ IsNull(ratekg, 0) 'Rate',round(isnull(ratecy,0)/355.6187,2) 'val',isnull(a.PLOTNO,' ')as PLOTNO,          
+round((ratecy),0) as ratecandy,ISSBAL from rm_lot a,rm_var c,rm_cat d ,FA_SLMAS S where S.SLCODE=A.SUPCD AND d.catcd=c.catcd and (a.rejflg= 'N' or a.rejdt>Convert(datetime,@DATE1,105) )          
+and a.DIVCODE =@DIV and a.varcode =c.varcode and A.LOTDT <= Convert(datetime,@DATE3,105)   and a.lotyear=year(Convert(datetime,@DATE1,105))          
+)a,          
+------------------------------------------------------------------          
+(           
+ SELECT LOTNO,LOTDT,CATCD,SUM(BALES) AS BALES,SUM(KGS)AS Isskgs,0 AS ISBALES,0 AS ISKGS FROM(  SELECT LOTNO,LOTDT,CATCD,COUNT(BALENO) AS BALES,          
+0 AS KGS FROM(  SELECT A.LOTNO,A.LOTDT,A.CATCD,A.BALENO AS BALENO,0 AS KGS  FROM RM_ISSB A           
+WHERE  A.DIVCODE=@DIV AND A.ISSUED='Y' AND a.docdt<Convert(datetime,@DATE3,105)            
+and  a.docdt between Convert(datetime,@DATE1,105)  and Convert(datetime,@DATE2,105) GROUP BY A.LOTNO,A.LOTDT,A.CATCD,A.BALENO          
+)X GROUP BY LOTNO,LOTDT,CATCD           
+          
+Union           
+          
+SELECT A.LOTNO,A.LOTDT,A.CATCD,0 AS BALES,SUM(A.ISSKGS) AS KGS  FROM RM_ISSB A          
+ WHERE  A.DIVCODE=@DIV AND a.docdt<Convert(datetime,@DATE3,105)  and  a.docdt between Convert(datetime,@DATE1,105)            
+and Convert(datetime,@DATE2,105)  GROUP BY A.LOTNO,A.LOTDT,A.CATCD)Y GROUP BY LOTNO,LOTDT,CATCD )b ,          
+          
+-----------------------------------------------------------------          
+(           
+ SELECT LOTNO,LOTDT,CATCD,0 AS BALES,0 AS Isskgs,SUM(BALES) ISBALES,SUM(KGS) ISKGS FROM(  SELECT LOTNO,LOTDT,CATCD,COUNT(BALENO) AS BALES,          
+0 AS KGS FROM(  SELECT A.LOTNO,A.LOTDT,A.CATCD,A.BALENO AS BALENO,0 AS ISKGS  FROM RM_ISSB A           
+WHERE A.DIVCODE=@DIV AND A.ISSUED='Y' AND a.docdt=Convert(datetime,@DATE3,105)            
+and  a.docdt between Convert(datetime,@DATE1,105)  and Convert(datetime,@DATE2,105) GROUP BY A.LOTNO,A.LOTDT,A.CATCD,A.BALENO          
+)X GROUP BY LOTNO,LOTDT,CATCD           
+          
+Union           
+          
+SELECT A.LOTNO,A.LOTDT,A.CATCD,0 AS ISBALES,SUM(A.ISSKGS) AS ISKGS  FROM RM_ISSB A          
+ WHERE  A.DIVCODE=@DIV AND a.docdt=Convert(datetime,@DATE3,105)  and  a.docdt between Convert(datetime,@DATE1,105)            
+and Convert(datetime,@DATE2,105)  GROUP BY A.LOTNO,A.LOTDT,A.CATCD)Y GROUP BY LOTNO,LOTDT,CATCD ) C          
+          
+,rm_cat x ,FA_SLMAS S,pp_divmas pd          
+ WHERE pd.DIVCODE=@DIV and a.lotno*=b.lotno and a.lotdt*=b.lotdt  and a.catcd=b.catcd and a.catcd=x.catcd AND A.SUPCD=S.SLCODE AND          
+a.lotno*=C.lotno and a.lotdt*=C.lotdt  and a.catcd=C.catcd and a.catcd=x.catcd           
+ group by a.lotno,a.lotdt,a.catcd,a.varname,a.plotno,a.varcode,a.ratecandy , a.Val, a.bales, b.bales,          
+ a.stock, b.isskgs, ISSBAL,A.RATE,a.supcd,a.catname,A.SLNAME,C.ISKGS,C.ISBALES,pd.DIV_PRINTNAME,pd.DIV_UNITNAME having isnull(a.stock,0)-isnull(b.isskgs,0) >0           
+       
+else          
+ select a.supcd,a.CatName,A.sLNAME,varcode,varname,a.lotno,a.lotdt,isnull(a.catcd,' ') as catcd,a.varname,pd.DIV_PRINTNAME,pd.DIV_UNITNAME,               
+(isnull(a.bales,0)-isnull(b.bales,0)-isnull(c.isbales,0)) as bales          
+,round(isnull(a.stock,0)-isnull(b.isskgs,0)-isnull(c.iskgs,0),3) stock,val=round((isnull(a.stock,0)-isnull(b.isskgs,0)-isnull(c.iskgs,0))*a.RATE,2),          
+a.plotno,a.ratecandy,A.RATE AS ratekg,isnull(a.bales,0)-isnull(b.bales,0) opbal,isnull(a.stock,0)-isnull(b.isskgs,0) opkg,(isnull(a.stock,0)-isnull(b.isskgs,0))*a.rate opval,b.isskgs*a.rate isval,C.ISBALES  ,C.ISKGS, C.ISKGS*A.RATE ACTISVAL from          
+ 
+(          
+select distinct a.supcd,CatName,SLNAME,a.LOTNO,a.LOTDT,A.catcd ,c.varcode,c.VARNAME,a.BALES AS BALES,isnull(a.favaourablewgt,0) 'Stock',          
+ IsNull(ratekg, 0) 'Rate',round(isnull(ratecy,0)/355.6187,2) 'val',isnull(a.PLOTNO,' ')as PLOTNO,          
+round((ratecy),0) as ratecandy,ISSBAL from rm_lot a,rm_var c,rm_cat d ,FA_SLMAS S where S.SLCODE=A.SUPCD AND d.catcd=c.catcd and (a.rejflg= 'N' or a.rejdt>Convert(datetime,@DATE1,105) )          
+and a.DIVCODE =@DIV  and a.catcd=@cond   and  a.varcode =c.varcode and A.LOTDT <= Convert(datetime,@DATE3,105)   and a.lotyear=year(Convert(datetime,@DATE1,105))          
+)a,          
+------------------------------------------------------------------          
+(           
+ SELECT LOTNO,LOTDT,CATCD,SUM(BALES) AS BALES,SUM(KGS)AS Isskgs,0 AS ISBALES,0 AS ISKGS FROM(  SELECT LOTNO,LOTDT,CATCD,COUNT(BALENO) AS BALES,          
+0 AS KGS FROM(  SELECT A.LOTNO,A.LOTDT,A.CATCD,A.BALENO AS BALENO,0 AS KGS  FROM RM_ISSB A           
+WHERE A.DIVCODE=@DIV AND A.ISSUED='Y' AND a.docdt<Convert(datetime,@DATE3,105)            
+and  a.docdt between Convert(datetime,@DATE1,105)  and Convert(datetime,@DATE2,105) GROUP BY A.LOTNO,A.LOTDT,A.CATCD,A.BALENO          
+)X GROUP BY LOTNO,LOTDT,CATCD           
+          
+Union           
+          
+SELECT A.LOTNO,A.LOTDT,A.CATCD,0 AS BALES,SUM(A.ISSKGS) AS KGS  FROM RM_ISSB A          
+ WHERE  A.DIVCODE=@DIV AND a.docdt<Convert(datetime,@DATE3,105)  and  a.docdt between Convert(datetime,@DATE1,105)            
+and Convert(datetime,@DATE2,105)  and a.catcd=@cond  GROUP BY A.LOTNO,A.LOTDT,A.CATCD)Y GROUP BY LOTNO,LOTDT,CATCD )b ,          
+          
+-----------------------------------------------------------------          
+(           
+ SELECT LOTNO,LOTDT,CATCD,0 AS BALES,0 AS Isskgs,SUM(BALES) ISBALES,SUM(KGS) ISKGS FROM(  SELECT LOTNO,LOTDT,CATCD,COUNT(BALENO) AS BALES,          
+0 AS KGS FROM(  SELECT A.LOTNO,A.LOTDT,A.CATCD,A.BALENO AS BALENO,0 AS ISKGS  FROM RM_ISSB A           
+WHERE A.DIVCODE=@DIV AND A.ISSUED='Y' AND a.docdt=Convert(datetime,@DATE3,105)            
+and  a.docdt between Convert(datetime,@DATE1,105)  and Convert(datetime,@DATE2,105) GROUP BY A.LOTNO,A.LOTDT,A.CATCD,A.BALENO          
+)X GROUP BY LOTNO,LOTDT,CATCD           
+          
+Union           
+          
+SELECT A.LOTNO,A.LOTDT,A.CATCD,0 AS ISBALES,SUM(A.ISSKGS) AS ISKGS  FROM RM_ISSB A          
+ WHERE  A.DIVCODE=@DIV AND a.docdt=Convert(datetime,@DATE3,105)  and  a.docdt between Convert(datetime,@DATE1,105)            
+and Convert(datetime,@DATE2,105)  and a.catcd=@cond  GROUP BY A.LOTNO,A.LOTDT,A.CATCD)Y GROUP BY LOTNO,LOTDT,CATCD ) C          
+          
+,rm_cat x ,FA_SLMAS S,PP_DIVMAS pd          
+ WHERE pd.DIVCODE=@Div and a.lotno*=b.lotno and a.lotdt*=b.lotdt and a.catcd=b.catcd and a.catcd=x.catcd AND A.SUPCD=S.SLCODE AND          
+a.lotno*=C.lotno and a.lotdt*=C.lotdt  and a.catcd=C.catcd and a.catcd=x.catcd           
+ group by a.lotno,a.lotdt,a.catcd,a.varname,a.plotno,a.varcode,a.ratecandy , a.Val, a.bales, b.bales,          
+ a.stock, b.isskgs, ISSBAL,A.RATE,a.supcd,a.catname,A.SLNAME,C.ISKGS,C.ISBALES,pd.DIV_PRINTNAME,pd.DIV_UNITNAME having isnull(a.stock,0)-isnull(b.isskgs,0) >0           
+END 
+GO
+
+CREATE PROCEDURE Ksp_RMI_ArrivalList_Datewise  
+@Divcode  VARCHAR(2),        
+@FDate    VARCHAR(10),        
+@TDate    VARCHAR(10)  
+-- Ksp_RMI_ArrivalList_Datewise '01','2013-06-01','2013-07-10'  
+AS  
+BEGIN  
+      
+select a.arrdate,a.lotno,a.lotdt,a.plotno,a.quantity,a.lrno,isnull(a.freight,0) as freight,a.netwt,a.prno,  
+b.carname,c.Slname , d.areaname, a.LORRYNOS,a.VARCODE,v.VARNAME,e.slname AS Agent_Name  
+,pd.DIV_PRINTNAME,pd.DIV_UNITNAME   
+ from rm_arrival a  
+ LEFT OUTER JOIN po_car b ON b.CARCODE = a.CARCODE  
+ LEFT OUTER JOIN fa_slmas c ON c.Slcode = a.SUPCD  
+ LEFT OUTER JOIN rm_area d ON a.areacode=d.areacode  
+ LEFT OUTER JOIN RM_VAR V ON v.VARCODE=a.VARCODE  
+ LEFT OUTER JOIN fa_slmas e ON e.slcode=a.BRKCD  
+ left outer join PP_DIVMAS pd ON a.DIVCODE=pd.DIVCODE  
+where a.arrdate Between @FDate and @TDate and a.divcode=@Divcode  
+END

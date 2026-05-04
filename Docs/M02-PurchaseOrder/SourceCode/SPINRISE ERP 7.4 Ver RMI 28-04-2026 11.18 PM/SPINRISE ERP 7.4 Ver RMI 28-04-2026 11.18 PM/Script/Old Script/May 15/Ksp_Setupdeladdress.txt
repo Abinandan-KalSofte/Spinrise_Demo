@@ -1,0 +1,14 @@
+
+alter procedure Ksp_SetupRMideladdress
+--Ksp_SetupRMideladdress '01'
+@divcode varchar(02)
+As
+begin
+
+select slcode,SLNAME,CNAME,a.ADD1,a.ADD2,a.ADD3,a.CITY,PIN,Phoneno Phone,pd.DIV_PRINTNAME,DIV_UNITNAME from Rm_deladd a
+inner join PP_DIVMAS pd on pd.DIVCODE=@divcode
+
+end
+
+
+--select * from rm_deladd

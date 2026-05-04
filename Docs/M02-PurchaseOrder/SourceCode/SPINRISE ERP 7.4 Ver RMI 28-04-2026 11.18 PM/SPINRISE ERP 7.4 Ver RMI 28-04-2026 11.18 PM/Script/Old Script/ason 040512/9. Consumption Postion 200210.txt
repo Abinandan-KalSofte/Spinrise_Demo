@@ -1,0 +1,52 @@
+create proc ksp_Comsumption_View_RMI 
+@Divcode varchar(3),
+@fDate varchar(15), 
+@TDate varchar(15),
+@CapCat varchar(15) AS
+
+select * from (
+SELECT g.Consu_DrGlcode as GLcode,gl.glhead as Description, isnull(SUM(issval),0)-ISNULL(SUM(RECVAL),0)  AS Debit,0 as Credit  FROM  ( select distinct m.Catcd,SUM(Value) AS issval,0 as RECVAL FROM(  
+select distinct cntcd,b.Catcd,a.lotno,a.lotdt,plotno,Unit=(case when bblflg='B' then 'Bales' else 'Borah' end),B.varcode,ISSTO,0 as Bales,bblflg,SUM(A.ISSKGS) as Kgs,ratekg, ROUND(avg(ratekg)*355.616,0) as ratecandy,ratekg*sum(a.isskgs) as Value from rm_issb a,rm_lot b,rm_issh h where    a.docno=h.docno and a.docdt=h.docdt and a.isstype=h.isstype and a.divcode=h.divcode and a.lotno=b.lotno and a.catcd=b.catcd and a.lotdt=b.lotdt and a.divcode=b.divcode AND ISSUED='Y' AND H.divcode=@Divcode AND H.DOCDT BETWEEN  @fDate and @TDate group by cntcd,b.Catcd,a.lotno,a.lotdt,plotno,B.varcode,bblflg,ratekg,ISSTO
+)m   GROUP BY m.Catcd 
+) X ,rm_cat g,fa_glmas gl   where x.Catcd = g.Catcd and
+g.Consu_DrGlcode=gl.Glcode 
+GROUP BY g.Consu_DrGlcode,gl.glhead HAVING  SUM(issval)<>0
+
+UNION ALL
+
+SELECT g.Consu_CrGlcode as GLcode,gl.glhead as Description, 0 as Debit, isnull(SUM(issval),0)-ISNULL(SUM(RECVAL),0) Credit  FROM  ( select distinct m.Catcd,SUM(Value) AS issval,0 as RECVAL FROM(  
+select distinct cntcd,b.Catcd,a.lotno,a.lotdt,plotno,Unit=(case when bblflg='B' then 'Bales' else 'Borah' end),B.varcode,ISSTO,0 as Bales,bblflg,SUM(A.ISSKGS) as Kgs,ratekg, ROUND(avg(ratekg)*355.616,0) as ratecandy,ratekg*sum(a.isskgs) as Value from rm_issb a,rm_lot b,rm_issh h where    a.docno=h.docno and a.docdt=h.docdt and a.isstype=h.isstype and a.divcode=h.divcode and a.lotno=b.lotno and a.catcd=b.catcd and a.lotdt=b.lotdt and a.divcode=b.divcode AND ISSUED='Y' AND H.divcode=@Divcode AND H.DOCDT BETWEEN  @fDate and @TDate group by cntcd,b.Catcd,a.lotno,a.lotdt,plotno,B.varcode,bblflg,ratekg,ISSTO
+)m   GROUP BY m.Catcd 
+) X ,rm_cat g,fa_glmas gl   where x.Catcd = g.Catcd and
+g.Consu_CrGlcode=gl.Glcode 
+GROUP BY g.Consu_CrGlcode,gl.glhead HAVING  SUM(issval)<>0
+) x
+
+
+
+
+CREATE proc ksp_Comsumption_RMI
+@Divcode varchar(3),
+@fDate varchar(15), 
+@TDate varchar(15),
+@CapCat varchar(15) AS
+
+select * from (
+SELECT g.Consu_DrGlcode ,g.Consu_CrGlcode, isnull(SUM(issval),0)-ISNULL(SUM(RECVAL),0) as value  FROM   (
+
+select distinct m.Catcd,SUM(Value) AS issval,0 as RECVAL FROM(  
+select distinct cntcd,b.Catcd,a.lotno,a.lotdt,plotno,Unit=(case when bblflg='B' then 'Bales' else 'Borah' end),B.varcode,ISSTO,0 as Bales,bblflg,SUM(A.ISSKGS) as Kgs,ratekg, ROUND(avg(ratekg)*355.616,0) as ratecandy,ratekg*sum(a.isskgs) as Value from rm_issb a,rm_lot b,rm_issh h where    a.docno=h.docno and a.docdt=h.docdt and a.isstype=h.isstype and a.divcode=h.divcode and a.lotno=b.lotno and a.catcd=b.catcd and a.lotdt=b.lotdt and a.divcode=b.divcode AND ISSUED='Y' AND H.divcode=@Divcode AND H.DOCDT BETWEEN  @fDate and @TDate group by cntcd,b.Catcd,a.lotno,a.lotdt,plotno,B.varcode,bblflg,ratekg,ISSTO
+)m   GROUP BY m.Catcd 
+
+) X ,rm_cat g  where x.Catcd = g.Catcd
+GROUP BY g.Consu_DrGlcode,g.Consu_CrGlcode HAVING  isnull(SUM(issval),0)-ISNULL(SUM(RECVAL),0)<>0)x
+
+
+create table RMI_ConsUps ( Divcode varchar(2),Fdate datetime,TDate datetime,tc numeric(4),Vocno numeric(6),
+vocdt datetime,Userid varchar(15),Entdate datetime)
+
+
+ALTER TABLE  RM_CAT ADD Consu_CrGlcode VARCHAR(10),Consu_DrGlcode VARCHAR(10)
+go
+ALTER TABLE RM_PARAM ADD TransferTC NUMERIC(2),TransferINGL VARCHAR(7),TransferOUTGL VARCHAR(7)
+go

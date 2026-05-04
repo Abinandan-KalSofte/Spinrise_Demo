@@ -1,0 +1,17 @@
+
+
+CREATE TABLE [dbo].[RM_ProductprintDet](
+	[divcode] [varchar](2) NULL,
+	[LotNo] [numeric](8, 0) NULL,
+	[Lotdt] [datetime] NULL,
+	[Lotyear] [numeric](4, 0) NULL,
+	[LotType] [varchar](2) NULL,
+	[catcd] [varchar](4) NULL,
+	[varcode] [varchar](10) NULL,
+	[RecType] [varchar](6) NULL,
+	[supcd] [varchar](9) NULL,
+	[IPAdd] [varchar](20) NULL,
+	[godcode] [varchar](500) NULL
+) ON [PRIMARY]
+
+

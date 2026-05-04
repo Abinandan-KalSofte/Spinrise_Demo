@@ -1,0 +1,81 @@
+
+
+--KSP_RMI_Inspct_Qutypara '01','64','2013-08-05'  
+CREATE PROC KSP_RMI_Inspct_Qutypara  
+(  
+ @divcode VARCHAR(5),  
+ @Lot_No NUMERIC(5),  
+ @LDate VARCHAR(10)  
+)  
+AS  
+BEGIN  
+ SELECT a.LOTNO,a.LOTDT,a.LOTTYPE,a.PTYWGT,a.GRSWGT,a.TAREWT,a.NETWT,a.BALES,a.STAPLEN,a.MICRONAIRE,a.TRASH_PER,  
+ a.PLOTNO,a.UNIRATIO,a.SCI,a.SFI,a.ELG,a.GTEX,b.DIVNAME,b.DIV_PRINTNAME,b.DIV_UNITNAME,c.VARNAME,d.CATNAME,e.SPName  
+ FROM RM_LOT a inner join   
+ PP_DIVMAS b ON b.DIVCODE = a.DIVCODE  
+ LEFT JOIN RM_VAR c ON c.VARCODE=a.VARCODE  
+ left join RM_CAT d ON d.CATCD=a.CATCD  
+ LEFT JOIN RM_SpotPass e ON e.SpCode=a.SPOTPasser  
+ WHERE  
+ a.DIVCODE = @divcode AND a.LOTNO = @Lot_No AND a.LOTDT = @LDate
+END  
+GO
+
+
+--rm_sam '01','2','2013-04-30'
+CREATE PROC rm_sam
+(
+	@Divcode VARCHAR(3),  
+	@SamNo NUMERIC(10),  
+	@FDate VARCHAR(15)  
+ )
+AS  
+BEGIN  
+ SELECT a.DIVCODE,a.SNO,a.DATE,a.SUPCODE, b.slname,b.add1,b.add2,b.add3,b.city,b.pin,b.[state],b.country,b.phone1,b.phone2,a.VARCODE,c.varname,a.STAPLEN25,a.immature,a.yellowtouch,  
+ a.STAPLEN50,a.TRASH_PER, a.MICRONAIRE,a.STRENGTH,a.MCOEFF,remarks,a.avgcount, a.UNIRATIO,a.yarnapp,a.STAPHANDTEST,  
+ a.HVITEST,a.moiture,a.tpi,a.csp ,a.tpi ,a.avrstrength , a.corr_strenth , a.spot_for , a.rate ,a.prno ,a.prty_sampno,  
+ a.brokercode , a.station_code,POTYPE,GRADE,GTEX,COLOR,D.AREANAME,a.STATE_CODE,STATION_NAME,CROP_YEAR,    
+ PD.DIVCODE,PD.DIV_PRINTNAME,PD.DIV_UNITNAME,PD.div_logo,a.REMARKS,pd.ADD2,pd.ADD3,pd.CITY,pd.PINCODE,pd.HOState,pd.HOCountry,pd.PHONE1,pd.PHONE2,
+ pd.PHONE3,pd.FAX,pd.EMAIL,pd.WEBADDR
+ FROM RM_SAMPLE a
+ inner join fa_slmas b ON a.supcode=b.slcode
+ INNER JOIN rm_var c ON a.varcode=c.varcode 
+ INNER JOIN  RM_AREA d ON a.area_code = d.areacode
+ --INNER JOIN  fa_slmas e ON 
+ inner join PP_DIVMAS pd ON  PD.DIVCODE =A.DIVCODE  
+ WHERE    
+ a.date = @FDate and a.sno=@SamNo and a.divcode=@Divcode   
+END
+GO
+
+  
+--KSL_RMI_FreightDetails '01','2013-06-01','2013-09-14','1','4107','003','VEN'  
+CREATE PROC KSL_RMI_FreightDetails  
+(   
+ @divcode VARCHAR(4),  
+ @FDate VARCHAR(10),  
+ @TDate VARCHAR(10),  
+ @FLot_No VARCHAR(5),  
+ @TLot_No  VARCHAR(5),  
+ @FTrans VARCHAR(10),  
+ @TTrans VARCHAR(10)  
+)  
+AS  
+BEGIN  
+select   
+B.lotno,B.LOTYEAR,B.lotdt,a.CARCODE,c.CARNAME,A.lorrynos,B.Bales, B.lrFrtAmt ,D.Station,  
+PD.DIV_PRINTNAME,PD.DIV_UNITNAME  
+from RM_ARRIVAL A   
+INNER JOIN RM_LOT B ON A.Arrno=B.Arrno and A.Arrdate=B.Arrdt and A.Divcode=B.Divcode  
+inner join PO_CAR C ON a.carcode=C.Carcode  
+inner join Rm_Area D ON B.areacd=D.AreaCode  
+LEFT JOIN PP_DIVMAS pd ON PD.DIVCODE=A.DIVCODE   
+where   
+B.lotno between @FLot_No And @TLot_No   
+AND B.lotdt BETWEEN @FDate AND @TDate   
+AND C.Carcode between @FTrans AND @TTrans  
+AND a.divcode=@divcode  
+Order By b.Lotdt,b.Lotno  
+END  
+GO
+  

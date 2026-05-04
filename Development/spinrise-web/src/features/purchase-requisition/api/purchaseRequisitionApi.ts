@@ -93,10 +93,12 @@ export const purchaseRequisitionApi = {
     return apiHelpers.delete(`${BASE}/${prNo}?${params.toString()}`)
   },
 
-  deleteLine: (prNo: number, lineNo: number, deleteReasonCode: string, startDate?: string, endDate?: string) => {
-    const params = new URLSearchParams({ deleteReasonCode })
+  deleteLine: (prNo: number, lineNo: number, deleteReasonCode?: string, startDate?: string, endDate?: string) => {
+    const params = new URLSearchParams()
+    if (deleteReasonCode) params.set('deleteReasonCode', deleteReasonCode)
     if (startDate) params.set('startDate', startDate)
     if (endDate)   params.set('endDate',   endDate)
-    return apiHelpers.delete(`${BASE}/${prNo}/lines/${lineNo}?${params.toString()}`)
+    const qs = params.toString()
+    return apiHelpers.delete(`${BASE}/${prNo}/lines/${lineNo}${qs ? `?${qs}` : ''}`)
   },
 }

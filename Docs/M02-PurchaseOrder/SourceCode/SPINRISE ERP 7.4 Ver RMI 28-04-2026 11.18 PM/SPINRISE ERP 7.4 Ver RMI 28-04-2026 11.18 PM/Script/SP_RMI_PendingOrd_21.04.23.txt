@@ -1,0 +1,9 @@
+/*
+	SP_RMI_PendingOrd
+*/
+Alter proc SP_RMI_PendingOrd
+As
+begin
+select state,count(contno) bales,convert(decimal(5,2),(count(contno)*100)/(select convert(decimal(5,2),count(contno)) from Temp_Daily_PendingOrderDate)) Percentage from Temp_Daily_PendingOrderDate 
+group by state
+End

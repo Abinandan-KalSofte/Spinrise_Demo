@@ -13,23 +13,28 @@ import {
 import dayjs from 'dayjs'
 import type { PRHeaderResponse, PRLineResponse } from '../../types'
 import { STATUS_TAG } from './prListConfig'
+import { useLookupStore } from '../../store/useLookupStore'
 
 // ── Status accent colours ──────────────────────────────────────────────────────
 
 const STATUS_BORDER: Record<string, string> = {
-  OPEN:      '#1d4ed8',
-  APPROVED:  '#7c3aed',
-  RECEIVED:  '#0284c7',
-  CONVERTED: '#16a34a',
-  CANCELLED: '#dc2626',
+  OPEN:           '#1d4ed8',
+  L1_APPROVED:    '#d97706',
+  L2_APPROVED:    '#7c3aed',
+  FINAL_APPROVED: '#16a34a',
+  RECEIVED:       '#0284c7',
+  CONVERTED:      '#16a34a',
+  CANCELLED:      '#dc2626',
 }
 
 const STATUS_BG: Record<string, string> = {
-  OPEN:      'rgba(29,78,216,0.04)',
-  APPROVED:  'rgba(124,58,237,0.04)',
-  RECEIVED:  'rgba(2,132,199,0.04)',
-  CONVERTED: 'rgba(22,163,74,0.04)',
-  CANCELLED: 'rgba(220,38,38,0.04)',
+  OPEN:           'rgba(29,78,216,0.04)',
+  L1_APPROVED:    'rgba(217,119,6,0.04)',
+  L2_APPROVED:    'rgba(124,58,237,0.04)',
+  FINAL_APPROVED: 'rgba(22,163,74,0.04)',
+  RECEIVED:       'rgba(2,132,199,0.04)',
+  CONVERTED:      'rgba(22,163,74,0.04)',
+  CANCELLED:      'rgba(220,38,38,0.04)',
 }
 
 // ── Props ──────────────────────────────────────────────────────────────────────
@@ -44,6 +49,9 @@ interface PRViewModalProps {
 // ── Modal shell ────────────────────────────────────────────────────────────────
 
 export function PRViewModal({ open, pr, loading, onClose }: PRViewModalProps) {
+  const loadAll = useLookupStore((s) => s.loadAll)
+  React.useEffect(() => { if (open) void loadAll() }, [open, loadAll])
+
   return (
     <Modal
       open={open}
@@ -204,7 +212,7 @@ function PRViewContent({ pr, accentColor, accentBg, onClose }: {
         padding:       '22px 24px',
         display:       'flex',
         flexDirection: 'column',
-        gap:           22,
+        gap:           22,  
         maxHeight:     '80vh',
         overflowY:     'auto',
       }}>
@@ -219,7 +227,7 @@ function PRViewContent({ pr, accentColor, accentBg, onClose }: {
               value={pr.prDate ? dayjs(pr.prDate).format('DD/MM/YYYY') : '—'} />
             <Field icon={<BankOutlined />}     label="Department"
               value={pr.depName ? `${pr.depCode} – ${pr.depName}` : v(pr.depCode)} />
-            <Field icon={<TagOutlined />}      label="Indent Type"  value={v(pr.iType)}   />
+            <Field icon={<TagOutlined />}      label="Request Type"  value={v(pr.iType)}   />
             <Field icon={<NumberOutlined />}   label="Reference No" value={v(pr.refNo)}   />
             <Field icon={<NumberOutlined />}   label="Section"      value={v(pr.section)} />
           </div>
@@ -246,13 +254,69 @@ function PRViewContent({ pr, accentColor, accentBg, onClose }: {
                   {statusLabel}
                 </Tag>
               } />
-            <Field icon={<NumberOutlined />} label="PO Group"      value={v(pr.poGroupCode)} />
+            {/* <Field icon={<NumberOutlined />} label="PO Group"      value={v(pr.poGroupCode)} />
             <Field icon={<NumberOutlined />} label="Sale Order No" value={v(pr.saleOrderNo)} />
-            <Field icon={<NumberOutlined />} label="Scope Code"    value={v(pr.scopeCode)}   />
+            <Field icon={<NumberOutlined />} label="Scope Code"    value={v(pr.scopeCode)}   /> */}
           </div>
         </div>
 
-        {/* Section 3 — Line Items */}
+        {/* Section 3 — Approval Status (only when any approval data exists) */}
+        {(pr.level1ApproverName || pr.level2ApproverName || pr.finalApproverName) && (
+          <div>
+            <SectionHeading label="Approval Status" accentColor={accentColor} />
+            <div style={infoGrid}>
+              <Field
+                icon={<CheckCircleOutlined />}
+                label="Level 1 Approved By"
+                value={pr.level1ApproverName
+                  ? <span style={{ color: '#16a34a', fontWeight: 600 }}>{pr.level1ApproverName}</span>
+                  : <span style={{ color: '#94a3b8' }}>Pending</span>}
+              />
+              <Field
+                icon={<CalendarOutlined />}
+                label="Level 1 Approved On"
+                value={pr.level1ApprovedAt
+                  ? dayjs(pr.level1ApprovedAt).format('DD/MM/YYYY')
+                  : '—'}
+              />
+              <div />
+
+              <Field
+                icon={<CheckCircleOutlined />}
+                label="Level 2 Approved By"
+                value={pr.level2ApproverName
+                  ? <span style={{ color: '#16a34a', fontWeight: 600 }}>{pr.level2ApproverName}</span>
+                  : <span style={{ color: '#94a3b8' }}>Pending</span>}
+              />
+              <Field
+                icon={<CalendarOutlined />}
+                label="Level 2 Approved On"
+                value={pr.level2ApprovedAt
+                  ? dayjs(pr.level2ApprovedAt).format('DD/MM/YYYY')
+                  : '—'}
+              />
+              <div />
+
+              <Field
+                icon={<CheckCircleOutlined />}
+                label="Final Approved By"
+                value={pr.finalApproverName
+                  ? <span style={{ color: '#16a34a', fontWeight: 600 }}>{pr.finalApproverName}</span>
+                  : <span style={{ color: '#94a3b8' }}>Pending</span>}
+              />
+              <Field
+                icon={<CalendarOutlined />}
+                label="Final Approved On"
+                value={pr.finalApprovedAt
+                  ? dayjs(pr.finalApprovedAt).format('DD/MM/YYYY')
+                  : '—'}
+              />
+              <div />
+            </div>
+          </div>
+        )}
+
+        {/* Section 4 — Line Items */}
         <div>
           <SectionHeading label="Line Items" accentColor={accentColor} />
           <Card
@@ -295,101 +359,125 @@ function PRViewContent({ pr, accentColor, accentBg, onClose }: {
               }}
               summary={() => (
                 <Table.Summary.Row style={{ background: '#f1f5f9' }}>
-                  {/* cols 0-3: #, Item Code, Description, Machine */}
+                  {/* 0-3: #, Item ID, Description, UOM → "Total" label */}
                   <Table.Summary.Cell index={0} colSpan={4}>
-                    <Typography.Text strong style={{ fontSize: 12, color: '#475569' }}>
-                      Total
-                    </Typography.Text>
+                    <Typography.Text strong style={{ fontSize: 12, color: '#475569' }}>Total</Typography.Text>
                   </Table.Summary.Cell>
-                  {/* col 4: Draw No */}
-                  <Table.Summary.Cell index={4} />
-                  {/* col 5: Cat */}
+                  {/* 4: QTY */}
+                  <Table.Summary.Cell index={4} align="right">
+                    <Typography.Text strong style={{ fontVariantNumeric: 'tabular-nums' }}>{totalQty}</Typography.Text>
+                  </Table.Summary.Cell>
+                  {/* 5: Unit Price (empty) */}
                   <Table.Summary.Cell index={5} />
-                  {/* col 6: UOM */}
-                  <Table.Summary.Cell index={6} />
-                  {/* col 7: Qty ← total qty here */}
-                  <Table.Summary.Cell index={7} align="right">
-                    <Typography.Text strong style={{ fontVariantNumeric: 'tabular-nums' }}>
-                      {totalQty}
-                    </Typography.Text>
-                  </Table.Summary.Cell>
-                  {/* col 8: Stock */}
-                  <Table.Summary.Cell index={8} />
-                  {/* col 9: Last Rate */}
-                  <Table.Summary.Cell index={9} />
-                  {/* col 10: Reqd. Date */}
-                  <Table.Summary.Cell index={10} />
-                  {/* col 11: Approx. Cost ← total cost here */}
-                  <Table.Summary.Cell index={11} align="right">
+                  {/* 6: Approx Cost → grand total */}
+                  <Table.Summary.Cell index={6} align="right">
                     <Typography.Text strong style={{ color: accentColor, fontVariantNumeric: 'tabular-nums' }}>
                       {totalCost > 0
                         ? `₹ ${totalCost.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
                         : '—'}
                     </Typography.Text>
                   </Table.Summary.Cell>
+                  {/* 7-17: remaining columns (empty) */}
+                  {Array.from({ length: 11 }, (_, i) => <Table.Summary.Cell key={i} index={7 + i} />)}
                 </Table.Summary.Row>
               )}
               columns={[
                 {
-                  title: '#', dataIndex: 'prSNo', key: 'prSNo', width: 40, align: 'center',
+                  title: '#', dataIndex: 'prSNo', key: 'prSNo', width: 46, align: 'center',
                 },
                 {
-                  title: 'Item Code', dataIndex: 'itemCode', key: 'itemCode', width: 100,
+                  title: 'Item ID', dataIndex: 'itemCode', key: 'itemCode', width: 110,
                   render: (val: string) => (
                     <Typography.Text code style={{ fontSize: 11 }}>{val}</Typography.Text>
                   ),
                 },
                 {
-                  title: 'Description', dataIndex: 'itemName', key: 'itemName', minWidth: 200,
+                  title: 'Item Description', dataIndex: 'itemName', key: 'itemName', width: 200,
                   render: (val: string | undefined) => val || '—',
                 },
                 {
-                  title: 'Machine', dataIndex: 'machineNo', key: 'machineNo', width: 76,
-                  render: (val: string | undefined) => val || <Typography.Text type="secondary">—</Typography.Text>,
-                },
-                {
-                  title: 'Draw No', dataIndex: 'drawNo', key: 'drawNo', width: 76,
-                  render: (val: string | undefined) => val || <Typography.Text type="secondary">—</Typography.Text>,
-                },
-                {
-                  title: 'Cat', dataIndex: 'categoryCode', key: 'categoryCode', width: 48, align: 'center' as const,
-                  render: (val: string | undefined) => val || <Typography.Text type="secondary">—</Typography.Text>,
-                },
-                {
-                  title: 'UOM', dataIndex: 'uom', key: 'uom', width: 52, align: 'center',
+                  title: 'UOM', dataIndex: 'uom', key: 'uom', width: 70, align: 'center',
                   render: (val: string | undefined) => val || '—',
                 },
                 {
-                  title: 'Qty', dataIndex: 'qtyRequired', key: 'qtyRequired', width: 65, align: 'right',
+                  title: 'QTY', dataIndex: 'qtyRequired', key: 'qtyRequired', width: 70, align: 'right',
                   render: (val: number) => <strong>{val}</strong>,
                 },
                 {
-                  title: 'Stock', dataIndex: 'currentStock', key: 'currentStock', width: 68, align: 'right',
+                  title: 'Unit Price', dataIndex: 'rate', key: 'rate', width: 115, align: 'right',
+                  render: (val: number | undefined) =>
+                    val != null && val > 0
+                      ? `₹ ${val.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
+                      : <Typography.Text type="secondary">—</Typography.Text>,
+                },
+                {
+                  title: 'Approx Cost', key: 'approxCost', width: 130, align: 'right' as const,
+                  render: (_: unknown, row: PRLineResponse) => {
+                    const r = row.rate && row.rate > 0 ? row.rate : (row.lastPoRate ?? 0)
+                    const v = r * (row.qtyRequired ?? 0)
+                    return v > 0
+                      ? <strong>{`₹ ${v.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`}</strong>
+                      : <Typography.Text type="secondary">—</Typography.Text>
+                  },
+                },
+                {
+                  title: 'Current Stock', dataIndex: 'currentStock', key: 'currentStock', width: 130, align: 'right',
                   render: (val: number | undefined) =>
                     val != null ? val : <Typography.Text type="secondary">—</Typography.Text>,
                 },
                 {
-                  title: 'Last Rate', dataIndex: 'lastPoRate', key: 'lastPoRate', width: 95, align: 'right',
-                  render: (val: number | undefined) =>
-                    val != null
-                      ? `₹${val.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
-                      : <Typography.Text type="secondary">—</Typography.Text>,
+                  title: 'Cat. No', dataIndex: 'catNo', key: 'catNo', width: 90,
+                  render: (val: string | undefined) => val || <Typography.Text type="secondary">—</Typography.Text>,
                 },
                 {
-                  title: 'Reqd. Date', dataIndex: 'requiredDate', key: 'requiredDate', width: 90,
+                  title: 'Draw No', dataIndex: 'drawNo', key: 'drawNo', width: 90,
+                  render: (val: string | undefined) => val || <Typography.Text type="secondary">—</Typography.Text>,
+                },
+                {
+                  title: 'Machine No', dataIndex: 'machineNo', key: 'machineNo', width: 115,
+                  render: (val: string | undefined) => val || <Typography.Text type="secondary">—</Typography.Text>,
+                },
+                {
+                  title: 'Sub Cost', key: 'subCostCode', width: 160,
+                  render: (_: unknown, row: PRLineResponse) => {
+                    if (row.subCostCode == null) return <Typography.Text type="secondary">—</Typography.Text>
+                    return row.subCostName
+                      ? `${row.subCostCode} – ${row.subCostName}`
+                      : String(row.subCostCode)
+                  },
+                },
+                {
+                  title: 'Req. Date', dataIndex: 'requiredDate', key: 'requiredDate', width: 105,
                   render: (val: string | undefined) =>
                     val ? dayjs(val).format('DD/MM/YYYY') : <Typography.Text type="secondary">—</Typography.Text>,
                 },
                 {
-                  title: 'Approx. Cost', dataIndex: 'approxCost', key: 'approxCost', width: 110, align: 'right' as const,
-                  render: (val: number | undefined, row: PRLineResponse) => {
-                    const cost = val && val > 0 ? val : (row.lastPoRate ?? 0) * (row.qtyRequired ?? 0)
-                    return cost > 0
-                      ? `₹ ${cost.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
-                      : <Typography.Text type="secondary">—</Typography.Text>
-                  },
+                  title: 'Remarks', dataIndex: 'remarks', key: 'remarks', width: 130,
+                  render: (val: string | undefined) => val || <Typography.Text type="secondary">—</Typography.Text>,
                 },
-                
+                {
+                  title: 'Last PO Rate', dataIndex: 'lastPoRate', key: 'lastPoRate', width: 125, align: 'right',
+                  render: (val: number | undefined) =>
+                    val != null
+                      ? `₹ ${val.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
+                      : <Typography.Text type="secondary">—</Typography.Text>,
+                },
+                {
+                  title: 'Last PO Date', dataIndex: 'lastPoDate', key: 'lastPoDate', width: 125,
+                  render: (val: string | undefined) =>
+                    val ? dayjs(val).format('DD/MM/YYYY') : <Typography.Text type="secondary">—</Typography.Text>,
+                },
+                {
+                  title: 'Supplier Code', dataIndex: 'lastPoSupplierCode', key: 'lastPoSupplierCode', width: 130,
+                  render: (val: string | undefined) =>
+                    val ? <Typography.Text code style={{ fontSize: 11 }}>{val}</Typography.Text>
+                        : <Typography.Text type="secondary">—</Typography.Text>,
+                },
+                {
+                  title: 'Supplier Name', dataIndex: 'lastPoSupplierName', key: 'lastPoSupplierName', width: 145,
+                  render: (val: string | undefined) =>
+                    val || <Typography.Text type="secondary">—</Typography.Text>,
+                },
               ]}
             />
           </Card>

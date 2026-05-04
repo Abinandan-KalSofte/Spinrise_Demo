@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   Alert, App, Breadcrumb, Button, Form, Modal,
   Select, Skeleton, Space, Spin, Tag, Typography, theme,
@@ -6,7 +6,6 @@ import {
 import { generateUUID } from '@/shared/lib/uuid'
 import {
   ArrowLeftOutlined,
-  CloseCircleOutlined,
   SaveOutlined,
 } from '@ant-design/icons'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
@@ -14,8 +13,8 @@ import dayjs from 'dayjs'
 
 import { purchaseRequisitionApi } from '../api/purchaseRequisitionApi'
 import { useLookupStore } from '../store/useLookupStore'
-import { PRHeaderCards } from '../components/v2/PRHeaderCards'
-import { PRLineItemsTable } from '../components/v2/PRLineItemsTable'
+import { PRHeaderCards } from '../components/pr-form/PRHeaderCards'
+import { PRLineItemsTable, type PRLineItemsTableHandle } from '../components/pr-form/PRLineItemsTable'
 import { PR_STATUS_LABELS } from '../types'
 import type {
   PRHeaderFormValues,
@@ -28,7 +27,7 @@ import type {
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const LOCKED_STATUSES = new Set(['APPROVED', 'RECEIVED', 'CONVERTED', 'CANCELLED'])
+const LOCKED_STATUSES = new Set(['L1_APPROVED', 'L2_APPROVED', 'FINAL_APPROVED', 'RECEIVED', 'CONVERTED', 'CANCELLED'])
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -40,6 +39,7 @@ function mapLine(line: PRLineResponse): PRLineFormItem {
     itemName:           line.itemName           ?? '',
     uom:                line.uom                ?? '',
     currentStock:       line.currentStock       ?? null,
+    minLevel:           null,
     qtyRequired:        line.qtyRequired,
     requiredDate:       line.requiredDate        ?? null,
     place:              line.place               ?? '',
@@ -49,6 +49,7 @@ function mapLine(line: PRLineResponse): PRLineFormItem {
     costCentreCode:     line.costCentreCode      ?? '',
     budgetGroupCode:    line.budgetGroupCode     ?? '',
     subCostCode:        line.subCostCode         ?? null,
+    subCostName:        line.subCostName         ?? null,
     isSample:           line.isSample,
     lastPoRate:         line.lastPoRate          ?? null,
     lastPoDate:         line.lastPoDate          ?? null,
@@ -75,7 +76,8 @@ export default function PurchaseRequisitionEditPage() {
   const toDate   = searchParams.get('to')   ?? undefined
   const { message } = App.useApp()
   const { token } = theme.useToken()
-  const [headerForm] = Form.useForm<PRHeaderFormValues>()
+  const [headerForm]    = Form.useForm<PRHeaderFormValues>()
+  const lineTableRef     = useRef<PRLineItemsTableHandle>(null)
 
   // ── State ──────────────────────────────────────────────────────────────────
   const [loadingPr,  setLoadingPr]  = useState(true)
@@ -184,14 +186,14 @@ export default function PurchaseRequisitionEditPage() {
   // ── Handlers ───────────────────────────────────────────────────────────────
   const handleUpdate = async () => {
     if (items.length === 0) { void message.error('At least one item is required.'); return }
+    // Commit any in-progress row edit before building the payload
+    await lineTableRef.current?.flushEdit()
     setSaving(true)
     try {
       const values = headerForm.getFieldsValue()
       await purchaseRequisitionApi.update(prNo, buildPayload(values))
-      const refreshed = await purchaseRequisitionApi.getById(prNo, fromDate, toDate)
-      setSavedPr(refreshed)
-      setItems(refreshed.lines.map(mapLine))
       void message.success(`PR ${prNo} updated successfully.`)
+      navigate('/purchase/requisition')
     } catch (err: unknown) {
       void message.error(err instanceof Error ? err.message : 'Failed to update.')
     } finally {
@@ -269,7 +271,7 @@ export default function PurchaseRequisitionEditPage() {
             poTypes={poTypes}
             savedPrNo={savedPr?.prNo ?? null}
             disabled={pageBusy || isLocked}
-            requireRequesterName={preCheckResult?.requireRequesterName ?? false}
+            requireRequesterName={true}
             requireRefNo={preCheckResult?.requireRefNo ?? false}
             pendingPoDetailsEnabled={preCheckResult?.pendingPoDetailsEnabled ?? false}
             backDateAllowed={preCheckResult?.backDateAllowed ?? true}
@@ -282,11 +284,13 @@ export default function PurchaseRequisitionEditPage() {
             level2ApprovedAt={savedPr?.level2ApprovedAt ?? null}
             finalApproverName={savedPr?.finalApproverName ?? null}
             finalApprovedAt={savedPr?.finalApprovedAt ?? null}
+            createdBy={savedPr?.createdBy ?? null}
           />
         </Skeleton>
 
         {/* Items */}
         <PRLineItemsTable
+          ref={lineTableRef}
           items={items}
           machines={machines}
           depCode={savedPr?.depCode ?? ''}
@@ -332,7 +336,7 @@ export default function PurchaseRequisitionEditPage() {
         </Space>
 
         <Space>
-          {!isLocked && savedPr?.prStatus === 'OPEN' && (
+          {/* {!isLocked && savedPr?.prStatus === 'OPEN' && (
             <Button
               icon={<CloseCircleOutlined />}
               danger
@@ -341,7 +345,7 @@ export default function PurchaseRequisitionEditPage() {
             >
               Cancel PR
             </Button>
-          )}
+          )} */}
           {!isLocked && (
             <Button
               type="primary"
@@ -358,16 +362,16 @@ export default function PurchaseRequisitionEditPage() {
 
       {/* Cancel PR modal */}
       <Modal
-        title={`Cancel PR #${prNo}`}
+        title={`Delete PR #${prNo}`}
         open={cancelModalOpen}
         onCancel={() => setCancelModalOpen(false)}
         onOk={() => void handleCancelPr()}
-        okText="Confirm Cancel"
+        okText="Confirm Deleteion"
         okButtonProps={{ danger: true, loading: cancelling }}
         destroyOnClose
       >
         <p style={{ marginBottom: 12 }}>
-          This will permanently cancel the requisition. Select a reason:
+          This will permanently delete the requisition. Select a reason:
         </p>
         <Select
           placeholder="Select reason…"

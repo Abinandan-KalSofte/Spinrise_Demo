@@ -1,0 +1,29 @@
+CREATE PROCEDURE Ksp_PendingBillEntry_Date  
+(  
+ -- Ksp_PendingBillEntry_Date '01','2013-07-01','2013-07-30','2013-04-01'  
+ @divcode VARCHAR(02),  
+ @Fdate VARCHAR(10),  
+ @Tdate VARCHAR(10),  
+ @yfdate VARCHAR(10)  
+)  
+AS  
+BEGIN  
+SELECT arrno,arrdt,lotno,supcd,fs.slname,bales,netwt,a.VARCODE,a.BRKCD  
+,fa.slname AS Agent_name,va.VARNAME,a.BILLNO,a.BILLDT,pd.DIV_PRINTNAME,pd.DIV_UNITNAME   
+FROM  
+(SELECT arrno,arrdt,lotno,supcd,bales,netwt,VARCODE,BRKCD,BILLNO,BILLDT   
+FROM rm_lot WHERE LOTYEAR=Year(@yfdate)--'2013'   
+AND divcode=@divcode AND arrdt BETWEEN @Fdate AND @Tdate AND   
+pjno IS null and isnull(opflg,'N')='N' and lottype='A'   
+Union All   
+SELECT arrno as arrno,arrdate as arrdt,lotno,supcd,quantity AS bales,netwt AS netwt,VARCODE,BRKCD  
+,'' AS BILLNO,'' AS BILLDT  
+FROM rm_arrival WHERE divcode=@divcode AND ISNULL(QUANTITY,0)-(ISNULL(lotrecqty,0) + ISNULL(Rejqty,0)) >0 AND   
+ARRDATE Between @Fdate AND @Tdate AND lottype='A')a  
+LEFT OUTER JOIN FA_SLMAS fs ON a.supcd=fs.slcode   
+LEFT OUTER JOIN FA_SLMAS fa ON a.BRKCD=fa.slcode   
+LEFT OUTER JOIN RM_VAR va ON va.VARCODE=a.VARCODE  
+LEFT OUTER JOIN PP_DIVMAS pd ON pd.DIVCODE=@divcode  
+order by arrno,arrdt   
+END 
+GO 

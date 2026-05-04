@@ -1,0 +1,14 @@
+alter View vw_LotBaleStockData    
+as    
+select a.divcode, a.lotno,b.lotdt,a.varcode,b.BALENO,(isnull(b.favaourablewgt,0) +isnull(d.retissueqty ,0)) - isnull(c.issueqty ,0) BalanceQty,a.lottype,a.catcd,a.lotyear from rm_lot a    
+inner join rm_bale b on a.lotno=b.lotno and a.lotdt=b.lotdt and a.divcode=b.divcode and a.VARCODE=b.VARCODE and a.arrno=b.arrno    
+and a.LOTTYPE =b.lottype    
+left join (select lotno,lotdt,varcode,baleno,SUM(isskgs) issueqty,divcode,lottype from rm_issb     
+group by divcode,lottype,lotno,lotdt,varcode,baleno) c     
+on a.DIVCODE =c.DIVCODE and c.lotdt =a.LOTDT and c.LOTNO=a.LOTNO and a.varcode=c.varcode and c.BALENO=b.BALENO    
+ and c.LOTTYPE =a.LOTTYPE 
+left join (select lotno,lotdt,varcode,baleno,SUM(isskgs) retissueqty,divcode,lottype from RM_ISSRTNB      
+group by divcode,lottype,lotno,lotdt,varcode,baleno) d     
+on a.DIVCODE =d.DIVCODE and d.lotdt =a.LOTDT and d.LOTNO=a.LOTNO and a.varcode=d.varcode and d.BALENO=b.BALENO    
+ and d.LOTTYPE =a.LOTTYPE 
+where (isnull(b.favaourablewgt,0)+isnull(d.retissueqty ,0)) - isnull(c.issueqty ,0)>0  and Isnull(b.rejflg,'N')='N' 

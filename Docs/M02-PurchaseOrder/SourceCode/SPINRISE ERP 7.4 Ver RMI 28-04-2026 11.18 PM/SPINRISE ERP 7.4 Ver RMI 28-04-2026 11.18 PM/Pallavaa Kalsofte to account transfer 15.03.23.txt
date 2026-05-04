@@ -1,0 +1,143 @@
+--KSP_KSLTOTALLY_RMI '01','2021-01-01','2022-05-30'                                
+alter procedure [dbo].[KSP_KSLTOTALLY_RMI]                             
+(                                                      
+@divcode varchar(30),                                                      
+@fdate varchar(20),                                                      
+@tdate varchar(20)                                                      
+)                                                      
+as                                                      
+Begin  
+
+SET NOCOUNT ON;    
+    DECLARE @divTab TABLE    
+    (    
+        Divcode varchar(2)     
+    )    
+  
+      
+    INSERT INTO @divTab    
+    (    
+        Divcode    
+    )     
+    SELECT    
+        items    
+    FROM dbo.split( @Divcode,',') 
+
+  select      
+case when pp.Cust_id ='Pallava' then    
+ case when pp.Divcode='01' then 'P1'     
+ when pp.Divcode='02' then 'P2'     
+ when pp.Divcode='03' then 'P3' end    
+    
+when pp.Cust_id ='Shrigiri' then    
+ case when pp.Divcode='01' then 'S2'     
+ when pp.Divcode='02' then 'S1'     
+ when pp.Divcode='03' then 'S3' end    
+end  + cast(right(year(py.AYFDATE),2) as varchar)+ 'RM'  
+    
++ RIGHT('0000'+ISNULL(cast( pjno as varchar),''),4)      
+   as grnno,convert(varchar,PJDT ,3)  as grndate,                          
+  case when isnull( POTYPE,'L') = 'L' then 'Domestic'                           
+  when isnull( POTYPE,'L') = 'D' then 'Import Duty'                          
+  when isnull( POTYPE,'L') = 'A' then 'Import Advance License'                            
+  when isnull( POTYPE,'L') = 'B' then 'Import- Duty and Advance' end                           
+   type,          
+   case when isnull( POTYPE,'L') = 'L' then          
+   s.gstinno          
+   else          
+   'Import'          
+   end    gstinno          
+   ,slname,h.Billno,h.billdt,                          
+  isnull(be_no,'')beno,                          
+  case when convert(varchar,isnull(be_no,'')) ='' then '' else convert(varchar,isnull(be_date,''),103) end as bedt,                        
+   case when   isnull(potype,'L') ='L' then                 
+  --  sum(ASSVALUE) + sum(isnull(IDAmt,0)+isnull(welfareAmt,0)) +sum(isnull(INSAMT,0)) +sum(isnull(cgstamt ,0))                         
+  --+sum(isnull(sgstamt ,0))   +sum(isnull(igstamt ,0))                 
+   round(  h.AssessableAmt-ISNULL(h.FibreDisc_Amt,0)  +isnull(h.OtherTaxAmt,0)+(isnull(h.cgstamt ,0))   +(isnull(h.sgstamt ,0))   +(isnull(h.igstamt ,0))               
+     +ISNULL(h.InsuranceAmt ,0)  +h.AdjustAmt  +ISNULL(TCS_AMONT,0) +ISNULL(h.othersamt,0) ,0)                  
+   else                      
+    isnull(H.ADVANCEAMT ,0)--+ sum(ASSVALUE) +sum(isnull(INSAMT,0))                            
+  end                       
+    --sum(isnull(IDAmt,0)+isnull(welfareAmt,0)) --+sum(isnull(INSAMT,0))                       
+  as tamount,                                    
+ --case when isnull(ac.accvarcode,'')='' then         
+ -- l.varcode else ac.accvarcode end VARCODE,        
+ --case when isnull(ac.accvarcode,'')='' then         
+ -- VARNAME else ac.accvarname end        
+  isnull(ac.accvarname,'')        
+  as itemname,sum(favaourablewgt) as netqty,t.tchead as purledger,                        
+  --sum(ASSVALUE) + sum(isnull(IDAmt,0)+isnull(welfareAmt,0)) +sum(isnull(INSAMT,0))                       
+    round( H.AssessableAmt  -ISNULL(h.FibreDisc_Amt,0)  +isnull(h.OtherTaxAmt,0)+ISNULL(h.InsuranceAmt ,0)        
+    +ISNULL(H.ANTIDUMP_AMT,0) +ISNULL(H.SICA_Amt,0)+ISNULL(H.SocialWelfare_Amt,0)+ISNULL(H.ID_Amt,0) +ISNULL(h.othersamt,0) ,0)              
+  as ledvalue,                            
+  --sum(isnull(IDAmt,0)+isnull(welfareAmt,0))              
+  isnull(h.OtherTaxAmt,0)               
+  as custduty,                                    
+  case when l.cgstper=2.50 then (isnull(h.Cgstamt ,0)) end [cgst2.5%],                                                    
+  case when l.sgstper=2.50 then (isnull(h.sgstamt ,0)) end [sgst2.5%],                                                    
+  case when l.igstper=5.00 then (isnull(h.Igstamt ,0)) end [igst5%],                                                    
+  case when l.cgstper=9.00 then (isnull(h.Cgstamt ,0)) end [cgst9%],                                                    
+  case when l.sgstper=9.00 then (isnull(h.sgstamt ,0)) end [sgst9%],         
+  case when l.igstper=18.00 then (isnull(h.Igstamt ,0)) end [igst18%],                                                    
+  case when l.cgstper=6.00 then (isnull(h.Cgstamt ,0)) end [cgst6%],                                                    
+  case when l.sgstper=6.00 then (isnull(h.sgstamt ,0)) end [sgst6%],                                                    
+  case when l.igstper=12.00 then (isnull(h.Igstamt ,0)) end [igst12%],                                    
+  case when l.cgstper=14.00 then (isnull(H.Cgstamt ,0)) end [cgst14%],                                    
+  case when l.sgstper=14.00 then (isnull(h.sgstamt ,0)) end [sgst14%],                                    
+  case when l.igstper=28.00 then sum(isnull(H.igstamt,0)) end [igst28%],                                    
+  v.taxcode,st_per,case when isnull( POTYPE,'L') ='L' then  h.AdjustAmt  else 0 end  as roff,                          
+    case when isnull( POTYPE,'L') ='L' then                          
+    0 else                          
+ -((h.igstamt +h.sgstamt +h.cgstamt  ) +ISNULL(h.OtherTaxAmt,0 )+ISNULL(H.ANTIDUMP_AMT,0)     
+ +ISNULL(H.SICA_Amt,0)+ISNULL(H.SocialWelfare_Amt,0)+ISNULL(H.ID_Amt,0)+ISNULL(h.othersamt,0) )           
+ end  as igst_revers,                          
+  case when   isnull(potype,'L') ='L' then  0 else                        
+ --sum(ISNULL(Advance_amt,0))- ( sum(ASSVALUE) +sum(isnull(INSAMT,0)) )                 
+ H.ADVANCEAMT-  (h.AssessableAmt+ ISNULL(h.InsuranceAmt ,0)  )                  
+ end exg_gainloss,                              
+  case when   isnull(potype,'L') ='L' then                            
+  'NET WT: '+ convert(varchar,sum(favaourablewgt )) +' KGS '                          
+  +' // INV.NO.'+   convert(varchar,h.Billno)+' / '+ case when convert(varchar,isnull(h.Billno,'')) ='' then '' else convert(varchar,h.billdt,103) end+'//INV VALUE :'+                
+   CONVERT(VARCHAR,  case when   isnull(potype,'L') ='L' then                       
+  --  sum(ASSVALUE) + sum(isnull(IDAmt,0)+isnull(welfareAmt,0)) +sum(isnull(INSAMT,0)) +sum(isnull(cgstamt ,0))                         
+  --+sum(isnull(sgstamt ,0))   +sum(isnull(igstamt ,0))                  
+  round( h.AssessableAmt -ISNULL(h.FibreDisc_Amt,0) +isnull(h.OtherTaxAmt,0)+(isnull(h.cgstamt ,0))   +(isnull(h.sgstamt ,0))                
+    +(isnull(h.igstamt ,0)) +ISNULL(h.InsuranceAmt ,0)+h.AdjustAmt  +ISNULL(H.TCS_AMONT,0)+ISNULL(h.othersamt,0) ,0)                       
+   else                      
+   --sum(ISNULL(Advance_amt,0)) --+ sum(ASSVALUE) +sum(isnull(INSAMT,0))                            
+   iSNULL(h.Advanceamt,0)              
+  end )                  
+  else                          
+    'NET WT: '+ convert(varchar,sum(favaourablewgt )) +' KGS // BE.NO.:'+ convert(varchar,isnull(be_no,''))+'/'+ case when convert(varchar,isnull(be_no,'')) ='' then '' else convert(varchar,isnull(be_date,''),103) end                           
+  +' // INV.NO.'+   convert(varchar,h.Billno)+' / '+ case when convert(varchar,isnull(h.Billno,'')) ='' then '' else                 
+  convert(varchar,h.billdt,103) end+'//INV VALUE :'+--CONVERT(VARCHAR,sum(TOTLANDCOST))                               
+     CONVERT(VARCHAR,  case when   isnull(potype,'L') ='L' then                       
+   -- sum(ASSVALUE) + sum(isnull(IDAmt,0)+isnull(welfareAmt,0)) +sum(isnull(INSAMT,0)) +sum(isnull(cgstamt ,0))                    
+     rounD(  h.AssessableAmt- ISNULL(h.FibreDisc_Amt,0) +isnull(h.OtherTaxAmt,0)++(isnull(h.cgstamt ,0))   +(isnull(h.sgstamt ,0))   +(isnull(h.igstamt ,0))              
+       +ISNULL(h.InsuranceAmt ,0)  +ISNULL(H.TCS_AMONT,0) +ISNULL(h.othersamt,0) ,0)                     
+   else                      
+   (ISNULL(h.Advanceamt,0)) --+ sum(ASSVALUE) +sum(isnull(INSAMT,0))                            
+  end )                  
+  end +', '+  VARNAME   as narration  ,ISNULL(H.TCS_AMONT,0)  TCS_AMT  ,h.slcode  ,isnull(s.state,'')   PlaceofSupp                  
+  from rm_lot l                    
+  inner join fa_purhd h on h.pjvno=l.pjno and l.pjdt=h.pjvdt and l.pjtc=h.tc and l.divcode=h.divcode           
+inner join rm_var v on v.varcode=l.varcode     
+  left join RM_Accvar ac on ac.AccVarcode=v.AccVarcode                       
+  left join ig_tax x on x.tax_code=v.taxcode                                    
+  left join fa_tcmas t on t.tc=l.pjtc                                    
+  left join fa_slmas s on s.slcode=l.SUPCD                                    
+  left join rm_purtype r on r.PURTYPE =l.PTYPE     
+  left join pp_Divmas pp on pp.Divcode=l.Divcode    
+  left join pp_year py on h.pjvdt between  py.AYFDATE and py.AYLDATE  
+   inner JOIN @divTab divtab  ON  l.divcode = divtab.Divcode 
+  where l.PJDT >=@fdate and l.PJDT <=@tdate --and l.divcode=@divcode-- and s.GSTINNO<>''                                 
+  and PJNO is not null and PJDT is not null and PJTC is not null    and isnull(h.appflg,'N')='Y'                                 
+  group by PJNO,PJDT,s.gstinno,slname,h.Billno,h.billdt,l.VARCODE,VARNAME   ,                                
+  l.cgstper,l.sgstper,l.igstper,v.taxcode,st_per,t.tchead,be_no,be_date,purdesc,potype              
+   ,  h.AssessableAmt  ,isnull(h.OtherTaxAmt,0),h.cgstamt ,h.sgstamt,h.igstamt ,h.InsuranceAmt,h.Advanceamt ,h.AdjustAmt , ac.accvarcode,ac.accvarname          
+   ,H.ANTIDUMP_AMT,H.SICA_Amt,H.SocialWelfare_Amt,H.ID_Amt ,H.TCS_AMONT ,ISNULL(h.FibreDisc_Amt,0)   ,h.slcode ,isnull(s.state,'')  ,pp.Cust_id,pp.Divcode    
+   ,ISNULL(h.othersamt,0)   ,py.AYFDATE  
+  --,IDAmt,welfareAmt ,PNETWT,pjamt,CUSTOMSDUTYAMT, ,FBILLVALUE   
+  
+  order by PJDT,grnno
+END 

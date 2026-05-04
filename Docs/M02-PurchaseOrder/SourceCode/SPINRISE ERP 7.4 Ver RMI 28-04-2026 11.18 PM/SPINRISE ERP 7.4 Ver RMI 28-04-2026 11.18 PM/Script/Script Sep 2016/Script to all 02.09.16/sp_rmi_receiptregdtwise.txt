@@ -1,0 +1,89 @@
+-- sp_rmi_receiptregdtwise '2013-01-01','2013-03-15','CRA0001','CRY003','01','2012-04-01','ALL'          
+ALTER proc sp_rmi_receiptregdtwise                        
+@Fdate varchar(15),                  
+@Tdate varchar(15),                  
+@FSubCd varchar(20),                  
+@TSubCd  varchar(20),                  
+@Divcode  varchar(2),    
+@YFDATE VARCHAR(15),  
+@StateCode VARCHAR(10)                
+            
+AS          
+          
+select distinct X.inwardno,X.inwarddate,X.PLOTNO,X.PGRSWT,X.PTAREWT,X.GRSWGT,          
+X.carcode, X.arrno, X.arrdt,           
+X.lotdt,X.lotno,X.lotyear,X.prmark,X.pjno,X.contno,                              
+X.dlytype,X.varcode,x.varname,          
+X.pnetwt,          
+X.bales,x.contdt,X.netwt,X.ratecy,X.pjamt,                              
+X.taxamt,X.vatamt,X.ldgulg,X.freight,X.totalvalue,X.supplier,X.Broker,X.CARNAME,                              
+X.brkcd,X.lorrynos,X.LRFRTAMT,X.CSTAMT,X.CSTVAL,X.VATVAL,                              
+X.DBTAMT,X.fbillno, X.AssValue,X.OthersAmt,x.scamt,                              
+X.RateKg,X.commamt,X.brkcom,X.vcatcd,                              
+X.tratekg,X.DIFF,X.ITEMVALUE,X.billvalue,                              
+X.Purcost,X.otherchrg,                              
+(X.Purcost/X.netwt) AS Rate_Kg, X.DIVNAME AS DIVNAME, x.DIV_UNITNAME  AS ADDR     
+From                              
+(select isnull(a.aedamt,0) as aedamt,isnull(a.bedamt,0) as bedamt,                              
+isnull(a.sedamt,0) as sedamt,ISNULL(a.insamt,0) AS insamt,isnull(a.cessamt,0)as cessamt,                              
+a.inwardno,a.inwarddate,isnull(a.PLOTNO,0) as PLOTNO,isnull(a.PGRSWT,0) as PGRSWT,          
+isnull(a.PTAREWT,0) as PTAREWT,isnull(a.GRSWGT,0) as GRSWGT,                              
+b.carcode,a.arrno, a.arrdt,           
+a.lotdt,a.lotno,          
+a.pnetwt,           
+a.lotyear,b.prmark,a.pjno,b.contno as pono,                              
+c.dlytype,a.varcode,v.varname, a.bales,c.contdt, ISNULL(a.ratecy,0) AS ratecy,a.pjamt,                              
+ISNULL(a.taxamt,0) AS taxamt,ISNULL(a.vatamt,0) AS vatamt,                              
+a.ldgulg,ISNULL(b.freight,0) AS FREIGHT,ISNULL(a.totlandcost,0) as totalvalue,e.slname as supplier,          
+g.slname AS Broker,h.CarName as CARNAME,                              
+isnull(b.brkcd,'') as brkcd,ISNULL(A.netwt,0) AS NETWT,c.contno,b.lorrynos,                              
+ISNULL(a.LRFRTAMT,0) AS LRFRTAMT,ISNULL(A.CSTAMT,0) AS CSTAMT,                              
+CASE WHEN a.vcatcd='O' THEN ISNULL(a.vatamt,0) END AS CSTVAL,                              
+CASE WHEN a.vcatcd<>'O' THEN ISNULL(a.vatamt,0) END AS VATVAL,                              
+ISNULL(A.DBAMT,0) AS DBTAMT,a.fbillno, ISNULL(a.AssValue,0) AS AssValue,ISNULL(a.OthersAmt,0) AS OthersAmt,                              
+ISNULL(a.RateKg,0) AS RateKg,ISNULL(a.commamt,0) AS commamt,ISNULL(a.brkcom,0) AS brkcom,a.vcatcd,           
+(IsNull(totlandcost,0)/ ISNULL(A.NETWT,0)) AS tratekg,                              
+(ISNULL(A.NETWT,0) - ISNULL(A.NETWT,0)) AS DIFF,ISNULL(A.scamt,0) AS scamt,                              
+(ISNULL(a.AssValue,0)-ISNULL(a.OthersAmt,0)) AS ITEMVALUE,                              
+(ISNULL(a.AssValue,0)-ISNULL(a.OthersAmt,0)) + ISNULL(a.vatamt,0) + ISNULL(a.scamt,0)+ ISNULL(A.CSTAMT,0) + ISNULL(a.OthersAmt,0) + isnull(a.aedamt,0) + isnull(a.bedamt,0) + isnull(a.cessamt,0) + isnull(a.sedamt,0)- isnull(a.cashdisamt,0) -               
+  
+    
+isnull(a.tradedisamt,0) AS billvalue,                              
+(ISNULL(a.AssValue,0)-ISNULL(a.OthersAmt,0)) + ISNULL(a.vatamt,0) + ISNULL(a.scamt,0)+ ISNULL(A.CSTAMT,0) + ISNULL(a.OthersAmt,0) + isnull(a.aedamt,0) + isnull(a.bedamt,0) + isnull(a.cessamt,0) + isnull(a.sedamt,0) - isnull(a.cashdisamt,0) -              
+  
+    
+isnull(a.tradedisamt,0) - ISNULL(a.vatamt,0) - ISNULL(a.scamt,0) + ISNULL(a.LRFRTAMT,0) - ISNULL(A.DBAMT,0) - ISNULL(a.commamt,0) - ISNULL(a.brkcom,0) - isnull(a.aedamt,0) - isnull(a.bedamt,0) - isnull(a.cessamt,0) - isnull(a.sedamt,0)                    
+  
+    
+AS Purcost,                              
+ISNULL(a.commamt,0) + ISNULL(a.brkcom,0) AS otherchrg, pd.DIVNAME, pd.add1,pd.DIV_UNITNAME      
+from  rm_lot a                        
+inner join rm_arrival b on A.ARRDT=B.ARRDATE AND a.ARRno = b.ARRno and a.lotno=b.lotno and a.lotdt=b.lotdt AND                        
+a.arrno=b.arrno and a.divcode=b.divcode and a.supcd=b.supcd                        
+inner join rm_cont c on b.contno = c.contno and b.contdt=c.contdt and b.divcode=c.divcode                        
+inner join fa_slmas e on a.supcd=e.slcode                        
+left join fa_slmas g on c.brkcd=g.slcode                        
+inner join PO_CAR h on h.CARCODE = b.CARCODE                        
+inner join rm_var v on a.varcode=v.varcode        
+INNER JOIN PP_DIVMAS pd ON pd.DIVCODE = a.divcode        
+WHERE  a.supcd between @FSubCd and @TSubCd                         
+and a.arrdt between @Fdate  and @Tdate AND a.OPFLG<>'Y'                              
+AND LOTYEAR=year(@YFDATE)            
+and a.DivCode =@Divcode AND ((@StateCode='L' AND E.state_code IN (SELECT STATE_CODE FROM PP_DIVMAS))  
+OR (@StateCode='O' AND E.state_code NOT IN (SELECT STATE_CODE FROM PP_DIVMAS)) OR  
+(@StateCode='ALL' AND E.state_code IN (SELECT STATE_CODE FROM FA_SLMAS )))  
+  
+)X                              
+group by X.aedamt,X.bedamt,X.sedamt,X.insamt,X.cessamt,                              
+X.inwardno,X.inwarddate,X.PLOTNO,X.PGRSWT,X.PTAREWT,X.GRSWGT,                              
+X.carcode,X.lotdt,x.arrno, x.arrdt,           
+X.lotno,X.lotyear,X.prmark,X.pjno,X.contno,                             
+X.dlytype,X.varcode,X.bales,x.contdt,X.netwt,X.ratecy,X.pjamt,                              
+x.varname,          
+X.pnetwt, X.taxamt,X.vatamt,X.ldgulg,X.freight,X.totalvalue,X.supplier,X.Broker,X.CARNAME,                              
+X.brkcd,          
+X.lorrynos,X.LRFRTAMT,X.CSTAMT,X.CSTVAL,X.VATVAL,                              
+X.DBTAMT,X.fbillno, X.AssValue,X.OthersAmt,x.scamt,                              
+X.RateKg,X.commamt,X.brkcom,X.vcatcd,                              
+X.tratekg,X.DIFF,X.ITEMVALUE,X.billvalue,                              
+X.purcost,X.otherchrg,x.DIVNAME, x.add1,x.DIV_UNITNAME 

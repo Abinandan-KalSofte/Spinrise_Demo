@@ -1,0 +1,153 @@
+
+go
+alter table RM_MIS_CottonPayAdv1 add VarietyName varchar(100)
+go
+alter table RM_MIS_CottonPayAdv1 add TDS_Amount decimal(10,2)
+
+go
+alter table RM_MIS_CottonPayAdv1 add ReportHead varchar(100)
+go
+alter table RM_MIS_CottonPayAdv1 add DivisionName varchar(100)
+   
+go
+--exec ksp_MIS_RM_CottonPayRpt '01',12,'2023-04-18','2023-04-18',''   -- JAT                    
+alter    PROC ksp_MIS_RM_CottonPayRpt                                                 
+@Divcode varchar(5),                                                
+@LotNo numeric(10),                                                
+@LotDt varchar(15),
+@ToDt varchar(15),
+@IPADD varchar(15)
+As                                                
+Delete from RM_MIS_CottonPayAdv1                            
+INSERT INTO RM_MIS_CottonPayAdv1 (                                                
+Sno,SuppName,Station,AgentName,Quality,Pur_type,Spot,                                                
+Req_StapLen25,Req_Gtax,Req_MicroNaire,Req_TrashPer,Req_Moiture,Test_StapLen25,Test_Gtax,Test_MicroNaire,Test_TrashPer,Test_Moiture,                                                
+po_no,PO_dt,Po_by,PriceConfir_dt,PriceConfir_by,BulkRec_dt,BulkRec_by,BulkTest_dt,BulkTest_by,LotApp_dt,LotApp_by,Invoice_dt,Invoice_by,                                                
+PartyWt_Kgs,PartyWt_Candy,MillWt_Kgs,MillWt_Candy,Less_Kgs,Less_Candy,Netwt_Kgs,PNetwt_Candy,WtDiff_Kgs,                                                
+WtDiff_Candy,Wted_by,                                                
+SpotRate_Candy,SpotRate_bales,LorryFre_Candy,LorryFre_bales,CST_Candy,CST_bales,                                                
+Debit_Candy,Debit_bales,FORRate_Candy,FORRate_bales,RatePerKg_Candy,RatePerKg_bales,                                                
+LorryNo,LorryIN_Dt,LorryIN_Time,LorryOut_Dt,LorryOut_Time,                                                
+BillAmt,DebitAmt,FreightAmt,STax,                 
+ Pay80PerAmt ,BalAmt,TotBillAmt,                                             
+DealingStartDt,BulkRectDt,Pay80PerDt,Pay100PerDt,                                                
+Per80PayTerm,Per80Noofday,Per80Duedt,Per100PayTerm,Per100Noofday,Per100Duedt,                                                
+TotBale,TaxPer,dbreason,Remarks,Per100ActPaiddt,Payment20Per,VarietyName,TDS_Amount,ReportHead,DivisionName)                                                
+SELECT c.DIVCODE, e.slname [Party], h.AREANAME as [Station], f.slname AS [Agent], a.VARCODE [Quality],                                                 
+del.DelDESC as [Pur_type], c.LOTNO, d.STAPLEN25 as Req_STAPLEN, d.GTEX as Req_GTEX,                                                
+d.MICRONAIRE as Req_MICRONAIRE, d.TRASH_PER as Req_TRASH_PER,d.MOITURE as Rec_MOITURE,c.STAPLEN as Rec_STAPLEN,                                                
+c.GTEX AS Rec_GTEX, c.MICRONAIRE AS Rec_MICRONAIRE,c.TRASH_PER AS Rec_TRASH_PER,c.MOITURE AS Rec_MOITURE,                                                 
+a.CONTNO,a.CONTDT as [PO Dt] ,'JEEVA' as [Po_by],                                                
+a.CONTDT AS [PriceConfir_dt],'M.D' as [PriceConfir_by], b.ARRDATE as [BulkRec_dt],  emp.WNAME as [BulkRec_by],                                                 
+b.ARRDATE AS BulkTest_dt,'QAD' as [BulkTest_by], b.ARRDATE AS LotApp_dt,'DIRECTOR' as LotApp_by,                                                
+c.BILLDT as Invoice_dt, c.BILLNO as Invoice_by,                                                
+c.PNETWT as PartyWt_Kgs,(c.PNETWT/355.61870) as PartyWt_Candy,c.GRSWGT as MillWt_Kgs,                                                
+(c.GRSWGT/355.61870)  as MillWt_Candy,                                                 
+b.GROSSWT-c.GRSWGT AS Less_Kgs,(c.GRSWGT-b.GROSSWT)/355.6187 as Less_Candy,c.NETWT as Netwt_Kgs,                                                
+(c.NETWT/355.6187) as Netwt_Candy,                                                
+c.NETWT-c.PNETWT AS WtDiff_Kgs,(c.NETWT-c.PNETWT)/355.6187 as WtDiff_Candy,                                                 
+emp.WNAME AS Wted_by,                                                 
+--(c.ASSVALUE)/(c.NETWT/355.6187)  AS SpotRate_Candy,                                                
+(c.RATECY)  AS SpotRate_Candy,                                                
+(c.ASSVALUE) AS [SpotRate_bales],                                                 
+(c.LRFRTAMT / (c.NETWT/355.6187)) AS LorryFre_Candy,                             
+c.LRFRTAMT as LorryFre_bales,                                                
+((ISNULL(pp.cgstamt,0)+ISNULL(pp.sgstamt,0)+ISNULL(pp.igstamt,0)) / (c.NETWT/355.6187)) AS CST_Candy,ISNULL(pp.cgstamt,0)+ISNULL(pp.sgstamt,0)+ISNULL(pp.igstamt,0) AS CST_bales,                             
+--(case when  i.dbreason='02'  then  c.DBAMT/(c.NETWT/355.6187)    else 0 end )AS Debit_Candy  ,              
+(c.DBAMT/(c.NETWT/355.6187)) aS Debit_Candy,                             
+c.DBAMT AS Debit_bales,                                           
+--((c.ASSVALUE+(case when a.DLYTYPE='S' then ISNULL(c.LRFRTAMT,0) else 0 end)-                              
+--ISNULL(c.VATAMT,0)-ISNULL(c.DBAMT,0))/ (c.NETWT/355.6187)) AS FORRate_Candy,                            
+(c.RATECY) +(c.LRFRTAMT / (c.NETWT/355.6187))+(c.DBAMT/(c.NETWT/355.6187)) AS FORRate_Candy,     
+------ COMMENTED ON 15/06/23 BY Palanivel                         
+----(c.ASSVALUE+(case when a.DLYTYPE='S' then                             
+----ISNULL(c.LRFRTAMT,0) else 0 end)+ISNULL(c.DBAMT,0)) AS FORRate_bales,     
+  
+(((c.RATECY) +(c.LRFRTAMT / (c.NETWT/355.6187))+(c.DBAMT/(c.NETWT/355.6187)))/355.6187) * (c.NETWT) AS FORRate_bales,   
+  
+                                             
+--(((c.ASSVALUE+(case when a.DLYTYPE='S' then ISNULL(c.LRFRTAMT,0) else 0 end)+ISNULL(c.VATAMT,0)-ISNULL(c.DBAMT,0)) /(c.NETWT/355.6187)) / 355.61870) AS RatePerKg_Candy,                                                
+--(c.RATEKG) as    RatePerKg_Candy,                             
+((c.RATECY) +(c.LRFRTAMT / (c.NETWT/355.6187))+(c.DBAMT/(c.NETWT/355.6187)))/355.6187 AS RatePerKg_Candy,                                               
+(((c.ASSVALUE+(case when a.DLYTYPE='S' then ISNULL(c.LRFRTAMT,0) else 0 end)+ISNULL(pp.cgstamt,0)+ISNULL(pp.sgstamt,0)+ISNULL(pp.igstamt,0)-ISNULL(c.DBAMT,0)) /(c.NETWT/355.6187)) / 355.61870) AS RatePerKg_bales,                                           
+     
+b.LORRYNOS, b.LR_InDt LorryIN_Dt, b.LR_InTime LorryIN_Time,                                                 
+b.LR_OutDt LorryOut_Dt,b.LR_OutTime LorryOut_Time,--c.fbillvalue                           
+pp.BILLAMT                          
+AS BillAmt, c.DBAMT AS DebitAmt,                                                
+c.LRFRTAMT AS FreightAmt,c.SCAMT as STax,isnull(pay80.DEBIT,0) as Pay80PerAmt,                          
+--c.fbillvalue+c.dbamt+c.dbamt                          
+---- COMMENT BY PALANIVEL 30/12/22              
+--pp.BILLAMT-(isnull(pay80.DEBIT,0)+isnull(pay20.DEBIT,0))             
+bb.amtdue            
+ AS BalAmt,                    
+                                           
+--c.fbillvalue                          
+pp.BILLAMT                            
+AS TotBillAmt, a.CONTDT AS DealingStartDt, b.ARRDATE AS BulkRectDt, pay80.VOCDT as Pay80PerDt,                      
+pay20.VOCDT AS Pay100PerDt,a.Terms1,a.Terms1Days,dateadd(day,a.Terms1Days,b.ARRDATE),a.Terms2,a.Terms2Days,                
+dateadd(day,a.Terms2Days,b.ARRDATE),c.BALES,c.TAX_PER,i.dbreason                                
+,c.remarks Remarks ,pay20.VOCDT Per100ActPaiddt ,isnull(pay20.DEBIT,0) Payment20Per ,rm.varname 
+,isnull(c.TDSAMT ,0) TDSAMT,'COTTON PAYMENT LIST FROM '+ convert(varchar,cast( @LotDt  as date),103)+' TO '+ convert(varchar,cast( @ToDt  as date),103)  ReportHead 
+,div.divname 
+FROM RM_LOT AS c                          
+left join fa_purhd pp on pp.DIVCODE =c.DIVCODE and c.PJNO =pp.PJVNO and c.PJDT =pp.PJVDT and c.SUPCD =pp.SLCODE 
+left join rm_var rm on rm.varcode=c.varcode
+left JOIN FA_APAYM AS bb ON bb.DIVCODE = pp.DIVCODE AND c.PJTC = bb.TC  AND c.PJNO = bb.VOCNO AND c.PJDT = bb.VOCDT                 
+AND pp.slcode = bb.SLCODE             
+ inner JOIN                                                
+RM_ARRIVAL AS b ON c.DIVCODE = b.DIVCODE AND c.ARRNO = b.ARRNO                                                 
+AND c.ARRDT = b.ARRDATE AND c.VARCODE = b.VARCODE                     
+inner JOIN                                                
+RM_CONT AS a ON b.DIVCODE = a.DIVCODE AND b.CONTNO = a.CONTNO                                          
+AND b.CONTDT = a.CONTDT AND b.VARCODE = a.VARCODE                     
+INNER JOIN                                                
+FA_SLMAS AS e ON c.SUPCD = e.slcode left JOIN                                                
+FA_SLMAS AS f ON c.BRKCD = f.slcode                                     
+left join (SELECT distinct  ISNULL(c.AMOUNT,0)+isnull(a.TDSAMT ,0)    DEBIT  --              
+,a.lotno,a.LOTDT ,a.PJDT ,a.PJNO ,a.PJTC,c.VOCDT FROM RM_LOT AS a           
+INNER JOIN FA_APAYM AS b ON a.DIVCODE = b.DIVCODE AND a.PJTC = b.TC  AND a.PJNO = b.VOCNO AND a.PJDT = b.VOCDT                 
+AND a.SUPCD = b.SLCODE                 
+INNER JOIN FA_APDBTL AS c ON b.DIVCODE = c.DIVCODE AND b.SLCODE = c.SLCODE AND b.TC = c.REFTC                 
+AND b.VOCDT = c.REFVOCDT AND b.VOCNO = c.REFVOCNO AND b.VOCSNO = c.REFVOCSNO                
+Where a.DIVCODE=@Divcode and a.opflg ='N'   -- and a.LOTNO=@Lotno  and LOTDT=@LotDt 
+and ((@LotNo <>0 and a.LOTNO=@LotNo and a.LOTDT=@LotDt ) or (@LotNo =0 and
+a.lotno in (select aa.lotno from RM_ProductprintDet aa 
+where aa.lotno=a.lotno and aa.lotdt=a.lotdt and c.DIVCODE=aa.divcode  and aa.supcd=a.SUPCD and aa.IPAdd=@IPADD  )))
+and a.PJTC<>c.TC     and c.tc<>41      and c.tc<>40        
+and c.VOCDT=(select min(VOCDT) from FA_APDBTL ap where  b.DIVCODE = ap.DIVCODE AND b.SLCODE = ap.SLCODE AND b.TC = ap.REFTC                 
+AND b.VOCDT = ap.REFVOCDT AND b.VOCNO = ap.REFVOCNO AND b.VOCSNO = ap.REFVOCSNO and a.PJTC<>ap.TC and ap.tc<>41   and ap.tc<>40)                
+--Order by c.VOCDT,c.VOCNO                
+)  pay80 on pay80.LOTDT =c.LOTDT and pay80.LOTNO=c.lotno and pay80.PJDT =c.PJDT and pay80.PJNO =c.PJNO and pay80.pjtc =c.PJTC                                 
+left join (SELECT sum(ISNULL(c.AMOUNT,0))   DEBIT,a.lotno,a.LOTDT ,a.PJDT ,a.PJNO ,a.PJTC,max(c.VOCDT) VOCDT FROM RM_LOT AS a                 
+INNER JOIN FA_APAYM AS b ON a.DIVCODE = b.DIVCODE AND a.PJTC = b.TC  AND a.PJNO = b.VOCNO AND a.PJDT = b.VOCDT                 
+AND a.SUPCD = b.SLCODE                 
+INNER JOIN FA_APDBTL AS c ON b.DIVCODE = c.DIVCODE AND b.SLCODE = c.SLCODE AND b.TC = c.REFTC                 
+AND b.VOCDT = c.REFVOCDT AND b.VOCNO = c.REFVOCNO AND b.VOCSNO = c.REFVOCSNO                
+Where a.DIVCODE=@Divcode --and a.LOTNO=@Lotno  and LOTDT=@LotDt    
+and ((@LotNo <>0 and a.LOTNO=@LotNo and a.LOTDT=@LotDt ) or (@LotNo =0 and
+a.lotno in (select aa.lotno from RM_ProductprintDet aa 
+where aa.lotno=a.lotno and aa.lotdt=a.lotdt and c.DIVCODE=aa.divcode  and aa.supcd=a.SUPCD and aa.IPAdd=@IPADD  )))
+and a.PJTC<>c.TC                
+and c.VOCDT>=(select min(VOCDT) from FA_APDBTL ap where  b.DIVCODE = ap.DIVCODE AND b.SLCODE = ap.SLCODE AND b.TC = ap.REFTC                 
+AND b.VOCDT = ap.REFVOCDT AND b.VOCNO = ap.REFVOCNO AND b.VOCSNO = ap.REFVOCSNO and a.PJTC<>ap.TC  and ap.tc<>41   and ap.tc<>40 )                
+and c.vocno>(select min(vocno) from FA_APDBTL ap where  b.DIVCODE = ap.DIVCODE AND b.SLCODE = ap.SLCODE AND b.TC = ap.REFTC                 
+AND b.VOCDT = ap.REFVOCDT AND b.VOCNO = ap.REFVOCNO AND b.VOCSNO = ap.REFVOCSNO and a.PJTC<>ap.TC  and ap.tc<>41   and ap.tc<>40 )                
+  
+--Order by c.VOCDT,c.VOCNO                
+and a.opflg ='N'     and c.tc<>41   and c.tc<>40            
+group by a.lotno,a.LOTDT ,a.PJDT ,a.PJNO ,a.PJTC--,c.VOCDT                
+)  pay20 on pay20.LOTDT =c.LOTDT and pay20.LOTNO=c.lotno and pay20.PJDT =c.PJDT and pay20.PJNO =c.PJNO and pay20.pjtc =c.PJTC                                 
+                                                       
+LEFT OUTER JOIN RM_SAMPLE AS d ON a.SNO = d.SNO AND a.DIVCODE = d.DIVCODE AND                                                 
+a.SUPCD = d.SUPCODE AND a.VARCODE = d.VARCODE LEFT OUTER JOIN RM_AREA AS h ON a.AREACODE = h.AREACODE                                                
+LEFT OUTER JOIN rm_delivery del ON del.Delcode=a.DLYTYPE   
+left join pp_divmas div on div.DIVCODE=a.DIVCODE
+LEFT OUTER JOIN RM_WEIGHNMENT AS emp ON emp.divcode=b.DIVCODE and emp.CODE=b.weignment and c.opflg ='N'                                     
+left  OUTER  join  rm_lotallowance i on i.divcode =c.divcode and  i.lotno =c.lotno  and                             
+i.lotdt  =c.lotdt and i.asno = c.asno and  i .adate = c.adate and  i.dbno  =c.dbno  AND                             
+I.DBDT =C.DBDT                                               
+WHERE c.DIVCODE=@Divcode AND C.OPFLG ='N' and 
+((@LotNo <>0 and c.LOTNO=@LotNo and c.LOTDT=@LotDt ) or (@LotNo =0 and
+c.lotno in (select aa.lotno from RM_ProductprintDet aa 
+where aa.lotno=c.lotno and aa.lotdt=c.lotdt and c.DIVCODE=aa.divcode  and aa.supcd=c.SUPCD and aa.IPAdd=@IPADD  )))

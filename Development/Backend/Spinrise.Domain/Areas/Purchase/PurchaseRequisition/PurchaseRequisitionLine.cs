@@ -5,6 +5,7 @@ public class PurchaseRequisitionLine
     public int Id { get; set; }
     public string DivCode { get; set; } = string.Empty;
     public long PrNo { get; set; }
+    public DateTime PrDate { get; set; }
     public int PrSNo { get; set; }
     public string ItemCode { get; set; } = string.Empty;
     public string? ItemName { get; set; }
@@ -22,6 +23,7 @@ public class PurchaseRequisitionLine
     public string? CostCentreCode { get; set; }
     public string? BudgetGroupCode { get; set; }
     public long? SubCostCode { get; set; }
+    public string? SubCostName { get; set; }
     public decimal? LastPoRate { get; set; }
     public DateTime? LastPoDate { get; set; }
     public string? LastPoSupplierCode { get; set; }

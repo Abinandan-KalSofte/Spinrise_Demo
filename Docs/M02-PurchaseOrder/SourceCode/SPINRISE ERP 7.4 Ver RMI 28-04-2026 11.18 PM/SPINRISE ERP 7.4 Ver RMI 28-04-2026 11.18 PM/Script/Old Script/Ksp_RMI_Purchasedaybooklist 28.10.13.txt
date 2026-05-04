@@ -1,0 +1,22 @@
+-- Ksp_RMI_Purchasedaybooklist '01','2013-04-01','2013-10-25'            
+ CREATE PROCEDURE Ksp_RMI_Purchasedaybooklist            
+  (            
+ @divcode AS varchar(10),            
+  @fdate AS varchar(10),            
+   @tdate AS varchar(10)            
+  )              
+ AS            
+ BEGIN            
+           
+          
+SELECT cast(a.PJNO AS INT) AS vno,a.PJDT AS vdate,a.BILLNO AS inv,a.BILLDT AS inv_dt,a.LOTNO,fs.OLDSLCODE AS pc,            
+ a.VARCODE AS vac,v.VARNAME,CASE WHEN (pd.STATE_CODE=fs.state_code) THEN '1' ELSE '2' END tp,a.BALES AS qty,a.SICAAmt AS sl          
+ ,a.CHARITYAMT AS ch,a.NETWT AS qtl,a.ASSVALUE AS basic_val,a.VATAMT AS vat,a.CashDisAmt AS discount,          
+ a.BillValue AS val,a.TOTLANDCOST AS camt,a.OTHERSAMT AS ulc,0 AS acno,0 AS rc,pd2.DIV_PRINTNAME,pd2.DIV_UNITNAME            
+  FROM RM_LOT a            
+ LEFT OUTER JOIN FA_SLMAS fs ON fs.OLDSLCODE = a.SUPCD            
+ LEFT OUTER JOIN PP_DIVMAS pd ON pd.DIVCODE = a.DIVCODE AND fs.state_code=pd.STATE_CODE          
+ LEFT OUTER JOIN PP_DIVMAS pd2 ON a.DIVCODE=pd2.DIVCODE          
+ LEFT OUTER JOIN RM_VAR v ON a.VARCODE=v.VARCODE          
+ WHERE a.DIVCODE=@divcode AND a.PJDT BETWEEN @fdate AND @tdate           
+ END               

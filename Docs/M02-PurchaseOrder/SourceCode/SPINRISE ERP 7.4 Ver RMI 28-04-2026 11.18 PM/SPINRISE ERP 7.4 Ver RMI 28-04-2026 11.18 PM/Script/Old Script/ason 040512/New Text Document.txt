@@ -1,0 +1,16 @@
+db.Execute " update rm_lot set issbal=z.issbales from " & _
+            " (select a.catcd,a.lotno,a.lotdt,A.LOTTYPE,A.VARCODE,a.divcode,Bales,a.Netwt,count(b.baleno) as issbales,bales-count(b.baleno) as Closingbales, " & _
+            " a.Netwt-sum(b.actisskgs) as Closingwt " & _
+            " from rm_lot a ,rm_issb b where a.lotdt<='" & Format(yldate, "yyyy-mm-dd") & "' and (a.rejflg='N' or a.rejdt>'" & Format(yldate, "YYYY-MM-DD") & "') and a.divcode='" & Divcode & "' and lotyear='" & Year(yfdate) & "' " & _
+            " and a.lotno=b.lotno and a.lotdt=b.lotdt and a.divcode=b.divcode and a.catcd=b.catcd AND A.VARCODE=B.VARCODE AND A.LOTTYPE=B.LOTTYPE and b.docdt between '" & Format(yfdate, "yyyy-mm-dd") & "' and '" & Format(yldate, "yyyy-mm-dd") & "' and b.issued='Y' " & _
+            " group by a.catcd,a.lotno,a.lotdt,a.divcode,bales,a.netwt,A.LOTTYPE,A.VARCODE " & _
+            " )z,rm_lot a " & _
+            " where a.divcode='" & Divcode & "' and a.lotno=z.lotno and a.lotdt=z.lotdt and a.catcd=z.catcd and a.divcode=z.divcode AND A.LOTTYPE=Z.LOTTYPE AND A.VARCODE=Z.VARCODE and lotyear='" & Year(yfdate) & "'"
+    db.Execute " update rm_lot set isswt=ISNULL(ISSWET,0) from " & _
+            " (select a.catcd,a.lotno,a.lotdt,A.LOTTYPE,A.VARCODE,a.divcode,Bales,a.Netwt,SUM(b.actisskgs) AS ISSWET,count(b.baleno) as issbales,bales-count(b.baleno) as Closingbales, " & _
+            " a.Netwt-sum(b.actisskgs) as Closingwt " & _
+            " from rm_lot a ,rm_issb b where a.lotdt<='" & Format(yldate, "yyyy-mm-dd") & "' and (a.rejflg='N' or a.rejdt>'" & Format(yldate, "YYYY-MM-DD") & "') and a.divcode='" & Divcode & "' and lotyear='" & Year(yfdate) & "' " & _
+            " and a.lotno=b.lotno and a.lotdt=b.lotdt and a.divcode=b.divcode and a.catcd=b.catcd AND A.VARCODE=B.VARCODE AND A.LOTTYPE=B.LOTTYPE and b.docdt between '" & Format(yfdate, "yyyy-mm-dd") & "' and '" & Format(yldate, "yyyy-mm-dd") & "' and b.issued='Y' " & _
+            " group by a.catcd,a.lotno,a.lotdt,a.divcode,bales,a.netwt,A.LOTTYPE,A.VARCODE " & _
+            " )z,rm_lot a " & _
+            " where a.divcode='" & Divcode & "' and a.lotno=z.lotno and a.lotdt=z.lotdt and a.catcd=z.catcd and a.divcode=z.divcode AND A.LOTTYPE=Z.LOTTYPE AND A.VARCODE=Z.VARCODE and lotyear='" & Year(yfdate) & "'"

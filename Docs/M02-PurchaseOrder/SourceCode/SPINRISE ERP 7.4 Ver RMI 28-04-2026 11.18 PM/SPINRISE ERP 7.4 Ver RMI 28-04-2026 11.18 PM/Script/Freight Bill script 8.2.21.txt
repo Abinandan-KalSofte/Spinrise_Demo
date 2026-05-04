@@ -1,0 +1,75 @@
+alter Proc KSP_FreightpaidPending        
+(        
+@divcode varchar(2),        
+@Fdate varchar(10) ,      
+@Supplier Varchar(10)    
+    
+)        
+as        
+Begin    
+Select a.Docno ,a.Docdt ,a.Billno,a.billdt ,c.slname 'Transpoter',d.CARNAME carrier ,       
+       
+Freightbill_Amt,FreightMill_Amt,FreightApp_Amt,        
+a.CGSTAmt,a.SGSTAmt,a.IGSTAmt,a.Total_Amt,    
+(select Stuff((  select  ', ' +ord from (SELECT distinct convert (varchar,g.slname) ord                                                         
+FROM RM_FreightBillHD ibh                                                                          
+inner join RM_FreightBilldt  ibt ON ibh.docno=ibt.docno AND ibh.docdt=ibt.docdt AND ibh.DIVCODE=ibt.DIVCODE  
+left join fa_slmas g on g.slcode=ibt.Supcd                                                                         
+where    ibh.divcode=@divcode  AND   ibt.docdt=a.docdt  AND ibt.docno=a.docno ) x                      
+FOR XML PATH('')),1,1,'')  ) Supplier,
+(select Stuff((  select  ', ' +ord from (SELECT distinct convert (varchar,ibt.PJVNO) ord                                                         
+FROM RM_FreightBillHD ibh                                                                          
+inner join RM_FreightBilldt  ibt ON ibh.docno=ibt.docno AND ibh.docdt=ibt.docdt AND ibh.DIVCODE=ibt.DIVCODE                                                                         
+where    ibh.divcode=@divcode  AND   ibt.docdt=a.docdt  AND ibt.docno=a.docno ) x                      
+FOR XML PATH('')),1,1,'')  ) PJVNO,
+
+(select Stuff((  select  ', ' +ord from (SELECT distinct convert (varchar,convert(varchar,ibt.PJVDT,103)) ord                                                         
+FROM RM_FreightBillHD ibh                                                                          
+inner join RM_FreightBilldt  ibt ON ibh.docno=ibt.docno AND ibh.docdt=ibt.docdt AND ibh.DIVCODE=ibt.DIVCODE                                                                         
+where    ibh.divcode=@divcode  AND   ibt.docdt=a.docdt  AND ibt.docno=a.docno ) x                      
+FOR XML PATH('')),1,1,'')  ) PJVDT,
+(select Stuff((  select  ', ' +ord from (SELECT distinct convert (varchar,InvoiceNo) ord                                                         
+FROM RM_FreightBillHD ibh                                                                          
+inner join RM_FreightBilldt  ibt ON ibh.docno=ibt.docno AND ibh.docdt=ibt.docdt AND ibh.DIVCODE=ibt.DIVCODE                                                                         
+where    ibh.divcode=@divcode  AND   ibt.docdt=a.docdt  AND ibt.docno=a.docno ) x                      
+FOR XML PATH('')),1,1,'')  ) InvoiceNo,
+(select Stuff((  select  ', ' +ord from (SELECT distinct convert (varchar,convert(varchar,ibt.Invoicedt,103)) ord                                                         
+FROM RM_FreightBillHD ibh                                                                          
+inner join RM_FreightBilldt  ibt ON ibh.docno=ibt.docno AND ibh.docdt=ibt.docdt AND ibh.DIVCODE=ibt.DIVCODE                                                                         
+where    ibh.divcode=@divcode  AND   ibt.docdt=a.docdt  AND ibt.docno=a.docno ) x                      
+FOR XML PATH('')),1,1,'')  ) Invoicedt,
+(select Stuff((  select  ', ' +ord from (SELECT distinct convert (varchar,lrno) ord                                                         
+FROM RM_FreightBillHD ibh                                                                          
+inner join RM_FreightBilldt  ibt ON ibh.docno=ibt.docno AND ibh.docdt=ibt.docdt AND ibh.DIVCODE=ibt.DIVCODE                                                                         
+where    ibh.divcode=@divcode  AND   ibt.docdt=a.docdt  AND ibt.docno=a.docno ) x                      
+FOR XML PATH('')),1,1,'')  ) lrno,
+
+(select Stuff((  select  ', ' +ord from (SELECT distinct convert (varchar,PLName) ord                                                         
+FROM RM_FreightBillHD ibh                                                                          
+inner join RM_FreightBilldt  ibt ON ibh.docno=ibt.docno AND ibh.docdt=ibt.docdt AND ibh.DIVCODE=ibt.DIVCODE 
+inner join  rm_plant pp on pp.plcode=  ibt.PLCode                                                                        
+where    ibh.divcode=@divcode  AND   ibt.docdt=a.docdt  AND ibt.docno=a.docno ) x                      
+FOR XML PATH('')),1,1,'')  ) plname
+,sum(Bales) Bales,sum(b.TotalKgs) TotalKgs ,sum(inv_Amt) inv_Amt
+    
+From RM_FreightBillHD a         
+inner join RM_FreightBilldt b on a.docno=b.docno and a.Divcode=b.Divcode  and a.Docdt =b.Docdt         
+inner join fa_slmas c on c.slcode=a.slcode         
+      
+inner join po_car d on d.CARCODE =a.Carcode         
+      
+inner join pp_divmas f on f.divcode=a.divcode        
+where a.docdt <=  @Fdate  and a.Divcode=@divcode     
+  and  a.PaidDate is null and (@Supplier='ALL' or a.slcode = @Supplier)
+  
+  group by a.Docno ,a.Docdt ,a.Billno,a.billdt ,c.slname ,d.CARNAME         
+,     
+Freightbill_Amt,FreightMill_Amt,FreightApp_Amt,        
+a.CGSTAmt,a.SGSTAmt,a.IGSTAmt,a.Total_Amt 
+End    
+
+
+go
+
+alter table RM_FreightBillDT add Frt_Docno Decimal(6)
+

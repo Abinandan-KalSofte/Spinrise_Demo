@@ -1,0 +1,20 @@
+
+CREATE TRIGGER [dbo].[DELRM_ISSUETYPE] ON [dbo].RM_ISSUETYPE FOR DELETE AS                                     
+DECLARE                                                                  
+@ISSUETYPE varchar(10),  
+@sno int  
+BEGIN    
+  
+	select @ISSUETYPE=ISSUE_CODE from deleted  
+  
+	set @sno=(select count(ISSUETYPE) from 
+	(
+		SELECT ISSUETYPE ISSUETYPE FROM RM_OutpassHd where ISSUETYPE=@ISSUETYPE		
+	) x  
+	where ISSUETYPE=@ISSUETYPE)  
+	if isnull(@sno,0)> 0    
+	begin   
+		rollback  
+		RAISERROR ('Dependencies exists. Unable to delete the record at this time', 16 ,10)	
+	end   
+END

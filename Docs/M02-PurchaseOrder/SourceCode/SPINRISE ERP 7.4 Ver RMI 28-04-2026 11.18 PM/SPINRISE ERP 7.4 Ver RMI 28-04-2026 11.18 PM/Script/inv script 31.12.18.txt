@@ -1,0 +1,47 @@
+          
+          
+--- exec Sp_CottonSales_Print '01','17000001','2017-12-11','2017'            
+            
+alter Procedure [dbo].[Sp_CottonSales_Print]                  
+@Divcode Varchar(2),                  
+@InvNo Varchar(10),                  
+@InvDt Varchar(10),                      
+@Lotyear VARCHAR(10)                         
+as              
+Begin                    
+select  Hd.Inv_No,Hd.date,Hd.Cust_Code,sl.SlName,Sl.Add1,Sl.Add2,sl.add3,sl.city,                        
+Sl.PIN, sl.state as state,                   
+Dt.Cont_No as LotNo ,L.Lotyear,                    
+------dt.product_code as LOtno,                    
+Sl.TINNO,Vr.VarName,Dt.Packs,Dt.InvSNo,                        
+Dt.inv_kgs  Nett_Kgs,Dt.RAte_ex,Dt.VALUE  as Value,HD.Cess_Amt,HD.Tax_Amt,            
+isnull(HD.CHARITY,0)OTHERSAMT,HD.AED_Amt,HD.BED_Amt,Hd.Carrier_code,PRE_TIME,REM_TIME,            
+LR_NO,VEHICLE_NO,hd.RND_OFF,pd.DIVCODE as p_DIVCODE,pd.DIVNAME as p_DIVNAME,pd.cinno as p_cinno,            
+PD.ADD1 AS  P_ADD1 ,pd.ADD2 as p_ADD2,pd.ADD3 as p_ADD3,pd.CITY as p_CITY,hd.delivery_dt as dtsupply,            
+hd.VEHICLE_NO,pd.PINCODE as p_PINCODE,pd.PHONE1 as p_PHONE1,pd.PHONE2 as p_PHONE2,pd.FAX as p_FAX,            
+pd.HOADD1,pd.HOADD2,pd.HOADD3,pd.HOCity,pd.HOCountry,pd.HOPin,pd.HOState,pd.HOPhone,pd.HOEmail,            
+pd.EMAIL as p_EMAIL,sl.gstinno as s_gstinno,pd.WEBADDR as p_WEBADDR,pd.CGSTDT as p_CGSTDT,            
+pd.CGST as p_CGST,pd.RANGE as p_RANGE,pd.DIVISION as p_DIVISION, pd.webaddr as p_web,pd.COMM_CODE as p_COMM_CODE,            
+pd.PAN as p_PAN,pd.gstinno as p_gstinno,pd.ecc as p_ecc,pd.DIVNAME,pd.DIV_PRINTNAME,dt.cgstamt as cgstamt,                
+dt.sgstamt as sgstamt,dt.igstamt as igstamt,hd.TOTAL_AMT as tot_value,sl.gststatecode as s_gststcode,            
+car.carname as transport,pd.div_logo,pd.SUB_TITLE AS DIV_UNITNAME,vr.hsn as hsn,dt.cgstper as cgstper,            
+dt.sgstper as sgstper,dt.igstper as igstper,k.name as bank_name,k.branch,k.ADD1 as bank_add1,k.Acno,k.IFSCCode,            
+isnull(pd.YarnInvPrefix,'') AS inv_prefix,  
+--isnull(pd.YarnInvPrefix,'')+'/'+ISNULL(INVTYPE.invPrintHead,'')+'/'+  
+'RMS/'+cast(hd.INV_NO as varchar) as inv_noPrefix,          
+case when hd.rcm ='Y' then 'YES' Else 'NO' End rcm,            
+'0.00' as freight,'0.00' as ins_amt,'0.00'as handchrg,            
+'0.00' as charity,hd.RND_OFF as roff                          
+                          
+FROM RM_CinvHd hd                         
+INNER JOIN RM_Cinvdt dt ON Hd.Divcode=dt.Divcode and Hd.Inv_Type=Dt.Inv_Type and Hd.Inv_No=dt.Inv_No                        
+LEFT OUTER JOIN RM_Lot L ON L.LotNo=Dt.PRODUCT_CODE and L.Divcode=Dt.Divcode    and dt.lotdt =l.LOTDT                  
+INNER JOIN Fa_SlMas Sl ON Sl.SlCode=Hd.Cust_Code                        
+INNER JOIN RM_Var Vr ON Vr.VarCode=L.VarCode and vr.hsn=L.hsn                    
+LEFT OUTER JOIN PP_DIVMAS pd ON pd.DIVCODE = hd.DIVCODE                   
+LEFT OUTER JOIN po_car Car ON Car.CARCODE=Hd.Carrier_Code                
+LEFT OUTER JOIN IG_BANK k ON k.BANK_CODE = hd.BANK_CODE                      
+LEFT JOIN IG_INVTYPE INVTYPE ON INVTYPE.DIVCODE=hd.DIVCODE AND INVTYPE.INV_TYPE=hd.INV_TYPE                
+WHERE Hd.Inv_No=@InvNo and Hd.Date=@InvDt and Hd.Divcode=@Divcode and l.LOTYEAR=@Lotyear                   
+            
+END 

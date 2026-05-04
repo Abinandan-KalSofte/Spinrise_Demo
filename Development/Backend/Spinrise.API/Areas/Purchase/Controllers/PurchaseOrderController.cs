@@ -7,200 +7,168 @@ using Spinrise.Shared;
 
 namespace Spinrise.API.Controllers;
 
+[Authorize]
 [Area("Purchase")]
 [Route("api/v1/rmi/po")]
-[Authorize]
 public class PurchaseOrderController : BaseApiController
 {
     private readonly IPurchaseOrderService _service;
 
-    public PurchaseOrderController(IPurchaseOrderService service)
-    {
-        _service = service;
-    }
+    public PurchaseOrderController(IPurchaseOrderService service) => _service = service;
 
     private string RequireDivCode() =>
         User.FindFirst(SpinriseClaims.DivCode)?.Value?.Trim()
         ?? throw new UnauthorizedAccessException("Division code not found in token.");
 
-    private string GetUserId() =>
+    private string RequireUserId() =>
         User.FindFirst(SpinriseClaims.UserId)?.Value
-     ?? User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
-     ?? "system";
+        ?? User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
+        ?? "SYSTEM";
 
-    private string? GetIPAddr() => HttpContext.Connection.RemoteIpAddress?.ToString();
-    private string? GetHost()   => HttpContext.Request.Host.Host;
+    private static bool TryParseContNo(string raw, out decimal contNo) =>
+        decimal.TryParse(raw, out contNo);
 
     // GET api/v1/rmi/po
     [HttpGet]
-    public async Task<IActionResult> GetPaginated([FromQuery] POListQueryDto query)
+    public async Task<IActionResult> GetList([FromQuery] POListQueryDto query)
     {
-        try
-        {
-            var divCode = RequireDivCode();
-            var result  = await _service.GetPaginatedAsync(divCode, query);
-            return Success(result);
-        }
-        catch (UnauthorizedAccessException ex) { return Failure(ex.Message, StatusCodes.Status401Unauthorized); }
-        catch (Exception ex) { return Failure(ex.Message, StatusCodes.Status500InternalServerError); }
+        query.DivCode = RequireDivCode();
+        var result = await _service.GetListAsync(query);
+        return Success(result, $"{result.TotalCount} purchase orders found.");
     }
 
-    // GET api/v1/rmi/po/{contNo}/{contDt}
-    [HttpGet("{contNo}/{contDt}")]
-    public async Task<IActionResult> GetById(string contNo, DateTime contDt)
+    // GET api/v1/rmi/po/summary
+    [HttpGet("summary")]
+    public async Task<IActionResult> GetSummary()
     {
-        try
-        {
-            var divCode = RequireDivCode();
-            var result  = await _service.GetByIdAsync(contNo, contDt, divCode);
-            if (result is null) return Failure(ErrorMessages.NotFound, StatusCodes.Status404NotFound);
-            return Success(result);
-        }
-        catch (UnauthorizedAccessException ex) { return Failure(ex.Message, StatusCodes.Status401Unauthorized); }
-        catch (Exception ex) { return Failure(ex.Message, StatusCodes.Status500InternalServerError); }
+        var result = await _service.GetSummaryAsync(RequireDivCode());
+        return Success(result);
     }
 
     // GET api/v1/rmi/po/defaults
     [HttpGet("defaults")]
     public async Task<IActionResult> GetDefaults()
     {
-        try
-        {
-            var divCode = RequireDivCode();
-            var result  = await _service.GetDefaultsAsync(divCode);
-            return Success(result);
-        }
-        catch (UnauthorizedAccessException ex) { return Failure(ex.Message, StatusCodes.Status401Unauthorized); }
-        catch (Exception ex) { return Failure(ex.Message, StatusCodes.Status500InternalServerError); }
+        var result = await _service.GetDefaultsAsync(RequireDivCode());
+        return Success(result);
     }
 
-    // GET api/v1/rmi/po/pre-checks
-    [HttpGet("pre-checks")]
-    public async Task<IActionResult> PreChecks()
+    // GET api/v1/rmi/po/params
+    [HttpGet("params")]
+    public async Task<IActionResult> GetParams()
     {
-        try
-        {
-            var divCode = RequireDivCode();
-            var result  = await _service.RunPreChecksAsync(divCode);
-            return Success(result);
-        }
-        catch (UnauthorizedAccessException ex) { return Failure(ex.Message, StatusCodes.Status401Unauthorized); }
-        catch (Exception ex) { return Failure(ex.Message, StatusCodes.Status500InternalServerError); }
+        var checks = await _service.RunPreChecksAsync(RequireDivCode());
+        return Success(checks);
     }
 
     // GET api/v1/rmi/po/delete-reasons
     [HttpGet("delete-reasons")]
     public async Task<IActionResult> GetDeleteReasons()
     {
-        try
-        {
-            var result = await _service.GetDeleteReasonsAsync();
-            return Success(result);
-        }
-        catch (Exception ex) { return Failure(ex.Message, StatusCodes.Status500InternalServerError); }
+        var result = await _service.GetDeleteReasonsAsync();
+        return Success(result);
     }
 
     // GET api/v1/rmi/po/pr-lines
     [HttpGet("pr-lines")]
     public async Task<IActionResult> GetPRLines([FromQuery] PRLineFilterDto filter)
     {
-        try
-        {
-            filter.DivCode = RequireDivCode();
-            var result = await _service.GetPendingPRLinesAsync(filter);
-            return Success(result);
-        }
-        catch (UnauthorizedAccessException ex) { return Failure(ex.Message, StatusCodes.Status401Unauthorized); }
-        catch (Exception ex) { return Failure(ex.Message, StatusCodes.Status500InternalServerError); }
+        var divCode = RequireDivCode();
+        var contDt  = string.IsNullOrEmpty(filter.ContDt) ? DateTime.Today : DateTime.Parse(filter.ContDt);
+
+        IEnumerable<PRLineDto> result;
+        if (!string.IsNullOrEmpty(filter.Indent) || !string.IsNullOrEmpty(filter.ItemCode) || !string.IsNullOrEmpty(filter.ItemName))
+            result = await _service.FilterPRLinesAsync(divCode, contDt, filter);
+        else
+            result = await _service.GetPendingPRLinesAsync(divCode, contDt, filter.SortBy, filter.SupplierCode, null);
+
+        return Success(result);
+    }
+
+    // GET api/v1/rmi/po/gst-config?supplierCode=XXX
+    [HttpGet("gst-config")]
+    public async Task<IActionResult> GetGSTConfig([FromQuery] string supplierCode)
+    {
+        var result = await _service.GetGSTConfigAsync(supplierCode);
+        if (result == null) return NotFound("Supplier not found.");
+        return Success(result);
+    }
+
+    // GET api/v1/rmi/po/{contno}/{contdt}
+    [HttpGet("{contNo}/{contDt}")]
+    public async Task<IActionResult> GetById(string contNo, string contDt)
+    {
+        if (!TryParseContNo(contNo, out var no)) return BadRequest("Invalid PO number.");
+        if (!DateTime.TryParse(Uri.UnescapeDataString(contDt), out var dt)) return BadRequest("Invalid date format.");
+
+        var result = await _service.GetDetailAsync(no, dt, RequireDivCode());
+        if (result == null) return NotFound("Purchase Order not found.");
+        return Success(result);
     }
 
     // POST api/v1/rmi/po
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreatePODto dto)
     {
-        if (!ModelState.IsValid)
-            return Failure(ErrorMessages.ValidationFailed, StatusCodes.Status422UnprocessableEntity, ModelState);
-        try
-        {
-            dto.DivCode = RequireDivCode();
-            var (contNo, warnings) = await _service.CreateAsync(dto, GetUserId(), GetIPAddr(), GetHost());
-            return Success(new { ContNo = contNo }, string.Format(ErrorMessages.CreatedSuccessfully, "Purchase Order"), warnings);
-        }
-        catch (UnauthorizedAccessException ex) { return Failure(ex.Message, StatusCodes.Status401Unauthorized); }
-        catch (InvalidOperationException ex)   { return Failure(ex.Message, StatusCodes.Status400BadRequest); }
-        catch (Exception ex) { return Failure(ex.Message, StatusCodes.Status500InternalServerError); }
+        dto.DivCode = RequireDivCode();
+        var (success, message, contNo, warnings) = await _service.CreateAsync(dto, RequireUserId());
+        if (!success) return BadRequest(new { message, warnings });
+        return Success(new { contNo, warnings }, message);
     }
 
-    // PUT api/v1/rmi/po/{contNo}/{contDt}
+    // PUT api/v1/rmi/po/{contno}/{contdt}
     [HttpPut("{contNo}/{contDt}")]
-    public async Task<IActionResult> Update(string contNo, DateTime contDt, [FromBody] UpdatePODto dto)
+    public async Task<IActionResult> Update(string contNo, string contDt, [FromBody] UpdatePODto dto)
     {
-        if (!ModelState.IsValid)
-            return Failure(ErrorMessages.ValidationFailed, StatusCodes.Status422UnprocessableEntity, ModelState);
-        try
-        {
-            dto.DivCode = RequireDivCode();
-            dto.ContNo  = contNo;
-            dto.ContDt  = contDt;
-            var warnings = await _service.UpdateAsync(dto, GetUserId(), GetIPAddr(), GetHost());
-            return SuccessMessage(string.Format(ErrorMessages.UpdatedSuccessfully, "Purchase Order"), warnings);
-        }
-        catch (UnauthorizedAccessException ex) { return Failure(ex.Message, StatusCodes.Status401Unauthorized); }
-        catch (InvalidOperationException ex)   { return Failure(ex.Message, StatusCodes.Status400BadRequest); }
-        catch (Exception ex) { return Failure(ex.Message, StatusCodes.Status500InternalServerError); }
+        if (!TryParseContNo(contNo, out var no)) return BadRequest("Invalid PO number.");
+        if (!DateTime.TryParse(Uri.UnescapeDataString(contDt), out var dt)) return BadRequest("Invalid date format.");
+
+        dto.DivCode = RequireDivCode();
+        dto.ContDt  = dt;
+        var (success, message, warnings) = await _service.UpdateAsync(no, dto, RequireUserId());
+        if (!success) return BadRequest(new { message, warnings });
+        return Success(new { warnings }, message);
     }
 
-    // DELETE api/v1/rmi/po/{contNo}/{contDt}
+    // DELETE api/v1/rmi/po/{contno}/{contdt}
     [HttpDelete("{contNo}/{contDt}")]
-    public async Task<IActionResult> Delete(string contNo, DateTime contDt, [FromBody] PODeleteRequestDto dto)
+    public async Task<IActionResult> Delete(string contNo, string contDt, [FromBody] PODeleteRequestDto dto)
     {
-        if (!ModelState.IsValid)
-            return Failure(ErrorMessages.ValidationFailed, StatusCodes.Status422UnprocessableEntity, ModelState);
-        try
-        {
-            dto.ContNo  = contNo;
-            dto.ContDt  = contDt;
-            dto.DivCode = RequireDivCode();
-            var (result, message) = await _service.DeleteAsync(dto, GetUserId());
-            if (result < 0) return Failure(message, StatusCodes.Status400BadRequest);
-            return SuccessMessage(message);
-        }
-        catch (UnauthorizedAccessException ex) { return Failure(ex.Message, StatusCodes.Status401Unauthorized); }
-        catch (Exception ex) { return Failure(ex.Message, StatusCodes.Status500InternalServerError); }
+        if (!TryParseContNo(contNo, out var no)) return BadRequest("Invalid PO number.");
+        if (!DateTime.TryParse(Uri.UnescapeDataString(contDt), out var dt)) return BadRequest("Invalid date format.");
+
+        dto.ContNo  = no;
+        dto.DivCode = RequireDivCode();
+        dto.ContDt  = dt;
+        var (success, message) = await _service.DeleteAsync(dto, RequireUserId());
+        if (!success) return BadRequest(new { message });
+        return Success(new { }, message);
     }
 
-    // GET api/v1/rmi/po/{contNo}/{contDt}/approval
+    // GET api/v1/rmi/po/{contno}/{contdt}/approval
     [HttpGet("{contNo}/{contDt}/approval")]
-    public async Task<IActionResult> GetApprovalStatus(string contNo, DateTime contDt)
+    public async Task<IActionResult> GetApprovalStatus(string contNo, string contDt)
     {
-        try
-        {
-            var divCode = RequireDivCode();
-            var result  = await _service.GetApprovalStatusAsync(contNo, contDt, divCode);
-            if (result is null) return Failure(ErrorMessages.NotFound, StatusCodes.Status404NotFound);
-            return Success(result);
-        }
-        catch (UnauthorizedAccessException ex) { return Failure(ex.Message, StatusCodes.Status401Unauthorized); }
-        catch (Exception ex) { return Failure(ex.Message, StatusCodes.Status500InternalServerError); }
+        if (!TryParseContNo(contNo, out var no)) return BadRequest("Invalid PO number.");
+        if (!DateTime.TryParse(Uri.UnescapeDataString(contDt), out var dt)) return BadRequest("Invalid date format.");
+
+        var result = await _service.GetApprovalStatusAsync(no, dt, RequireDivCode());
+        if (result == null) return NotFound("Purchase Order not found.");
+        return Success(result);
     }
 
-    // POST api/v1/rmi/po/{contNo}/{contDt}/approve
+    // POST api/v1/rmi/po/{contno}/{contdt}/approve
     [HttpPost("{contNo}/{contDt}/approve")]
-    public async Task<IActionResult> Approve(string contNo, DateTime contDt, [FromBody] POApprovalActionDto dto)
+    public async Task<IActionResult> Approve(string contNo, string contDt, [FromBody] POApprovalActionDto dto)
     {
-        if (!ModelState.IsValid)
-            return Failure(ErrorMessages.ValidationFailed, StatusCodes.Status422UnprocessableEntity, ModelState);
-        try
-        {
-            dto.ContNo  = contNo;
-            dto.ContDt  = contDt;
-            dto.DivCode = RequireDivCode();
-            dto.AppUserId ??= GetUserId();
-            dto.AppIPAddr ??= GetIPAddr();
-            await _service.ApproveAsync(dto);
-            return SuccessMessage("Approval action recorded.");
-        }
-        catch (UnauthorizedAccessException ex) { return Failure(ex.Message, StatusCodes.Status401Unauthorized); }
-        catch (Exception ex) { return Failure(ex.Message, StatusCodes.Status500InternalServerError); }
+        if (!TryParseContNo(contNo, out var no)) return BadRequest("Invalid PO number.");
+        if (!DateTime.TryParse(Uri.UnescapeDataString(contDt), out var dt)) return BadRequest("Invalid date format.");
+
+        dto.ContNo  = no;
+        dto.DivCode = RequireDivCode();
+        dto.ContDt  = dt;
+        var (success, message) = await _service.ApproveAsync(dto, RequireUserId());
+        if (!success) return BadRequest(new { message });
+        return Success(new { }, message);
     }
 }

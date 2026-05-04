@@ -1,0 +1,260 @@
+Attribute VB_Name = "Module6"
+
+
+Public Sub dept_mac_cons(fs As String, ts As String, f As String, t As String, divcode As String, Opt As String, he As String)
+Dim arr(100) As String
+Dim dd(100) As String
+Dim dv(100) As Double
+
+Dim rs  As Recordset
+Dim tot3 As Double
+Dim gtot3 As Double
+Dim I, PG1, b1, b2 As Integer
+Dim gtot1, gtot2 As Double
+Dim tot1, tot As Double
+Dim RPTV As Report.ReportView
+Dim cnn As Connection
+Dim cnt As Integer
+Dim a As Integer
+Set cnn = New Connection
+cnn.Open connectstring
+gtot3 = 0
+PG1 = 0
+ 
+   Set rs1 = New Recordset
+      rs1.Open " SELECT distinct d.depcode,d.depname, x.MACNO,g.MACDES,SUM(X.ALLREC-X.ALLISS-X.REC+X.ISS) AS OPQTY,SUM(X.REC) AS RCDQTY ,SUM(X.ALLISS) AS  ISDQTY,  SUM(X.ALLREC-X.ALLISS) AS BALQTY,ABS(SUM(issval))  AS VALUE, SUM(X.TOTQC) AS QCSTK FROM  (SELECT DEPCODE ,0 AS ALLREC, SUM(ABS(isnull(A.QUANTITY,0)))  ALLISS, 0 AS TOTQC, 0 AS REC, 0 AS ISS,MACNO,sum(value) issval FROM IN_TRNTAIL A,IN_TC T,IN_TRNHEAD H  WHERE A.DOCNO=H.DOCNO AND A.DOCDT=H.DOCDT AND A.DIVCODE = '" & divcode & "' and a.tc=h.tc AND A.TC=T.TC AND (TCTYPE = 4)  AND  A.DOCDT >= '" & Format(yfdate, "yyyy-mm-dd") & "' AND  A.DOCDT <= '" & ts & "'  GROUP BY depcode,MACNO Union All " & _
+         "SELECT  DEPCODE, 0 AS ALLREC, 0 AS ALLISS, 0 AS TOTQC,  SUM(isnull(A.QUANTITY,0)) AS REC, 0 AS ISS,MACNO,0 as issval FROM IN_TRNTAIL A,IN_TC T,in_trnhead h  WHERE a.docno=h.docno and a.docdt=h.docdt and a.tc=h.tc and A.DIVCODE = '" & divcode & "' AND A.TC=T.TC AND (TCTYPE = 3) AND  A.DOCDT >= '" & fs & "' AND  A.DOCDT <= '" & ts & "'  GROUP BY depcode,MACNO) X,in_MAC g,in_dep d  where d.depcode=x.depcode and X.MACNO = g.MACNO  and x.depcode>='" & f & "' and x.depcode<='" & t & "' GROUP BY d.depcode,d.depname,x.MACNO , g.MACDES  Having SUM(X.ALLREC - X.ALLISS - X.rec + X.iss) <> 0 Or SUM(X.rec) <> 0 Or SUM(X.iss) <> 0 Or SUM(X.ALLREC - X.ALLISS) <> 0 Or SUM(X.TOTQC) <> 0 order by d.depcode,x.macno", cnn, adOpenStatic
+        
+   b1 = b1 + rs1.RecordCount
+    
+   If rs1.EOF = True Then
+        MsgBox "No Records Found", vbInformation, head
+   End If
+
+   he = "Consumption Report"
+   Set RPTV = New Report.ReportView
+     a = 1
+     a = FreeFile
+        
+     Close #a
+     Close #2
+     Open "C:\mac.TXT" For Output As #a
+     Open "C:\B.TXT" For Output As #2
+            
+     Print #a,
+     SR = CStr(pdate) + Space(2)
+     Print #a, Space(5) & Chr(27) & "E" & CENTRE(divname, 85, " ") & Chr(27) & "F"
+     Print #a,
+     PG1 = PG1 + 1
+     Print #a, Chr(27) & "E" & Space(5) + CStr(Padr(he, 20, " ")) & CStr(Padr(" From " & Format(fs, "DD/MM/YY") & " To " & Format(ts, "DD/MM/YY"), 40, " ")) & Chr(27) & "F"
+     'Print #a, Space(10) & Chr(27) & "E" & "Option : Department/Machine wise" & Space(15) & Padl(Format(pdate, "DD/MM/YYYY") & Space(10) & " Pg.No :" + Space(1) + CStr(PG1), 85 - 35 - 20, " ") & Chr(27) & "F"
+     Print #a, Space(28) & Chr(27) & "E" & "Option : Department/Machine wise" & Space(5) & Padl(Format(pdate, "DD/MM/YY") & " Pg.No:" & Space(1) & PG1, 25, " ") & Chr(27) & "F"
+     Print #a, Space(5) + String(85, "-")
+     Print #a, Space(5) + "Code" + Space(6) + "Department Name" + Space(20)
+     Print #a, Space(5) + "Code" + Space(6) + "Machine Description" + Space(60 - 45 + 12) + Space(3) + "Quantity" + Space(10) + "Value"
+     Print #a, Space(5) + String(85, "-")
+              
+     I = 9
+     tot = 0
+     tot1 = 0
+     tot3 = 0
+     gtot1 = 0
+     gtot2 = 0
+     c = 0
+     B = 0
+   rs1.MoveFirst
+   Dim rep As String
+   Do While Not rs1.EOF
+   
+       D = rs1(0).value
+      
+       If D = B Then
+          c = c + 1
+       Else
+          c = 0
+       End If
+   
+    Set rs = New Recordset
+       rs.Open " SELECT distinct d.depcode,d.depname, x.MACNO,g.MACDES,SUM(X.ALLREC-X.ALLISS-X.REC+X.ISS) AS OPQTY,SUM(X.REC) AS RCDQTY ,SUM(X.ALLISS) AS  ISDQTY,  SUM(X.ALLREC-X.ALLISS) AS BALQTY,ABS(SUM(issval))  AS VALUE, SUM(X.TOTQC) AS QCSTK FROM  (SELECT DEPCODE ,0 AS ALLREC, SUM(ABS(isnull(A.QUANTITY,0)))  ALLISS, 0 AS TOTQC, 0 AS REC, 0 AS ISS,MACNO,sum(value) issval FROM IN_TRNTAIL A,IN_TC T,IN_TRNHEAD H  WHERE A.DOCNO=H.DOCNO AND A.DOCDT=H.DOCDT AND A.DIVCODE = '" & divcode & "' and a.tc=h.tc AND A.TC=T.TC AND (TCTYPE = 4)  AND  A.DOCDT >= '" & Format(yfdate, "yyyy-mm-dd") & "' AND  A.DOCDT <= '" & ts & "' GROUP BY depcode,MACNO Union All " & _
+          "SELECT  DEPCODE, 0 AS ALLREC, 0 AS ALLISS, 0 AS TOTQC,  SUM(isnull(A.QUANTITY,0)) AS REC, 0 AS ISS,MACNO,0 as issval FROM IN_TRNTAIL A,IN_TC T,in_trnhead h  WHERE a.docno=h.docno and a.docdt=h.docdt and a.tc=h.tc and A.DIVCODE = '" & divcode & "' AND A.TC=T.TC AND (TCTYPE = 3) AND  A.DOCDT >= '" & fs & "' AND  A.DOCDT <= '" & ts & "' GROUP BY depcode,MACNO) X,in_MAC g,in_dep d  where d.depcode=x.depcode and X.MACNO = g.MACNO and x.depcode='" & rs1(0) & "' GROUP BY d.depcode,d.depname,x.MACNO , g.MACDES  Having SUM(X.ALLREC - X.ALLISS - X.rec + X.iss) <> 0 Or SUM(X.rec) <> 0 Or SUM(X.iss) <> 0 Or SUM(X.ALLREC - X.ALLISS) <> 0 Or SUM(X.TOTQC) <> 0 order by d.depcode,x.macno", cnn, adOpenStatic
+                                                                                           
+      b2 = b2 + rs.RecordCount
+      tot3 = 0
+      If rs1(0) <> rep Then
+            
+      Print #a, Space(5) + Padr(CStr(rs1("depcode")), 10, " ") + Padr(CStr(rs1("depname")), 60, " ")
+      Do While Not rs.EOF
+         
+        Print #a, Space(5) + Padr(CStr(rs("macno")), 10, " ") + Padr(CStr(rs("macdes")), 45, " ") + Padl(INF(Trim(rs("isdqty")), 3), 12, " ") + Padl(INF(Trim(rs("value")), 2), 15, " ")
+        tot = tot + rs("isdqty")
+        tot1 = tot1 + rs("value")
+        tot3 = tot3 + rs("VALUE")
+        gtot3 = gtot3 + rs("VALUE")
+        'rs.MoveNext
+                        
+        I = I + 1
+        If I >= 57 Then
+                            
+         Print #a, Space(5) + String(85, "-")
+         Print #a, Chr(12)
+                                
+         Print #a,
+         SR = CStr(pdate) + Space(2)
+         Print #a, Space(5) & Chr(27) & "E" & CENTRE(divname, 85, " ") & Chr(27) & "F"
+         Print #a,
+         PG1 = PG1 + 1
+         Print #a, Chr(27) & "E" & Space(5) + CStr(Padr(he, 20, " ")) & CStr(Padr(" From " & Format(fs, "DD/MM/YY") & " To " & Format(ts, "DD/MM/YY"), 40, " ")) & Chr(27) & "F"
+        'Print #a, Space(10) & Chr(27) & "E" & "Option : Department/Machine wise" & Space(15) & Padl(Format(pdate, "DD/MM/YYYY") & Space(10) & " Pg.No :" + Space(1) + CStr(PG1), 85 - 35 - 20, " ") & Chr(27) & "F"
+         Print #a, Space(28) & Chr(27) & "E" & "Option : Department/Machine wise" & Space(5) & Padl(Format(pdate, "DD/MM/YY") & " Pg.No:" & Space(1) & PG1, 25, " ") & Chr(27) & "F"
+         Print #a, Space(5) + String(85, "-")
+         Print #a, Space(5) + "Code" + Space(6) + "Department Name" + Space(20)
+         Print #a, Space(5) + "Code" + Space(6) + "Machine Description" + Space(60 - 45 + 12) + Space(3) + "Quantity" + Space(10) + "Value"
+         Print #a, Space(5) + String(85, "-")
+                                
+         I = 9
+       End If
+       cnt = cnt + 1 'Count for department total
+      rs.MoveNext
+     Loop
+     If cnt > 1 Then
+         Print #a,
+        Print #a, Space(59 - 11) & Chr(27) & "E" + "**Department Total**" & Space(4) & Padl(INF(tot3, 2), 15, " ") & Chr(27) & "F"
+'         If tot > 0 Then
+'              Print #2, CENTRE(Space(10) + Padr(CStr(rs("macno")), 5, " ") + Padr(CStr(rs("macdes")), 30, " ") & Padl(INF(CDbl(tot), 2), 20, " "), 85, " ")
+'               I = I + 1
+'         End If
+       
+     End If
+       Print #a,
+      arr(n) = rs1(0)
+      dd(n) = rs1(1)
+      dv(n) = tot3 'rs1("value")
+      n = n + 1
+      cnt = 0
+     
+     End If
+   
+                 
+    If rs1.EOF = False Then
+        B = rs1(0).value
+    End If
+    'rs1.MoveNext
+    
+    I = I + 1
+    If I >= 57 Then
+        
+        Print #a, Space(5) + String(85, "-")
+        Print #a, Chr(12)
+        Print #a,
+        SR = CStr(pdate) + Space(2)
+        Print #a, Space(5) & Chr(27) & "E" & CENTRE(divname, 85, " ") & Chr(27) & "F"
+        Print #a,
+        PG1 = PG1 + 1
+        Print #a, Chr(27) & "E" & Space(5) + CStr(Padr(he, 20, " ")) & CStr(Padr(" From " & Format(fs, "DD/MM/YY") & " To " & Format(ts, "DD/MM/YY"), 40, " ")) & Chr(27) & "F"
+        'Print #a, Space(10) & Chr(27) & "E" & "Option : Department/Machine wise" & Space(15) & Padl(Format(pdate, "DD/MM/YYYY") & Space(10) & " Pg.No :" + Space(1) + CStr(PG1), 85 - 35 - 20, " ") & Chr(27) & "F"
+        Print #a, Space(28) & Chr(27) & "E" & "Option : Department/Machine wise" & Space(5) & Padl(Format(pdate, "DD/MM/YY") & " Pg.No:" & Space(1) & PG1, 25, " ") & Chr(27) & "F"
+        Print #a, Space(5) + String(85, "-")
+        Print #a, Space(5) + "Code" + Space(6) + "Department Name" + Space(20)
+        Print #a, Space(5) + "Code" + Space(6) + "Machine Description" + Space(60 - 45 + 12) + Space(3) + "Quantity" + Space(10) + "Value"
+        Print #a, Space(5) + String(85, "-")
+       
+        I = 9
+    End If
+  
+    gtot1 = gtot1 + tot
+    gtot2 = gtot2 + tot1
+    tot = 0
+    tot1 = 0
+    
+  rep = rs1(0)
+  rs1.MoveNext
+ 
+  Loop
+ 
+      Print #a, Space(5) + String(85, "-")
+      Print #a, Space(80 - 45 + 16) & Chr(27) & "E" + "**Grand Total**" + Padl(INF(Trim(val(gtot3)), 2), 21, " ") & Chr(27) & "F"
+      Print #a, Space(5) + String(85, "-")
+      Print #a,
+      Print #a,
+      I = I + 4
+       
+Close #2
+Dim rss As New Recordset
+rss.Open " SELECT distinct d.depcode,d.depname, x.MACNO,g.MACDES,SUM(X.ALLREC-X.ALLISS-X.REC+X.ISS) AS OPQTY,SUM(X.REC) AS RCDQTY ,SUM(X.ALLISS) AS  ISDQTY,  SUM(X.ALLREC-X.ALLISS) AS BALQTY,ABS(SUM(issval))  AS VALUE, SUM(X.TOTQC) AS QCSTK FROM  (SELECT DEPCODE ,0 AS ALLREC, SUM(ABS(isnull(A.QUANTITY,0)))  ALLISS, 0 AS TOTQC, 0 AS REC, 0 AS ISS,MACNO,sum(value) issval FROM IN_TRNTAIL A,IN_TC T,IN_TRNHEAD H  WHERE A.DOCNO=H.DOCNO AND A.DOCDT=H.DOCDT AND A.DIVCODE = '" & divcode & "' and a.tc=h.tc AND A.TC=T.TC AND (TCTYPE = 4)  AND  A.DOCDT >= '" & Format(yfdate, "yyyy-mm-dd") & "' AND  A.DOCDT <= '" & ts & "'  GROUP BY depcode,MACNO Union All " & _
+         "SELECT  DEPCODE, 0 AS ALLREC, 0 AS ALLISS, 0 AS TOTQC,  SUM(isnull(A.QUANTITY,0)) AS REC, 0 AS ISS,MACNO,0 as issval FROM IN_TRNTAIL A,IN_TC T,in_trnhead h  WHERE a.docno=h.docno and a.docdt=h.docdt and a.tc=h.tc and A.DIVCODE = '" & divcode & "' AND A.TC=T.TC AND (TCTYPE = 3) AND  A.DOCDT >= '" & fs & "' AND  A.DOCDT <= '" & ts & "'  GROUP BY depcode,MACNO) X,in_MAC g,in_dep d  where d.depcode=x.depcode and X.MACNO = g.MACNO  and x.depcode>='" & f & "' and x.depcode<='" & t & "' GROUP BY d.depcode,d.depname,x.MACNO , g.MACDES  Having SUM(X.ALLREC - X.ALLISS - X.rec + X.iss) <> 0 Or SUM(X.rec) <> 0 Or SUM(X.iss) <> 0 Or SUM(X.ALLREC - X.ALLISS) <> 0 Or SUM(X.TOTQC) <> 0 order by d.depcode,x.macno", cnn, adOpenStatic
+        
+If rss.RecordCount + 8 + I > 54 Then
+If I > 35 Then
+        'Print #a, Space(5) + String(86, "-")
+        Print #a, Chr(12)
+        I = 0
+        
+    End If
+    'PG1 = PG1 + 1
+    Print #a,
+    'Print #a, Space(5) & Chr(27) & "E" & CENTRE(divname, 80, " ")
+    Print #a,
+    'Print #a, Space(5) & Padr(he & " From " & fs & " To " & ts, 60, " ") & Chr(27) & "F" & Padl(pdate & " Pg.: " & PG1, 20, " ")
+'Else
+'    Print #a,
+'    Print #a,
+'    Print #a,
+End If
+
+Print #a, CENTRE(Space(10) & CENTRE(Chr(27) & "E" & "Abstract" & Chr(27) & "F", 55, " "), 85, " ")
+Print #a,
+Print #a, CENTRE(Space(10) + String(55, "-"), 85, " ")
+'Print #a, Space(5) + "Code      " & Padr("Department Name", 25, " ") & Padl("Value", 45, " ")
+Print #a, CENTRE(Space(10) & "Code Department                                   Value", 85, " ")
+Print #a, CENTRE(Space(10) + String(55, "-"), 85, " ")
+'\\\\\\\Print #1, Space(5) + Padr(CStr(rs("macno")), 10, " ") + Padr(CStr(rs("macdes")), 25, " ") & Space(10) & Padl(INF(CDbl(tot), 2), 80 - 45, " ")
+tot = 0
+Dim abstr As String
+Open "C:\b.txt" For Input As #2
+For n = 0 To 70
+    If Trim(arr(n)) <> "" Then
+''        Print #a, Space(20) & arr(n) & Space(3);
+''        Print #a, dd(n);
+''        Print #a, Space(20); Padl(dv(n), 10, "")
+''        ''Print #a, dv(n)
+''
+
+      Print #a, CENTRE(Space(10) + Padr(CStr(arr(n)), 5, " ") + Padr(CStr(dd(n)), 30, " ") & Padl(INF(dv(n), 2), 20, " "), 85, " ")
+
+
+    Else
+        Exit For
+    End If
+Next n
+
+'While Not EOF(2)
+'' Print #a, Space(5) + Space(4) + Padr(CStr(Rss("itemcode")), 10, " ") + Space(1) + Padr(CStr(Rss("itemname")), 71, " ") + Space(5) + Padr(CStr(Rss("uom")), 5, " ") + Padl(IIf(INF(Trim(Rss("isdqty")), 3) = 0, " ", INF(Trim(Rss("isdqty")), 3)), 16, " ") + Padl(IIf(INF(Trim(Rss("value")), 2) = 0, " ", INF(Trim(Rss("value")), 2)), 19, " ")
+'Line Input #2, abstr
+'Print #a, abstr
+''  tot = tot + rss("value")
+' 'rss.MoveNext
+' Wend
+ Print #a, CENTRE(Space(10) + String(55, "-"), 85, " ")
+ 'Print #a, Space(81 - 11) + Chr(27) & "E" & "** Total **" + Space(5 + 11 + 4) + Padl(INF(Trim(Val(gtot1)), 3), 16, " ") + Padl(INF(Trim(Val(gtot2)), 2), 19, " ") & Chr(27) & "F"
+ 'Print #a, Space(81 - 11) + Chr(27) & "E" & "** Total **" + Space(5 + 11 + 4) + Padl(INF(Trim(Val(gtot11)), 0), 16, " ") + Padl(INF(Trim(Val(gtot2)), 2), 19, " ") & Chr(27) & "F"
+ Print #a, CENTRE(Space(10 + 22) + Chr(27) & "E" & "** Total **" + Space(5) & Padl(INF(CDbl(gtot3), 2), 19, " "), 85, " ") + Chr(27) & "F"
+ Print #a, CENTRE(Space(10) + String(55, "-"), 85, " ")
+            
+ Close #a
+       a = FreeFile
+       Open "c:\mac.bat" For Output As #a
+       Print #a, "cd\"
+       Print #a, "c:"
+       Print #a, "cd\"
+       Print #a, "type mac.txt>prn"
+     Close #a
+       RPTV.txtfile = "c:\mac.txt"
+       RPTV.Batfile = "c:\mac.bat"
+           
+End Sub
+
+
+
+
+
+

@@ -1,0 +1,30 @@
+
+CREATE TRIGGER [dbo].[DELRM_CAT] ON [dbo].RM_CAT FOR DELETE AS                                     
+DECLARE                                                                  
+@CATCD varchar(10),  
+@sno int  
+BEGIN    
+  
+	select @CATCD=CATCD from deleted  
+  
+	set @sno=(select count(CATCD) from 
+	(
+		SELECT CATCD CATCD FROM RM_LOT where CATCD=@CATCD
+			UNION ALL
+		SELECT CATCD CATCD FROM RM_COUNT where CATCD=@CATCD
+			UNION ALL
+		SELECT CATCD CATCD FROM RM_VAR where CATCD=@CATCD
+			UNION ALL
+		SELECT CATCD CATCD FROM rm_issb where CATCD=@CATCD
+			UNION ALL
+		SELECT CATCD CATCD FROM RM_BALE where CATCD=@CATCD
+			UNION ALL
+		SELECT CATCD CATCD FROM RM_ARRIVAL where CATCD=@CATCD
+	) x  
+	where CATCD=@CATCD)  
+	if isnull(@sno,0)> 0    
+	begin   
+		rollback  
+		RAISERROR ('Dependencies exists. Unable to delete the record at this time', 16 ,10)	
+	end   
+END

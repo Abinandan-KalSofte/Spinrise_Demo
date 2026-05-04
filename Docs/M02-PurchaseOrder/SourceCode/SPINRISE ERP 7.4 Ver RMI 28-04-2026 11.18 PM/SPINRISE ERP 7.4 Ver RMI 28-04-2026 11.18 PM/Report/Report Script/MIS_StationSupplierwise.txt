@@ -1,0 +1,27 @@
+--ksp_RMI_StationwiseSupplierwise '01','2012-10-01','2012-11-15','A'  
+Create PROC ksp_RMI_StationwiseSupplierwise  
+(  
+ @Divcode VARCHAR(10),  
+ @FDate VarChar(10),  
+ @TDate VARCHAR(10),  
+ @Type VARCHAR(10)  
+)  
+AS  
+BEGIN  
+select distinct   
+A.AREACD,D.AREANAME AS Station,a.supcd,c.slname as supname,f.slname AS Agent,a.lotdt,a.varcode,b.VARNAME,a.lotno,
+a.catcd,E.CATNAME,bale=(bales),Unit=(case bblflg when 'B' then 'Bales' else 'Borah' end),  
+ratekg as ratekgs, ratequtl=round(Favaourablewgt,2),value=round(Favaourablewgt*(isnull(ratekg,0)),2) ,
+a.TOTLANDCOST,P.DIVNAME,P.ADD1,P.DIV_PRINTNAME, P.DIV_UNITNAME  
+from rm_lot a  
+INNER JOIN rm_var b ON b.CATCD = a.CATCD AND b.VARCODE = a.VARCODE  
+LEFT JOIN fa_slmas c ON C.slcode=A.SUPCD
+LEFT JOIN rm_area d  ON D.AREACODE=A.AREACD  
+LEFT JOIN PP_DIVMAS p ON P.DIVCODE =A.DIVCODE  
+LEFT JOIN RM_CAT E ON E.CATCD=A.CATCD  
+LEFT JOIN FA_SLMAS F ON F.slcode=A.BRKCD
+where a.divcode=@Divcode and a.arrdt between @FDate and @TDate AND A.LOTTYPE=@Type  
+order by lotno,lotdt,a.varcode,a.catcd    
+END  
+
+

@@ -1,52 +1,49 @@
 import { Button, Space, Table, Tag, Tooltip } from 'antd'
-import { EditOutlined, DeleteOutlined, CheckCircleOutlined, ClockCircleOutlined } from '@ant-design/icons'
+import { DeleteOutlined,  EyeOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
-import type { POSummaryDto } from '../../types'
+import type { POSummaryResponse } from '../../types'
 
-interface Props {
-  rows: POSummaryDto[]
-  total: number
-  page: number
-  pageSize: number
-  loading: boolean
-  deletingKey: { contNo: string; contDt: string } | null
-  onEdit: (contNo: string, contDt: string) => void
-  onDelete: (contNo: string, contDt: string) => void
-  onPageChange: (page: number) => void
-}
-
-function ApprovalBadge({ firstAppFlg, appFlg, cancelFlg }: { firstAppFlg: string; appFlg: string; cancelFlg: string }) {
-  if (cancelFlg === 'Y') return <Tag color="red">Cancelled</Tag>
-  if (appFlg === 'Y')      return <Tag color="green" icon={<CheckCircleOutlined />}>Approved</Tag>
-  if (firstAppFlg === 'Y') return <Tag color="orange" icon={<ClockCircleOutlined />}>Level 1</Tag>
+function statusTag(row: POSummaryResponse) {
+  if (row.cancelFlag === 'Y') return <Tag color="red">Cancelled</Tag>
+  if (row.appFlg     === 'Y') return <Tag color="green">Approved</Tag>
+  if (row.firstAppFlg=== 'Y') return <Tag color="orange">L1 Approved</Tag>
   return <Tag color="blue">Pending</Tag>
 }
 
-export function PODataTable({
-  rows, total, page, pageSize, loading,
-  deletingKey, onEdit, onDelete, onPageChange,
-}: Props) {
-  const columns: ColumnsType<POSummaryDto> = [
+interface Props {
+  rows:        POSummaryResponse[]
+  total:       number
+  page:        number
+  pageSize:    number
+  loading:     boolean
+  deletingKey: string | null
+  onEdit:      (contNo: number, contDt: string) => void
+  onDelete:    (contNo: number, contDt: string) => void
+  onPageChange:(page: number) => void
+}
+
+export function PODataTable({ rows, total, page, pageSize, loading, deletingKey, onEdit, onDelete, onPageChange }: Props) {
+  const columns: ColumnsType<POSummaryResponse> = [
     {
       title: 'PO No',
       dataIndex: 'contNo',
-      width: 90,
-      render: (v) => <span style={{ fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{v}</span>,
+      width: 110,
+      render: (v: number) => <span style={{ fontVariantNumeric: 'tabular-nums', fontWeight: 600 }}>{v}</span>,
     },
     {
-      title: 'Date',
+      title: 'PO Date',
       dataIndex: 'contDt',
       width: 110,
-      render: (v) => dayjs(v).format('DD-MMM-YYYY'),
+      render: (v: string) => dayjs(v).format('DD-MMM-YYYY'),
     },
     {
       title: 'Supplier',
       dataIndex: 'supplierName',
-      minWidth: 160,
-      render: (v, r) => (
-        <Tooltip title={r.supplierCode}>
-          <span>{v || r.supplierCode || '—'}</span>
+      ellipsis: true,
+      render: (v: string, r) => (
+        <Tooltip title={r.supCd}>
+          <span>{v || r.supCd}</span>
         </Tooltip>
       ),
     },
@@ -55,64 +52,28 @@ export function PODataTable({
       dataIndex: 'varietyCount',
       width: 80,
       align: 'center',
-    },
-    {
-      title: 'Currency',
-      dataIndex: 'currCode',
-      width: 80,
-      align: 'center',
-      render: (v) => v || '—',
-    },
-    {
-      title: 'Pay Mode',
-      dataIndex: 'payMode',
-      width: 90,
-      render: (v) => v || '—',
+      render: (v: number) => <Tag>{v}</Tag>,
     },
     {
       title: 'Status',
-      width: 110,
-      render: (_, r) => (
-        <ApprovalBadge
-          firstAppFlg={r.firstAppFlg}
-          appFlg={r.appFlg}
-          cancelFlg={r.cancelFlg}
-        />
-      ),
-    },
-    {
-      title: 'Prepared By',
-      dataIndex: 'preparedBy',
-      width: 110,
-      render: (v) => v || '—',
+      width: 120,
+      render: (_, r) => statusTag(r),
     },
     {
       title: 'Actions',
-      width: 90,
+      width: 100,
       align: 'center',
       render: (_, r) => {
-        const isDeleting =
-          deletingKey?.contNo === r.contNo &&
-          deletingKey?.contDt === r.contDt
+        const key        = `${r.contNo}|${r.contDt}`
+        const isDeleting = deletingKey === key
+        const locked     = r.cancelFlag === 'Y'
         return (
           <Space size={4}>
             <Tooltip title="Edit">
-              <Button
-                size="small"
-                icon={<EditOutlined />}
-                onClick={() => onEdit(r.contNo, r.contDt)}
-                disabled={r.cancelFlg === 'Y'}
-              />
+              <Button size="small" type="text" icon={<EyeOutlined />} onClick={() => onEdit(r.contNo, r.contDt)} disabled={locked} />
             </Tooltip>
-            <Tooltip title="Delete">
-              <Button
-                size="small"
-                danger
-                icon={<DeleteOutlined />}
-                loading={isDeleting}
-                disabled={r.cancelFlg === 'Y' || r.appFlg === 'Y'}
-                onClick={() => onDelete(r.contNo, r.contDt)}
-              />
+            <Tooltip title="Cancel PO">
+              <Button size="small" type="text" danger icon={<DeleteOutlined />} loading={isDeleting} onClick={() => onDelete(r.contNo, r.contDt)} disabled={locked} />
             </Tooltip>
           </Space>
         )
@@ -121,21 +82,21 @@ export function PODataTable({
   ]
 
   return (
-    <Table<POSummaryDto>
+    <Table<POSummaryResponse>
       rowKey={(r) => `${r.contNo}|${r.contDt}`}
       columns={columns}
       dataSource={rows}
       loading={loading}
       size="small"
-      scroll={{ x: 'max-content' }}
       pagination={{
         current:   page,
         pageSize,
         total,
         showSizeChanger: false,
-        showTotal: (t) => `${t.toLocaleString()} records`,
+        showTotal: (t) => `${t} records`,
         onChange:  onPageChange,
       }}
+      scroll={{ x: 'max-content' }}
     />
   )
 }

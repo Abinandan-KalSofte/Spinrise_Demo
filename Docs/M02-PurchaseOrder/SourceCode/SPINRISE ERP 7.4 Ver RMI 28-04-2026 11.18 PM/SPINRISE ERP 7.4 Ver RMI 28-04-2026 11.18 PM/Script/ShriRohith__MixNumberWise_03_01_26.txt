@@ -1,0 +1,49 @@
+    
+--sp_helptext ksp_mixnumber_wisenew      
+-- ksp_mixnumber_wisenew '01','2025-12-01','2026-01-03','2025','A'              
+-- if you add any new column in Proc then add to EXIssueListMixwise table for Excel        
+CREATE Procedure ksp_mixnumber_wisenew                                                                             
+@divcode varchar(2),                                                                                                    
+@FromDate AS varchar(15),                                                                                                       
+@ToDate AS Varchar(15),                          
+@lotyear AS Varchar(10) ,        
+@IssueType varchar(300)                            
+As                                
+begin                              
+select distinct                             
+docno,            
+--mixgrpcd as mixgrp,                            
+cntcode as mixgrp,          
+docdt,varcode,catcd,cntname ,catname,lotno,sum(bale) as bale,                              
+unit ,round(sum(isnull(netkgs,0)),3)netkg                            
+,sum(isnull(quintal,0)) ratequin,                              
+sum(isnull(Amount,0)) AS amount,avg(ratekg) as avgrate,plotno,                            
+round(avg(ratekg*355.616),0)as ratecandy,                              
+mixgrpcd,cntcode,DIV_PRINTNAME,DIV_UNITNAME   from (                            
+SELECT c.DOCDT, a.CNTCODE AS CNTCD, d.mixgrpcd, a.VARCODE, a.LOTNO, COUNT(b.BALENO) AS bale,                             
+(CASE WHEN a.bblflg = 'R' THEN 'Borah' ELSE 'Bales' END) AS Unit, SUM(ISNULL(b.ISSKGS, 0)) AS 'netkgs', a.PLOTNO, AVG(a.RATEKG) AS 'quintal',                             
+SUM(ISNULL(b.ISSKGS, 0)) * a.RATEKG AS AMOUNT, a.RATEKG, ROUND(a.RATEKG * 355.616, 0) AS ratecandy, ISNULL(c.DOCNO, 0) AS docno,                             
+a.catcd,f.CATNAME ,p.DIV_PRINTNAME,p.DIV_UNITNAME, c.cntcd AS cntcode  ,d.cntname                          
+FROM dbo.RM_ISSB AS b           
+INNER JOIN                            
+dbo.RM_ISSH AS c ON b.DIVCODE = c.DIVCODE AND b.ISSTYPE = c.ISSTYPE AND b.DOCDT = c.DOCDT AND b.DOCNO = c.DOCNO            
+left JOIN                            
+ dbo.RM_BALE AS e ON e.DIVCODE = b.DIVCODE AND e.lottype = b.LOTTYPE AND e.LOTNO = b.LOTNO AND e.CATCD = b.CATCD AND                             
+e.BALENO = b.BALENO and b.varcode=e.varcode left JOIN                            
+dbo.RM_LOT AS a ON e.lotdt = a.LOTDT AND b.DIVCODE = a.DIVCODE AND b.CATCD = a.CATCD AND b.LOTNO = a.LOTNO AND                             
+b.lotdt = a.LOTDT  and b.varcode=a.varcode         
+left JOIN dbo.RM_CAT as f ON b.CATCD=f.CATCD                 
+inner join PP_DIVMAS p on p.DIVCODE=b.DIVCODE                             
+LEFT OUTER JOIN dbo.RM_COUNT AS d ON c.cntcd = d.cntcd  and c.divcode=d.divcode                          
+WHERE      
+(b.LOTTYPE in ('A','T')) AND (a.DIVCODE = @divcode) AND (a.REJFLG = 'N')-- AND (b.issued = 'N' OR b.issued = 'Y')                   
+AND (a.LOTYEAR = @lotyear)           
+and (c.ISSTYPE in (select items from dbo.split(@IssueType,',')) or 'A'=@IssueType)                 
+and c.docdt  between @Fromdate  and @Todate                               
+GROUP BY d.mixgrpcd, a.BBLFLG, a.RATEKG, a.RATECY, a.VARCODE, a.LOTNO, c.DOCDT, a.CNTCODE, a.PLOTNO, c.DOCNO, a.CATCD,f.CATNAME, c.cntcd,DIV_PRINTNAME,DIV_UNITNAME ,d.cntname                            
+) xxx                                
+group by varcode,lotno,DOCDT,unit,plotno,                            
+docno,                            
+catcd,catname,mixgrpcd,cntcode,DIV_PRINTNAME,DIV_UNITNAME,cntname,CNTCD                            
+order by cntcode                              
+END     

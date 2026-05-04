@@ -1,0 +1,64 @@
+ALTER TABLE RM_ISSH ADD OUTPASSDOCNO NUMERIC(5)
+ALTER TABLE RM_ISSH ADD OUTPASSDOCDT DATETIME
+ALTER TABLE RM_ISSH ADD OUTPASSFLG CHAR
+
+
+CREATE TABLE [dbo].[RM_OutpassHd](
+	[Divcode] [varchar](2) NOT NULL,
+	[Docno] [numeric](5, 0) NOT NULL,
+	[Docdate] [datetime] NOT NULL,
+	[Issuetype] [varchar](3) NOT NULL,
+	[Slcode] [varchar](7) NULL,
+	[Refdivcode] [varchar](2) NULL,
+	[Destination] [varchar](4) NULL,
+	[VechicleNo] [varchar](15) NULL,
+	[RemovalTime] [datetime] NULL,
+	[AddUser] [varchar](35) NULL,
+	[AddDate] [datetime] NULL,
+	[Moduser] [varchar](35) NULL,
+	[ModDate] [datetime] NULL,
+ CONSTRAINT [PK_RM_Outpass] PRIMARY KEY CLUSTERED 
+(
+	[Divcode] ASC,
+	[Docno] ASC,
+	[Docdate] ASC,
+	[Issuetype] ASC
+)
+) ON [PRIMARY]
+
+
+GO
+
+
+CREATE TABLE [dbo].[RM_OutpassDt](
+	[Divcode] [varchar](2) NOT NULL,
+	[Docno] [numeric](5, 0) NOT NULL,
+	[Docdate] [datetime] NOT NULL,
+	[Docsno] [numeric](5, 0) NOT NULL,
+	[Issuetype] [varchar](3) NOT NULL,
+	[IssueNo] [numeric](5, 0) NULL,
+	[IssueDate] [datetime] NULL,
+	[LotNo] [smallint] NULL,
+	[Lotdate] [datetime] NULL,
+	[varcode] [varchar](15) NULL,
+	[Quantity] [numeric](6, 0) NOT NULL,
+	[NetWeight] [numeric](15, 3) NOT NULL,
+ CONSTRAINT [PK_RM_OutpassDt] PRIMARY KEY CLUSTERED 
+(
+	[Divcode] ASC,
+	[Docno] ASC,
+	[Docdate] ASC,
+	[Docsno] ASC,
+	[Issuetype] ASC
+)
+) ON [PRIMARY]
+
+GO
+
+
+ALTER TABLE [dbo].[RM_OutpassDt] ADD  DEFAULT ((0)) FOR [Quantity]
+GO
+
+ALTER TABLE [dbo].[RM_OutpassDt] ADD  DEFAULT ((0)) FOR [NetWeight]
+GO
+

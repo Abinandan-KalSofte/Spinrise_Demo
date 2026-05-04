@@ -1,0 +1,58 @@
+alter table rm_cont ADD  HSN varchar(8), cgstper numeric(5,2), sgstper numeric(5,2),igstper numeric(5,2)
+
+go
+
+alter table  rm_var ADD taxcode varchar(8), HSN varchar(8), cgstper numeric(5,2),sgstper numeric(5,2),igstper numeric(10,2)
+go
+alter table RM_LOT ADD  HSN varchar(8), cgstper numeric(5,2), cgstamt numeric(10,2),sgstper numeric(5,2),sgstamt numeric(10,2)
+,igstper numeric(5,2),igstamt numeric(10,2)
+go
+
+CREATE TABLE [dbo].[ig_HSNCODE](
+	[CODE] [varchar](8) NOT NULL,
+	[DESCRIPTION] [varchar](500) NULL
+) ON [PRIMARY]
+
+go
+
+
+ALTER TABLE  RM_PARAM ADD RCGST_ROFF NUMERIC(5)
+GO
+ALTER TABLE  RM_PARAM ADD RSGST_ROFF NUMERIC(5)
+GO
+ALTER TABLE  RM_PARAM ADD RIGST_ROFF NUMERIC(5)
+
+GO
+
+alter table PP_DIVMAS add GSTSTATECODE numeric(2,0),GSTINNO varchar(15)
+go
+
+ALTER TABLE ig_state add  GSTSTATECODE VARCHAR(2)
+go
+alter table ig_delmas add GSTINNO varchar(15),GSTSTATECODE VARCHAR(2)
+go
+alter table ig_deladd add GSTINNO varchar(15),GSTSTATECODE VARCHAR(2)
+go
+alter table fa_slmas add GSTINNO varchar(15)
+go
+ALTER TABLE fa_slmas add  GSTSTATECODE VARCHAR(2)
+
+GO
+
+
+alter table ig_hsncode add [user_id] [varchar](9) 
+go
+alter table ig_hsncode add [entdate] [datetime] 
+
+
+GO
+
+alter table FA_PURHD ADD  HSN varchar(8), cgstper numeric(5,2), cgstamt numeric(10,2),sgstper numeric(5,2),sgstamt numeric(10,2)
+,igstper numeric(5,2),igstamt numeric(10,2)
+
+GO
+
+alter table FA_PURDT ADD  HSN varchar(8), cgstper numeric(5,2), cgstamt numeric(10,2),sgstper numeric(5,2),sgstamt numeric(10,2)
+,igstper numeric(5,2),igstamt numeric(10,2)
+
+

@@ -1,0 +1,3 @@
+Alter Table RM_CONT add CurrCode Varchar(3),DeliveryTerms Varchar(200),Appflg char
+
+

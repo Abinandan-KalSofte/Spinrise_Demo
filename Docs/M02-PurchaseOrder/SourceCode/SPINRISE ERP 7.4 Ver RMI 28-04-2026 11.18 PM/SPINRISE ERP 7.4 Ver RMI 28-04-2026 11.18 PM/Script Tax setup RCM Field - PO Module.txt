@@ -1,0 +1,1 @@
+alter table ig_tax add RCMCGST_GLCODE varchar(15), RCMSGST_GLCODE varchar(15), RCMIGST_GLCODE varchar(15)

@@ -1,0 +1,81 @@
+  
+--- EXEC Sp_stk_position_statewise '01','2018-04-01','2019-03-21'  
+CREATE PROCEDURE Sp_stk_position_statewise  
+(  
+@DIVCODE VARCHAR(25),  
+@FDATE VARCHAR(25),  
+@TDATE VARCHAR(25)  
+)  
+AS  
+BEGIN  
+ --DECLARE @totbale AS NUMERIC(15,2)  
+ --DECLARE @pentot AS NUMERIC(15,2)  
+ --DECLARE @Totpos AS NUMERIC(15,2)  
+   
+   
+  
+     
+     
+  
+SELECT SUM(x.issqty) AS rnlots,SUM(x.isskgs) AS rnkgs,  
+CASE WHEN SUM(x.issqty)=0 THEN  0 else ((cast(cast(100 as numeric(15,3))/ 94*cast (SUM(x.issqty) as numeric(15,3)) as numeric(15,3)))) end AS rnlotper,  
+  
+SUM(isnull(x.clobales,0)) waitbale,  
+CASE WHEN SUM(isnull(x.clobales,0))=0 THEN  0 else ((cast(cast(100 as numeric(15,3))/cast (ISNULL(x1.PenOrderQty1,0)+ISNULL(x2.clobales,0)  as numeric(15,3)) as numeric(15,3)))*SUM(isnull(x.clobales,0))) end AS waitper,  
+CASE WHEN SUM(x.PenOrderQty)=0 THEN 0 ELSE ((cast(cast(100 as numeric(15,3))/cast (ISNULL(x1.PenOrderQty1,0)  as numeric(15,3)) as numeric(15,3)))*SUM(isnull(x.PenOrderQty,0)))  
+ end AS ordpend,  
+SUM(x.cloweight) AS cloweight,SUM(x.clovalue) AS clovalue,  
+x.name AS state,x.state_code,ISNULL(x1.PenOrderQty1,0)  AS a,ISNULL(x1.PenOrderQty1,0)+ISNULL(x2.clobales,0)  AS b,SUM(x.PenOrderQty) ordpenbale,  
+CASE WHEN (SUM(ISNULL(PenOrderQty,0))+ SUM(ISNULL(x.clobales,0)))=0 THEN 0  
+else  
+(cast(100 as numeric(15,3))/cast(ISNULL(x1.PenOrderQty1,0)+ISNULL(x2.clobales,0) as numeric(15,3))*( SUM(cast(ISNULL(x.PenOrderQty,0) as numeric(15,3)))+ SUM(cast(ISNULL(x.clobales,0) as numeric(15,3))) ))  END AS per,ISNULL(x1.PenOrderQty1,0)+ISNULL(x2.clobales,0)  AS totbale,  
+(SELECT pp_divmas.DIV_PRINTNAME FROM pp_divmas WHERE divcode=@DIVCODE) AS DIV_PRINTNAME,(SELECT pp_divmas.UNIT_NAME FROM pp_divmas WHERE divcode=@DIVCODE) AS div_UNITNAME  
+  
+  
+FROM (  
+SELECT d.name,d.state_code,SUM(k.bales) AS clobales,SUM(WEIGHT) AS cloweight,SUM(VALUE) AS clovalue,0 AS issqty,0 AS isskgs,0 AS PenOrderQty  
+  
+  FROM stockpositionwise k inner join rm_lot k1 ON k.lotno=k1.lotno AND k.lotdt=k1.lotdt   
+INNER JOIN fa_slmas C ON C.slcode=k1.supcd   
+ INNER JOIN ig_state D ON C.state_code=D.STATE_CODE  
+WHERE k1.divcode=@DIVCODE  GROUP BY d.name,d.state_code   
+UNION ALL  
+ SELECT D.name,d.state_code,0 AS clobales,0 AS cloweight,0 AS clovalue,count(baleno) AS issqty,sum(isskgs) AS isskgs,0 AS PenOrderQty  
+   FROM rm_issb A INNER join rm_lot B ON A.lotno=B.lotno AND A.lotdt=B.lotdt AND A.lottype=B.LOTTYPE AND A.divcode=B.DIVCODE  
+ INNER JOIN fa_slmas C ON C.slcode=b.supcd   
+ INNER JOIN ig_state D ON C.state_code=D.STATE_CODE  
+  WHERE  A.divcode=@DIVCODE AND docdt BETWEEN @FDATE AND @TDATE GROUP BY d.name,d.state_code   
+UNION ALL   
+   SELECT D.name,d.state_code,0 AS clobales,0 AS cloweight,0 AS clovalue,0 AS issqty,0 AS isskgs,(SUM(ORDQTY)-SUM(RECQTY)) AS PenOrderQty  
+     
+    FROM rm_cont A INNER JOIN fa_slmas C ON C.slcode=A.supcd   
+   INNER JOIN ig_state D ON C.state_code=D.STATE_CODE  
+   WHERE A.divcode=@DIVCODE AND A.contdt BETWEEN @FDATE AND @TDATE  GROUP BY d.name,d.state_code having (SUM(A.ORDQTY)-SUM(A.RECQTY))>0  ) x   
+   LEFT JOIN (SELECT (SUM(ORDQTY)-SUM(isnull(RECQTY,0))) AS PenOrderQty1,a.divcode FROM rm_cont A INNER JOIN fa_slmas C ON C.slcode=A.supcd   
+   INNER JOIN ig_state D ON C.state_code=D.STATE_CODE  
+   WHERE A.divcode=@DIVCODE AND A.contdt BETWEEN @FDATE AND @TDATE GROUP BY a.divcode  having (SUM(A.ORDQTY)-SUM(A.RECQTY))>0   
+               )  
+   x1 ON  x1.divcode=@DIVCODE  
+   LEFT JOIN (SELECT SUM(k.bales) AS clobales ,divcode  
+  FROM stockpositionwise k inner join rm_lot k1 ON k.lotno=k1.lotno AND k.lotdt=k1.lotdt   
+INNER JOIN fa_slmas C ON C.slcode=k1.supcd   
+ INNER JOIN ig_state D ON C.state_code=D.STATE_CODE  
+WHERE k1.divcode=@DIVCODE GROUP BY divcode ) x2 ON x2.divcode=@DIVCODE  
+      
+  
+GROUP BY  x.name,x.state_code,x1.PenOrderQty1,x2.clobales  
+  
+ --SET @pentot= ISNULL((SELECT (SUM(ORDQTY)-SUM(isnull(RECQTY,0))) AS PenOrderQty FROM rm_cont A INNER JOIN fa_slmas C ON C.slcode=A.supcd   
+ --  INNER JOIN ig_state D ON C.state_code=D.STATE_CODE  
+ --  WHERE A.divcode=@DIVCODE AND A.contdt BETWEEN @FDATE AND @TDATE   having (SUM(A.ORDQTY)-SUM(A.RECQTY))>0 ),0)  
+     
+--   SET @totbale=ISNULL((SELECT SUM(k.bales) AS clobales  
+--  FROM stockpositionwise k inner join rm_lot k1 ON k.lotno=k1.lotno AND k.lotdt=k1.lotdt   
+--INNER JOIN fa_slmas C ON C.slcode=k1.supcd   
+-- INNER JOIN ig_state D ON C.state_code=D.STATE_CODE  
+--WHERE k1.divcode=@DIVCODE ),0)  
+  
+--SET @Totpos=isnull(@pentot,0)+isnull(@totbale,0)  
+  
+  
+END  

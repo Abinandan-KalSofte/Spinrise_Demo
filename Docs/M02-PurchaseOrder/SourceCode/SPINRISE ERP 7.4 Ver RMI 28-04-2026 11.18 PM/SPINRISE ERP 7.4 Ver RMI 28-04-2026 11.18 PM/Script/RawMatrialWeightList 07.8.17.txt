@@ -1,0 +1,15 @@
+ alter Proc [RawMatrialWeightList]  @Divcode VARCHAR (5) As    
+ SELECT  a.b1,a.g1,a.b2,a.g2,a.b3,a.g3,a.b4,a.g4,a.b5,a.g5,a.b6,a.g6,a.b7,a.g7,a.b8,a.g8,a.b9,a.g9,A.b10,a.g10,  
+ a.SNO,c.CATCD,catname,VARNAME,Quantity,d.slname,b.LOTNO,cast(b.LOTNO AS VARCHAR)+'/'+ (CAST(right(YEAR(p.AYFDATE),2) AS VARCHAR)+'-'+CAST(right(YEAR(p.AYLDATE),2) AS VARCHAR)) AS Lotwithyear,  
+ prno,b.plotno,(e.b2) as [Quantity],(e.b3) as [Grosswt],(e.b4) as [tarewt],(e.b5) as [Netwt],(e.b6) as [RateCy]  
+ ,(e.b8) as [LotDt],(e.b9) as [Allow], (e.b10) as [lrfrtAmt] ,e.b7 as [Ptywgt],b.catname, prno, b.ptywgt ,b.ptarewt,  
+ b.pnetwt, b.lotdt, b.ALLOWANCEAMT, b.Billno, b.lorrynos,pd.DIV_LOGO, pd.DIVNAME, pd.add1,pd.add2,pd.add3,   
+ pd.phone1, pd.fax, pd.email,pd.webaddr, pd.PINCODE,pd.HOState, pd.CITY, pd.DIV_PRINTNAME, pd.DIV_UNITNAME   
+ FROM ACH4 e inner  JOIN ACH3 b ON e.catcd=b.catcd AND e.b1=b.lotno AND e.lotdt=b.lotdt LEFT OUTER JOIN rm_var c ON c.VARCODE=b.varcode and  c.catcd=b.catcd  
+ inner  JOIN fa_slmas d ON d.slcode=b.supcd 
+ inner JOIN ACH1 a ON b.catcd=a.catcd AND b.lotno=a.lotno AND a.lotdt=b.lotdt   
+ LEFT OUTER JOIN RM_LOT l ON d.slcode=l.supcd AND a.lotdt=l.LOTDT and  a.LOTNO=l.LOTNO AND a.catcd = l.CATCD AND l.LOTTYPE=a.LOTTYPE AND b.varcode=l.varcode
+inner JOIN PP_YEAR p on l.LOTDT BETWEEN p.AYFDATE AND p.AYLDATE  
+ LEFT OUTER JOIN pp_divmas pd ON pd.DIVCODE='01'  WHERE l.LOTYEAR=year(p.AYFDATE) and a.lottype='A' AND  c.CATCD='C'
+ 
+AND l.LOTNO=13

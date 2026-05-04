@@ -1,0 +1,20 @@
+--KSP_RMI_Requisition '01','2017-12-16','2017-12-16'
+
+CREATE procedure KSP_RMI_Requisition(          
+@divcode varchar(15), 
+@DOCNO varchar(15),        
+@ddate varchar(15)
+)        
+As        
+Begin   
+Select a.DOCNO as reqno,a.DOCDT as reqdt,b.lotno,b.lotdt,b.ISSKGS,b.BALENO,c.VARCODE,c.VARNAME,
+d.cntcd as mixcount,e.MIXGRPCD as mixgrp,pd.div_printname,pd.div_unitname,pd.ADD1,pd.ADD2,pd.ADD3,
+pd.CITY,pd.PINCODE,pd.PHONE1,pd.FAX,pd.WEBADDR,pd.EMAIL,pd.DIV_LOGO,a.AppBy 
+from rm_issreqh a
+inner join rm_issreqb b on a.DIVCODE=b.DIVCODE and a.DOCNO=b.DOCNO and a.DOCDT=b.DOCDT
+inner join rm_var c on c.VARCODE=b.VARCODE and c.catcd = b.catcd
+left join RM_COUNT d on d.Divcode=a.DIVCODE and d.cntcd=a.cntcd
+left join RM_MIXGRP e on e.DIVCODE=d.DIVCODE and e.MIXGRPCD=d.mixgrpcd
+inner join PP_DIVMAS pd on a.divcode=pd.divcode
+where b.DOCNO =@DOCNO  AND A.DOCDT= @ddate and a.divcode = @divcode 
+end

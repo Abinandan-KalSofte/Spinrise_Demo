@@ -2,306 +2,312 @@ using Dapper;
 using Spinrise.Application.Areas.Purchase.PurchaseOrder.DTOs;
 using Spinrise.Application.Areas.Purchase.PurchaseOrder.Interfaces;
 using Spinrise.Application.DTOs;
-using Spinrise.Infrastructure.Data;
+using Spinrise.Application.Interfaces;
 using Spinrise.Shared;
-using System.Data;
 
 namespace Spinrise.Infrastructure.Areas.Purchase.PurchaseOrder;
 
 public class PurchaseOrderRepository : IPurchaseOrderRepository
 {
-    private readonly IUnitOfWork _uow;
+    private readonly IJATUnitOfWork _uow;
 
-    public PurchaseOrderRepository(IUnitOfWork uow) => _uow = uow;
+    public PurchaseOrderRepository(IJATUnitOfWork uow) => _uow = uow;
 
-    public async Task<string> GenerateNumberAsync(string divCode, DateTime fyStart, DateTime fyEnd, string centralizedOrder)
+    public async Task<PagedResult<POSummaryResponseDto>> GetPaginatedAsync(POListQueryDto query)
     {
-        var result = await _uow.Connection!.ExecuteScalarAsync<decimal>(
-            StoredProcedures.PurchaseOrder.GenerateNumber,
-            new { DivCode = divCode, FYStart = fyStart, FYEnd = fyEnd, CentralizedOrder = centralizedOrder },
-            transaction:  _uow.Transaction,
-            commandType:  CommandType.StoredProcedure);
-        return result.ToString("0");
-    }
-
-    public async Task<POPreCheckResultDto> PreChecksAsync(string divCode, DateTime fyStart, DateTime fyEnd)
-    {
-        return await _uow.Connection!.QueryFirstAsync<POPreCheckResultDto>(
-            StoredProcedures.PurchaseOrder.PreChecks,
-            new { DivCode = divCode, FYStart = fyStart, FYEnd = fyEnd },
-            transaction:  _uow.Transaction,
-            commandType:  CommandType.StoredProcedure);
-    }
-
-    public async Task<POParamDto?> GetParamAsync()
-    {
-        return await _uow.Connection!.QueryFirstOrDefaultAsync<POParamDto>(
-            StoredProcedures.PurchaseOrder.GetParam,
-            transaction: _uow.Transaction,
-            commandType: CommandType.StoredProcedure);
-    }
-
-    public async Task<string?> GetDefaultCurrencyAsync(string divCode)
-    {
-        return await _uow.Connection!.ExecuteScalarAsync<string>(
-            StoredProcedures.PurchaseOrder.GetDefaultCurrency,
-            new { DivCode = divCode },
-            transaction:  _uow.Transaction,
-            commandType:  CommandType.StoredProcedure);
-    }
-
-    public async Task<IEnumerable<GSTConfigDto>> GetGSTConfigAsync(string supplierCode)
-    {
-        return await _uow.Connection!.QueryAsync<GSTConfigDto>(
-            StoredProcedures.PurchaseOrder.GetGSTConfig,
-            new { SupplierCode = supplierCode },
-            transaction:  _uow.Transaction,
-            commandType:  CommandType.StoredProcedure);
-    }
-
-    public async Task<IEnumerable<PRLineDto>> GetDeleteReasonsAsync()
-    {
-        return await _uow.Connection!.QueryAsync<PRLineDto>(
-            StoredProcedures.PurchaseOrder.GetDeleteReasons,
-            transaction: _uow.Transaction,
-            commandType: CommandType.StoredProcedure);
-    }
-
-    public async Task<PagedResult<POSummaryResponseDto>> GetPaginatedAsync(string divCode, POListQueryDto query)
-    {
-        using var multi = await _uow.Connection!.QueryMultipleAsync(
+        await _uow.BeginAsync();
+        var rows = (await _uow.Connection!.QueryAsync<POSummaryResponseDto>(
             StoredProcedures.PurchaseOrder.GetPaginated,
             new
             {
-                DivCode      = divCode,
+                DivCode      = query.DivCode,
                 Page         = query.Page,
                 PageSize     = query.PageSize,
                 SearchText   = query.SearchText,
-                FromDate     = query.FromDate,
-                ToDate       = query.ToDate,
-                SupplierCode = query.SupplierCode
+                FromDate     = string.IsNullOrEmpty(query.FromDate) ? (DateTime?)null : DateTime.Parse(query.FromDate),
+                ToDate       = string.IsNullOrEmpty(query.ToDate)   ? (DateTime?)null : DateTime.Parse(query.ToDate),
+                SupplierCode = query.SupplierCode,
+                Status       = query.Status,
             },
-            transaction: _uow.Transaction,
-            commandType: CommandType.StoredProcedure);
+            commandType: System.Data.CommandType.StoredProcedure)).ToList();
 
-        var totalCount = await multi.ReadFirstAsync<int>();
-        var items      = (await multi.ReadAsync<POSummaryResponseDto>()).ToList();
+        var total = rows.FirstOrDefault()?.TotalCount ?? 0;
         return new PagedResult<POSummaryResponseDto>
         {
-            Items      = items,
-            TotalCount = totalCount,
-            Page       = query.Page,
-            PageSize   = query.PageSize,
+            Items     = rows,
+            TotalCount= total,
+            Page      = query.Page,
+            PageSize  = query.PageSize,
         };
     }
 
-    public async Task<PODetailResponseDto?> GetByIdAsync(string contNo, DateTime contDt, string divCode)
+    public async Task<POSummaryCounts> GetSummaryAsync(string divCode)
     {
+        await _uow.BeginAsync();
+        return await _uow.Connection!.QueryFirstOrDefaultAsync<POSummaryCounts>(
+            StoredProcedures.PurchaseOrder.GetSummary,
+            new { DivCode = divCode },
+            commandType: System.Data.CommandType.StoredProcedure)
+            ?? new POSummaryCounts();
+    }
+
+    public async Task<IEnumerable<POLineResponseDto>> GetByIdAsync(decimal contNo, DateTime contDt, string divCode)
+    {
+        await _uow.BeginAsync();
         using var multi = await _uow.Connection!.QueryMultipleAsync(
             StoredProcedures.PurchaseOrder.GetById,
             new { ContNo = contNo, ContDt = contDt, DivCode = divCode },
-            transaction: _uow.Transaction,
-            commandType: CommandType.StoredProcedure);
+            commandType: System.Data.CommandType.StoredProcedure);
+        return (await multi.ReadAsync<POLineResponseDto>()).ToList();
+    }
 
-        var lines    = (await multi.ReadAsync<POLineResponseDto>()).ToList();
-        var schedule = (await multi.ReadAsync<DeliveryScheduleDto>()).ToList();
-        var discounts = (await multi.ReadAsync<DiscountRateDto>()).ToList();
-        var approval = (await multi.ReadAsync<POApprovalConfigDto>()).ToList();
+    public async Task<IEnumerable<DeliveryScheduleResponseDto>> GetDeliveryScheduleAsync(decimal contNo, DateTime contDt, string divCode)
+    {
+        await _uow.BeginAsync();
+        using var multi = await _uow.Connection!.QueryMultipleAsync(
+            StoredProcedures.PurchaseOrder.GetById,
+            new { ContNo = contNo, ContDt = contDt, DivCode = divCode },
+            commandType: System.Data.CommandType.StoredProcedure);
+        await multi.ReadAsync<POLineResponseDto>();
+        return (await multi.ReadAsync<DeliveryScheduleResponseDto>()).ToList();
+    }
 
-        if (lines.Count == 0) return null;
+    public async Task<IEnumerable<DiscountRateDto>> GetDiscountRatesAsync(decimal contNo, DateTime contDt, string divCode)
+    {
+        await _uow.BeginAsync();
+        using var multi = await _uow.Connection!.QueryMultipleAsync(
+            StoredProcedures.PurchaseOrder.GetById,
+            new { ContNo = contNo, ContDt = contDt, DivCode = divCode },
+            commandType: System.Data.CommandType.StoredProcedure);
+        await multi.ReadAsync<POLineResponseDto>();
+        await multi.ReadAsync<DeliveryScheduleResponseDto>();
+        return (await multi.ReadAsync<DiscountRateDto>()).ToList();
+    }
 
-        return new PODetailResponseDto
+    public async Task<decimal> GenerateNumberAsync(string divCode, int fYear)
+    {
+        await _uow.BeginAsync();
+        return await _uow.Connection!.QueryFirstAsync<decimal>(
+            StoredProcedures.PurchaseOrder.GenerateNumber,
+            new { DivCode = divCode, Prefix = "P", FYear = fYear },
+            commandType: System.Data.CommandType.StoredProcedure);
+    }
+
+    public async Task<POParamDto?> GetParamAsync(string divCode)
+    {
+        await _uow.BeginAsync();
+        var raw = await _uow.Connection!.QueryFirstOrDefaultAsync<dynamic>(
+            StoredProcedures.PurchaseOrder.GetParam,
+            new { DivCode = divCode },
+            commandType: System.Data.CommandType.StoredProcedure);
+        if (raw == null) return null;
+        return new POParamDto
         {
-            Lines            = lines,
-            DeliverySchedule = schedule,
-            DiscountRates    = discounts,
-            ApprovalConfig   = approval
+            RequireSupplierLotNo  = ((string?)raw.SuppLotNoReqArrival ?? "N") == "Y",
+            CentralizedOrder      = ((string?)raw.CentralizedOrder    ?? "N") == "Y",
+            AutoCalculateSeason   = ((string?)raw.SeasonCalcReq       ?? "N") == "Y",
+            MasterEntryRequired   = ((string?)raw.MasterEntryFlg      ?? "N") == "Y",
+            PRBased               = ((string?)raw.PRBased             ?? "N") == "Y",
+            ApprovalEnabled       = ((string?)raw.PO_Approval         ?? "N") == "Y",
+            AdditionalTaxRequired = ((string?)raw.AddTaxRequired      ?? "N") == "Y",
+            FtAmt                 = (decimal?)raw.FtAmt ?? 0,
         };
     }
 
-    public async Task<IEnumerable<PRLineDto>> GetPendingPRLinesAsync(
-        string divCode, DateTime contDt, int sortBy, string? supplierCode, string? plant)
+    public async Task<string> GetDefaultCurrencyAsync(string divCode)
     {
-        return await _uow.Connection!.QueryAsync<PRLineDto>(
-            StoredProcedures.PurchaseOrder.GetPendingPRLines,
-            new { DivCode = divCode, ContDt = contDt, SortBy = sortBy, SupplierCode = supplierCode, Plant = plant },
-            transaction: _uow.Transaction,
-            commandType: CommandType.StoredProcedure);
+        await _uow.BeginAsync();
+        var result = await _uow.Connection!.QueryFirstOrDefaultAsync<string>(
+            StoredProcedures.PurchaseOrder.GetDefaultCurrency,
+            new { DivCode = divCode },
+            commandType: System.Data.CommandType.StoredProcedure);
+        return result ?? "INR";
     }
 
-    public async Task<IEnumerable<PRLineDto>> FilterPRLinesAsync(PRLineFilterDto filter)
+    public async Task<GSTConfigDto?> GetGSTConfigAsync(string supplierCode)
     {
+        await _uow.BeginAsync();
+        return await _uow.Connection!.QueryFirstOrDefaultAsync<GSTConfigDto>(
+            StoredProcedures.PurchaseOrder.GetGSTConfig,
+            new { SupplierCode = supplierCode },
+            commandType: System.Data.CommandType.StoredProcedure);
+    }
+
+    public async Task<IEnumerable<PODeleteReasonDto>> GetDeleteReasonsAsync()
+    {
+        await _uow.BeginAsync();
+        return await _uow.Connection!.QueryAsync<PODeleteReasonDto>(
+            StoredProcedures.PurchaseOrder.GetDeleteReasons,
+            commandType: System.Data.CommandType.StoredProcedure);
+    }
+
+    public async Task<IEnumerable<POPreCheckResultDto>> PreChecksAsync(string divCode)
+    {
+        await _uow.BeginAsync();
+        return await _uow.Connection!.QueryAsync<POPreCheckResultDto>(
+            StoredProcedures.PurchaseOrder.PreChecks,
+            new { DivCode = divCode },
+            commandType: System.Data.CommandType.StoredProcedure);
+    }
+
+    public async Task<IEnumerable<PRLineDto>> GetPendingPRLinesAsync(string divCode, DateTime contDt, int sortBy, string? supplierCode, string? plant)
+    {
+        await _uow.BeginAsync();
+        return await _uow.Connection!.QueryAsync<PRLineDto>(
+            StoredProcedures.PurchaseOrder.GetPendingPRLines,
+            new { DivCode = divCode, ContDt = contDt.Date, SortBy = sortBy, SupplierCode = supplierCode, Plant = plant },
+            commandType: System.Data.CommandType.StoredProcedure);
+    }
+
+    public async Task<IEnumerable<PRLineDto>> FilterPRLinesAsync(string divCode, DateTime contDt, PRLineFilterDto filter)
+    {
+        await _uow.BeginAsync();
         return await _uow.Connection!.QueryAsync<PRLineDto>(
             StoredProcedures.PurchaseOrder.FilterPRLines,
             new
             {
-                DivCode      = filter.DivCode,
-                ContDt       = filter.ContDt,
+                DivCode      = divCode,
+                ContDt       = string.IsNullOrEmpty(filter.ContDt) ? contDt.Date : DateTime.Parse(filter.ContDt).Date,
                 SortBy       = filter.SortBy,
                 SupplierCode = filter.SupplierCode,
-                Plant        = filter.Plant,
+                Plant        = (string?)null,
                 Indent       = filter.Indent,
                 ItemCode     = filter.ItemCode,
-                ItemName     = filter.ItemName
+                ItemName     = filter.ItemName,
             },
-            transaction: _uow.Transaction,
-            commandType: CommandType.StoredProcedure);
+            commandType: System.Data.CommandType.StoredProcedure);
     }
 
-    public async Task InsertLineAsync(string contNo, string divCode, CreatePODto h, CreatePOLineDto l)
+    public async Task InsertLineAsync(decimal contNo, CreatePODto header, CreatePOLineDto line, string preparedBy)
     {
-        await _uow.Connection!.ExecuteAsync(
-            StoredProcedures.PurchaseOrder.InsertLine,
-            new
-            {
-                ContNo = contNo, ContDt = h.ContDt, DivCode = divCode,
-                SupCd = h.SupCd, BrkCd = h.BrkCd, AreaCode = h.AreaCode,
-                VarCode = l.VarCode, CntCode = h.CntCode, BBFlag = l.BBFlag ?? "B",
-                OrdQty = l.OrdQty, OrdKgs = l.OrdKgs, CandyRate = l.CandyRate, RateKg = l.RateKg,
-                PayMode = h.PayMode, DlyType = h.DlyType, ImInd = h.ImInd ?? "L",
-                ArrivalType = h.ArrivalType ?? "P", DueDate = h.DueDate, CropYear = h.CropYear,
-                Acceptance = h.Acceptance, PtyContNo = l.PtyContNo, PlotNo = l.PlotNo,
-                WosamplePrNo = l.WosamplePrNo, PressMarkNo = l.PressMarkNo, RateUnit = h.RateUnit,
-                Remarks = h.Remarks, DeliveryAddCode = h.DeliveryAddCode, BillingAddCode = h.BillingAddCode,
-                ContactPerson = h.ContactPerson, Season = h.Season, MillRefNo = h.MillRefNo,
-                CashDisPer = l.CashDisPer, TradeDisPer = l.TradeDisPer, CessPer = l.CessPer, InsPer = l.InsPer,
-                TaxCode = l.TaxCode, TaxChoice = h.TaxChoice ?? "SINGLE",
-                CreditDays = h.CreditDays, InterestPer = h.InterestPer,
-                LotFrom = h.LotFrom, LotTo = h.LotTo, FinalWeighment = h.FinalWeighment ?? "S",
-                SampleFlg = h.SampleFlg ?? "Y", CommPer = h.CommPer,
-                Terms1 = h.Terms1, Terms1Days = h.Terms1Days, Terms2 = h.Terms2, Terms2Days = h.Terms2Days,
-                Transport = h.Transport,
-                IPrNo = l.IPrNo, IPrDate = l.PrDate, IPrSNo = l.PrSNo,
-                CurrCode = h.CurrCode, DeliveryTerms = h.DeliveryTerms,
-                HSN = l.HSN, CgstPer = l.CgstPer, SgstPer = l.SgstPer, IgstPer = l.IgstPer,
-                FTAmt = h.FTAmt, FTFlg = h.FTFlg ?? "N", PrepDate = DateTime.Today,
-                SusCatType = h.SusCatType, PayCode = h.PayCode, LineNo = h.LineNo, PlCode = h.PlCode,
-                SupFileName = h.SupFileName, TcsPer = h.TcsPer,
-                Grade = h.Grade, Staple = h.Staple, Micronaire = h.Micronaire,
-                Strength = h.Strength, Moisture = h.Moisture, Trash = h.Trash,
-                NoOfLoad = l.NoOfLoad, MSDocNo = l.MSDocNo, MSDocSno = l.MSDocSno,
-                FreightPerBale = h.FreightPerBale, PreparedBy = h.PreparedBy
-            },
-            transaction: _uow.Transaction,
-            commandType: CommandType.StoredProcedure);
+        await _uow.BeginAsync(startTransaction: true);
+        try
+        {
+            await _uow.Connection!.ExecuteAsync(
+                StoredProcedures.PurchaseOrder.Insert,
+                new
+                {
+                    ContNo          = contNo,
+                    ContDt          = header.ContDt,
+                    DivCode         = header.DivCode,
+                    SupCd           = header.SupCd,
+                    PayMode         = header.PayMode,
+                    AreaCode        = header.AreaCode,
+                    CurrCode        = header.CurrCode,
+                    DlyType         = header.DlyType,
+                    Acceptance      = header.Acceptance,
+                    Transport       = header.Transport,
+                    SupFileName     = header.SupFileName,
+                    CropYear        = header.CropYear,
+                    Season          = header.Season,
+                    FtFlg           = header.FtFlg,
+                    FtAmt           = header.FtAmt,
+                    TaxChoice       = header.TaxChoice,
+                    CommPer         = header.CommPer,
+                    CommPerBal      = header.CommPerBal,
+                    TcsPer          = header.TcsPer,
+                    SpotExpense     = header.SpotExpense,
+                    IncidentCharge  = header.IncidentCharge,
+                    SusCatType      = header.SusCatType,
+                    PlCode          = header.PlCode,
+                    LineNo          = header.LineNo,
+                    SampleFlg       = header.SampleFlg,
+                    PreparedBy      = preparedBy,
+                    VarCode         = line.VarCode,
+                    OrdQty          = line.OrdQty,
+                    OrdKgs          = line.OrdKgs,
+                    CandyRate       = line.CandyRate,
+                    PackType        = line.PackType,
+                    BbFlag          = line.BbFlag,
+                    CashDisPer      = line.CashDisPer,
+                    TradeDisPer     = line.TradeDisPer,
+                    CessPer         = line.CessPer,
+                    InsPer          = line.InsPer,
+                    Hsn             = line.Hsn,
+                    CgstPer         = line.CgstPer,
+                    SgstPer         = line.SgstPer,
+                    IgstPer         = line.IgstPer,
+                    TaxCode         = line.TaxCode,
+                    IPrNo           = line.IPrNo,
+                    PrDate          = line.PrDate,
+                    PrSno           = line.PrSno,
+                    MsDocNo         = line.MsDocNo,
+                    MsDocSno        = line.MsDocSno,
+                    NoOfLoad        = line.NoOfLoad,
+                    RateKg          = line.RateKg,
+                },
+                transaction: _uow.Transaction,
+                commandType: System.Data.CommandType.StoredProcedure);
+
+            await _uow.CommitAsync();
+        }
+        catch
+        {
+            await _uow.RollbackAsync();
+            throw;
+        }
     }
 
-    public async Task InsertDiscountRateAsync(string contNo, DateTime contDt, string divCode, string supCd, CreateDiscountRateDto discount)
+    public async Task InsertDiscountRateAsync(decimal contNo, DateTime contDt, CreateDiscountRateDto rate)
     {
+        await _uow.BeginAsync();
         await _uow.Connection!.ExecuteAsync(
             StoredProcedures.PurchaseOrder.InsertDiscountRate,
-            new { ContNo = contNo, ContDt = contDt, DivCode = divCode, SupCd = supCd,
-                  VarCode = discount.VarCode ?? "", Docno = discount.Docno, DocSno = discount.DocSno,
-                  DType = discount.DType, DRate = discount.DRate },
-            transaction: _uow.Transaction,
-            commandType: CommandType.StoredProcedure);
+            new { ContNo = contNo, ContDt = contDt, VarCode = rate.VarCode, SupCd = rate.SupCd, DiscType = rate.DiscType, DiscRate = rate.DiscRate },
+            commandType: System.Data.CommandType.StoredProcedure);
     }
 
-    public async Task InsertDeliveryScheduleAsync(string contNo, DateTime contDt, string divCode, CreateDeliveryScheduleDto schedule)
+    public async Task InsertDeliveryScheduleAsync(decimal contNo, DateTime contDt, string divCode, CreateDeliveryScheduleDto schedule)
     {
+        await _uow.BeginAsync();
         await _uow.Connection!.ExecuteAsync(
             StoredProcedures.PurchaseOrder.InsertDeliverySchedule,
-            new { ContNo = contNo, ContDt = contDt, DivCode = divCode,
-                  DelDate = schedule.DelDate, Qty = schedule.Qty, DelAdd = schedule.DelAdd,
-                  VarCode = schedule.VarCode, Instruction = schedule.Instruction },
-            transaction: _uow.Transaction,
-            commandType: CommandType.StoredProcedure);
+            new { ContNo = contNo, ContDt = contDt, DivCode = divCode, DelDate = schedule.DelDate, DelQty = schedule.DelQty, DelAddress = schedule.DelAddress, VarCode = schedule.VarCode, Instruction = schedule.Instruction },
+            commandType: System.Data.CommandType.StoredProcedure);
     }
 
-    public async Task UpdatePRBalanceAsync(string divCode, decimal prNo, DateTime prDate, decimal prSNo, decimal qtyOrd, decimal qtyOrdKg)
+    public async Task InsertSlotNoAsync(decimal contNo, DateTime contDt, string divCode, decimal lotFrom, decimal lotTo)
     {
-        await _uow.Connection!.ExecuteAsync(
-            StoredProcedures.PurchaseOrder.UpdatePRBalance,
-            new { DivCode = divCode, PrNo = prNo, PrDate = prDate, PrSNo = prSNo, QtyOrd = qtyOrd, QtyOrdKG = qtyOrdKg },
-            transaction: _uow.Transaction,
-            commandType: CommandType.StoredProcedure);
-    }
-
-    public async Task InsertSlotNoAsync(string contNo, DateTime contDt, string divCode, decimal lotFrom, decimal lotTo)
-    {
+        await _uow.BeginAsync();
         await _uow.Connection!.ExecuteAsync(
             StoredProcedures.PurchaseOrder.InsertSlotNo,
             new { ContNo = contNo, ContDt = contDt, DivCode = divCode, LotFrom = lotFrom, LotTo = lotTo },
-            transaction: _uow.Transaction,
-            commandType: CommandType.StoredProcedure);
+            commandType: System.Data.CommandType.StoredProcedure);
     }
 
-    public async Task UpdateLineAsync(string contNo, DateTime contDt, string divCode, string varCode, UpdatePODto dto, string? modUserId)
+    public async Task InsertAuditLogAsync(decimal contNo, DateTime contDt, string divCode, string mode, string userId, string? deleteReasonCode = null)
     {
-        var line = dto.Lines.FirstOrDefault(l => l.VarCode == varCode);
-        if (line is null) return;
-        await _uow.Connection!.ExecuteAsync(
-            StoredProcedures.PurchaseOrder.UpdateLine,
-            new
-            {
-                ContNo = contNo, ContDt = contDt, DivCode = divCode, VarCode = varCode,
-                OrdQty = line.OrdQty, OrdKgs = line.OrdKgs, CandyRate = line.CandyRate, RateKg = line.RateKg,
-                BBFlag = line.BBFlag ?? "B", DueDate = dto.DueDate, CropYear = dto.CropYear,
-                Acceptance = dto.Acceptance, Remarks = dto.Remarks, Season = dto.Season, MillRefNo = dto.MillRefNo,
-                CashDisPer = line.CashDisPer, TradeDisPer = line.TradeDisPer, CessPer = line.CessPer, InsPer = line.InsPer,
-                TaxCode = line.TaxCode, TaxChoice = dto.TaxChoice, CreditDays = dto.CreditDays, InterestPer = dto.InterestPer,
-                LotFrom = dto.LotFrom, LotTo = dto.LotTo, CommPer = dto.CommPer,
-                Terms1 = dto.Terms1, Terms1Days = dto.Terms1Days, Terms2 = dto.Terms2, Terms2Days = dto.Terms2Days,
-                Transport = dto.Transport, CurrCode = dto.CurrCode, DeliveryTerms = dto.DeliveryTerms,
-                HSN = line.HSN, CgstPer = line.CgstPer, SgstPer = line.SgstPer, IgstPer = line.IgstPer,
-                FTAmt = dto.FTAmt, FTFlg = dto.FTFlg, SusCatType = dto.SusCatType,
-                PayCode = dto.PayCode, LineNo = dto.LineNo, PlCode = dto.PlCode, SupFileName = dto.SupFileName,
-                TcsPer = dto.TcsPer, Grade = dto.Grade, Staple = dto.Staple, Micronaire = dto.Micronaire,
-                Strength = dto.Strength, Moisture = dto.Moisture, Trash = dto.Trash,
-                NoOfLoad = line.NoOfLoad, FreightPerBale = dto.FreightPerBale, ModUserId = modUserId
-            },
-            transaction: _uow.Transaction,
-            commandType: CommandType.StoredProcedure);
-    }
-
-    public async Task<(int Result, string Message)> DeleteAsync(string contNo, DateTime contDt, string divCode, string deleteReasonCode, string deletedBy)
-    {
-        using var multi = await _uow.Connection!.QueryMultipleAsync(
-            StoredProcedures.PurchaseOrder.Delete,
-            new { ContNo = contNo, ContDt = contDt, DivCode = divCode, DeleteReasonCode = deleteReasonCode, DeletedBy = deletedBy },
-            transaction: _uow.Transaction,
-            commandType: CommandType.StoredProcedure);
-        var row = await multi.ReadFirstAsync<dynamic>();
-        return ((int)row.Result, (string)row.Message);
-    }
-
-    public async Task InsertAuditLogAsync(string contNo, DateTime contDt, string divCode, string transMod,
-        string? userId, string? ipAddr, string? host, CreatePOLineDto? line = null)
-    {
+        await _uow.BeginAsync();
         await _uow.Connection!.ExecuteAsync(
             StoredProcedures.PurchaseOrder.InsertAuditLog,
-            new
-            {
-                ContNo = contNo, ContDt = contDt, DivCode = divCode, TransMod = transMod,
-                TransUserId = userId, TransIPAddr = ipAddr, TransHost = host,
-                VarCode = line?.VarCode, OrdQty = line?.OrdQty ?? 0, OrdKgs = line?.OrdKgs ?? 0,
-                CandyRate = line?.CandyRate ?? 0, HSN = line?.HSN, TaxCode = line?.TaxCode,
-                CgstPer = line?.CgstPer ?? 0, SgstPer = line?.SgstPer ?? 0, IgstPer = line?.IgstPer ?? 0
-            },
-            transaction: _uow.Transaction,
-            commandType: CommandType.StoredProcedure);
+            new { ContNo = contNo, ContDt = contDt, DivCode = divCode, Mode = mode, UserId = userId, DeleteReasonCode = deleteReasonCode },
+            commandType: System.Data.CommandType.StoredProcedure);
     }
 
-    public async Task<POApprovalStatusDto?> GetApprovalStatusAsync(string contNo, DateTime contDt, string divCode)
+    public async Task DeleteAsync(decimal contNo, DateTime contDt, string divCode, string deleteReasonCode, string deletedBy)
     {
-        using var multi = await _uow.Connection!.QueryMultipleAsync(
+        await _uow.BeginAsync();
+        await _uow.Connection!.ExecuteAsync(
+            StoredProcedures.PurchaseOrder.Delete,
+            new { ContNo = contNo, ContDt = contDt, DivCode = divCode, DeleteReasonCode = deleteReasonCode, DeletedBy = deletedBy },
+            commandType: System.Data.CommandType.StoredProcedure);
+    }
+
+    public async Task<POApprovalStatusDto?> GetApprovalStatusAsync(decimal contNo, DateTime contDt, string divCode)
+    {
+        await _uow.BeginAsync();
+        return await _uow.Connection!.QueryFirstOrDefaultAsync<POApprovalStatusDto>(
             StoredProcedures.PurchaseOrder.GetApprovalStatus,
             new { ContNo = contNo, ContDt = contDt, DivCode = divCode },
-            transaction: _uow.Transaction,
-            commandType: CommandType.StoredProcedure);
-        var status = await multi.ReadFirstOrDefaultAsync<POApprovalStatusDto>();
-        var config = (await multi.ReadAsync<POApprovalConfigDto>()).ToList();
-        if (status is not null) status.Config = config;
-        return status;
+            commandType: System.Data.CommandType.StoredProcedure);
     }
 
-    public async Task<int> UpdateApprovalAsync(POApprovalActionDto dto)
+    public async Task UpdateApprovalAsync(POApprovalActionDto dto, string approverId)
     {
-        return await _uow.Connection!.ExecuteScalarAsync<int>(
+        await _uow.BeginAsync();
+        await _uow.Connection!.ExecuteAsync(
             StoredProcedures.PurchaseOrder.UpdateApproval,
-            new { ContNo = dto.ContNo, ContDt = dto.ContDt, DivCode = dto.DivCode,
-                  Level = dto.Level, Action = dto.Action, AppUserId = dto.AppUserId, AppIPAddr = dto.AppIPAddr },
-            transaction: _uow.Transaction,
-            commandType: CommandType.StoredProcedure);
+            new { ContNo = dto.ContNo, ContDt = dto.ContDt, DivCode = dto.DivCode, Level = dto.Level, Action = dto.Action, ApproverId = approverId, Remarks = dto.Remarks },
+            commandType: System.Data.CommandType.StoredProcedure);
     }
 }

@@ -1,0 +1,11 @@
+CREATE procedure billpassingRMI            
+@Divcode varchar(2),            
+@Fromdt varchar(15),  
+@Todt varchar(15),  
+@fno numeric(5),  
+@Tno numeric(5)  
+as            
+select Distinct d.divname,H.Divcode,H.PJNO,H.pjdt,H.SUPCD ,s.slname,h.lotno,h.LOTDT ,h.BILLNO ,H.BILLDT,H.TOTLANDCOST         
+from RM_LOT H,PP_DIVMAS D,FA_SLMAS s where h.Divcode=@Divcode and h.pjdt between @Fromdt and @Todt      
+and h.DIVCODE=d.DIVCODE and s.slcode=h.SUPCD and h.pjno between @fno and @tno  
+    

@@ -1,0 +1,54 @@
+alter Procedure Ksp_Materialtransferreceipt
+---Ksp_Materialtransferreceipt '01','109','2015-05-31','2015'
+@divcode varchar(02),
+@lotno varchar(20),
+@lotdate varchar(20),
+@lotyear varchar(15)
+as
+begin
+SELECT
+    RM_LOT."LOTNO",
+    RM_LOT."LOTDT",
+    RM_LOT."LOTTYPE",
+    RM_LOT."NETWT",
+    RM_LOT."BALES",
+    RM_LOT."PLOTNO",
+    RM_LOT."PNETWT",
+    PP_DIVMAS."ADD2",
+    PP_DIVMAS."ADD3",
+    PP_DIVMAS."CITY",
+    PP_DIVMAS."PINCODE",
+    PP_DIVMAS."PHONE1",
+    PP_DIVMAS."FAX",
+    PP_DIVMAS."EMAIL",
+    PP_DIVMAS."WEBADDR",
+    PP_DIVMAS."HOState",
+    PP_DIVMAS."HOCountry",
+    PP_DIVMAS."DIV_PRINTNAME",
+    PP_DIVMAS."DIV_LOGO",
+    FA_SLMAS."slname",
+    FA_SLMAS."add1",
+    FA_SLMAS."add2",
+    FA_SLMAS."add3",
+    FA_SLMAS."city",
+    FA_SLMAS."pin",
+    FA_SLMAS."state",
+    FA_SLMAS."country",
+    rm_var."VARNAME",fa.slname agent,ra.AREANAME,rm_lot.brkcd,rm_lot.ARRDT,rm_lot.ARRNO
+FROM
+    RM_LOT RM_LOT 
+    INNER JOIN PP_DIVMAS PP_DIVMAS ON
+        RM_LOT."DIVCODE" = PP_DIVMAS."DIVCODE"
+    left outer JOIN FA_SLMAS FA_SLMAS ON
+        RM_LOT."SUPCD" = FA_SLMAS."slcode"
+    left outer join rm_var rm_var ON
+        RM_LOT."VARCODE" = rm_var."VARCODE" AND
+        RM_LOT."CATCD" = rm_var."CATCD"
+        inner join fa_slmas fa on fa.slcode=rm_lot.brkcd
+        left outer join rm_area ra on ra.AREACODE=rm_lot.AREACD
+where rm_lot.divcode=@divcode and rm_lot.LOTNO=@lotno and rm_lot.LOTDT=@lotdate  and rm_lot.LOTYEAR=@lotyear       
+
+    
+end
+
+

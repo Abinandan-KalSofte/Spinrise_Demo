@@ -1,0 +1,34 @@
+/*                
+           Ksp_RMI_Delchallan '01','21002080','21002080','CS','123'                 
+*/                
+alter PROCEDURE Ksp_RMI_Delchallan                 
+(                                                      
+@DIVCODE VARCHAR(2),                                                       
+@FINV_NO VARCHAR(10),   
+@TINV_NO VARCHAR(10),                                                     
+@INV_TYPE VARCHAR(10),              
+@TempTable varchar(4)                                                        
+ )                                                      
+AS                                                      
+BEGIN                                                      
+SELECT pd.DIV_PRINTNAME,pd.DIV_UNITNAME,pd.cinno as p_cinno,pd.ADD1 as p_ADD1,
+pd.ADD2 as p_ADD2,pd.ADD3 as p_ADD3,pd.CITY as p_CITY,pd.PINCODE as p_PINCODE,pd.PHONE1 as p_PHONE1,                                                      
+pd.EMAIL as p_EMAIL,pd.STATENAME as p_state,pd.WEBADDR as p_WEBADDR,pd.gstinno AS p_gstinno,f.slcode,                                                      
+f.slname AS f_slname,isnull(f.add1,'') AS f_add1,isnull(f.add2,'') AS f_add2,isnull(f.add3,'') AS f_add3,
+isnull(f.city,'') AS f_city,isnull(f.pin,'') AS f_pin,f.state AS f_stateOld,f.country AS f_country,
+f.phone1 as fphone,f.email as femail,f.gstinno f_gstinno,f.gststatecode AS f_gststatecode,a.INV_TYPE,a.INV_NO,
+a.DATE,a.vehicle_no,Vr.VARNAME AS prod_desc,sum(b.PACKS)"PACKS",sum(b.NETT_KGS) "NETT_KGS"
+FROM RM_CinvHd a                                            
+INNER JOIN RM_Cinvdt b ON b.DIVCODE = a.DIVCODE AND b.INV_TYPE = a.INV_TYPE AND b.INV_NO = a.INV_NO   
+--LEFT OUTER JOIN IG_rPRODUCT t ON b.PRODUCT_CODE=t.PRODUCT_CODE AND b.DIVCODE=t.DIVCODE  
+LEFT OUTER JOIN RM_Lot L ON L.LotNo=b.PRODUCT_CODE and L.Divcode=b.Divcode  and b.lotdt =l.LOTDT 
+INNER JOIN RM_Var Vr ON Vr.VarCode=L.VarCode
+LEFT OUTER JOIN FA_SLMAS f ON f.slcode=a.CUST_CODE  
+LEFT OUTER JOIN PP_DIVMAS pd ON pd.DIVCODE = a.DIVCODE
+WHERE a.DIVCODE=@DIVCODE AND a.INV_NO between @FINV_NO and @TINV_NO AND a.INV_TYPE=@INV_TYPE             
+Group By pd.cinno,pd.ADD1,pd.ADD2,pd.ADD3,pd.CITY,pd.PINCODE,pd.PHONE1,pd.EMAIL,pd.WEBADDR,pd.STATENAME,                                                       
+pd.DIV_PRINTNAME,pd.DIV_UNITNAME,a.INV_TYPE,a.INV_NO,a.DATE,f.slcode,f.slname,f.add1,f.add2,f.add3,f.city,
+f.pin,f.phone1,f.email,f.state ,f.country,Vr.VARNAME , pd.gstinno ,f.gstinno,a.vehicle_no,a.INV_NO,f.gststatecode                                                      
+END 
+
+

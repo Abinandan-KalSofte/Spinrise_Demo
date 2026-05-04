@@ -1,0 +1,309 @@
+
+
+
+create view Vw_RM_TotProduct
+as
+select  lotyear,DIVCODE ,VARCODE ,CATCD   from rm_lot where ISNULL(bales,0)-ISNULL(ISSBAL ,0)>0
+go
+
+create view Vw_RM_OrderQty
+as
+ select DISTINCT sum(a.ordqty) ordqty , DIVCODE ,CONTDT , 'ORDER' RptType  from rm_cont a where  ISNULL(ARRIVALTYPE,'P')='P' group by  DIVCODE ,CONTDT 
+  UNION ALL
+select DISTINCT sum(a.ordKGS) ordqty , DIVCODE ,CONTDT , 'ORDER' RptType  from rm_cont a where ISNULL(ARRIVALTYPE,'P')='K' group by  DIVCODE ,CONTDT 
+union all  
+ select DISTINCT sum(ordqty-isnull(cancelbales,0)+isnull(recqty,0)) ordqty , DIVCODE ,CONTDT , 'Pending' RptType  from rm_cont a where  isnull(a.Fclosed,'N')<>'Y' and   (ordqty>isnull(cancelbales,0)+isnull(recqty,0))  and ISNULL(ARRIVALTYPE,'P')='P' group by  DIVCODE ,CONTDT 
+  UNION ALL
+select DISTINCT sum (ordKGS-isnull(rCDKGS,0)-ISNULL(a.cancelkgs ,0)) ordqty , DIVCODE ,CONTDT , 'Pending' RptType  from rm_cont a where  isnull(a.Fclosed,'N')<>'Y' and (ordKGS>(isnull(rCDKGS,0)-ISNULL(a.cancelkgs ,0)))  AND ISNULL(ARRIVALTYPE,'P')='K'  group by  DIVCODE ,CONTDT
+ go 
+  
+create View Vw_RM_ArrivalQty 
+as 
+select DISTINCT sum(a.NETWT ) RecQty , DIVCODE ,ARRDATE  from RM_ARRIVAL  a  group by  DIVCODE ,ARRDATE 
+go
+create View Vw_RM_IssueQty
+as
+SELECT SUM(ISSKGS) IssuedQty,DOCDT,DIVCODE  FROM rm_issb group by DOCDT,DIVCODE
+
+
+go
+
+
+  
+alter View vw_LotBaleStockData      
+as      
+select a.divcode, a.lotno,b.lotdt,a.varcode,b.BALENO,(isnull(b.favaourablewgt,0) +isnull(d.retissueqty ,0)) - isnull(c.issueqty ,0) BalanceQty,a.lottype,a.catcd,a.lotyear
+,((isnull(b.favaourablewgt,0) +isnull(d.retissueqty ,0)) - isnull(c.issueqty ,0)) *a.ratekg Value,a.ratekg
+
+  from rm_lot a      
+inner join rm_bale b on a.lotno=b.lotno and a.lotdt=b.lotdt and a.divcode=b.divcode and a.VARCODE=b.VARCODE and a.catcd=b.catcd --and a.arrno=b.arrno      
+and a.LOTTYPE =b.lottype      
+left join (select lotno,lotdt,varcode,baleno,SUM(isskgs) issueqty,divcode,lottype from rm_issb       
+group by divcode,lottype,lotno,lotdt,varcode,baleno) c       
+on a.DIVCODE =c.DIVCODE and c.lotdt =a.LOTDT and c.LOTNO=a.LOTNO and a.varcode=c.varcode and c.BALENO=b.BALENO      
+ and c.LOTTYPE =a.LOTTYPE   
+left join (select lotno,lotdt,varcode,baleno,SUM(isskgs) retissueqty,divcode,lottype from RM_ISSRTNB        
+group by divcode,lottype,lotno,lotdt,varcode,baleno) d       
+on a.DIVCODE =d.DIVCODE and d.lotdt =a.LOTDT and d.LOTNO=a.LOTNO and a.varcode=d.varcode and d.BALENO=b.BALENO      
+ --and d.LOTTYPE =a.LOTTYPE   
+where (isnull(b.favaourablewgt,0)+isnull(d.retissueqty ,0)) - isnull(c.issueqty ,0)>0  and Isnull(b.rejflg,'N')='N' 
+
+go
+create View VW_RMI_TOPPURCHASE
+as
+SELECT  (SELECT slname FROM FA_SLMAS WHERE slcode = a.SUPCD) AS Supplier ,round(sum(NetWt)/1000,3) AS Weght, sum(favaourablewgt  * ratekg) /100000 AS Value,A.LOTDT,DIVCODE ,a.LOTYEAR 
+
+FROM RM_LOT AS A WHERE isnull(A.OPFLG,'N') = 'N'   GROUP BY A.SUPCD ,LOTDT ,DIVCODE ,LOTYEAR 
+
+
+go
+
+
+
+
+ -- KSP_RMIDASHBORDMIXINGISSUE '01','2020-03-31','2020-03-31'
+ create proc KSP_RMIDASHBORDMIXINGISSUE 
+ (
+ @divcode varchar(2),
+ @Fdate varchar(15),
+ @tdate varchar(15) 
+ )as
+ 
+ select c.MIXGRPNAME , round(isnull(dayIssue,0) /1000,3) onDateKg,  round(isnull(MONTHIssue,0)/1000,3) MONTHIssue ,round(isnull(yearIssue,0)/1000,3)  yearIssue 
+  FROM RM_MIxGrp c
+
+     left join (select a.DIVCODE ,b.MIXGRP ,SUM(ISSKGS ) dayIssue FROM RM_ISSB AS A 
+  inner join RM_ISSH AS b on a.docno=b.docno and a.docdt=b.docdt and a.divcode=b.divcode 
+  where a.docdt between  @Fdate and @tdate  group by a.DIVCODE ,b.MIXGRP 
+   ) dd on dd.DIVCODE =c.DIVCODE and c.MIXGRPCD =dd.MIXGRP  
+  left join (select a.DIVCODE ,b.MIXGRP ,SUM(ISSKGS ) MONTHIssue FROM RM_ISSB AS A 
+  inner join RM_ISSH AS b on a.docno=b.docno and a.docdt=b.docdt and a.divcode=b.divcode 
+  where a.docdt between  DATEADD(dd,-(DAY(@Fdate)),@Fdate) and  DATEADD(dd,-(DAY(DATEADD(mm,1,@Fdate))-1),
+DATEADD(mm,1,@Fdate)) group by a.DIVCODE ,b.MIXGRP 
+   ) d on d.DIVCODE =c.DIVCODE and c.MIXGRPCD =d.MIXGRP 
+  left join (select a.DIVCODE ,b.MIXGRP ,SUM(ISSKGS ) yearIssue FROM RM_ISSB AS A 
+  inner join RM_ISSH AS b on a.docno=b.docno and a.docdt=b.docdt and a.divcode=b.divcode 
+  inner join PP_YEAR c on b.DOCDT between  c.AYFDATE and c.AYLDATE 
+  where @Fdate between   c.AYFDATE and c.AYLDATE  group by a.DIVCODE ,b.MIXGRP 
+   ) f on f.DIVCODE =c.DIVCODE and c.MIXGRPCD =f.MIXGRP
+   where c.DIVCODE =@divcode 
+  
+
+go
+
+
+
+ -- KSP_RMIDASHBORDVARISSUE '01','2020-03-31','2020-03-31'
+ create proc KSP_RMIDASHBORDVARISSUE 
+ (
+ @divcode varchar(2),
+ @Fdate varchar(15),
+ @tdate varchar(15) 
+ )as
+ 
+ select c.varname ,ROUND( isnull(dayIssue,0)/1000,3) onDateKg, ROUND( isnull(MONTHIssue,0)/1000,3)MONTHIssue ,
+ round(isnull(preMONTHIssue,0)/1000,3 ) preMONTHIssue ,round(isnull(yearIssue,0)/1000,2)  yearIssue
+  FROM RM_var c
+
+     left join (select a.DIVCODE ,a.VARCODE  ,SUM(ISSKGS ) dayIssue FROM RM_ISSB AS A 
+  inner join RM_ISSH AS b on a.docno=b.docno and a.docdt=b.docdt and a.divcode=b.divcode 
+  where a.docdt between  @Fdate and @tdate and a.DIVCODE =@divcode  group by a.DIVCODE ,a.VARCODE 
+   ) dd on c.VARCODE   =dd.VARCODE  
+  left join (select a.DIVCODE ,a.VARCODE ,SUM(ISSKGS ) MONTHIssue FROM RM_ISSB AS A 
+  inner join RM_ISSH AS b on a.docno=b.docno and a.docdt=b.docdt and a.divcode=b.divcode 
+  where a.docdt between  DATEADD(dd,-(DAY(@Fdate)),@Fdate) and  DATEADD(dd,-(DAY(DATEADD(mm,1,@Fdate))-1),
+DATEADD(mm,1,@Fdate)) and a.divcode=@divcode group by a.DIVCODE ,a.VARCODE 
+   ) d on c.VARCODE   =dd.VARCODE  
+   
+  inner join (select a.DIVCODE ,a.VARCODE  ,SUM(ISSKGS ) yearIssue FROM RM_ISSB AS A 
+  inner join RM_ISSH AS b on a.docno=b.docno and a.docdt=b.docdt and a.divcode=b.divcode 
+  inner join PP_YEAR c on b.DOCDT between  c.AYFDATE and c.AYLDATE 
+  where @Fdate between   c.AYFDATE and c.AYLDATE  group by a.DIVCODE ,a.VARCODE 
+   ) f on c.VARCODE   =f.VARCODE  
+  left join (select a.DIVCODE ,a.VARCODE ,SUM(ISSKGS ) preMONTHIssue FROM RM_ISSB AS A 
+  inner join RM_ISSH AS b on a.docno=b.docno and a.docdt=b.docdt and a.divcode=b.divcode 
+  where a.docdt between DATEADD(dd,-(DAY(DATEADD(dd,-(DAY(@Fdate)),@Fdate))-1),DATEADD(dd,-(DAY(@Fdate )),@Fdate))
+   and DATEADD(dd,-(DAY(@Fdate)),@Fdate) and a.divcode=@divcode group by a.DIVCODE ,a.VARCODE 
+   ) ff on c.VARCODE   =ff.VARCODE  
+ 
+  
+
+ go
+
+
+
+
+ -- KSP_RMIDASHBORD_VARORDERLIST '01','2020-03-31','2020-03-31'
+ create proc KSP_RMIDASHBORD_VARORDERLIST
+ (
+ @divcode varchar(2),
+ @Fdate varchar(15),
+ @tdate varchar(15) 
+ )as
+ 
+ select c.varname ,ROUND( isnull(dayIssue,0)/1000,3) onDateKg, ROUND( isnull(MONTHIssue,0)/1000,3)MONTHORD ,
+ round(isnull(preMONTHIssue,0)/1000,3 ) preMONTHORD ,round(isnull(yearIssue,0)/1000,2)  yearORD
+  FROM RM_var c
+     left join (select a.DIVCODE ,a.VARCODE  ,SUM(ordKGS ) dayIssue FROM RM_cont AS A 
+  where a.contdt between  @Fdate and @tdate and a.DIVCODE =@divcode  group by a.DIVCODE ,a.VARCODE 
+   ) dd on c.VARCODE   =dd.VARCODE  
+  left join (select a.DIVCODE ,a.VARCODE ,SUM(ordKGS ) MONTHIssue FROM RM_cont AS A 
+
+  where a.CONTDT  between  DATEADD(dd,-(DAY(@Fdate)),@Fdate) and  DATEADD(dd,-(DAY(DATEADD(mm,1,@Fdate))-1),
+DATEADD(mm,1,@Fdate)) and a.divcode=@divcode group by a.DIVCODE ,a.VARCODE 
+   ) d on c.VARCODE   =dd.VARCODE  
+   
+  inner join (select a.DIVCODE ,a.VARCODE  ,SUM(ordKGS ) yearIssue FROM RM_cont AS A 
+  
+  inner join PP_YEAR c on a.CONTDT between  c.AYFDATE and c.AYLDATE 
+  where @Fdate between   c.AYFDATE and c.AYLDATE  group by a.DIVCODE ,a.VARCODE 
+   ) f on c.VARCODE   =f.VARCODE  
+  left join (select a.DIVCODE ,a.VARCODE ,SUM(ordKGS ) preMONTHIssue FROM RM_cont AS A 
+
+  where a.CONTDT  between DATEADD(dd,-(DAY(DATEADD(dd,-(DAY(@Fdate)),@Fdate))-1),DATEADD(dd,-(DAY(@Fdate )),@Fdate))
+   and DATEADD(dd,-(DAY(@Fdate)),@Fdate) and a.divcode=@divcode group by a.DIVCODE ,a.VARCODE 
+   ) ff on c.VARCODE   =ff.VARCODE  
+ 
+  
+
+go
+
+create view VW_RMI_DB_PendingORDSUP
+as
+select DISTINCT round(sum (ordKGS-isnull(c.netwt ,0)-(ISNULL(a.cancelkgs ,0) +  ((ORDKGS /ORDQTY)*isnull(a.CancelBales ,0) ) ))/1000,3) ordqty , a.DIVCODE 
+,a.CONTDT ,b.slname,a.CONTNO ,b.slcode ,f.VARNAME,a.varcode   from rm_cont a 
+inner join RM_VAR f on f.VARCODE =a.VARCODE 
+inner join fa_slmas b on b.slcode =a.SUPCD 
+left join (select DIVCODE ,CONTNO ,CONTDT ,VARCODE ,CATCD ,SUM(NETWT ) netwt from RM_ARRIVAL 
+group by DIVCODE ,CONTNO ,CONTDT ,VARCODE ,CATCD 
+) c on c.VARCODE  =a.VARCODE and  a.CONTNO =c.CONTNO and a.CONTDT =c.CONTDT and c.DIVCODE =a.DIVCODE 
+
+where  isnull(a.Fclosed,'N')<>'Y' and round((ordKGS -isnull(c.netwt ,0)-((ISNULL(a.cancelkgs ,0) +  ((ORDKGS /ORDQTY)*isnull(a.CancelBales ,0) ) )))/1000,3) >0
+ group by  a.DIVCODE ,a.CONTDT,b.slname ,a.CONTNO ,b.slcode ,f.VARNAME,a.varcode
+
+
+go
+
+
+
+
+ -- KSP_RMIDASHBORD_VARRECIPTLIST '01','2020-03-31','2020-03-31'
+ create proc KSP_RMIDASHBORD_VARRECIPTLIST
+ (
+ @divcode varchar(2),
+ @Fdate varchar(15),
+ @tdate varchar(15) 
+ )as
+ 
+ select c.varname ,ROUND( isnull(dayIssue,0)/1000,3) onDateKg, ROUND( isnull(MONTHIssue,0)/1000,3)MONTHRec ,
+ round(isnull(preMONTHIssue,0)/1000,3 ) preMONTHREC ,round(isnull(yearIssue,0)/1000,2)  yearREC, ROUND(DayVal/100000,2) DayVal
+ , ROUND(Monthval/100000,2) Monthval,ROUND(YearVal/100000,2) YearVal,ROUND(PrvMonthval/100000,2) PrvMonthval
+ 
+  FROM RM_var c
+     left join (select a.DIVCODE ,a.VARCODE  ,SUM(favaourablewgt  ) dayIssue,SUM(a.favaourablewgt *RATEKG)  DayVal FROM RM_lot AS A 
+  where a.lotdt between  @Fdate and @tdate and a.DIVCODE =@divcode    and ISNULL(OPFLG ,'N')<>'Y' group by a.DIVCODE ,a.VARCODE 
+   ) dd on c.VARCODE   =dd.VARCODE  
+  left join (select a.DIVCODE ,a.VARCODE ,SUM(favaourablewgt ) MONTHIssue,SUM(a.favaourablewgt *RATEKG) Monthval FROM RM_lot AS A 
+
+  where a.lotdt  between  DATEADD(dd,-(DAY(@Fdate)),@Fdate) and  DATEADD(dd,-(DAY(DATEADD(mm,1,@Fdate))-1),
+DATEADD(mm,1,@Fdate)) and a.divcode=@divcode 
+   and ISNULL(OPFLG ,'N')<>'Y'
+group by a.DIVCODE ,a.VARCODE 
+   ) d on c.VARCODE   =dd.VARCODE  
+   
+  inner join (select a.DIVCODE ,a.VARCODE  ,SUM(favaourablewgt ) yearIssue,SUM(a.favaourablewgt *RATEKG) YearVal FROM RM_lot AS A 
+  
+  inner join PP_YEAR c on a.LOTDT between  c.AYFDATE and c.AYLDATE 
+  where @Fdate between   c.AYFDATE and c.AYLDATE 
+     and ISNULL(OPFLG ,'N')<>'Y'
+   group by a.DIVCODE ,a.VARCODE 
+   ) f on c.VARCODE   =f.VARCODE  
+  left join (select a.DIVCODE ,a.VARCODE ,SUM(favaourablewgt ) preMONTHIssue,SUM(a.favaourablewgt *RATEKG) PrvMonthval FROM RM_lot AS A 
+
+  where a.lotdt  between DATEADD(dd,-(DAY(DATEADD(dd,-(DAY(@Fdate)),@Fdate))-1),DATEADD(dd,-(DAY(@Fdate )),@Fdate))
+   and DATEADD(dd,-(DAY(@Fdate)),@Fdate) and a.divcode=@divcode 
+   and ISNULL(OPFLG ,'N')<>'Y'
+   group by a.DIVCODE ,a.VARCODE 
+   ) ff on c.VARCODE   =ff.VARCODE  
+
+
+go
+
+
+
+   create  View VW_RM_DB_ReceiptLIST
+   as
+   select a.DIVCODE ,b.slname 'Supplier'  ,round((favaourablewgt  )/1000,3) Receipt, (a.favaourablewgt *RATEKG)/100000  Value ,a.VARCODE,lotdt,b.slcode  FROM RM_lot AS A 
+   inner join fa_slmas b on a.SUPCD =b.slcode 
+  where  ISNULL(OPFLG ,'N')<>'Y'
+  
+go
+
+
+create proc KSP_RMIDASHBORDMIXINGCHART
+ (
+ @divcode varchar(2),
+ @Fdate varchar(15)
+
+ )as
+ 
+ select c.MIXGRPNAME ,  round(isnull(netkgs,0)/1000,3) netkgs 
+  FROM RM_MIxGrp c
+  left join (select a.DIVCODE ,b.MIXGRP ,SUM(ISSKGS ) netkgs FROM RM_ISSB AS A 
+  inner join RM_ISSH AS b on a.docno=b.docno and a.docdt=b.docdt and a.divcode=b.divcode 
+  where a.docdt between  DATEADD(dd,-(DAY(@Fdate)),@Fdate) and  DATEADD(dd,-(DAY(DATEADD(mm,1,@Fdate))-1),
+DATEADD(mm,1,@Fdate)) group by a.DIVCODE ,b.MIXGRP 
+   ) d on d.DIVCODE =c.DIVCODE and c.MIXGRPCD =d.MIXGRP 
+
+GO
+
+
+
+  CREATE VIEW VW_RMI_DB_UNBILLLIST
+  AS
+  SELECT C.slname ,B.VARNAME ,CONVERT(VARCHAR,A.LOTDT,103) LOTDT ,A.LOTNO ,A.BILLNO ,A.PJAMT ,A.favaourablewgt /1000 NETWT ,LOTDT recdate,A.DIVCODE  FROM RM_LOT A
+  INNER JOIN RM_VAR B ON A.VARCODE =B.VARCODE 
+  INNER JOIN FA_SLMAS C ON C.slcode =A.SUPCD 
+  WHERE ISNULL(OPFLG ,'N')<>'Y' AND PJNO IS NULL AND LOTTYPE ='A'  
+  GO
+
+
+  go
+
+
+CREATE NONCLUSTERED INDEX [_dta_index_RM_ISSB_89_1653580929__K8_K10_K6_K7_K2_K5_K1_K18_9] ON [dbo].[RM_ISSB] 
+(
+	[BALENO] ASC,
+	[LOTTYPE] ASC,
+	[LOTNO] ASC,
+	[lotdt] ASC,
+	[ISSTYPE] ASC,
+	[CATCD] ASC,
+	[DIVCODE] ASC,
+	[VARCODE] ASC
+)
+INCLUDE ( [ISSKGS]) WITH (SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
+go
+CREATE NONCLUSTERED INDEX [_dta_index_RM_ISSRTNB_89_1133999106__K10_K1_K9_K18_K12_K8_11] ON [dbo].[RM_ISSRTNB] 
+(
+	[BALENO] ASC,
+	[DIVCODE] ASC,
+	[lotdt] ASC,
+	[VARCODE] ASC,
+	[LOTTYPE] ASC,
+	[LOTNO] ASC
+)
+INCLUDE ( [ISSKGS]) WITH (SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
+go
+CREATE NONCLUSTERED INDEX [_dta_index_RM_LOT_89_686625489__K3_K74_K11_K4_K1_K5_K9_2] ON [dbo].[RM_LOT] 
+(
+	[LOTNO] ASC,
+	[LOTYEAR] ASC,
+	[ARRNO] ASC,
+	[LOTDT] ASC,
+	[DIVCODE] ASC,
+	[LOTTYPE] ASC,
+	[VARCODE] ASC
+)
+INCLUDE ( [CATCD]) WITH (SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
+

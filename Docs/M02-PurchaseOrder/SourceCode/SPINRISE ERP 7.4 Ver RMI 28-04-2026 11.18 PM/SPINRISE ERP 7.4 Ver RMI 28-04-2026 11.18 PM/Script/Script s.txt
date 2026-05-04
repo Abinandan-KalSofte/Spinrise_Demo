@@ -1,0 +1,57 @@
+            
+-- KSP_RMI_Trans_PO '01','2019-03-29 ','260'            
+alter PROC KSP_RMI_Trans_PO                                              
+(                                              
+ @Divcode VARCHAR(2),                                              
+ @OrdDate VARCHAR(25),                                              
+ @OrdNo VARCHAR(10)                                              
+)                                              
+AS                                              
+BEGIN                                              
+SELECT                                  
+a.sno,                                            
+A.CONTNO,A.CONTDT,A.SUPCD,A.ORDQTY,A.CANDYRATE,A.DLYTYPE,A.BBFLAG,A.DIVCODE,a.MILLREFNO,                              
+A.duedate,A.PAYTERMS,A.rateunit,A.remarks,                                              
+A.contperson,rs.SEANAME season ,A.MILLREFNO,A.FinalWeighment,A.TransPort,                                              
+B.slname 'B_Slname',B.add1 'B_Add1',B.add2 'B_Add2',B.add3 'B_Add3',B.city 'B_City',B.pin 'B_Pin',b.StateCode,                                              
+J.[NAME] 'B_STATE',B.COUNTRY B_COUNTRY,f.TNGST, f.TNGSTDT, f.CGSTDT, f.CGST,f.pan as div_pan,                                              
+C.slname 'D_Slname',C.add1 'D_Add1',C.add2 'D_Add2',C.add3 'D_Add3',C.city 'D_City',C.pin 'D_Pin',c.StateCode,                                        
+K.NAME 'D_STATE',C.Country 'D_COUNTRY',                                        
+D.AREANAME,E.VARNAME,F.DIVCODE,F.DIVNAME,f.add1,F.ADD2,F.ADD3,F.CITY,                                              
+F.PINCODE,f.HOState,F.PHONE1,F.FAX,F.EMAIL,F.WEBADDR,F.CGSTDT,F.CGST,F.TINNO,f.DIV_PRINTNAME,F.DIV_UNITNAME,F.DIV_LOGO,                                            
+F.HOADD1,F.HOADD2,F.HOADD3,F.HOCity,F.HOPin,F.HOPhone,F.HOFax,F.HOEmail,f.PAN,                                            
+G.slname AS S_slname,G.add1 AS S_Add1,G.add2 AS S_add2,G.add3 AS S_Add3,G.city AS S_City,G.pin AS S_Pin,                                              
+G.state AS s_State,G.country AS S_Country,G.phone1 AS S_Phone1,g.TINNO AS s_tin,g.cgst AS s_cst,                                              
+G_1.slname as A_slname,G_1.add1 AS A_ADD1,G_1.add2 AS a_aDD2,G_1.add3 AS a_ADD3,G_1.city AS A_cITY,                                              
+G_1.pin AS A_PIN,G_1.state AS A_STATE,G_1.country AS A_COUNTRY,G_1.phone1 AS Aphone,H.STAPLEN25,H.TRASH_PER,H.MICRONAIRE,H.MOITURE,                                              
+H.REMARKS,H.GTEX,h.COLOURGRADE,h.POTYPE AS cont_terms,I.paydesc,(SELECT isnull(MicRange,'')MicRange FROM RM_PARAM)AS MicRange,a.contperson,                  
+h.trashavl ,h.moisAVL,h.plotno,h.prno,h.SHORTFIBRE,a.HSN,f.gstinno AS div_gstinno,f.cinno,g.gstinno AS sup_gstinno,g.gststatecode AS sup_gststcode,          
+b.gstinno AS b_gstinno,b.gststatecode AS b_gststcode,h.contamination as Conta,h.neps as Neps,
+'MILL INDIVIDUAL WEIGHMENT & PASSING' as weighment,'IMMEDIATE'  as despatch,'25 DAYS FROM ARRIVAL OF BALES AT OUR PREMISES' as payment,
+'BALES' as Packing,'MILL ACCOUNT' as freight,'MARINE CARGO OPEN POLICY'as inscompany,'IGST 5% ADDITIONAL' as gst,'1713012118P110500803'as transitpolno,
+'DT. 11-11-2018 TO 10-11-2019' transpoldt                                      
+FROM RM_CONT A                                               
+LEFT OUTER JOIN RM_BILLADD B ON  A.billadd = B.slcode                                              
+LEFT OUTER JOIN RM_deladd C ON  A.deladd = C.slcode                                              
+INNER JOIN RM_AREA D ON D.AREACODE=A.AREACODE                                        
+INNER JOIN RM_VAR E ON A.VARCODE = E.VARCODE                                             
+INNER JOIN PP_DIVMAS F ON A.DIVCODE = F.DIVCODE                                              
+INNER JOIN FA_SLMAS G ON A.SUPCD = G.slcode                              
+left join rm_season rs on rs.SEACODE=a.SEASON                                              
+LEFT OUTER JOIN FA_SLMAS_1 G_1 ON A.BRKCD = G_1.slcode                                              
+LEFT OUTER JOIN RM_SAMPLE H ON A.DIVCODE = H.DIVCODE AND A.SNO = H.SNO                                 
+AND A.SUPCD = H.SUPCODE --AND a.contdt  =h.date                                            
+and A.VARCODE = H.VARCODE                                              
+LEFT OUTER JOIN rm_pmode I ON A.PAYMODE = I.paymode                 
+LEFT OUTER JOIN IG_STATE J ON J.STATE_CODE=B.StateCode                                        
+LEFT OUTER JOIN IG_STATE K ON K.STATE_CODE=C.StateCode                                        
+WHERE                                               
+F.DIVCODE = @Divcode AND A.CONTDT=@OrdDate AND A.CONTNO = @OrdNo AND A.DIVCODE = @Divcode                                                 
+END     
+    
+    
+    
+    
+    
+    
+    

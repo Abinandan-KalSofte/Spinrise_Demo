@@ -189,7 +189,7 @@ public class PurchaseRequisitionController : BaseApiController
     public async Task<IActionResult> DeleteLine(
         long prNo,
         int lineNo,
-        [FromQuery] string deleteReasonCode,
+        [FromQuery] string? deleteReasonCode = null,
         [FromQuery] DateTime? startDate = null,
         [FromQuery] DateTime? endDate   = null)
     {

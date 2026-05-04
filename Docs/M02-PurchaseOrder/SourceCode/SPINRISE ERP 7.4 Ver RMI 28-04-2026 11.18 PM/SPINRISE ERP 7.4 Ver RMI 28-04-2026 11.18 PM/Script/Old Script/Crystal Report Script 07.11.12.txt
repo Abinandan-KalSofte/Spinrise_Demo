@@ -1,0 +1,17 @@
+CREATE PROC  rm_sam   
+@Divcode VARCHAR(3),  
+@SamNo NUMERIC(10),  
+@FDate VARCHAR(15)  
+as  
+  
+ SELECT a.DIVCODE,a.SNO,a.DATE,a.SUPCODE, b.slname,a.VARCODE,c.varname,a.STAPLEN25,a.immature,a.yellowtouch,  
+ a.STAPLEN50,a.TRASH_PER, a.MICRONAIRE,a.STRENGTH,a.MCOEFF,remarks,a.avgcount, a.UNIRATIO,a.yarnapp,a.STAPHANDTEST,  
+ a.HVITEST,a.moiture, a.csp ,a.tpi ,a.avrstrength , a.corr_strenth , a.spot_for , a.rate ,a.prno ,a.prty_sampno,  
+ a.brokercode , a.station_code,POTYPE,GRADE,GTEX,COLOR,D.AREANAME,a.STATE_CODE,STATION_NAME,CROP_YEAR,    
+ PD.DIVCODE,PD.DIV_PRINTNAME,PD.DIV_UNITNAME,PD.div_logo,a.REMARKS  
+ FROM RM_SAMPLE a,fa_slmas b,rm_var c, RM_AREA d, fa_slmas e,PP_DIVMAS pd   
+   
+ WHERE a.supcode=b.slcode and a.area_code = d.areacode and a.varcode=c.varcode and  PD.DIVCODE =A.DIVCODE AND   
+ a.date = @FDate and a.sno=@SamNo and a.divcode=@Divcode   
+   
+   

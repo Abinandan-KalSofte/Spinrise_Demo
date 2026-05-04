@@ -1,0 +1,104 @@
+
+alter table rm_cont add perbaletruckbale varchar(5), commperbale numeric(15,2) , 
+incidentcharge numeric(15,2), spotexpense numeric(15,2),
+
+GO
+
+
+
+alter table rm_cont add IPRNO numeric(10),
+FTAmt	numeric	(5,2 ) ,  
+FTFlg	varchar(1),	     	     	
+Paycode	varchar(5),	     	     	
+Line_No	varchar(18),     	     	
+PlCode	varchar	(5),	     	     	
+SusCatType varchar(3),
+SupFileName varchar(80),
+tcs_per decimal(5),
+appflg varchar(5)
+
+
+GO
+
+alter table rm_cont add prdate datetime, prsno numeric(5),
+MSDocno  numeric(10),MSDocsno  numeric(10),No_of_Load numeric(10)
+GO
+
+
+/*
+	KSP_RMI_INSURANCE '01','',''
+*/
+create PROCEDURE KSP_RMI_INSURANCE
+(
+@DIVCODE VARCHAR(02),
+@FDATE VARCHAR (15),
+@TDATE VARCHAR (15)
+)
+AS 
+BEGIN
+
+SELECT b.div_printname,b.div_unitname, date1,opbales as Openbale,opborah as OPENBOARH,optot as oPENTOTAL,optotkg as opkgs,
+opvalue as opvalue,isstotval as isstotval,recbale as Recpbale,recborah recpborah,rectot Rectotal,rectotkg as reckgs,
+recvalue as recvalue,oprecbale as oprebale,oprecborah opreborah,oprectot opretot,oprectotkg oprekgs,
+oprectotval as oprectotval,issbale as issbale,issboarh as issborah,isstot as isstotal,isstotkg as isskgs,
+isstotvalue as issval,isstran,isstrantot,isstrantotval,totbale as closbale,totborah as closborah,
+total as closbaleboar,totkg  as closing,totval as closingvalue,rejkg as rejectedkgs,rejvalue as rejectedval,
+adjkg as adjustedkgs,adjval as adjval,adjtype 
+
+FROM insurance a
+LEFT JOIN PP_DIVMAS b on b.DIVCODE='01'
+WHERE Date1 between @FDATE and @TDATE 
+ORDER BY date1 
+
+END
+GO
+
+/*  
+ KSP_RMI_STOCKSTMT_ARRIVAL '01','2024-04-01','2025-02-06'  
+*/  
+create PROCEDURE KSP_RMI_STOCKSTMT_ARRIVAL   
+(  
+@DIVCODE VARCHAR(05) ,
+@ipaddress varchar(15)
+--@FDATE VARCHAR(01),  
+--@TDATE VARCHAR(01)  
+)  
+AS  
+BEGIN  
+  
+SELECT a."varname",a."QUANTITY",a."RATECY",a."party",a."agent",a."arrno"  
+FROM stockstatement1 a   where  Ipaddress=@ipaddress
+  
+ORDER BY a."arrno" ASC  
+  
+END
+
+GO
+
+
+
+/*  
+ KSP_RMI_STOCKSTMT_VARIETY '01','',''   
+*/  
+create PROCEDURE KSP_RMI_STOCKSTMT_VARIETY   
+(  
+@DIVCODE VARCHAR(05) ,
+@ipaddress varchar(15)
+--@FDATE VARCHAR(01),  
+--@TDATE VARCHAR(01)  
+)  
+AS  
+BEGIN  
+SELECT a."VARNAME",a."Openstock",a."Arrival",a."Issues",a."Closestock",b.div_logo,b.div_Printname,b.div_unitname  
+  
+FROM stockstatement a  
+LEFT JOIN PP_DIVMAS b on b.divcode=@DIVCODE 
+Where b.divcode=@DIVCODE   and Ipaddress=@ipaddress
+END  
+  
+
+  GO
+
+
+
+

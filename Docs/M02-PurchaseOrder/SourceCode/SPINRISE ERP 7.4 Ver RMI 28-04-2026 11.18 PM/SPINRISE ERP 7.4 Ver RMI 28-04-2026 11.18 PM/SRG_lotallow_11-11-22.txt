@@ -1,0 +1,29 @@
+--sp_helptext Sp_LotAllownce
+
+  
+--Exec Sp_LotAllownce '01','308','2022-03-11','A'  
+  
+Alter Procedure Sp_LotAllownce(  
+@Divcode varchar(03),  
+@Lotno varchar(50),  
+@LotDT Varchar(15),  
+@LotType Varchar(03)  
+  )  
+AS    
+    
+
+SELECT distinct   
+a.Lotno,a.LOTDT,a.BILLDT,a.BALES,a.GRSWGT,a.TAREWT,a.NETWT,b.slname,e.TRASHWeight,d.Moiture_Confirmation,d.ExMoisturePer,  
+b.slcode,pp.DIV_PRINTNAME,pp.DIV_UNITNAME,a.PGRSWT,a.PTAREWT,a.PNETWT ,a.TDSAMT
+  
+FROM RM_LOT a    
+Left join Fa_slmas b On b.slcode=a.supcd    
+Inner join RM_VAR c On a.VARCODE=c.VARCODE    
+left join PP_DIVMAS pp on pp.DIVCODE=a.DIVCODE and pp.DIVCODE=@Divcode  
+Inner join rm_LotAllowance d On a.lotno=d.Lotno AND a.DIVCODE=d.Divcode AND a.DBNO=d.Dbno AND a.DBDT=d.DBdt    
+left join rm_arrival e On a.lotno=e.arrno and a.lotdt=e.arrdate    
+  
+where a.LOTNO=@Lotno and a.DIVCODE=@Divcode and a.LOTDT=@LotDT and a.LOTTYPE=@LotType  
+    
+--select*from RM_Sample
+--select *from RM_lot

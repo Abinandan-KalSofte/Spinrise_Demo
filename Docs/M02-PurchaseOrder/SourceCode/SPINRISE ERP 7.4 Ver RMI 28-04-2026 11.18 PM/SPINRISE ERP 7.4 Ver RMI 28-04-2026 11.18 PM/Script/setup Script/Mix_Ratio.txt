@@ -1,0 +1,21 @@
+/*    
+  SP_Mix_Ratio '01','A','a'   
+*/    
+    
+CREATE PROC SP_Mix_Ratio             
+(    
+ @Divcode  varchar(5),               
+ @Unitcode varchar(50),  
+ @Code  varchar(25)                                                
+)    
+AS                
+Begin   
+Select Bm.Blend_Code As [Blend], Bm.Blend_Desc As [Blend Description],M.Mat_Code As [Material],  
+Case IsNull(M.Mat_Type, 'C') When 'C' Then 'COTTON' When 'S' Then 'SYNTHETIC' End As [Type],  
+M.Mat_Desc As [Description], B.Ratio As [Ratio%],d.DIV_PRINTNAME,d.DIV_UNITNAME  
+From PPC_Blend_Mas Bm  
+Inner Join PPC_Blend_Det B On Bm.Blend_MasID = B.Blend_MasID  
+Inner Join PPC_Material M On M.MaterialID = B.MaterialID  
+Left Join PP_DIVMAS D on  D.DIVCODE =Bm.divcode   
+Where Bm.DivCode = @Divcode And Bm.UnitCode =@Unitcode --and bm.blend_code  = @Code  
+End

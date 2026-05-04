@@ -1,0 +1,2061 @@
+
+GO
+/****** Object:  Trigger [dbo].[INSPURHD]    Script Date: 12/19/2019 18:54:22 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER TRIGGER [dbo].[INSPURHD]      
+ON [dbo].[FA_PURHD]                                                    
+FOR  INSERT                                                    
+AS                                                    
+ DECLARE @ldt                 DATETIME,                                                    
+         @gl                  VARCHAR(7),                                                    
+         @cnt                 NUMERIC(2),                                                    
+         @vatgl               VARCHAR(7),                                                    
+         @NR1                 VARCHAR(30),                                                    
+         @NR2                 VARCHAR(30),                                                    
+         @WCRD                NUMERIC(3),                                                    
+         @divcod              VARCHAR(2),                                                    
+         @slcode1             VARCHAR(7),                                                    
+         @pjvdt1              DATETIME,                                                    
+         @tc1                 NUMERIC(3,0),                                                    
+         @pjvno1              NUMERIC(6),                                                    
+         @billamt1            NUMERIC(12, 2),                                                    
+         @fbillamt1           NUMERIC(12, 2),                                                    
+         @billno1             VARCHAR(10),                                                    
+         @billdt1             DATETIME,                                                    
+         @jvtc                NUMERIC(3,0),                                                    
+         @tdsper1             NUMERIC(5, 2),                                                    
+         @tdsgl1              VARCHAR(7),                                                    
+         @tdsamt1             NUMERIC(12, 2),                                                    
+         @ftdsamt1            NUMERIC(12, 2),                                                    
+         @duedt1              DATETIME,                                                    
+         @mahimai             NUMERIC(12, 2),                                                    
+         @levy                NUMERIC(12, 2),                                                    
+         @mahgl               VARCHAR(7),                                                    
+         @levgl               VARCHAR(7),                                                    
+         @CashDisGL           VARCHAR(7),                                                    
+         @TradeDisGL          VARCHAR(7),                                                    
+         @LryFrieghtGL        VARCHAR(7),                                                    
+         @BEDGL               VARCHAR(7),                                                    
+         @CessGL              VARCHAR(7),                                                    
+         @EDCessGL            VARCHAR(7),                                                    
+         @HSCessGL            VARCHAR(7),                                                    
+         @TaxGL               VARCHAR(7),                                                    
+         @CSTGL               VARCHAR(7),                                                    
+         @OtherTaxGL          VARCHAR(7),                                                    
+         @RlyFrieghtGL        VARCHAR(7),                                                    
+         @InsuranceGL         VARCHAR(7),                                                    
+         @CommissionGL        VARCHAR(7),                                                    
+         @LCInterestGL        VARCHAR(7),                                                    
+         @DrNoteGL        VARCHAR(7),                                                    
+         @CharityGL         VARCHAR(7),                                                    
+         @DamageGL      VARCHAR(7),                     
+         @ClearanceGL         VARCHAR(7),               
+         @OthersGL            VARCHAR(8),                                      
+         @CustomsGL           VARCHAR(7),                                                    
+      @BrCommissionGL      VARCHAR(7),                                                    
+         @BrCode              VARCHAR(7),                                                    
+         @v_gvocno            NUMERIC(12),                      
+         @CashDisAmount       NUMERIC(12, 2),                                                    
+         @TradeDisAmount      NUMERIC(12, 2),                                                    
+         @LryFrieghtAmount    NUMERIC(12, 2),                                                   
+         @BEDAmount           NUMERIC(12, 2),                                                    
+         @CessAmount          NUMERIC(12, 2),                                                    
+         @EDCessAmount        NUMERIC(12, 2),                                           
+         @HSCessAmount        NUMERIC(12, 2),                                                    
+         @TaxAmount          NUMERIC(12, 2),                                                    
+         @CSTAmount           NUMERIC(12, 2),                                                    
+         @OtherTaxAmount      NUMERIC(12, 2),                                                    
+         @RlyFrieghtAmount    NUMERIC(12, 2),                                                    
+         @InsuranceAmount     NUMERIC(12, 2),                                                    
+         @CommissionAmount    NUMERIC(12, 2),                                          
+         @LCInterestAmount    NUMERIC(12, 2),                                                    
+         @DrNoteAmount        NUMERIC(12, 2),                                                    
+   @CharityAmount       NUMERIC(12, 2),                                                    
+         @DamageAmount        NUMERIC(12, 2),                                           
+         @ClearanceAmount     NUMERIC(12, 2),                                                    
+         @OthersAmount        NUMERIC(12, 2),                                                    
+         @CustomsAmount       NUMERIC(12, 2),                                                    
+         @BrcommissionAmount  NUMERIC(12, 2),                                                    
+         @TAXCODE             VARCHAR(20),                                                    
+   @TAXFLG              VARCHAR(2),                                                    
+         @cgnarr3             VARCHAR(150),                                                    
+         @csnarr3             VARCHAR(150),                                              
+         @Purtype             VARCHAR(2),                                                    
+         @module              NUMERIC(2),                                                    
+         @GlCode              VARCHAR(7),                                                    
+         @AssAmt           NUMERIC(15, 2),                                                    
+         @AssAmtGL            VARCHAR(7),                                                    
+         @AedAmt              NUMERIC(15, 2),                                                    
+         @AedGL           VARCHAR(7),                                                    
+         @SurAmt              NUMERIC(15, 2),                                                    
+         @SurGl               VARCHAR(7),                                                    
+         @ASurAmt             NUMERIC(15, 2),                                                    
+    @ASurGl              VARCHAR(7),                                                    
+         @FreightAmt          NUMERIC(15, 2),        
+         @FreightGL           VARCHAR(7),                                                    
+         @PackAmt             NUMERIC(15, 2),                
+         @PackGL              VARCHAR(7),                                                    
+         @Freight2Amt         NUMERIC(15, 2),                                                    
+         @Freight2GL          VARCHAR(7),                        
+         @Pack2Amt            NUMERIC(15, 2),                                                    
+         @Pack2GL             VARCHAR(7),                                                    
+         @Insurance2Amt       NUMERIC(15, 2),                                                    
+         @Insurance2GL        VARCHAR(7),                  
+         @RoundOffAmt         NUMERIC(15, 2),                                                    
+         @RoundOffGL          VARCHAR(7),                                                    
+         @PurchaseGL          VARCHAR(7),                                              
+         @AddTaxCode          VARCHAR(5),                                                    
+         @AddTaxAmount        NUMERIC(15, 2),                         
+         @AddTaxGL            VARCHAR(7),                                                    
+         @ATaxStatus          VARCHAR(2),                                                    
+         @othersTaxableAmt    NUMERIC(15, 3),                                                    
+         @othersTaxableGL     VARCHAR(7),                                                    
+         @AdjustAmt           NUMERIC(15, 3),                                                    
+         @AdjustGL   VARCHAR(7),                                                    
+         @DutyPer             NUMERIC(5, 2),                                                    
+         @ExciseGL            VARCHAR(7),                                                    
+         @ExciseAmt           NUMERIC(15, 2),                                                    
+         @OnExciseAmount      NUMERIC(15, 2),                                                    
+         @JVPURTYPE    VARCHAR(1)                                                                             
+                                 
+ DECLARE @CenvatFlg           CHAR(1),                                                    
+         @Cenvt               NUMERIC(15, 2),                                                    
+         @CGL1                VARCHAR(7),                                                    
+         @CGL2                VARCHAR(7),                                                    
+         @c1                  NUMERIC(15, 2),                                                    
+         @c2                  NUMERIC(15, 2),                                                    
+         @GLDivision          VARCHAR(2),                                       
+         @narration           VARCHAR(255),                                
+      @glcode1 varchar(6),          
+      @PURGL    varchar(7),@PURGL1    varchar(7)                
+                
+          --added on  30-06-17          
+   , @v_CGSTGL VARCHAR(6),  @v_SGSTGL VARCHAR(6),@v_IGSTGL VARCHAR(6),            
+   @V_CGST_Amt NUMERIC(9, 2),@V_SGST_Amt NUMERIC(9, 2),@V_IGST_Amt NUMERIC(9, 2)                                
+                                                     
+ BEGIN                                                    
+  SET @CashDisAmount = 0                                                                                                              
+  SET @TradeDisAmount = 0                                                                                           
+  SET @LryFrieghtAmount = 0      
+  SET @BEDAmount = 0                                                                                               
+  SET @CessAmount = 0                                       
+  SET @EDCessAmount = 0                                                             
+  SET @HSCessAmount = 0                              
+  SET @TaxAmount = 0                                                     
+  SET @CSTAmount = 0                                    
+  SET @OtherTaxAmount = 0                                                                                                                            
+  SET @RlyFrieghtAmount = 0                                                                                             
+  SET @InsuranceAmount = 0                                                                                                                              
+  SET @CommissionAmount = 0                                                              
+  SET @LCInterestAmount = 0                                                                                                                            
+  SET @DrNoteAmount = 0                                                                                                                              
+  SET @CharityAmount = 0                                                                                                                    
+  SET @DamageAmount = 0                                                                                                                            
+  SET @ClearanceAmount = 0                                                                                                                             
+  SET @OthersAmount = 0                                                                                                                 
+  SET @CustomsAmount = 0                                                                                                                            
+  SET @BrcommissionAmount = 0                                                                          
+  SET @OthersTaxableAmt = 0                                                                          
+  SET @AddTaxAmount = 0                                                                          
+  SET @AdjustAmt = 0                                              
+                                                      
+  SET @AssAmt = 0                                                                                
+  SET @AedAmt = 0                                                        
+  SET @SurAmt = 0                                                                                                    
+  SET @ASurAmt = 0                                                                                                    
+  SET @FreightAmt = 0                                                                                                    
+  SET @PackAmt = 0                                                                                               
+  SET @Freight2Amt = 0                                                             
+  SET @Pack2Amt = 0                                                                                    
+  SET @Insurance2Amt = 0                                                                                    
+  SET @RoundOffAmt = 0                                                                                    
+                                              
+  SELECT @jvtc = fromjvtc                                                    
+  FROM   FA_PARAM                                                    
+                                                      
+  IF @@rowcount = 0                                                    
+  BEGIN                                                    
+      SET @jvtc = 40 --30                                                                     
+      INSERT INTO fa_param                                                    
+        (                                                
+          fromjvtc                                                    
+        )                                                    
+      VALUES                 
+        (                                                    
+          40                                                    
+        )--30                                      
+  END            
+  ELSE                                                                                                                                          
+  IF @jvtc IS NULL               
+  BEGIN                                                    
+      SET @jvtc = 40 --30                                                                                                 
+      UPDATE fa_param                                                    
+      SET    fromjvtc = 40 --30                                    
+  END                                                    
+                                                      
+  SELECT @cnt = COUNT(*)                                                    
+  FROM   fa_tcmas                                                    
+  WHERE  tc = @jvtc                                                    
+                                                      
+  IF @cnt = 0                                                    
+      INSERT INTO fa_tcmas                                              
+        (                                                    
+          tc, tchead, tcabbr                                            
+        )                                                    
+      VALUES                                                    
+        (                                                    
+          @jvtc, 'General Journal', 'GJV'                                                    
+        )                                                    
+                                                      
+  SELECT @divcod = divcode, @slcode1 = slcode, @pjvdt1 = pjvdt, @tc1 = tc,                                                     
+         @pjvno1 = pjvno, @pjvdt1 = pjvdt, @billamt1 = billamt,  ---(isnull(mahimai,0)+isnull(levy,0)),                                                                                                                                          
+         @fbillamt1 = fbillamt,  ---(isnull(mahimai,0)+isnull(levy,0)),                                                                                                                                          
+         @tdsamt1 = tdsamt, @ftdsamt1 = ftdsamt, @billno1 = billno, @billdt1 =                                                     
+         billdt, @duedt1 = duedt           
+                                                            
+  FROM   INSERTED                        
+  --   @mahimai = mahimai,@levy = levy from inserted                                                   
+  SELECT @ldt = DATEADD(                                                    
+             DAY, -1 * DAY(DATEADD(MONTH, 1, @pjvdt1)), DATEADD(MONTH, 1, @pjvdt1)                                                    
+         )                                                    
+                                                      
+  SELECT @CashDisAmount = CashDisAmt, @TradeDisAmount = TradeDisAmt,                                             
+  @LryFrieghtAmount =                                                     
+         LryFrieghtAmt, @BEDAmount = BEDAmt, @CessAmount = cessAmt,                                             
+ @edcessAmount =                                                    
+         edcessAmt, @hscessAmount = hscessAmt, @taxAmount = TaxAmount,                                             
+         @insuranceAmount =                                                     
+       InsuranceAmt, @cstAmount = CSTAmt, @OthertaxAmount = OtherTaxAmt+isnull(ANTIDUMP_AMT,0),                                                     
+         @rlyFrieghtAmount = RlyFrieghtAmt, @commissionAmount =                            
+         CommissionAmt, @lcinterestAmount = LCinterestAmt, @drnoteAmount =                                                     
+         DRNoteAmtAmt, @charityAmount = charity, @damageAmount = DamageAmt,                                                     
+  @othersAmount = case when  module =6 then ROUND( OthersAmt,0) else OthersAmt end, @customsAmount = CustomsDutyAmt,                                             
+         @BrcommissionAmount =                                                     
+         BrCommissionAmt, @TAXCODE = TaxName, @PurType = PurchaseType, @module =                                   
+         module, @AssAmt = AssessableAmt, @aedAmt = AedAmt, @SurAmt =                                                     
+         SurchageAmt, @ASurAmt = ASurchageAmt, @FreightAmt = Freight1Amt,               
+         @PackAmt = Pack1Amt, @Cenvt = CENVAT, @GLDivision = DIVCODE, @narration =                                                     
+         Narration, @Freight2Amt = Freight2Amt, @Pack2Amt = Pack2Amt, @Insurance2Amt =                                                     
+         Insurance2Amt, @RoundOffAmt = RoundOff, @othersTaxableAmt =                        
+         othertaxableAmt, @AddTaxCode = AddtaxCode, @AddTAxAmount =                                                     
+         addtaxAmount, @AdjustAmt = AdjustAmt, @DutyPer = DUTYPER,           
+         @BrCode =  BRCODE,          
+         @PURGL=isnull(GLCODE,'')           
+          ,  @V_CGST_Amt=CGSTAMT,@V_SGST_Amt=SGSTAMT,@V_IGST_Amt=IGSTAMT                                                      
+  FROM   FA_PURHD                                                    
+  WHERE  PJVNO = @PJVNO1 AND PJVDT = @PJVDT1 AND DIVCODE = @DIVCOD AND TC =                                                    
+         @TC1                                                                                         
+                                         
+  SELECT @WCRD = CRDDAYS                               
+  FROM   FA_SLMAS                                                    
+  WHERE  SLCODE = @SLCODE1                                                    
+                                                      
+  SELECT @tdsgl1 = TDSGL                                                    
+  FROM   FA_PARAM                                           
+                                
+--'15/06/11                                
+select @glcode1 = glcode from fa_tcmas where tc=@tc1                                
+               
+                
+set @narration=isnull(@narration,'Bill No.'+@BILLNO1+' Dt. '+convert(varchar(15),@BILLDT1,103))             
+                                
+                            
+  --,@mahgl = mahimai,@levgl = levy FROM FA_PARAM                                                                                           
+  /*UPDATES CGTRN FOR GLCODE (CTRL_ ACCOUNT) AND CSTRN FOR SLCODE */                                                                                                                        
+                
+  SELECT @gl = glcode                                                    
+  FROM   fa_prty                                                    
+  WHERE  prtytyp = SUBSTRING(@SLCODE1, 1, 2)                                
+                                                      
+  SELECT @cgnarr3 = slname                                                    
+  FROM   fa_slmas                                                    
+  WHERE  slcode = @SLCODE1                                                    
+                                                      
+  SELECT @csnarr3 = glhead                                                    
+  FROM   fa_glmas                                                    
+  WHERE  glcode IN (SELECT glcode                                              
+                    FROM   fa_tcmas                                                    
+                    WHERE  tc = @tc1)       
+                                                      
+  SET @v_gvocno = 999999                                                     
+  SELECT @JVPURTYPE = CASE                                                             
+               WHEN @MODULE = 3 THEN 'S'                                                            
+               WHEN @MODULE = 6 THEN 'R'                                  
+      WHEN @MODULE = 1 THEN 'F'                                      
+               ELSE 'Y'                                                            
+        END                                                             
+                                                      
+                                                      
+                                                      
+  /* Bill Amount */                                     
+  /*party's slcode updations in cstrn table */                                                    
+                                                      
+  --IF @module = 6                                                    
+                                     
+                                              
+  BEGIN                                   
+      IF (                                                    
+        SELECT COUNT(*)                                                    
+             FROM   fa_PurJvline                                                    
+             WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE = @Divcod AND                                                     
+                    GLCODE = ISNULL(@SLCODE1, '') AND TC = @tc1            
+         ) <= 0                                                    
+          INSERT INTO fa_PurJvline --fa_cstrn                                  
+            (                                                    
+              DIVCODE, TC, VOCNO, VOCDT, VOCSNO, GLCODE, NARRATION1,                                                     
+              NARRATION2, CREDIT, fcredit, trntype, narration3,PURTYPE                                                    
+            )                                                    
+          VALUES                                                    
+            (                                                    
+              @divcod, @tc1, @pjvno1, @pjvdt1, 2, @SLCODE1, @narration, '',                                                     
+              ISNULL(@billamt1, 0), ISNULL(@fbillamt1, 0), 'PU', @csnarr3,@JVPURTYPE                        
+            )                                                    
+  END                                                              
+                                                              
+                  
+BEGIN                  
+IF @module IS NULL -- <> 3 AND @module <> 6                                    
+    BEGIN                                                      
+   IF (                                                            
+      SELECT COUNT(*)                                                            
+      FROM   FA_PURJVHEAD                                                            
+      WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE = @Divcod AND                                                             
+       TRNTYPE = 'PU' AND TC = @tc1                                  
+     ) <= 0                                                            
+     BEGIN                                                            
+      INSERT INTO FA_PURJVHEAD                                                            
+     (                                 
+       divcode, vocno, vocdt, tc, trntype, LBILLNO, LBILLDT,                                                             
+       PURTYPE                                                            
+     )                                                            
+      VALUES                                                            
+     (                                                            
+       @Divcod, @Pjvno1, @pjvdt1, @tc1, 'PU', @BILLNO1, @BILLDT1, @JVPURTYPE                                                            
+     )                                                            
+     END                   
+    END                                                                      
+  END                     
+                                                     
+                                                      
+  -----------------------RM Start Here -----------------------------------            
+PRINT @MODULE                                    
+BEGIN                                    
+  IF @module = 6                                                    
+            
+            
+  BEGIN                   
+          
+    IF @PURGL<>@GLCODE1     
+            
+   BEGIN      
+   print 'others11 '                         
+    SELECT @CashDisGL = CashDisGL, @TradeDisGL = TradeDisGL, @LryFrieghtGL =                                                     
+     LryFrieghtGL, @BEDGL = bedgl, @CessGl = cessgl, @edcessgl =                                      
+    edcessgl, @hscessgl = hscessgl, @taxgl = TaxGL, @cstgl =                                                     
+    CSTGL, @Othertaxgl = OtherTaxGL, @rlyFrieghtgl = RlyFrieghtGl,                                                     
+    @insurancegl = InsuranceGL, @commissiongl = CommissionGL, @lcinterestgl =                                                     
+    LCinterestGL, @drnotegl = DRNoteAmtGL, @charitygl = charity,                                                     
+    @damagegl = DamageGL, @othersgl = isnull(OthersGL,0), @customsgl =                                                     
+    CustomsDutyGL, @BrCommissionGL = BrCommissionGl, @AddTaxGl =                                                     
+    AddtaxGl, @othersTaxableGL = otherstaxableamtGL, @ADJUSTGL =                                                     
+    ADJUSTGL, @ExciseGL = ExciseGL ,             
+       --For GST             
+    @v_CGSTGL=CGSTgl, @v_SGSTGL= SGSTGL, @v_IGSTGL= IGSTGL            
+    FROM   RM_PARAM_FA                                                    
+    WHERE  TCCODE = @TC1 AND DIVCODE = @GLdivision     
+    SELECT *FROM     RM_PARAM_FA                                                    
+    WHERE  TCCODE = @TC1 AND DIVCODE = @GLdivision      
+      
+ print @othersgl  
+ print '2222222222222'  
+      
+                                                                                                                    
+    END          
+      ELSE      
+        print 'others1122 '      
+        BEGIN     
+                               
+    SELECT @CashDisGL = @PURGL, @TradeDisGL = @PURGL, @LryFrieghtGL =                                                     
+     @PURGL, @BEDGL = @PURGL, @CessGl = @PURGL, @edcessgl =                                                     
+    @PURGL, @hscessgl = @PURGL, @taxgl = @PURGL, @cstgl =                                                     
+    @PURGL, @Othertaxgl = @PURGL, @rlyFrieghtgl = @PURGL,                                                     
+    @insurancegl = @PURGL, @commissiongl =@PURGL, @lcinterestgl =                                                     
+    @PURGL, @drnotegl = @PURGL, @charitygl = @PURGL,                                                     
+    @damagegl = @PURGL, @othersgl = @PURGL, @customsgl =                                                     
+    @PURGL, @BrCommissionGL = @PURGL, @AddTaxGl =                                                     
+    @PURGL, @othersTaxableGL = @PURGL, @ADJUSTGL =                                                     
+    @PURGL, @ExciseGL = @PURGL  ,  
+        @v_CGSTGL=CGSTgl, @v_SGSTGL= SGSTGL, @v_IGSTGL= IGSTGL                                                      
+    FROM   RM_PARAM_FA                                                    
+    WHERE  TCCODE = @TC1 AND DIVCODE = @GLdivision                                                                                                                               
+   END         
+      set   @othersgl='500009'     
+      set @ADJUSTGL='500009'    
+            SET @OtherTaxgl= '500009'  
+       SET @insurancegl ='500009';  
+      print 'others 5555  '+ cast(@OthersAmount as varchar)   +'G L  '+ CAST(@TC1 AS VARCHAR) +'   '+@othersgl                                 
+    PRINT @othersgl                                    
+                                                       
+      SELECT @TAXFLG = ITCTAXSTATUS                                                    
+      FROM   IG_TAX                                                    
+      WHERE  TAX_CODE = @TAXCODE                                                                                                                        
+                                                          
+      SELECT @ATaxStatus = ITCTAXSTATUS                                                    
+      FROM   IG_TAX                                                    
+      WHERE  TAX_CODE = @ADDTAXCODE                                                     
+                                                          
+   IF (                                                            
+      SELECT COUNT(*)                                                    
+      FROM   FA_PURJVHEAD                                                            
+      WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE = @Divcod AND                                                             
+       TRNTYPE = 'PU' AND TC = @tc1                                       
+     ) <= 0                                                            
+     BEGIN                                                            
+      INSERT INTO FA_PURJVHEAD                                                            
+(                                 
+       divcode, vocno, vocdt, tc, trntype, LBILLNO, LBILLDT,                                                             
+       PURTYPE                                                            
+     )                                                            
+      VALUES                                                            
+     (                                                            
+       @Divcod, @Pjvno1, @pjvdt1, @tc1, 'PU', @BILLNO1, @BILLDT1, @JVPURTYPE                                                            
+     )                                                            
+     END                                                                  
+                                                
+                                                          
+                                                          
+      -- Cash Discount                                     
+     --  SET @v_cnt = 0                                                                                                                             
+                                         
+      IF ISNULL(@CashDisAmount, 0) > 0 AND (@CashDisGL IS NOT NULL AND @CashDisGL <> '')                          
+      BEGIN                                                    
+          IF (                                                    
+                 SELECT COUNT(*)                                                    
+                 FROM   FA_PURJVLINE                                                    
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                     
+                        @Divcod AND GLCODE = ISNULL(@CashDIsGL, '') AND TC=@TC1                                                    
+             ) <= 0                                                
+              INSERT INTO FA_PURJVLINE                                                    
+                (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+                  credit, trntype, narration3,PURTYPE                                                    
+         )                                                    
+             VALUES                                                    
+                (                                                    
+                  @Divcod, @CashDisGL, @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                                     
+                  ISNULL(@CashDisAmount, 0), 'PU', @cgnarr3,@JVPURTYPE                                                    
+                )                                                    
+          ELSE                                                    
+              UPDATE FA_PURJVLINE                                                    
+              SET    credit = ISNULL(credit, 0) + ISNULL(@CashDisAmount, 0)                                                    
+              WHERE  divcode = @divcod AND glcode = @CashDisgl AND vocdt =                                                     
+                     @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype =                                                     
+                     'PU'                                                    
+      END                                                     
+                                                          
+      -- Trade Discount                                                    
+      --  SET @v_cnt = 0                                                                                                                    
+                                                          
+      IF ISNULL(@TradeDisAmount, 0) > 0 AND (@TradeDisGL IS NOT NULL AND @TradeDisGL <> '')                                                    
+      BEGIN                                                    
+          IF (                                                    
+                 SELECT COUNT(*)                                                    
+                 FROM   FA_PURJVLINE                     
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                     
+                        @Divcod AND GLCODE = ISNULL(@TradeDIsGL, '') AND TC=@tc1                                                    
+             ) <= 0                                 
+              INSERT INTO FA_PURJVLINE                                                    
+                (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+                  credit, trntype, narration3,PURTYPE                                                 
+                )                                                    
+             VALUES                                                    
+                (                                                    
+                  @Divcod, @TradeDisGL, @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                                     
+                  ISNULL(@TradeDisAmount, 0), 'PU', @cgnarr3,@JVPURTYPE                                                    
+                )                                                    
+          ELSE                                                    
+              UPDATE FA_PURJVLINE                                                    
+      SET    credit = ISNULL(credit, 0) + ISNULL(@TradeDisAmount, 0)                                                    
+              WHERE  divcode = @divcod AND glcode = @TradeDisgl AND vocdt =                                                     
+                     @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype =                                                     
+                     'PU'                                                    
+      END                                                     
+                                                          
+      --BED                                  
+     /* 24/10/12                       
+     IF ISNULL(@Dutyper, 0) < 100                                                    
+      BEGIN                                                    
+          SET @BEDAmount = ISNULL(@BEDAmount, 0) * (ISNULL(@Dutyper, 0) / 100)                                                    
+      END                                                                                                                                 
+                */                                          
+                                                          
+      IF ISNULL(@BEDAmount, 0) > 0 AND (@BEDgl IS NOT NULL AND @BEDgl <> '')                                                    
+      BEGIN                                                    
+          PRINT @BEDAmount                                                                                                      
+          IF (                                                    
+                 SELECT COUNT(*)                                                    
+                 FROM   FA_PURJVLINE                                                    
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                     
+                        @Divcod AND GLCODE = ISNULL(@BEDgl, '')                                                    
+             ) <= 0                                                    
+              INSERT INTO FA_PURJVLINE                                                    
+                (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+                  debit, trntype, narration3,PURTYPE                                                    
+             )                                                    
+              VALUES                                                    
+                (                                         
+                  @Divcod, @BEDgl, @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                                     
+                  ISNULL(@BEDAmount, 0), 'PU', @cgnarr3,@JVPURTYPE                                                    
+                )                                                    
+    ELSE                                                    
+              UPDATE FA_PURJVLINE                                                    
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@BEDamount, 0)                                                    
+              WHERE  divcode = @divcod AND glcode = @BEDgl AND vocdt = @pjvdt1 AND                                                
+                     tc = @tc1   AND vocno = @pjvno1 AND trntype = 'PU'                            
+      END                                                     
+                                                          
+                      
+      --Cess                                                                                        
+      /*                
+IF ISNULL(@Dutyper, 0) < 100                                                    
+      BEGIN                                                    
+          SET @CessAmount = ISNULL(@CessAmount, 0) * (ISNULL(@Dutyper, 0) / 100)                                                    
+      END                                                                             
+                        */                                  
+                                                          
+                                                          
+      IF ISNULL(@CessAmount, 0) > 0 AND (@Cessgl IS NOT NULL AND @Cessgl <> '')                                                    
+      BEGIN                                                    
+          PRINT @CessAmount                                                 
+          IF (       
+                 SELECT COUNT(*)                                                    
+                 FROM   FA_PURJVLINE                                    
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                     
+                        @Divcod AND GLCODE = ISNULL(@Cessgl, '')                                                    
+                        and tc = @tc1                                  
+             ) <= 0                                                    
+              INSERT INTO FA_PURJVLINE                                                    
+                (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+                  debit, trntype, narration3,PURTYPE                                                    
+                )                                                    
+              VALUES                                              (                                                    
+                  @Divcod, @Cessgl, @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                   
+                  ISNULL(@CessAmount, 0), 'PU', @cgnarr3,@JVPURTYPE                                                    
+                )                                                    
+          ELSE                                      
+              UPDATE FA_PURJVLINE                                                    
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@CessAmount, 0)                                                    
+              WHERE  divcode = @divcod AND glcode = @Cessgl AND vocdt = @pjvdt1 AND                                                     
+                     tc = @tc1 AND vocno = @pjvno1 AND trntype = 'PU'                                                    
+      END                                                     
+                                                          
+      --EDCess                                                   
+/*                                                          
+      IF ISNULL(@Dutyper, 0) < 100                                                    
+      BEGIN                                            
+          SET @EDCessAmount = ISNULL(@EDCessAmount, 0) * (ISNULL(@Dutyper, 0) / 100)                                                    
+      END                                                  
+*/                      
+                                                          
+      IF ISNULL(@EDCessAmount, 0) > 0 AND (@EDCessgl IS NOT NULL AND @EDCessgl <> '')                                                    
+      BEGIN                                                    
+          PRINT @EDCessAmount                                                                                                                              
+          IF (                                                    
+              SELECT COUNT(*)                                                    
+                 FROM   FA_PURJVLINE                                                    
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                     
+                        @Divcod AND GLCODE = ISNULL(@EDCessgl, '')                                               
+                        and tc = @tc1                                  
+             ) <= 0                                                    
+              INSERT INTO FA_PURJVLINE                                                    
+                (                    
+          divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                  
+                  debit, trntype, narration3,PURTYPE                                                    
+                )                                                    
+              VALUES                                                    
+                (                                                    
+                  @Divcod, @EDCessgl, @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                                     
+                  ISNULL(@EDCessAmount, 0), 'PU', @cgnarr3,@JVPURTYPE                                                    
+                )                                                    
+          ELSE                                                    
+        UPDATE FA_PURJVLINE                                                    
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@EDCessAmount, 0)                                                    
+      WHERE  divcode = @divcod AND glcode = @EDCessgl AND vocdt =                                                     
+                     @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype = 'PU'                                                    
+      END                                                     
+                                                          
+      --HSCess                                                                                            
+/*                      
+      IF ISNULL(@Dutyper, 0) < 100                                                    
+      BEGIN                                                    
+          SET @HSCessAmount = ISNULL(@HSCessAmount, 0) * (ISNULL(@Dutyper, 0) / 100)                                                    
+      END                                
+                                    */                      
+                      
+      IF ISNULL(@HSCessAmount, 0) > 0 AND (@HSCessgl IS NOT NULL AND @HSCessgl <> '')                                                    
+      BEGIN                                                
+          PRINT @HSCessAmount                                                                          
+          IF (                                                    
+               SELECT COUNT(*)                                                    
+                 FROM   FA_PURJVLINE                                                    
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                     
+                        @Divcod AND GLCODE = ISNULL(@HSCessgl, '')                                                    
+                        and tc = @tc1                      
+             ) <= 0                                                    
+              INSERT INTO FA_PURJVLINE                                                    
+                (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+                  debit, trntype, narration3,PURTYPE                                             
+                )                          
+              VALUES                                                    
+                (                                                    
+                  @Divcod, @HSCessgl, @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                                     
+                  ISNULL(@HSCessAmount, 0), 'PU', @cgnarr3,@JVPURTYPE                                                    
+                )                       
+          ELSE                                                    
+              UPDATE FA_PURJVLINE                                 
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@HSCessAmount, 0)                                             
+              WHERE  divcode = @divcod AND glcode = @HSCessgl AND vocdt =                                                     
+                     @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype =                                                     
+                     'PU'                                                    
+      END                             
+                                                          
+ --     --Tax                                                                                                                            
+ --IF @TAXFLG = 'Y'                                                    
+ --     BEGIN                                                    
+ --         IF ISNULL(@TaxAmount, 0) > 0 AND (@Taxgl IS NOT NULL AND @Taxgl <> '')                                                    
+ --         BEGIN                                                    
+ --             IF (                                                    
+ --                    SELECT COUNT(*)                                                    
+ --                 FROM   FA_PURJVLINE                                                    
+ --                    WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND                                                     
+ --                           DIVCODE = @Divcod AND GLCODE = ISNULL(@Taxgl, '')                                             
+ --                           and tc = @tc1                                         
+ --                ) <= 0                                                    
+ --                 INSERT INTO FA_PURJVLINE                                                    
+ --                   (                                                    
+ --                     divcode, glcode, vocno, vocdt, vocsno, tc,                                                     
+ --                     narration1, debit, trntype, narration3,PURTYPE                                    
+ --                   )                                                    
+ --                 VALUES                                                    
+ --                   (                                                    
+ --                     @Divcod, @Taxgl, @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                                     
+ --                     ISNULL(@taxAmount, 0), 'PU', @cgnarr3,@JVPURTYPE                                                 
+ --                   )                                                    
+ --             ELSE                                                    
+ --                 UPDATE FA_PURJVLINE                                                    
+ --                 SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@taxAmount, 0)                                                    
+ --                 WHERE  divcode = @divcod AND glcode = @Taxgl AND vocdt =                                                     
+ --                @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                     
+ --                        trntype = 'PU'                    
+ --         END                                                    
+ --     END                                                     
+                                                          
+      --Additional Tax                                                                                                               
+      IF @ATAXSTATUS = 'Y'                                                    
+      BEGIN                                                    
+          IF ISNULL(@ADDTaxAmount, 0) > 0 AND (@ADDTaxgl IS NOT NULL AND @Taxgl <> '')                                                    
+              PRINT @ADDTaxAmount                                 
+                                                              
+          BEGIN                                                    
+          IF (              
+                  SELECT COUNT(*)                                                    
+                  FROM   FA_PURJVLINE                                                    
+                  WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND                                                     
+                         DIVCODE = @Divcod AND GLCODE = ISNULL(@ADDTaxgl, '')         
+                         and tc = @tc1                                         
+              ) <= 0                                                    
+               INSERT INTO FA_PURJVLINE                                                    
+                 (                                                    
+                   divcode, glcode, vocno, vocdt, vocsno, tc,                                                     
+                   narration1, debit, trntype, narration3,PURTYPE                                                     
+                 )                                                    
+               VALUES                                                    
+                 (                                 
+                   @Divcod, @ADDTaxgl, @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                                     
+                   ISNULL(@ADDtaxAmount, 0), 'PU', @cgnarr3,@JVPURTYPE                                                    
+                 )                                                    
+           ELSE                                                    
+               UPDATE FA_PURJVLINE                                                    
+               SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@ADDtaxAmount, 0)                                                    
+               WHERE  divcode = @divcod AND glcode = @ADDTaxgl AND                                                     
+                      vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                   
+                      trntype = 'PU'             
+          END                                                    
+      END                                                     
+                                                          
+                                                          
+      --CST                                                                                           
+      IF ISNULL(@CSTAmount, 0) > 0 AND (@CSTgl IS NOT NULL AND @CSTgl <> '')                                                    
+      BEGIN                                                    
+    IF (                                                    
+                 SELECT COUNT(*)                                                    
+                 FROM  FA_PURJVLINE                                                    
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                     
+                        @Divcod AND GLCODE = ISNULL(@CSTgl, '')                                                    
+                        and tc = @tc1                                  
+             ) <= 0                                               
+              INSERT INTO FA_PURJVLINE                                                    
+                (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+                  debit, trntype, narration3,PURTYPE                                                     
+                )                                                    
+              VALUES                                                    
+                (                                                    
+                  @Divcod, @CSTgl, @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                                     
+        ISNULL(@CSTAmount, 0), 'PU', @cgnarr3 ,@JVPURTYPE                                                   
+                )                                                    
+          ELSE                                                    
+              UPDATE FA_PURJVLINE                              
+    SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@CSTAmount, 0)                                                    
+              WHERE  divcode = @divcod AND glcode = @CSTgl AND vocdt = @pjvdt1 AND                                                     
+                     tc = @tc1 AND vocno = @pjvno1 AND trntype = 'PU'                                                    
+      END                                                     
+                                          
+                                          
+                                                          
+      --OtherTax                                                                                                                            
+  IF ISNULL(@OtherTaxAmount, 0) > 0 AND (@OtherTaxgl IS NOT NULL AND @OtherTaxgl <> '')                                                    
+      BEGIN                                                    
+          IF (                                                    
+                 SELECT COUNT(*)                                                    
+                 FROM   FA_PURJVLINE                                                    
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                
+                        @Divcod AND GLCODE = ISNULL(@OtherTaxgl, '')                                                    
+                        and tc = @tc1                                  
+             ) <= 0                                  
+              INSERT INTO FA_PURJVLINE                                                    
+                (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+       debit, trntype, narration3 ,PURTYPE                                                   
+ )                                                    
+              VALUES                                                    
+                (                                                    
+                  @Divcod, @OtherTaxgl, @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                                     
+                  ISNULL(@OtherTaxAmount, 0), 'PU', @cgnarr3,@JVPURTYPE                                   
+  )                                                    
+          ELSE                                                    
+              UPDATE FA_PURJVLINE                                                    
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@OtherTaxAmount, 0)                                                    
+      WHERE  divcode = @divcod AND glcode = @OtherTaxgl AND vocdt =                                                     
+                     @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype =                                                     
+                     'PU'                                                    
+      END                                 
+                                                          
+                              
+---------------------********************GST**********************---------------------------          
+----- 26.6.17          
+          
+      --CGST                                                                                                                 
+  IF ISNULL(@V_CGST_Amt , 0) > 0 AND (@v_CGSTGL  IS NOT NULL AND @v_CGSTGL  <> '')                                          
+      BEGIN                                          
+          IF (                                          
+                 SELECT COUNT(*)                                          
+                 FROM   FA_PURJVLINE                                          
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                           
+                        @Divcod AND GLCODE = ISNULL(@v_CGSTGL , '')                                          
+                        and tc = @tc1                        
+             ) <= 0                                          
+              INSERT INTO FA_PURJVLINE   
+                (                                          
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                           
+                  debit, trntype, narration3 ,PURTYPE                                         
+                )                                          
+              VALUES                                          
+                (                                          
+                  @Divcod, @v_CGSTGL , @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                           
+                  ISNULL(@V_CGST_Amt , 0), 'PU', @cgnarr3,@JVPURTYPE                                          
+  )                                          
+          ELSE                                          
+              UPDATE FA_PURJVLINE                                          
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@V_CGST_Amt , 0)                                          
+              WHERE  divcode = @divcod AND glcode = @v_CGSTGL  AND vocdt =                                           
+                     @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype =                                           
+                     'PU'                                          
+      END                                           
+                                                
+       --SGST                                                          
+  IF ISNULL(@V_SGST_Amt , 0) > 0 AND (@v_SGSTGL  IS NOT NULL AND @v_SGSTGL  <> '')                                          
+      BEGIN                                          
+          IF (                                          
+                 SELECT COUNT(*)                                          
+                 FROM   FA_PURJVLINE                  
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                           
+                        @Divcod AND GLCODE = ISNULL(@v_SGSTGL , '')                                          
+                        and tc = @tc1                        
+             ) <= 0                                          
+              INSERT INTO FA_PURJVLINE                                          
+                (                                          
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                           
+                  debit, trntype, narration3 ,PURTYPE                                         
+                )                                          
+              VALUES                                          
+                (                                          
+                  @Divcod, @v_SGSTGL , @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                           
+                  ISNULL(@V_SGST_Amt , 0), 'PU', @cgnarr3,@JVPURTYPE                                          
+  )                                          
+          ELSE                                          
+              UPDATE FA_PURJVLINE                                          
+        SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@V_SGST_Amt , 0)                                          
+              WHERE  divcode = @divcod AND glcode = @v_SGSTGL  AND vocdt =                                           
+                     @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype =                                           
+                     'PU'                                          
+      END                                           
+                                                
+      --IGST                                                                                                                 
+  IF ISNULL(@V_IGST_Amt , 0) > 0 AND (@v_IGSTGL  IS NOT NULL AND @v_IGSTGL  <> '')                                          
+      BEGIN                                          
+          IF (                                          
+                 SELECT COUNT(*)                            
+                 FROM   FA_PURJVLINE                                          
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                           
+                        @Divcod AND GLCODE = ISNULL(@v_IGSTGL , '')                                          
+                        and tc = @tc1                    
+             ) <= 0                                          
+              INSERT INTO FA_PURJVLINE                                          
+                (                                          
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                           
+                  debit, trntype, narration3 ,PURTYPE                                         
+                )                                          
+              VALUES                                          
+                (                                          
+                  @Divcod, @v_IGSTGL , @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                           
+                  ISNULL(@V_IGST_Amt , 0), 'PU', @cgnarr3,@JVPURTYPE                                          
+  )                                          
+          ELSE                                          
+              UPDATE FA_PURJVLINE                                          
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@V_IGST_Amt , 0)                                          
+              WHERE  divcode = @divcod AND glcode = @v_IGSTGL  AND vocdt =                                           
+                     @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype =                                           
+                     'PU'                       
+      END                                           
+                                  
+          
+          
+------------------------********************GST*************************---------------------------                                                                                          
+                                                          
+                                                          
+      --insurance                                                                                                            
+                                                          
+                                                          
+IF ISNULL(@insuranceAmount, 0) > 0 AND (@insurancegl IS NOT NULL AND                                           
+@insurancegl <> '')                                                    
+      BEGIN                                                    
+          IF (                                                    
+                 SELECT COUNT(*)                                                    
+                 FROM   FA_PURJVLINE                    
+                                                    WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                          
+                        @Divcod AND GLCODE = ISNULL(@insurancegl, '')                                                    
+                        and tc = @tc1                                  
+      ) <= 0                                                    
+         INSERT INTO FA_PURJVLINE                                                    
+                (                                            
+                divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+                  debit, trntype, narration3 ,PURTYPE                                                   
+                )                                                    
+              VALUES                                         
+                (                                                    
+                  @Divcod, @insurancegl, @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                                     
+          ISNULL(@insuranceAmount, 0), 'PU', @cgnarr3 ,@JVPURTYPE                                                   
+                )                                                    
+          ELSE                                                    
+              UPDATE FA_PURJVLINE                                                    
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@insuranceAmount, 0)                                                    
+              WHERE  divcode = @divcod AND glcode = @insurancegl AND vocdt =                                                     
+                     @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype =                                               
+                     'PU'                                                     
+                                                   
+                     --PRINT @insurancegl                                
+      END                                                     
+      --Charity                                                                                         
+      IF ISNULL(@CharityAmount, 0) > 0 AND (@Charitygl IS NOT NULL AND @Charitygl <> '')                                                 
+      BEGIN                                                    
+      IF (                                                    
+                 SELECT COUNT(*)                                                    
+                 FROM   FA_PURJVLINE                                                    
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                     
+                        @Divcod AND GLCODE = ISNULL(@Charitygl, '')                                                    
+                        and tc = @tc1                                  
+             ) <= 0                                                    
+              INSERT INTO FA_PURJVLINE            
+                (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                           
+     debit, trntype, narration3 ,PURTYPE                                                   
+                )                                                    
+              VALUES                                                    
+                (                                                    
+                  @Divcod, @Charitygl, @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                                
+                  ISNULL(@CharityAmount, 0), 'PU', @cgnarr3,@JVPURTYPE                                                    
+                )                                                    
+          ELSE                                                    
+              UPDATE FA_PURJVLINE                                                    
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@CharityAmount, 0)                                                    
+              WHERE  divcode = @divcod AND glcode = @Charitygl AND vocdt =                                                     
+                     @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype =                                                     
+                     'PU'                                                    
+      END                                                     
+                                    
+                                                          
+      --Damage                                                                                                                            
+      IF ISNULL(@DamageAmount, 0) > 0 AND (@Damagegl IS NOT NULL AND @Damagegl <> '')                                                    
+      BEGIN                                                    
+          IF (                                                    
+                 SELECT COUNT(*)                                                    
+         FROM   FA_PURJVLINE                                                    
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                           
+                        @Divcod AND GLCODE = ISNULL(@Damagegl, '')                                                    
+                        and tc = @tc1                                  
+  ) <= 0                                                    
+              INSERT INTO FA_PURJVLINE                                                    
+                (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+                  debit, trntype, narration3,PURTYPE                                               
+                )                                                    
+              VALUES                                                    
+                (                                                    
+                  @Divcod, @Damagegl, @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                                     
+                  ISNULL(@DamageAmount, 0), 'PU', @cgnarr3,@JVPURTYPE                                                    
+                )                                                    
+          ELSE                                                    
+              UPDATE FA_PURJVLINE                                                    
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@DamageAmount, 0)                                                    
+              WHERE  divcode = @divcod AND glcode = @Damagegl AND vocdt =                                                     
+                     @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype =                                                     
+                     'PU'                                                    
+      END                                                     
+   --Clearance                                                                                                         
+      IF ISNULL(@ClearanceAmount, 0) > 0 AND (@ClearanceGL IS NOT NULL AND @ClearanceGL <> '')                                                    
+      BEGIN                               
+          IF (                                                    
+                SELECT COUNT(*)                   
+       FROM   FA_PURJVLINE                                                    
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                     
+                        @Divcod AND GLCODE = ISNULL(@ClearanceGL, '')                                                    
+                        and tc = @tc1                                  
+             ) <= 0                                                    
+              INSERT INTO FA_PURJVLINE                                                    
+                (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+                  debit, trntype, narration3 ,PURTYPE                                                   
+                )                                                    
+              VALUES                                
+                (                                                    
+                  @Divcod, @ClearanceGL, @Pjvno1, @pjvdt1, 1, @tc1, @narration,                           
+                  ISNULL(@ClearanceAmount, 0), 'PU', @cgnarr3,@JVPURTYPE                                                    
+                )                                                    
+          ELSE                                                    
+           UPDATE FA_PURJVLINE                                                    
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@ClearanceAmount, 0)                                                    
+              WHERE  divcode = @divcod AND glcode = @ClearanceGL AND vocdt =                                                     
+                     @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype =                                                     
+                     'PU'                                                    
+      END                                                     
+         
+                                                   
+      --Others - NON TAXABLE AMOUNT                                                                                                                           
+      IF ISNULL(@OthersAmount, 0) > 0 AND (@Othersgl IS NOT NULL AND @Othersgl <> '')                                                    
+      BEGIN                                                    
+          PRINT @OthersAmount                                                                     
+          IF (                                                    
+   SELECT COUNT(*)                                                    
+                 FROM   FA_PURJVLINE                       
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                     
+                        @Divcod AND GLCODE = ISNULL(@Othersgl, '')                                                    
+                        AND TC = @TC1                                  
+             ) <= 0                                                    
+              INSERT INTO FA_PURJVLINE                                                    
+                (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+                  debit, trntype, narration3,PURTYPE                                                    
+                )                                                    
+              VALUES                                         
+                (                 
+                  @Divcod, @Othersgl, @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                                     
+                  ISNULL(@OthersAmount, 0), 'PU', @cgnarr3,@JVPURTYPE                                                    
+                )                                                    
+          ELSE                                                    
+              UPDATE FA_PURJVLINE                                                    
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@OthersAmount, 0)                                                    
+     WHERE  divcode = @divcod AND glcode = @Othersgl AND vocdt =                                                     
+                     @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype =                                                     
+                     'PU'                                                    
+      END                         
+                                                          
+      --Others - TAXABLE AMOUNT                                                                          
+                                                          
+      IF ISNULL(@othersTaxableAmt, 0) > 0 AND (@othersTaxableGL IS NOT NULL AND @othersTaxableGL <> '')                                                    
+      BEGIN                                                    
+          IF (                                                    
+                 SELECT COUNT(*)                                                    
+                 FROM   FA_PURJVLINE                  
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                     
+             @Divcod AND GLCODE = ISNULL(@othersTaxableGL, '')                                                 
+                        AND TC = @TC1    
+             ) <= 0                                                    
+              INSERT INTO FA_PURJVLINE                                                    
+                (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+                  debit, trntype, narration3,PURTYPE                                                    
+                )                                                    
+              VALUES                                                    
+                (                                     
+                  @Divcod, @othersTaxableGL, @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                                     
+                  ISNULL(@othersTaxableAmt, 0), 'PU', @cgnarr3,@JVPURTYPE                                                    
+                )                                                    
+          ELSE                                                    
+              UPDATE FA_PURJVLINE                                                    
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@othersTaxableAmt, 0)                                                    
+              WHERE  divcode = @divcod AND glcode = @othersTaxableGL AND                                         
+                     vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                     
+                     trntype = 'PU'                                                    
+      END                       
+                                                          
+                                            
+      -- Customss                                                                                                                            
+      IF ISNULL(@CustomsAmount, 0) > 0 AND (@Customsgl IS NOT NULL AND @Customsgl <> '')                                                    
+      BEGIN                                                    
+          IF (                                                 SELECT COUNT(*)                              
+                 FROM   FA_PURJVLINE                                                    
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                     
+                        @Divcod AND GLCODE = ISNULL(@Customsgl, '')                   
+                        AND TC = @TC1                                  
+             ) <= 0                                                    
+      INSERT INTO FA_PURJVLINE                                                    
+                (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+                  debit, trntype, narration3,PURTYPE                                                    
+                )                    
+              VALUES                                                    
+          (                                                    
+                  @Divcod, @Customsgl, @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                                     
+                  ISNULL(@CustomsAmount, 0), 'PU', @cgnarr3,@JVPURTYPE                                                    
+                )                                                    
+          ELSE                                                    
+              UPDATE FA_PURJVLINE                                                    
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@CustomsAmount, 0)                                                    
+              WHERE  divcode = @divcod AND glcode = @Customsgl AND vocdt =                                                     
+   @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype =  'PU'              
+      END                                                     
+                              
+                                                          
+      -- Excise Duty A/c                                                                            
+      IF ISNULL(@Dutyper, 0) < 100                                                    
+      BEGIN                                                    
+          SET @ExciseAmt = ISNULL(@OnExciseAmount, 0) -(                                                    
+                  ISNULL(@BEDAmount, 0) + ISNULL(@CessAmount, 0) + ISNULL(@edcessAmount, 0)                                                    
+                  + ISNULL(@hscessAmount, 0)                                                    
+              )                                                    
+                                                              
+          PRINT 'C'                                                     
+          PRINT @ExciseAmt                
+          IF ISNULL(@ExciseAmt, 0) > 0 AND (@ExciseGL IS NOT NULL AND @ExciseGL <> '')                                                    
+          BEGIN                                                    
+              PRINT 'd'                                                            
+              IF (                                                    
+                     SELECT COUNT(*)                                                    
+                     FROM   FA_PURJVLINE                                                    
+                     WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND                                                  
+                            DIVCODE = @Divcod AND GLCODE = ISNULL(@Excisegl, '')                                          
+                            AND TC = @TC1                                            
+                 ) <= 0                                                    
+                  INSERT INTO FA_PURJVLINE                                                    
+                    (                                                    
+                      divcode, glcode, vocno, vocdt, vocsno, tc,                                                     
+ narration1, debit, trntype, narration3,PURTYPE                                         
+                    )                                                    
+                  VALUES                                                    
+                    (                                                    
+                      @Divcod, @Excisegl, @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                                     
+                      ISNULL(@ExciseAmt, 0), 'PU', @cgnarr3,@JVPURTYPE                                                    
+                    )                                                    
+              ELSE                                                    
+                UPDATE FA_PURJVLINE                                                
+                  SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@ExciseAmt, 0)                                                    
+                  WHERE  divcode = @divcod AND glcode = @Excisegl AND                                                     
+                         vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND              
+                         trntype = 'PU'                                                    
+ END                                                    
+  END                                                     
+                                                          
+                                
+                                
+                                
+                                
+/*                                
+if @AdjustGL = @glcode1                                 
+PRINT @ADJUSTGL                          
+ begin                                
+        IF abs(ISNULL(@AdjustAmt, 0)) > 0 AND (@AdjustGL IS NOT NULL AND @AdjustGL <> '')                               
+          BEGIN                                                    
+              IF (                                                    
+                     SELECT COUNT(*)                                                    
+                     FROM   FA_PURJVLINE                                                    
+                     WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND                                                     
+                            DIVCODE = @Divcod AND GLCODE = ISNULL(@AdjustGL, '')                                          
+                            AND TC = @TC1                                            
+           ) <= 0                                                    
+                  INSERT INTO FA_PURJVLINE                                                    
+                    (                                                    
+                      divcode, glcode, vocno, vocdt, vocsno, tc,                                                     
+                      narration1, debit, trntype, narration3,PURTYPE                                                    
+                    )                                                    
+                  VALUES                                                    
+                    (                                               
+                      @Divcod, @Taxgl, @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                                     
+                      ISNULL(@AdjustAmt, 0), 'PU', @cgnarr3,@JVPURTYPE                                                
+                    )                                                    
+              ELSE                                                    
+                  UPDATE FA_PURJVLINE                                                    
+                  SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@AdjustAmt, 0)                                                    
+   WHERE  divcode = @divcod AND glcode = @AdjustGL AND                                                     
+                         vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                     
+                         trntype = 'PU'                                                    
+        END                                              
+   else                                                              
+      --Adjustment Value                                                                                 
+      IF ISNULL(@AdjustAmt, 0) > 0                                                    
+      BEGIN                                                    
+          PRINT 'a'                                                     
+          PRINT @adjustAmt                                                                          
+          IF ISNULL(@AdjustAmt, 0) > 0 AND (@AdjustGL IS NOT NULL AND @AdjustGL <> '')                                                    
+          BEGIN                                          
+              IF (                                                    
+                     SELECT COUNT(*)                                                    
+                     FROM   FA_PURJVLINE                                                    
+                     WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND                                                     
+                            DIVCODE = @Divcod AND GLCODE = ISNULL(@AdjustGL, '')                                          
+         AND TC = @TC1                                            
+                 ) <= 0                           
+                  INSERT INTO FA_PURJVLINE                                                    
+                   (                                                    
+                      divcode, glcode, vocno, vocdt, vocsno, tc,                                                     
+                      narration1, debit, trntype, narration3,PURTYPE                                                    
+                    )                                                    
+                  VALUES                  
+                    (                                                    
+                      @Divcod, @Taxgl, @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                                     
+                      ISNULL(@AdjustAmt, 0), 'PU', @cgnarr3,@JVPURTYPE                                                
+                    )                                                    
+              ELSE                                                    
+                  UPDATE FA_PURJVLINE                                                    
+                  SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@AdjustAmt, 0)                                                    
+                  WHERE  divcode = @divcod AND glcode = @AdjustGL AND                                                     
+                         vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                     
+                         trntype = 'PU'                                                    
+          END                                                    
+      END                                                                          
+                                                          
+      IF ISNULL(@AdjustAmt, 0) < 0                                                    
+      BEGIN                                                   
+          PRINT 'b'                                                     
+          PRINT @adjustAmt                                                     
+          PRINT @AdjustGL                                                           
+                                                           
+          IF ABS(ISNULL(@AdjustAmt, 0)) > 0 AND (@AdjustGL IS NOT NULL AND @AdjustGL <> '')                                                    
+          BEGIN                                                    
+              IF (                                                    
+         SELECT COUNT(*)                                                    
+                     FROM   FA_PURJVLINE                                                    
+                     WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND        
+                            DIVCODE = @Divcod AND GLCODE = ISNULL(@AdjustGL, '')                                          
+                            AND TC = @TC1                                            
+                 ) <= 0                                                    
+                  INSERT INTO FA_PURJVLINE                                                    
+                    (                                                    
+                      divcode, glcode, vocno, vocdt, vocsno, tc,                                                     
+                      narration1, credit, trntype, narration3,PURTYPE                                                    
+                    )                                                    
+                  VALUES                                                    
+                    (                                                    
+                      @Divcod, @AdjustGL, @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                                     
+                      ABS(ISNULL(@AdjustAmt, 0)), 'PU', @cgnarr3,@JVPURTYPE                                                    
+                    )                                                    
+              ELSE                                                    
+                  UPDATE FA_PURJVLINE                                                    
+                  SET    credit = ISNULL(credit, 0) + ABS(ISNULL(@AdjustAmt, 0))                            
+                  WHERE  divcode = @divcod AND glcode = @AdjustGL AND                                                     
+                       vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                     
+                         trntype = 'PU'                                                    
+          END                                                    
+      END                               
+                                                                                                                                                                                  
+ end                                                         
+*/                        
+                                
+                          
+      IF abs(ISNULL(@AdjustAmt, 0)) > 0 AND (@AdjustGL IS NOT NULL AND @AdjustGL <> '')                                                    
+          BEGIN                                                    
+              IF (                                                    
+                     SELECT COUNT(*)                                                    
+                     FROM   FA_PURJVLINE                                                    
+                     WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND                                   
+                            DIVCODE = @Divcod AND GLCODE = ISNULL(@AdjustGL, '')                                          
+                            AND TC = @TC1                                            
+           ) <= 0                                                    
+                  INSERT INTO FA_PURJVLINE                                                    
+                    (                                                    
+                      divcode, glcode, vocno, vocdt, vocsno, tc,                                                     
+                      narration1, debit, trntype, narration3,PURTYPE                                                    
+                    )                                                    
+                  VALUES                                                    
+                    (                                                    
+                      @Divcod, @AdjustGL, @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                                     
+                      ISNULL(@AdjustAmt, 0), 'PU', @cgnarr3,@JVPURTYPE             
+                    )                                   
+              ELSE                                             
+    UPDATE FA_PURJVLINE                                                    
+                  SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@AdjustAmt, 0)                                                    
+                  WHERE  divcode = @divcod AND glcode = @AdjustGL AND                                                     
+                         vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                     
+                         trntype = 'PU'                                                    
+        END                                                      
+                          
+                        
+                      
+                                    
+                                                          
+                                                          
+      ---- Agent Commission                                     
+                                                          
+      --  /*                                                                  
+                                                          
+      IF ISNULL(@BrcommissionAmount, 0) > 0 AND (@Brcommissiongl IS NOT NULL AND                                           
+      @Brcommissiongl <> '')                                 
+      BEGIN                                                    
+          INSERT INTO FA_PURJVLINE                                     
+            (                                                    
+              divcode, glcode, vocno, vocdt, vocsno, tc, narration1, debit,                                           
+              trntype, narration3,PURTYPE                                                   
+            )                                                    
+          VALUES                                                    
+            (                                                    
+              @Divcod, @Brcommissiongl, @Pjvno1, @pjvdt1, 2, @tc1,                                                     
+        'Commission for the Cotton Purchase for the Pjv No.' +                                                    
+              CONVERT(VARCHAR, @Pjvno1) + ' Party. ' + @cgnarr3, ISNULL(@BrcommissionAmount, 0),                                                  
+     'PU', @cgnarr3,@JVPURTYPE                                                    
+            )                                                    
+      END                                                                                     
+                                                          
+                                                          
+                                                          
+      IF (NOT ISNULL(@BrcommissionAmount, 0) = 0) AND (@BrCode IS NOT NULL AND @BrCode <> '') AND (@Brcommissiongl IS NOT NULL AND @Brcommissiongl <> '')                                                    
+      BEGIN                                                    
+          PRINT @brcode                                                     
+          PRINT @BrcommissionAmount                                                        
+                                                              
+          INSERT INTO FA_PURJVLINE                                                    
+            (                                                    
+              divcode, glcode, vocdt, tc, vocno, vocsno, narration1,                                                     
+              CREDIT, trntype, narration3,PURTYPE                                           
+)                                                    
+          VALUES                                                    
+            (                                                    
+              @Divcod, @BrCode, @pjvdt1, @tc1, @Pjvno1, 3,                                                     
+              'Commission for the Cotton Purchase for the Pjv No.' +                                                    
+              CONVERT(VARCHAR, @Pjvno1), ISNULL(@BrcommissionAmount, 0),                                                     
+         'PU', @csnarr3,@JVPURTYPE                                                    
+            )                                                                                       
+                                              
+      END                                                      
+                                                             
+         --=====================================                                                    
+  END                                                                                       
+                                     
+END                                    
+  -----------------------------RM End Here -----------------------------------------------------------                                                
+                                                                              
+  IF @module = 3                                                    
+  BEGIN                                                    
+      SELECT @CashDisGL = CashDisGL, @BEDGL = bedgl, @CessGl = cessgl, @edcessgl =                                                     
+             edcessgl, @hscessgl = hscessgl, @insurancegl = InsuranceGL, @othersgl =                                                     
+             OthersGL, @aedGl = AedGl, @SurGl = surChargeGl, @ASurGL =                                                     
+             ASurchargeGl, @FreightGl = freightGl, @PackGl = Pack1Gl, @Freight2GL =                                        
+             Freight2GL, @Pack2GL = Pack2GL, @Insurance2GL = Insurance2GL,                                                     
+             @RoundOffGL = RoundOff, @PurchaseGL = PurchaseGL,@v_CGSTGL=CGSTGL,@v_SGSTGL=SGSTGL,@v_IGSTGL=IGSTGL        
+      FROM   IN_FAPARAM                                                    
+      WHERE  divcode = @Divcod                                   
+      and tc = @tc1                                  
+                                                          
+                                                          
+                                                          
+      --SELECT @GlCode=GLCODE FROM FA_TCMAS WHERE TC =@tc1                                                                                                   
+      SELECT @CGL1 = CenvatGl, @CGL2 = CenvatGl2, @CenvatFlg = CenvatFlg                                                    
+      FROM   IN_PARA                                            
+                                   
+                                    
+                                      
+                                      
+--100512                                      
+                                      
+ IF (                                                            
+      SELECT COUNT(*)                               
+      FROM   FA_PURJVHEAD                                                            
+      WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE = @Divcod AND                                                             
+       TRNTYPE = 'PU' AND TC = @tc1                                 
+     ) <= 0                                                            
+     BEGIN                                                            
+      INSERT INTO FA_PURJVHEAD                                                            
+     (                                                            
+       divcode, vocno, vocdt, tc, trntype, LBILLNO, LBILLDT,                                                             
+       PURTYPE                                                            
+     )                                                            
+      VALUES                                                            
+     (                                                            
+       @Divcod, @Pjvno1, @pjvdt1, @tc1, 'PU', @BILLNO1, @BILLDT1, @JVPURTYPE                                                            
+     )                                                            
+     END                                                                  
+        
+                                       
+      --CENVAT Updation                                                               
+                                                          
+      IF @Cenvt > 0 AND @CenvatFlg = 'Y'                                                    
+      BEGIN             
+          IF LEN(@CGL1) > 2 OR LEN(@CGL2) > 2                                                    
+          BEGIN                                                    
+              IF LEN(@CGL1) = 6 AND LEN(@CGL2) = 6 AND @CGL1 <> @CGL2                                                    
+           BEGIN                                                    
+                  SET @c1 = (@cenvt) / 2                                                                                                                                   
+                  SET @c2 = @cenvt - @c1                                                    
+              END                                        
+              ELSE                                                    
+              BEGIN                                           
+                  SET @c1 = (@cenvt)                                                    
+              END                                              
+                                       
+              IF ISNULL(@cenvt, 0) > 0                                                    
+            BEGIN                                                    
+                                                          
+                  IF (                                                    
+                         SELECT COUNT(*)                                                    
+                         FROM   FA_PURJVLINE         --FA_CGTRN                                                    
+                         WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND                                                     
+                                DIVCODE = @Divcod AND GLCODE = ISNULL(@CGL1, '')                                          
+                                and tc = @tc1                                            
+                     ) > 0                                                              BEGIN                      
+                      UPDATE FA_PURJVLINE         --FA_CGTRN                                                    
+                      SET    debit = ISNULL(debit, 0) + ISNULL(@c1, 0)                                                    
+                      WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND                                                     
+                             DIVCODE = @Divcod AND GLCODE = ISNULL(@CGL1, '')                                             
+                             and tc = @tc1                                         
+                  END                                          
+       ELSE                                                    
+                  BEGIN                                                                                      
+                                                                    
+                INSERT INTO FA_PURJVLINE                                                    
+                (                                                    
+                  divcode,tc,vocno, vocdt, vocsno, glcode, narration1,                                        
+                  debit, trntype, narration3,PURTYPE                                              
+                )                                       
+              VALUES                                                    
+                (                                                    
+                  @Divcod,@tc1,@Pjvno1, @pjvdt1, 1, @CGL1,'CENVAT',                                            
+                  ISNULL(@C1, 0), 'PU', @cgnarr3,@JVPURTYPE                                                    
+                )                                                    
+                                                  
+                                                                    
+                                          
+                  END                                                                                 
+                  IF @CGL1 <> @CGL2                                                    
+                      IF (                                                    
+                             SELECT COUNT(*)                                                    
+                             FROM  FA_PURJVLINE -- FA_CGTRN                                                    
+                             WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND                                                     
+                                    DIVCODE = @Divcod AND GLCODE = ISNULL(@CGL2, '')          and tc = @tc1                                  
+                         ) > 0                                                    
+                      BEGIN                                                    
+                          UPDATE FA_PURJVLINE --FA_CGTRN                                                    
+                          SET    debit = ISNULL(debit, 0) + ISNULL(@c2, 0)                                                    
+                          WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND                                                            DIVCODE = @Divcod AND GLCODE = ISNULL(@CGL2, '')                                              
+       and tc = @tc1                                        
+                      END                                                    
+   ELSE                                                    
+                      BEGIN                                                                         
+                                                                         
+                INSERT INTO FA_PURJVLINE                                                    
+                (                                                    
+                  divcode,tc,vocno, vocdt, vocsno, glcode, narration1,                                                     
+                  debit, trntype, narration3,PURTYPE                                                    
+                )                                                    
+              VALUES                                                    
+     (                                                    
+                  @Divcod,@tc1,@Pjvno1, @pjvdt1, 1, @CGL2,'CENVAT',                             
+                  ISNULL(@C2, 0), 'PU', @cgnarr3,@JVPURTYPE                                                    
+                )                                                                                                           
+                                                                  
+                                                                        
+                      END                                                    
+              END                                                    
+          END                                             
+      END                                                    
+                                                          
+      SELECT @PurchaseGL = glcode                                                    
+      FROM   fa_tcmas                                                    
+      WHERE  tc = @tc1                                                     
+-- Ass Amt                                                                                                                         
+                                                          
+      IF ISNULL(@AssAmt, 0) > 0 AND (@PurchaseGL IS NOT NULL AND @PurchaseGL <> '')                                                    
+      BEGIN                                                   
+          IF (                                                    
+                 SELECT COUNT(*)                                                    
+                 FROM   FA_PURJVLINE --FA_CGTRN                                                    
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                    
+                        @Divcod AND GLCODE = ISNULL(@PurchaseGL, '')                                                    
+                        and tc = @tc1                                  
+             ) <= 0                                                    
+              INSERT INTO FA_PURJVLINE --fa_cgtrn                                                
+                (                                       
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+                  debit, trntype, narration3,PURTYPE                                                            
+)                                                    
+           VALUES                                                    
+                (                                                    
+                  @Divcod, @PurchaseGL, @Pjvno1, @pjvdt1, 1, @tc1,                                                     
+                  'Ass Amt. '+@narration, ISNULL(@AssAmt, 0), 'PU', @cgnarr3,@JVPURTYPE                                                    
+                                    
+                )                                                  
+          ELSE                                                    
+              UPDATE FA_PURJVLINE --fa_cgtrn                                                    
+              SET    debit = ISNULL(debit, 0) + ISNULL(@AssAmt, 0)                                                    
+              WHERE  divcode = @divcod AND glcode = @PurchaseGL AND vocdt =                                                     
+                     @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype =                                                     
+                     'PU'                                                    
+      END                                                     
+                                                          
+      -- Cash Discount                                                                                                                          
+                                                          
+IF ISNULL(@CashDisAmount, 0) > 0 AND (@CashDisGL IS NOT NULL AND @CashDisGL <> '')                                                    
+      BEGIN                                                    
+IF (                                                    
+                 SELECT COUNT(*)                                                    
+                 FROM   FA_PURJVLINE --FA_CGTRN                                       
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                   
+                     @Divcod AND GLCODE = ISNULL(@CashDIsGL, '')                                                    
+                     and tc = @tc1                                  
+             ) <= 0                                                    
+              INSERT INTO FA_PURJVLINE --fa_cgtrn                                                    
+         (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+                  credit, trntype, narration3,PURTYPE                                                     
+                )                                                    
+              VALUES                                                    
+                (                                                    
+                  @Divcod, @CashDisGL, @Pjvno1, @pjvdt1, 1, @tc1,                                                     
+                  'Cash Discount '+@narration, ISNULL(@CashDisAmount, 0), 'PU', @cgnarr3,                                                    
+                  @JVPURTYPE                                            
+                )                                     
+          ELSE                                 
+              UPDATE FA_PURJVLINE --fa_cgtrn        
+--              SET    credit = ISNULL(credit, 0) + ISNULL(@CashDisAmount, 0)                                                    
+   SET    DEBIT = ISNULL(DEBIT, 0) - ISNULL(@CashDisAmount, 0)                                                    
+              WHERE  divcode = @divcod AND glcode = @CashDisgl AND vocdt =                                                     
+                     @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype = 'PU'                                                    
+      END                                                     
+                                                          
+      --Pack Amount                                                                                                            
+                                
+      IF ISNULL(@PackAmt, 0) > 0 AND (@PackGl IS NOT NULL AND @PackGl <> '')                                                    
+      BEGIN                                                    
+          IF (                                                    
+                 SELECT COUNT(*)                                                    
+             FROM   FA_PURJVLINE --FA_CGTRN                                                    
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                     
+                        @Divcod AND GLCODE = ISNULL(@PackGl, '')                 
+           and tc = @tc1                                  
+            ) <= 0                                                    
+              INSERT INTO FA_PURJVLINE --fa_cgtrn                                                    
+                (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+               debit, trntype, narration3,PURTYPE                                                    
+                )                                                    
+              VALUES                                                    
+                (                                                    
+                  @Divcod, @PackGl, @Pjvno1, @pjvdt1, 1, @tc1, 'Pack Amt '+@narration,                                                     
+                  ISNULL(@PackAmt, 0), 'PU', @cgnarr3,@JVPURTYPE                                                    
+                )                                                    
+          ELSE                                                    
+              UPDATE FA_PURJVLINE --fa_cgtrn                                                    
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@PackAmt, 0)                                                    
+              WHERE  divcode = @divcod AND glcode = @PackGl AND vocdt = @pjvdt1 AND     tc = @tc1 AND vocno = @pjvno1 AND trntype = 'PU'                                                    
+      END                 
+                                                          
+      --BED                                                                                                                           
+                                                          
+      IF ISNULL(@BEDAmount, 0) > 0 AND (@BEDgl IS NOT NULL AND @BEDgl <> '') AND                                                     
+         @CenvatFlg <> 'Y'                                           
+      BEGIN                                                    
+          IF (                                             
+                 SELECT COUNT(*)                                                    
+                 FROM   FA_PURJVLINE --FA_CGTRN                                                    
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                     
+                        @Divcod AND GLCODE = ISNULL(@BEDgl, '')                                                    
+                        and tc = @tc1                                  
+             ) <= 0                                    
+              INSERT INTO FA_PURJVLINE --fa_cgtrn                                                    
+                (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+                  debit, trntype, narration3,PURTYPE                                                    
+                )                                                    
+              VALUES                                                    
+                (                                                    
+                  @Divcod, @BEDgl, @Pjvno1, @pjvdt1, 1, @tc1, 'BED '+@narration,                                                     
+                  ISNULL(@BEDAmount, 0), 'PU', @cgnarr3,@JVPURTYPE                                                    
+                )                                                    
+          ELSE             
+              UPDATE FA_PURJVLINE         --fa_cgtrn      
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@BEDamount, 0)                     
+              WHERE  divcode = @divcod AND glcode = @BEDgl AND vocdt = @pjvdt1 AND                                                     
+                     tc = @tc1 AND vocno = @pjvno1 AND trntype = 'PU'                                   
+      END                                                     
+                                                          
+      --Cess                                                                                                                          
+      IF ISNULL(@CessAmount, 0) > 0 AND (@Cessgl IS NOT NULL AND @Cessgl <> '')                                    
+      BEGIN                                                    
+          IF (                                                    
+                 SELECT COUNT(*)                                                    
+                 FROM   FA_PURJVLINE --FA_CGTRN                                                    
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                     
+              @Divcod AND GLCODE = ISNULL(@Cessgl, '')                                                    
+                        and tc = @tc1                                  
+             ) <= 0                                                    
+             INSERT INTO FA_PURJVLINE --fa_cgtrn                                                    
+           (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+                  debit, trntype, narration3,PURTYPE                                                     
+)                                                    
+              VALUES                                                    
+                (                                                    
+                  @Divcod, @Cessgl, @Pjvno1, @pjvdt1, 1, @tc1, 'Cess'+@narration,                                                     
+                  ISNULL(@CessAmount, 0), 'PU', @cgnarr3,                                 
+                  @JVPURTYPE                                                             
+                )                                                    
+          ELSE                                                    
+              UPDATE FA_PURJVLINE           --fa_cgtrn                                                    
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@CessAmount, 0)                                                    
+              WHERE  divcode = @divcod AND glcode = @Cessgl AND vocdt = @pjvdt1 AND                                                     
+                     tc = @tc1 AND vocno = @pjvno1 AND trntype = 'PU'                                                    
+      END                                                                         
+                                  
+      --EDCess                                                                                                                          
+   IF ISNULL(@EDCessAmount, 0) > 0 AND (@EDCessgl IS NOT NULL AND @EDCessgl <> '') AND                                                     
+         @CenvatFlg <> 'Y'                                                    
+      BEGIN                                 
+          IF (                                                    
+                 SELECT COUNT(*)                                       
+                 FROM   FA_PURJVLINE --FA_CGTRN                                                    
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                     
+                        @Divcod AND GLCODE = ISNULL(@EDCessgl, '')                                                    
+                        and tc = @tc1                                  
+             ) <= 0                                              
+              INSERT INTO FA_PURJVLINE --fa_cgtrn                                                    
+    (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+                  debit, trntype, narration3,PURTYPE                                                             
+                )                                                    
+              VALUES                                                    
+                (                                                    
+                  @Divcod, @EDCessgl, @Pjvno1, @pjvdt1, 1, @tc1, 'EDCess '+@narration,                                                     
+                  ISNULL(@EDCessAmount, 0), 'PU', @cgnarr3,@JVPURTYPE                                                                   
+                )                                                    
+          ELSE                                             
+              UPDATE FA_PURJVLINE                             --fa_cgtrn                                      
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@EDCessAmount, 0)                                                    
+              WHERE  divcode = @divcod AND glcode = @EDCessgl AND vocdt =                                                     
+                     @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype =                                                     
+                     'PU'                                                    
+      END                          
+                                                          
+      --HSCess                                                                                                                          
+   IF ISNULL(@HSCessAmount, 0) > 0 AND (@HSCessgl IS NOT NULL AND @HSCessgl <> '') AND                                                     
+         @CenvatFlg <> 'Y'                                                    
+      BEGIN                                                    
+          IF (                                                    
+                 SELECT COUNT(*)                                                    
+                 FROM   FA_PURJVLINE           --FA_CGTRN                                                    
+     WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                             
+                        @Divcod AND GLCODE = ISNULL(@HSCessgl, '')                                                    
+                        and tc = @tc1                                  
+             ) <= 0                                                    
+              INSERT INTO FA_PURJVLINE           --fa_cgtrn                                              
+                (                                                    
+        divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                  
+                  debit, trntype, narration3,PURTYPE                                                               
+                )                                                    
+              VALUES                                                    
+                (                                                    
+                  @Divcod, @HSCessgl, @Pjvno1, @pjvdt1, 1, @tc1, 'HSCess '+@narration,                                                     
+                  ISNULL(@HSCessAmount, 0), 'PU', @cgnarr3,@JVPURTYPE                                                            
+           )                                                    
+          ELSE                                                    
+              UPDATE FA_PURJVLINE           --fa_cgtrn                                                    
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@HSCessAmount, 0)                                                    
+       WHERE  divcode = @divcod AND glcode = @HSCessgl AND vocdt =                                                     
+                     @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype =                                                     
+            'PU'                                                    
+      END                                                     
+                                               
+      --BAED Amt                                                                                                                          
+      IF ISNULL(@AedAmt, 0) > 0 AND (@AedGl IS NOT NULL AND @AedGl <> '') AND                                                     
+         @CenvatFlg <> 'Y'                                                    
+      BEGIN                                                    
+   IF (                                                    
+                 SELECT COUNT(*)                                                    
+                 FROM   FA_PURJVLINE           --FA_CGTRN                                                    
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                     
+                        @Divcod AND GLCODE = ISNULL(@AedGl, '')                                                    
+                        and tc = @tc1                                                          
+             ) <= 0                                                    
+              INSERT INTO FA_PURJVLINE          --fa_cgtrn                                                    
+                (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+     debit, trntype, narration3,PURTYPE                                       
+       )                                                    
+              VALUES                                                    
+                (                                                    
+                @Divcod, @AedGl, @Pjvno1, @pjvdt1, 1, @tc1, 'AED Amt '+@narration,                                                     
+           ISNULL(@AedAmt, 0), 'PU', @cgnarr3,@JVPURTYPE                                                             
+                )                                                    
+          ELSE                                                    
+              UPDATE FA_PURJVLINE --fa_cgtrn                                                    
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@AedAmt, 0)                                                    
+              WHERE  divcode = @divcod AND glcode = @AedGl AND vocdt = @pjvdt1 AND                   
+                     tc = @tc1 AND vocno = @pjvno1 AND trntype = 'PU'                                      
+      END                                                     
+                                                          
+      --Freight Amt                                                                                                                      
+      IF ISNULL(@FreightAmt, 0) > 0 AND (@FreightGl IS NOT NULL AND @FreightGl <> '')                                                    
+      BEGIN                                                    
+          IF (                                                    
+                 SELECT COUNT(*)                                                    
+               FROM   FA_PURJVLINE --FA_CGTRN                                                    
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                     
+                        @Divcod AND GLCODE = ISNULL(@FreightGl, '')                                                    
+                        and tc = @tc1                                  
+             ) <= 0                                                    
+              INSERT INTO FA_PURJVLINE --fa_cgtrn                                                    
+                (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+                  debit, trntype, narration3,PURTYPE                                                               
+                )                                                    
+              VALUES                                                    
+                (                                                    
+          @Divcod, @FreightGl, @Pjvno1, @pjvdt1, 1, @tc1,                                                 
+                  'Freight Amt '+@narration, ISNULL(@FreightAmt, 0), 'PU', @cgnarr3,                                          
+                  @JVPURTYPE                                                            
+                                                            
+                )                                                    
+          ELSE                                                    
+              UPDATE FA_PURJVLINE --fa_cgtrn                                                    
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@FreightAmt, 0)                                                   
+WHERE  divcode = @divcod AND glcode = @FreightGl AND vocdt =                                                     
+                     @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype =                                                     
+                     'PU'                                                    
+      END                                                     
+                                              
+      --Surcharge Amt                                                                                                                      
+      IF ISNULL(@SurAmt, 0) > 0 AND (@SurGl IS NOT NULL AND @SurGl <> '')                           
+      BEGIN                                                    
+          IF (                                                    
+                 SELECT COUNT(*)                                                    
+                 FROM   FA_PURJVLINE --FA_CGTRN                                                    
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                     
+                        @Divcod AND GLCODE = ISNULL(@SurGl, '')                                                    
+                        and tc = @tc1                                  
+) <= 0                                                    
+    INSERT INTO FA_PURJVLINE --fa_cgtrn                                                    
+            (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+                  debit, trntype, narration3,PURTYPE                                                    
+                )                                                    
+ VALUES                                                    
+                (                                                    
+                @Divcod, @SurGl, @Pjvno1, @pjvdt1, 1, @tc1,                                                     
+                  'Surcharge Amt '+@narration, ISNULL(@SurAmt, 0), 'PU', @cgnarr3 ,                                          
+                  @JVPURTYPE                                                            
+                )                                                    
+          ELSE                                                    
+              UPDATE FA_PURJVLINE       --fa_cgtrn                                                    
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@SurAmt, 0)                                                    
+              WHERE  divcode = @divcod AND glcode = @SurGl AND vocdt = @pjvdt1 AND                                                     
+                     tc = @tc1 AND vocno = @pjvno1 AND trntype = 'PU'                   
+      END                                                     
+                                                          
+      -- ASurcharge Amt                                                                              
+  IF ISNULL(@ASurAmt, 0) > 0 AND (@ASurGl IS NOT NULL AND @ASurGl <> '')                                                    
+   BEGIN                                                    
+          IF (                                                    
+                 SELECT COUNT(*)                                                    
+                 FROM   FA_PURJVLINE       --FA_CGTRN                                                    
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                    
+                        @Divcod AND GLCODE = ISNULL(@ASurGl, '')                                                    
+                        and tc = @tc1                                  
+             ) <= 0                                                    
+              INSERT INTO FA_PURJVLINE       --fa_cgtrn               
+                (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+                  debit, trntype, narration3 ,PURTYPE                                                              
+                )                                                    
+              VALUES                                                    
+                (                                                    
+                  @Divcod, @ASurGl, @Pjvno1, @pjvdt1, 1, @tc1,                                                     
+                'ASurcharge Amt '+@narration, ISNULL(@ASurAmt, 0), 'PU', @cgnarr3 ,                                          
+                  @JVPURTYPE                                                            
+                )                     
+          ELSE                                                    
+              UPDATE FA_PURJVLINE    --fa_cgtrn                                                    
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@ASurAmt, 0)                                
+WHERE  divcode = @divcod AND glcode = @ASurGl AND vocdt = @pjvdt1 AND                                                     
+   tc = @tc1 AND vocno = @pjvno1 AND trntype = 'PU'                                                    
+      END                                                     
+                                                          
+                                                          
+      --insurance                                                                                                                          
+      IF ISNULL(@insuranceAmount, 0) > 0 AND (@insurancegl IS NOT NULL AND @insurancegl <> '')                                                    
+      BEGIN                                                    
+          IF (                                                    
+                 SELECT COUNT(*)                                                    
+                 FROM   FA_PURJVLINE        --FA_CGTRN                                       
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                  
+                        @Divcod AND GLCODE = ISNULL(@insurancegl, '')                                                    
+                        and tc = @tc1                                  
+             ) <= 0                                                    
+              INSERT INTO FA_PURJVLINE           --fa_cgtrn                                                    
+                (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+                  debit, trntype, narration3,PURTYPE                                                      
+                )                                                    
+              VALUES                                                    
+                (                                                    
+                  @Divcod, @insurancegl, @Pjvno1, @pjvdt1, 1, @tc1,                                                     
+                  'insurance '+@narration, ISNULL(@insuranceAmount, 0), 'PU', @cgnarr3,                                          
+                  @JVPURTYPE                                                                              
+                )                                              
+          ELSE                                               
+              UPDATE FA_PURJVLINE               --fa_cgtrn                                                    
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@insuranceAmount, 0)                                                    
+              WHERE  divcode = @divcod AND glcode = @insurancegl AND vocdt =                                                     
+                     @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype =                                                     
+                     'PU'                                                     
+                     -- PRINT @tc1                                                    
+      END                                                     
+                                                          
+                                                          
+      --Others                                                         
+      IF ISNULL(@OthersAmount, 0) > 0 AND (@Othersgl IS NOT NULL AND @Othersgl <> '')                                                    
+      BEGIN                                                    
+          IF (                                                
+                 SELECT COUNT(*)                                                    
+                 FROM   FA_PURJVLINE       --FA_CGTRN                                                    
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                     
+                        @Divcod AND GLCODE = ISNULL(@Othersgl, '')                                                    
+                        and tc = @tc1                                  
+             ) <= 0                                                    
+              INSERT INTO FA_PURJVLINE      --fa_cgtrn                                                    
+                (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+                  debit, trntype, narration3 ,PURTYPE                                                              
+                )                                                    
+              VALUES                                                    
+                (                                  
+                  @Divcod, @Othersgl, @Pjvno1, @pjvdt1, 1, @tc1, 'Others '+@narration,                                                     
+                  ISNULL(@OthersAmount, 0), 'PU', @cgnarr3  ,                                          
+                  @JVPURTYPE                                                      
+                                                                
+                )                                                    
+          ELSE                                                    
+              UPDATE FA_PURJVLINE      --fa_cgtrn                   
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@OthersAmount, 0)                                                    
+              WHERE  divcode = @divcod AND glcode = @Othersgl AND vocdt =                                                     
+                     @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype =                              
+                     'PU'                                                    
+      END                                                     
+                                                          
+                                                          
+      --Freight2amt                                                                              
+      IF ISNULL(@Freight2Amt, 0) > 0 AND (@Freight2GL IS NOT NULL AND @Freight2GL <> '')                                                    
+      BEGIN                                                    
+          IF (                                                    
+                 SELECT COUNT(*)                                                    
+                 FROM   FA_PURJVLINE      --FA_CGTRN                                                    
+                WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                     
+                        @Divcod AND GLCODE = ISNULL(@Freight2GL, '')                                                    
+                        and tc = @tc1                                  
+             ) <= 0                                                    
+              INSERT INTO FA_PURJVLINE      --fa_cgtrn                                                    
+  (                                                    
+divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+                  debit, trntype, narration3 ,PURTYPE                                                              
+           )                                                    
+              VALUES                                                    
+                (                                                    
+                  @Divcod, @Freight2GL, @Pjvno1, @pjvdt1, 1, @tc1,                                                     
+                  'Freight2Amt '+@narration, ISNULL(@Freight2Amt, 0), 'PU', @cgnarr3,                                          
+                  @JVPURTYPE                                                                           
+                )                    
+          ELSE                                                    
+              UPDATE FA_PURJVLINE       --fa_cgtrn                                 
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@Freight2Amt, 0)                                                    
+              WHERE  divcode = @divcod AND glcode = @Freight2GL AND vocdt =                                                     
+                     @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype =                                                     
+                     'PU'                                                    
+                                                              
+          PRINT @Freight2Amt                                                    
+      END                                                     
+                                   
+      --Pack2Amt                          
+      IF ISNULL(@Pack2Amt, 0) > 0 AND (@Pack2GL IS NOT NULL AND @Pack2GL <> '')                                                    
+      BEGIN                                                    
+          IF (                                                    
+                 SELECT COUNT(*)                                                    
+                 FROM   FA_PURJVLINE       --FA_CGTRN                                                    
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                     
+                        @Divcod AND GLCODE = ISNULL(@Pack2GL, '')                                                    
+                        and tc = @tc1       
+             ) <= 0                                                    
+              INSERT INTO FA_PURJVLINE      --fa_cgtrn                                                    
+      (                                                    
+       divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                           
+                  debit, trntype, narration3,PURTYPE                                                               
+                )                                                    
+              VALUES                                                    
+                (                                                    
+                  @Divcod, @Pack2GL, @Pjvno1, @pjvdt1, 1, @tc1, 'Pack2Amt '+@narration,                                                     
+                  ISNULL(@Pack2Amt, 0), 'PU', @cgnarr3,                                
+                  @JVPURTYPE                                                            
+                )                                                    
+          ELSE                                                    
+              UPDATE FA_PURJVLINE      --fa_cgtrn                                                    
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@Pack2Amt, 0)                                                    
+              WHERE  divcode = @divcod AND glcode = @Pack2GL AND vocdt = @pjvdt1 AND                                                     
+                     tc = @tc1 AND vocno = @pjvno1 AND trntype = 'PU'                                                    
+                                                       
+          PRINT @Pack2Amt                                 
+      END                                                     
+                                                          
+      --Insurance2Amt                                                                                         
+      IF ISNULL(@Insurance2Amt, 0) > 0 AND (@Insurance2GL IS NOT NULL AND @Insurance2GL <> '')                                     
+      BEGIN                                                    
+          IF (                                                    
+                 SELECT COUNT(*)                                                    
+                 FROM   FA_PURJVLINE      --FA_CGTRN                                                    
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                     
+                        @Divcod AND GLCODE = ISNULL(@Insurance2GL, '')                                                    
+  and tc = @tc1                                  
+             ) <= 0                                                    
+              INSERT INTO FA_PURJVLINE      --fa_cgtrn                                                    
+                (                                                    
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                     
+                  debit, trntype, narration3,PURTYPE                                                               
+                )                                                    
+              VALUES                                             
+                (                                                    
+            @Divcod, @Insurance2GL, @Pjvno1, @pjvdt1, 1, @tc1,                                                     
+                  'Insurance2Amt '+@narration, ISNULL(@Insurance2Amt, 0), 'PU', @cgnarr3,       
+                  @JVPURTYPE                                                       
+                )                                                    
+          ELSE                                                    
+              UPDATE FA_PURJVLINE      --fa_cgtrn                                                    
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@Insurance2Amt, 0)                                 
+              WHERE  divcode = @divcod AND glcode = @Insurance2GL AND                                                     
+                     vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                     
+                     trntype = 'PU'                                                    
+                                                              
+          PRINT @Insurance2Amt                              
+      END                                                           
+              
+     --------------------------------------------------------------------------              
+   --CGST                                                                                                                         
+  IF ISNULL(@V_CGST_Amt , 0) > 0 AND (@v_CGSTGL  IS NOT NULL AND @v_CGSTGL  <> '')                                 
+      BEGIN                                                  
+          IF (                                                  
+                 SELECT COUNT(*)                                                  
+                 FROM   FA_PURJVLINE                                                  
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                   
+                       @Divcod AND GLCODE = ISNULL(@v_CGSTGL , '')                                                  
+                        and tc = @tc1                                
+             ) <= 0                                                  
+              INSERT INTO FA_PURJVLINE                                                  
+                (                                                  
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                   
+                  debit, trntype, narration3 ,PURTYPE                                                 
+                )                                                  
+              VALUES                                                  
+                (                                                  
+                  @Divcod, @v_CGSTGL , @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                                   
+                  ISNULL(@V_CGST_Amt , 0), 'PU', @cgnarr3,@JVPURTYPE                                                  
+  )                                                  
+          ELSE                                                  
+              UPDATE FA_PURJVLINE                                                    SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@V_CGST_Amt , 0)                                                  
+              WHERE  divcode = @divcod AND glcode = @v_CGSTGL  AND vocdt =                                                   
+                     @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype =                                                   
+                     'PU'                                                  
+      END                                                   
+                                                        
+       --SGST                                                                                                                         
+  IF ISNULL(@V_SGST_Amt , 0) > 0 AND (@v_SGSTGL  IS NOT NULL AND @v_SGSTGL  <> '')                                                  
+      BEGIN                                                  
+          IF (                                                  
+                 SELECT COUNT(*)                                                  
+                 FROM   FA_PURJVLINE                                                 
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                   
+                        @Divcod AND GLCODE = ISNULL(@v_SGSTGL , '')                                                  
+                        and tc = @tc1                                
+           ) <= 0                                                  
+              INSERT INTO FA_PURJVLINE                                                  
+                (                                                  
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                   
+                debit, trntype, narration3 ,PURTYPE                                                 
+                )                                                  
+              VALUES                                                  
+                (                                                  
+                  @Divcod, @v_SGSTGL , @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                                   
+                  ISNULL(@V_SGST_Amt , 0), 'PU', @cgnarr3,@JVPURTYPE                                                  
+  )                                                  
+          ELSE                                                  
+              UPDATE FA_PURJVLINE                                                  
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@V_SGST_Amt , 0)                                                  
+              WHERE  divcode = @divcod AND glcode = @v_SGSTGL  AND vocdt =                                                   
+                     @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype =                                                   
+                     'PU'                                                  
+      END                                                   
+                                                        
+      --IGST                                                                                                                         
+  IF ISNULL(@V_IGST_Amt , 0) > 0 AND (@v_IGSTGL  IS NOT NULL AND @v_IGSTGL  <> '')                                                  
+      BEGIN                                                  
+          IF (                                                  
+                 SELECT COUNT(*)                                                  
+     FROM   FA_PURJVLINE                                            
+                 WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND DIVCODE =                                                   
+                        @Divcod AND GLCODE = ISNULL(@v_IGSTGL , '')                                                  
+                        and tc = @tc1                                
+             ) <= 0                                                  
+              INSERT INTO FA_PURJVLINE                                                  
+                (                                                  
+                  divcode, glcode, vocno, vocdt, vocsno, tc, narration1,                                                   
+                  debit, trntype, narration3 ,PURTYPE                   
+                )                                                  
+              VALUES                                                  
+                (                                                  
+          @Divcod, @v_IGSTGL , @Pjvno1, @pjvdt1, 1, @tc1, @narration,                                                   
+                  ISNULL(@V_IGST_Amt , 0), 'PU', @cgnarr3,@JVPURTYPE                                                  
+  )                                                  
+          ELSE                                                  
+              UPDATE FA_PURJVLINE                                                  
+              SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@V_IGST_Amt , 0)                                                  
+              WHERE  divcode = @divcod AND glcode = @v_IGSTGL  AND vocdt =                                                   
+                     @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND trntype =                                                   
+                     'PU'                                                  
+      END                                                   
+                                          
+    -------------------------------------------------------------------------------------------------------              
+              
+              
+              
+              
+              
+              
+              
+                                                          
+      --RoundOff Amt                                                                                                      
+                                                          
+      IF (NOT ISNULL(@RoundOffAmt, 0) = 0) AND (@RoundOffGL IS NOT NULL AND @RoundOffGL <> '')                                                    
+      BEGIN                                                    
+          IF @RoundOffAmt > 0                                                    
+          BEGIN                                                    
+              IF (                                                    
+                     SELECT COUNT(*)                                                    
+                     FROM   FA_PURJVLINE      --FA_CGTRN                                                    
+                     WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND                                                     
+                            DIVCODE = @Divcod AND GLCODE = ISNULL(@RoundOffGL, '')         and tc = @tc1                                  
+                 ) = 0                                                    
+                  INSERT INTO FA_PURJVLINE      --fa_cgtrn                                                    
+                    (                                                    
+                      divcode, glcode, vocno, vocdt, vocsno, tc,                                                     
+                      narration1, debit, trntype, narration3,PURTYPE                                                               
+                    )                                            
+                  VALUES                                                    
+                    (                                                    
+                      @Divcod, @RoundOffGL, @Pjvno1, @pjvdt1, 1, @tc1,                                                     
+                      'RoundOff '+@narration, ABS(ISNULL(@RoundOffAmt, 0)), 'PU', @cgnarr3 ,                                          
+            @JVPURTYPE                                                     
+                    )                                                    
+              ELSE                                                    
+              BEGIN                                                    
+                  IF (                                                    
+                         SELECT ISNULL(debit, 0)                                                    
+                         FROM   FA_PURJVLINE      --FA_CGTRN                                                    
+                         WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND              
+                                DIVCODE = @Divcod AND GLCODE = ISNULL(@RoundOffGL, '')                                    
+                                and tc = @tc1                                                  
+ ) > 0                                                    
+  BEGIN                                                    
+                      UPDATE FA_PURJVLINE      --fa_cgtrn                                                    
+                      SET    Debit = ISNULL(DEBIT, 0) + ISNULL(@RoundOffAmt, 0)                                                    
+                      WHERE  divcode = @divcod AND glcode = @RoundOffGL AND                                                     
+                vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                     
+                             trntype = 'PU'                                   
+                  END                                                    
+                  ELSE                                                    
+                      UPDATE FA_PURJVLINE      --fa_cgtrn                                                    
+                      SET    credit = ISNULL(credit, 0) + ABS(ISNULL(@RoundOffAmt, 0))                                                    
+                      WHERE  divcode = @divcod AND glcode = @RoundOffGL AND                                                     
+                             vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                     
+         trntype = 'PU'                                                    
+              END                                                    
+          END                                                    
+          ELSE                                                    
+          BEGIN                                                    
+              IF (                                                    
+           SELECT COUNT(*)                                                    
+                    FROM   FA_PURJVLINE      --FA_CGTRN                                                    
+                     WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND                                                     
+                            DIVCODE = @Divcod AND GLCODE = ISNULL(@RoundOffGL, '')                                        
+                            and tc = @tc1                                              
+                 ) = 0                                                    
+                  INSERT INTO FA_PURJVLINE      --fa_cgtrn                                                    
+               (                                                    
+                      divcode, glcode, vocno, vocdt, vocsno, tc,                                                     
+                      narration1, Credit, trntype, narration3 ,                                          
+                      PURTYPE                                                                  )                                                    
+                  VALUES                                                    
+                    (                                                    
+                      @Divcod, @RoundOffGL, @Pjvno1, @pjvdt1, 1, @tc1,                                                     
+                      'RoundOff '+@narration, ABS(ISNULL(@RoundOffAmt, 0)), 'PU', @cgnarr3,                                          
+                      @JVPURTYPE                                             
+                    )                                                    
+            ELSE                                                    
+              BEGIN                                       
+                  IF (                                                    
+                         SELECT ISNULL(credit, 0)                                                    
+                         FROM   FA_PURJVLINE      --FA_CGTRN                                                    
+                         WHERE  VOCNO = @pjvno1 AND VOCDT = @pjvdt1 AND                                            
+                                DIVCODE = @Divcod AND GLCODE = ISNULL(@RoundOffGL, '')                                                    
+                     ) > 0                                                    
+                  BEGIN                                                    
+                     UPDATE FA_PURJVLINE      --fa_cgtrn                                                    
+                      SET    credit = ISNULL(credit, 0) + ABS(ISNULL(@RoundOffAmt, 0))                                                    
+                      WHERE  divcode = @divcod AND glcode = @RoundOffGL AND                                       
+  vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                     
+                             trntype = 'PU'                                                    
+                  END                                      
+                  ELSE                                                    
+                      UPDATE FA_PURJVLINE      --fa_cgtrn                                                    
+                      SET    debit = ISNULL(debit, 0) + ISNULL(@RoundOffAmt, 0)                                                    
+                      WHERE  divcode = @divcod AND glcode = @RoundOffGL AND                                                     
+                             vocdt = @pjvdt1 AND tc = @tc1 AND vocno = @pjvno1 AND                                                     
+                             trntype = 'PU'                           
+              END                                                    
+          END                                                    
+      END                                                   
+  END                                                      
+                                       
+                                               
+                                                
+ END 
+
+go

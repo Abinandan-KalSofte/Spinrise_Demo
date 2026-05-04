@@ -1,4 +1,4 @@
-import { Button, DatePicker, Form, Select, Space } from 'antd'
+import { Button, DatePicker, Form, Input, Select, Space } from 'antd'
 import { RedoOutlined, SearchOutlined } from '@ant-design/icons'
 import type { DepartmentLookup } from '../../types'
 import { getFYBounds, STATUS_OPTIONS } from './prListConfig'
@@ -30,6 +30,14 @@ export function PRFilterBar({ departments, loading, onSearch, onReset }: PRFilte
       initialValues={{ dateRange: [fyStart, fyEnd] }}
       style={{ rowGap: 8, flexWrap: 'wrap' }}
     >
+      <Form.Item name="prNo" style={{ marginBottom: 0 }}>
+        <Input
+          style={{ width: 110 }}
+          placeholder="PR No."
+          allowClear
+        />
+      </Form.Item>
+
       <Form.Item name="dateRange" style={{ marginBottom: 0 }}>
         <DatePicker.RangePicker
           style={{ width: 224 }}
@@ -56,7 +64,7 @@ export function PRFilterBar({ departments, loading, onSearch, onReset }: PRFilte
 
       <Form.Item name="status" style={{ marginBottom: 0 }}>
         <Select
-          style={{ width: 130 }}
+          style={{ width: 180 }}
           allowClear
           placeholder="Status"
           options={STATUS_OPTIONS}

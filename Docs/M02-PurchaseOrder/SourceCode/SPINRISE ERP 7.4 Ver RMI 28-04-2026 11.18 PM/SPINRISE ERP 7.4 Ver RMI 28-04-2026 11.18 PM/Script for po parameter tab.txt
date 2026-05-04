@@ -1,0 +1,9 @@
+
+  alter table rm_cont add
+  grade	varchar(32),
+MIC	varchar(32),
+strength	varchar(32),
+moisture	varchar(32),
+trash	varchar(32),
+freightperbale	numeric(9),
+rmpaycode	numeric(9,2)

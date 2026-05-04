@@ -1,0 +1,186 @@
+
+create View Vw_RM_PendingFreightBill
+as
+select a.DIVCODE,Fbillno,a.fbilldt ,a.pjno,a.pjdt ,a.supcd Slcode,b.slname,d.VARNAME ,c.lrno+'/'+c.LORRYNOS LORRYNOS
+,e.plname,sum(a.comm_wt) comm_wt ,
+sum(a.fbillvalue) fbillvalue,sum(c.FREIGHT) FREIGHT,sum(a.bales) bales,a.PlCode,0 ratekg from rm_lot a 
+inner join fa_slmas b on a.supcd=b.slcode 
+inner join rm_arrival c on a.ARRNO =c.ARRNO and a.arrdt=c.ARRDATE and a.divcode=c.divcode and a.varcode=c.varcode and a.contnum=c.contno and c.CONTDT=a.Contdate
+and a.SUPCD=c.supcd  
+inner join RM_VAR d on d.VARCODE =a.VARCODE 
+left join rm_plant e on e.PLCode=a.PlCode
+where isnull(frtentrapp,'N')<>'Y'  and a.PJNO is not null 
+group by Fbillno ,a.pjno,a.pjdt ,a.supcd,b.slname,d.VARNAME ,c.lrno+'/'+c.LORRYNOS ,e.plname,a.fbilldt,a.DIVCODE,a.PlCode
+
+
+go
+
+alter view VW_RM_Transporter
+as
+select b.slcode,b.slname from fa_slmas b 
+--inner join fa_slmas b on b.slcode=a.Transporter
+where b.slcode like 'c%'
+
+go
+
+
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[RM_FreightBillHD](
+	[Divcode] [varchar](2) NOT NULL,
+	[Docno] [numeric](4, 0) NOT NULL,
+	[Docdt] [datetime] NOT NULL,
+	[slcode] [varchar](8) NOT NULL,
+	[Billno] [varchar](15) NULL,
+	[Billdt] [datetime] NOT NULL,
+	MDApp_copy [varchar](40) NULL,
+	FreightBill_copy [varchar](40) NULL,
+	[TotalBales] [numeric](4, 0) NULL,
+	[TotalKgs] [numeric](14, 3) NULL,
+	[Value] [numeric](14, 2) NOT NULL,
+	[other_amt] [numeric](9, 2) NULL,
+	Freightbill_Amt  [numeric](9, 2) NULL,
+	FreightMill_Amt  [numeric](9, 2) NULL,
+	FreightApp_Amt [numeric](9, 2) NULL,	
+	GSTCode varchar(4),
+	[GSTPer] [numeric](9, 2) NULL,
+	[GSTAmt] [numeric](10, 2) NULL,
+	[CGSTAmt] [numeric](10, 2) NULL,
+	[SGSTAmt] [numeric](10, 2) NULL,
+	[IGSTAmt] [numeric](10, 2) NULL,
+	[TDS_Per] [numeric](9, 2) NULL,
+	[TDS_Amt] [numeric](9, 2) NULL,	
+	Roff_amt [numeric](9, 2) NULL,	
+	[Total_Amt] [numeric](14, 2) NOT NULL,	
+	[Remarks] [varchar](100) NULL,
+	[CreatedBy] [varchar](8) NULL,
+	[CreatedDate] [datetime] NULL,
+	[ModifiedBy] [varchar](8) NULL,
+	[ModifiedDate] [datetime] NULL,
+	[HostID] [varchar](15) NULL,
+	
+PRIMARY KEY CLUSTERED 
+(
+	[Docno] ASC,
+	[Docdt] ASC,
+	[Divcode] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+
+
+
+go
+
+
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[RM_FreightBillDT](
+	[Divcode] [varchar](2) NOT NULL,
+	[Docno] [numeric](5, 0) NOT NULL,
+	[Docdt] [datetime] NOT NULL,
+	DOCSNO numeric(4),
+	[Supcd] [varchar](8) NOT NULL,
+	[LRNo] [varchar](32) NOT NULL,
+	InvoiceNo varchar(20),
+	Invoicedt datetime,
+	PJVNO numeric(4) not null,
+	PJVDT datetime not null,
+	[PLCode] [varchar](4) NOT NULL,
+	[Rate] [numeric](9, 2) NOT NULL,
+	[Bales] [numeric](7, 0) NULL,
+	[TotalKgs] [numeric](14, 3) NULL,
+	[inv_Amt] [numeric](15, 2) NOT NULL,	
+	[FreightAmtBill] [numeric](12, 2) NULL,
+	[FreightAmtMill] [numeric](12, 2) NULL,
+	[FreightAmtApp] [numeric](12, 2) NULL,
+	CGSTPER[numeric](9, 2) NOT NULL,	
+    CGSTAmt [numeric](10, 2) NOT NULL,	
+	SGSTPER[numeric](9, 2) NOT NULL,	
+    SGSTAmt [numeric](10, 2) NOT NULL,	
+    IGSTPER[numeric](9, 2) NOT NULL,	
+    IGSTAmt [numeric](10, 2) NOT NULL,	
+    TDSPER[numeric](9, 2) NOT NULL,	
+    TDSAmt [numeric](10, 2) NOT NULL,	
+    TotalAmt [numeric](14, 2) NOT NULL
+
+PRIMARY KEY CLUSTERED 
+(
+	[Docno] ASC,
+	[Docdt] ASC,
+	[Divcode] ASC,
+	PJVNO asc,
+	PJVDT ASC,
+	DOCSNO asc
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+SET ANSI_PADDING OFF
+GO
+
+                 
+/*                        
+      Sp_Freightbill '02','1','2020-12-01'                    
+*/                        
+                        
+alter procedure Sp_Freightbill                             
+(                        
+@Divcode varchar (15),                        
+@docno varchar (15),                        
+@docdt varchar (15)                        
+)                        
+as                        
+Begin                        
+Select a.divcode,d.DIV_LOGO,d.DIV_PRINTNAME,d.DIV_UNITNAME,d.ADD1,d.ADD2,d.ADD3,d.CITY,d.PINCODE,d.STATENAME,                        
+d.PHONE1,d.gstinno,d.cinno,d.EMAIL,d.WEBADDR,a.slcode,a.docno as arrno,a.docdt as arrdt,a.billno,a.billdt,a.freightbill_amt,      
+a.freightmill_amt,a.freightapp_amt,b.inv_amt,e.slname as carname,b.LRNo as lrno,'' wname,'' as areaname,0 as prno,'' as prmark,      
+b.totalkgs as QUANTITY,a.divcode,c.slname,e.slname as agent,e.add1 as aadd1,e.add2 as aadd2,e.add3 as aadd3,e.city as acity,    
+e.state as astate,e.country as acountry,e.pin as apin,e.phone1 as aphone,e.email as aemail,e.gstinno as agstno,    
+e.gststatecode as agststcode,a.FirstFR_AppUser,a.FirstFR_AppDate,a.SecondFR_AppUser,a.SecondFR_AppDate,a.createdby,a.CreatedDate,    
+'' as contname,a.Total_amt,l.BILLNO,l.BILLDT,b.invoiceno,b.invoicedt,b.bales,f.PLName as plant,b.cgstper,b.sgstper,b.igstper,b.cgstamt,    
+b.sgstamt,b.igstamt,b.tdsper,b.tdsamt,a.roff_amt,a.value --f.VARNAME as varname,b.contno,b.contdt,b.netwt,b.ratecy,a.LORRYNOS as lorrynos,         
+                        
+From RM_FreightBillHD a                        
+Inner Join RM_FreightBillDT b on b.divcode = a.divcode and b.docno = a.docno and b.docdt = a.docdt and                        
+b.docno = a.docno and b.docdt = a.docdt                        
+inner Join fa_slmas c on c.slcode=a.slcode                        
+inner Join PP_DIVMAS d on d.DIVCODE=a.divcode                        
+inner Join fa_slmas e on e.slcode=a.slcode                        
+inner Join rm_plant f on f.PLCode=b.PLCode                   
+--LEFT join po_car p ON p.carcode=a.carcode              
+left join  po_car q ON q.Slcode=c.slcode          
+left join rm_lot l on l.divcode=a.divcode and l.arrno = a.docno and l.arrdt=a.docdt --and f.VARCODE= l.varcode           
+--l.fbillno = a.fbillno and l.fbilldt=a.fbilldt                        
+WHERE a.docno=@docno AND a.docdt=@docdt AND a.divcode=@divcode           
+                     
+End                        
+                
+--  select * from  RM_FreightBillHD             
+--  select * from RM_FreightBillDT          
+--  select * from fa_slmas      
+      
+      

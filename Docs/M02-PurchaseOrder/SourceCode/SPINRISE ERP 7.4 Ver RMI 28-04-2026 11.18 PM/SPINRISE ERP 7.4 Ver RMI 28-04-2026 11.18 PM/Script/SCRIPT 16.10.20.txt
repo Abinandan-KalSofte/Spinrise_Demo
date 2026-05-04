@@ -1,0 +1,2 @@
+
+alter table rm_cont add TCS_PER numeric(9,3)

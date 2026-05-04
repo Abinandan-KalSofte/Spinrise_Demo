@@ -1,0 +1,130 @@
+--------- Waste Product
+GO
+ALTER TABLE dbo.IG_RPRODUCT ADD CONSTRAINT
+	PK_IG_RPRODUCT PRIMARY KEY CLUSTERED 
+	(
+	DIVCODE,
+	PRODUCT_CODE
+	) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+
+GO
+ALTER TABLE dbo.IG_RPRODUCT SET (LOCK_ESCALATION = TABLE)
+GO
+------ Blend 
+
+GO
+CREATE TABLE dbo.Tmp_PPC_BLEND_MAS
+	(
+	BLEND_MASID int NOT NULL IDENTITY (1, 1),
+	DIVCODE varchar(2) NOT NULL,
+	UNITCODE varchar(2) NOT NULL,
+	BLEND_CODE varchar(10) NOT NULL,
+	BLEND_DESC varchar(20) NULL,
+	BLEND_TYPE varchar(1) NULL,
+	ejectbale numeric(9, 2) NULL,
+	effdate datetime NULL
+	)  ON [PRIMARY]
+GO
+ALTER TABLE dbo.Tmp_PPC_BLEND_MAS SET (LOCK_ESCALATION = TABLE)
+GO
+SET IDENTITY_INSERT dbo.Tmp_PPC_BLEND_MAS ON
+GO
+IF EXISTS(SELECT * FROM dbo.PPC_BLEND_MAS)
+	 EXEC('INSERT INTO dbo.Tmp_PPC_BLEND_MAS (BLEND_MASID, DIVCODE, UNITCODE, BLEND_CODE, BLEND_DESC, BLEND_TYPE, ejectbale, effdate)
+		SELECT BLEND_MASID, DIVCODE, UNITCODE, BLEND_CODE, BLEND_DESC, BLEND_TYPE, ejectbale, effdate FROM dbo.PPC_BLEND_MAS WITH (HOLDLOCK TABLOCKX)')
+GO
+SET IDENTITY_INSERT dbo.Tmp_PPC_BLEND_MAS OFF
+GO
+DROP TABLE dbo.PPC_BLEND_MAS
+GO
+EXECUTE sp_rename N'dbo.Tmp_PPC_BLEND_MAS', N'PPC_BLEND_MAS', 'OBJECT' 
+GO
+ALTER TABLE dbo.PPC_BLEND_MAS ADD CONSTRAINT
+	PK_PPC_BLEND_MAS PRIMARY KEY CLUSTERED 
+	(
+	BLEND_MASID,
+	DIVCODE,
+	UNITCODE,
+	BLEND_CODE
+	) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+
+GO
+
+-------- Fibre Discount Credit Note
+
+GO
+CREATE TABLE dbo.Tmp_RM_FibreDiscCNTXN
+	(
+	Divcode varchar(2) NOT NULL,
+	Docno numeric(9, 0) NULL,
+	Docdate datetime NULL,
+	SupCD varchar(8) NULL,
+	VSno numeric(2, 0) NOT NULL,
+	DocSno numeric(3, 0) NOT NULL,
+	Varcode varchar(10) NOT NULL,
+	DType varchar(4) NOT NULL,
+	DRate numeric(9, 2) NULL,
+	IPAdd varchar(16) NULL
+	)  ON [PRIMARY]
+GO
+ALTER TABLE dbo.Tmp_RM_FibreDiscCNTXN SET (LOCK_ESCALATION = TABLE)
+GO
+IF EXISTS(SELECT * FROM dbo.RM_FibreDiscCNTXN)
+	 EXEC('INSERT INTO dbo.Tmp_RM_FibreDiscCNTXN (Divcode, Docno, Docdate, SupCD, VSno, DocSno, Varcode, DType, DRate, IPAdd)
+		SELECT Divcode, Docno, Docdate, SupCD, VSno, DocSno, Varcode, DType, DRate, IPAdd FROM dbo.RM_FibreDiscCNTXN WITH (HOLDLOCK TABLOCKX)')
+GO
+DROP TABLE dbo.RM_FibreDiscCNTXN
+GO
+EXECUTE sp_rename N'dbo.Tmp_RM_FibreDiscCNTXN', N'RM_FibreDiscCNTXN', 'OBJECT' 
+GO
+ALTER TABLE dbo.RM_FibreDiscCNTXN ADD CONSTRAINT
+	PK_RM_FibreDiscCNTXN PRIMARY KEY CLUSTERED 
+	(
+	Divcode,
+	VSno,
+	DocSno,
+	Varcode,
+	DType
+	) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+
+GO
+
+------------------- Fibre Discount
+
+GO
+CREATE TABLE dbo.Tmp_RM_FibreRateDiscTXN
+	(
+	Divcode varchar(2) NOT NULL,
+	Docno numeric(9, 0) NULL,
+	Docdate datetime NULL,
+	SupCD varchar(8) NULL,
+	VSno numeric(2, 0) NOT NULL,
+	DocSno numeric(3, 0) NOT NULL,
+	Varcode varchar(10) NOT NULL,
+	DType varchar(4) NOT NULL,
+	DRate numeric(9, 2) NULL,
+	IPAdd varchar(16) NULL
+	)  ON [PRIMARY]
+GO
+ALTER TABLE dbo.Tmp_RM_FibreRateDiscTXN SET (LOCK_ESCALATION = TABLE)
+GO
+IF EXISTS(SELECT * FROM dbo.RM_FibreRateDiscTXN)
+	 EXEC('INSERT INTO dbo.Tmp_RM_FibreRateDiscTXN (Divcode, Docno, Docdate, SupCD, VSno, DocSno, Varcode, DType, DRate, IPAdd)
+		SELECT Divcode, Docno, Docdate, SupCD, VSno, DocSno, Varcode, DType, DRate, IPAdd FROM dbo.RM_FibreRateDiscTXN WITH (HOLDLOCK TABLOCKX)')
+GO
+DROP TABLE dbo.RM_FibreRateDiscTXN
+GO
+EXECUTE sp_rename N'dbo.Tmp_RM_FibreRateDiscTXN', N'RM_FibreRateDiscTXN', 'OBJECT' 
+GO
+ALTER TABLE dbo.RM_FibreRateDiscTXN ADD CONSTRAINT
+	PK_RM_FibreRateDiscTXN PRIMARY KEY CLUSTERED 
+	(
+	Divcode,
+	VSno,
+	DocSno,
+	Varcode,
+	DType
+	) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+
+GO
+-------------------

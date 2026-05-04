@@ -1,0 +1,56 @@
+
+--select ADDUSERNAME ,App_Date,*from rm_lot where entryuser is not null
+/*
+      SP_RM_Receiptnote '01','2020-06-30','110','110'
+*/
+
+create Procedure SP_RM_Receiptnote
+(
+@Divcode varchar(02),
+@Date varchar(15),
+@FMRNno varchar(15),
+@TMRNno varchar(15)
+)
+as
+Begin
+SELECT RM_ARRIVAL."ARRNO",RM_ARRIVAL."ARRDATE",RM_ARRIVAL."LORRYNOS",RM_ARRIVAL."FREIGHT",
+RM_LOT."LOTNO",isnull(RM_LOT."NETWT",'0')as NETWT,RM_LOT."BALES",RM_LOT."PLOTNO",
+isnull(RM_LOT."PNETWT",'0') as PNETWT,
+
+(select user_name from pp_passwd where divcode=@divcode and user_id=entryuser and module=6) ADDUSERNAME
+,RM_LOT."ADDUSERNAME" Inspect_user ,App_Date 'inspect_date'
+,RM_LOT."ADDDATE",
+isnull(RM_LOT."Comm_Wt",'0') AS Comm_Wt,rm_cont."CONTNO",rm_cont."CONTDT",PO_CAR."CARNAME",
+RM_AREA."AREANAME",FA_SLMAS_1."slname" as Agent,PP_DIVMAS."ADD1",PP_DIVMAS."ADD2",
+PP_DIVMAS."ADD3",PP_DIVMAS."CITY",PP_DIVMAS."PINCODE",PP_DIVMAS."PHONE1",PP_DIVMAS."EMAIL",
+PP_DIVMAS."WEBADDR",PP_DIVMAS."HOState",PP_DIVMAS."DIV_PRINTNAME",PP_DIVMAS."DIV_UNITNAME",
+PP_DIVMAS."DIV_LOGO",PP_DIVMAS."CINNO",PP_DIVMAS."GSTINNO",PP_DIVMAS."RMPur_Email",FA_SLMAS."slname",
+FA_SLMAS."add1" AS Sadd1,FA_SLMAS."add2" AS Sadd2,FA_SLMAS."add3"AS Sadd3,FA_SLMAS."city" AS Scity,
+FA_SLMAS."pin" AS Spin,FA_SLMAS."state" as sstate,FA_SLMAS."country" as scountry,FA_SLMAS."phone1" as sphone,
+FA_SLMAS."email" as semail,FA_SLMAS."GSTINNO" as SGSTINNO,FA_SLMAS."GSTSTATECODE" as SGSTCODE,rm_var."VARNAME",
+wh.WNAME as Weighment,Entryuser
+FROM RM_ARRIVAL RM_ARRIVAL 
+INNER JOIN RM_LOT RM_LOT ON RM_ARRIVAL."DIVCODE" = RM_LOT."DIVCODE" AND 
+RM_ARRIVAL."LOTNO" = RM_LOT."LOTNO" AND RM_ARRIVAL."lotdt" = RM_LOT."LOTDT" AND 
+RM_ARRIVAL."lottype" = RM_LOT."LOTTYPE" AND RM_ARRIVAL."SUPCD" = RM_LOT."SUPCD" AND          
+RM_ARRIVAL."VARCODE" = RM_LOT."VARCODE" AND RM_ARRIVAL."ARRNO" = RM_LOT."ARRNO" AND          
+RM_ARRIVAL."ARRDATE" = RM_LOT."ARRDT"
+LEFT JOIN dbo.rm_cont rm_cont ON RM_ARRIVAL."CONTNO" = rm_cont."CONTNO" AND  
+RM_ARRIVAL."CONTDT" = rm_cont."CONTDT" AND RM_ARRIVAL."SUPCD" = rm_cont."SUPCD" AND 
+RM_ARRIVAL."VARCODE" = rm_cont."VARCODE" AND RM_ARRIVAL."DIVCODE" = rm_cont."DIVCODE"
+
+LEFT OUTER JOIN dbo.PO_CAR PO_CAR ON RM_ARRIVAL."CARCODE" = PO_CAR."CARCODE" 
+LEFT JOIN dbo.RM_AREA RM_AREA ON RM_ARRIVAL."AREACODE" = RM_AREA."AREACODE" 
+LEFT OUTER JOIN dbo.FA_SLMAS_1 FA_SLMAS_1 ON rm_cont."BRKCD" = FA_SLMAS_1."slcode"
+INNER JOIN dbo.PP_DIVMAS PP_DIVMAS ON RM_LOT."DIVCODE" = PP_DIVMAS."DIVCODE"
+INNER JOIN dbo.FA_SLMAS FA_SLMAS ON RM_LOT."SUPCD" = FA_SLMAS."slcode" 
+LEFT JOIN dbo.rm_var rm_var ON   RM_LOT."VARCODE" = rm_var."VARCODE" AND RM_LOT."CATCD" = rm_var."CATCD"
+left join rm_weighnment wh on wh.code=RM_ARRIVAL.weignment
+
+Where RM_ARRIVAL.DIVCODE = @Divcode and RM_ARRIVAL.ARRDATE = @Date and RM_ARRIVAL.ARRNO between @FMRNno and @TMRNno
+ORDER BY RM_ARRIVAL."ARRNO" ASC,RM_LOT."LOTNO" ASC
+End
+    
+
+
+	

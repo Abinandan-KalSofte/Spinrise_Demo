@@ -1,0 +1,33 @@
+
+ -- Sp_Lot_allowance '01','1','2018-04-01','2019-03-31','12','2019-03-16'  
+      
+Create PROCEDURE Sp_Lot_allowance     
+   (      
+   @divcode varchar(5),      
+   @lno varchar(10),   
+   @lfdate varchar(15), 
+   @ltdate varchar(15), 
+   @asno varchar(15),
+   @bdate varchar(15 )      
+   )      
+   as      
+BEGIN
+Select DISTINCT a.Lotno,a.Lotdt,c.slname as supname,d.varname,a.GRSWGT,a.TAREWT,
+a.NETWT,a.MOITURE,a.RATECY,a.RATEKG,B.Bales, A.Issbal,B.ASNO,B.Adate,A.Dbno,A.Dbdt,
+A.DbAmt,A.Dbnarr,b.Aratecy,Akgs,a.TOTLANDCOST,B.DBAMT,ALLOWANCE,f.DelDESC,a.billno,a.billdt ,
+g.div_printname,g.div_unitname,0 allrcy
+ 
+From rm_lot a,rm_lotallowance b, fa_slmas c, rm_var d,rm_cont e,rm_delivery f,pp_divmas g  
+WHERE a.supcd=c.slcode and a.lotno=b.lotno and a.lotdt=b.lotdt and 
+a.varcode = d.varcode and a.divcode=b.divcode and e.DLYTYPE=f.Delcode and 
+a.DIVCODE=@divcode AND a.lotno=@lno and OPFLG='N' AND B.ASNO=@asno 
+and B.adate=@bdate and  A.LOTDT BETWEEN @lfdate AND @ltdate 
+AND LOTYEAR=YEAR(@lfdate) 
+ORDER BY B.ASNO,B.ADATE
+
+End
+
+--select dlytype,* from rm_cont
+--select * from rm_cont
+--select * from rm_lot
+

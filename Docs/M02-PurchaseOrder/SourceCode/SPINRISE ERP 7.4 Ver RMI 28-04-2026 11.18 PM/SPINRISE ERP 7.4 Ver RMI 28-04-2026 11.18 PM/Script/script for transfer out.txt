@@ -1,0 +1,74 @@
+
+-- Sp_Transfer_Reg '01','2019-04-01','2019-07-01','2019-04-01','TT'
+create   PROCEDURE Sp_Transfer_Reg
+(
+@divcode VARCHAR(25),
+@fdate VARCHAR(25),
+@tdate VARCHAR(25),
+@yfdate varchar(25),
+@Isstype varchar(25)
+)
+AS
+if @Isstype<>'A'
+BEGIN
+select distinct x.rdivcode,x.divname,x.lotno,x.lotdt,x.varcode, x.cntcd,x.netwt,
+sum(x.Value) value,count(x.baleno) bales,x.lotno,x.lotdt,x.isstype,
+x.description,x.division,x.borah,x.unitname,x.varname,x.actissnetwt
+
+ from (
+select distinct a.rdivcode,c.divname,b.lotno,b.lotdt,B.varcode, a.cntcd,round(sum(isswt),2) isswt,
+(case bblflg when 'B' then COUNT(B.BALENO)  end) bales,
+(case when bblflg  IN ('R','H') then COUNT(B.BALENO) end)  borah,
+round(sum(isswt),2) netwt,
+round(d.ratekg*sum(b.ACTISSKGS),2) Value ,b.baleno,A.isstype,f.description,f.divcode division,
+h.varname varname,g.netwtt as actissnetwt,ISNULL(c.DIV_UNITNAME,'')unitname
+
+ from rm_issh a inner join rm_issb b on  a.isstype=b.isstype and a.divcode=b.divcode and a.docno=b.docno and a.docdt=b.docdt 
+inner join pp_divmas c  on a.rdivcode=c.divcode
+inner join rm_lot d on b.lotno=d.lotno and b.lotdt=d.lotdt and b.catcd=d.catcd and a.divcode=d.divcode and b.divcode=d.divcode
+inner join rm_issuetype  e  on a.isstype=e.issue_code AND       b.isstype=e.issue_code 
+inner join    (select distinct ISNULL(rdivcode,'')"divcode", A.ISSTYPE,e.ISSUE_DESC AS description from 
+   rm_issh a,rm_issb b,pp_divmas  c,rm_lot d,RM_ISSUETYPE E where b.lotno=d.lotno and b.lotdt=d.lotdt and b.catcd=d.catcd  and a.isstype=b.isstype   and a.isstype=E.issUE_CODE   and B.isstype=E.issUE_CODE and E.isstype in ('T','J') and a.divcode=b.divcode and a.divcode=d.divcode and b.divcode=d.divcode and a.rdivcode=c.divcode  and  a.docno=b.docno and a.docdt=b.docdt  AND a.divcode=@divcode and a.docdt Between @fdate and @tdate) f  on f.divcode=a.rdivcode
+   inner join (
+select distinct a.rdivcode,b.lotno,b.lotdt,B.varcode, a.cntcd,round(Sum(isnull(b.isskgs,0)),2) netwt,bales=(case bblflg when 'B' then COUNT(B.BALENO)  end), borah=(case when bblflg  IN ('R','H') then COUNT(B.BALENO) end),round(Sum(isnull(b.actisskgs,0)),2) netwtt,Value=round((sum(isnull(b.actisskgs,0)))*ISNULL(D.RATEKG,0),2)  from rm_issh a,rm_issb b,pp_divmas c,rm_lot d,rm_issuetype f where A.isstype='TT' AND  b.lotno=d.lotno and b.lotdt=d.lotdt and b.catcd=d.catcd  and a.isstype=b.isstype   and a.isstype=f.issue_code and b.isstype=f.issue_code and f.isstype in ('T','J') and a.divcode=b.divcode and a.divcode=d.divcode and b.divcode=d.divcode and a.rdivcode=c.divcode   and a.docno=b.docno and a.docdt=b.docdt  AND a.divcode=@divcode and a.docdt Between @fdate and @tdate  and d.lotyear=year(@yfdate) group by a.rdivcode,b.lotno,b.lotdt,B.varcode, a.cntcd,bblflg,ratekg,D.RATECY ) g  on g.rdivcode=f.divcode
+    inner join rm_var h on  g.varcode=h.varcode 
+where  A.isstype='TT'  and e.isstype in ('T','J') AND a.divcode=@divcode and 
+a.docdt Between @fdate and @tdate and 
+  d.lotyear=year(@yfdate)  group by a.rdivcode,c.divname,b.lotno,b.lotdt,B.varcode, a.cntcd,bblflg,ratekg,baleno,a.isstype , h.varname,g.netwtt,f.description,f.divcode,c.DIV_UNITNAME
+
+) x where x.isstype=@Isstype  group by x.rdivcode,x.divname,x.lotno,x.lotdt,x.varcode, x.cntcd,x.netwt,
+x.lotno,x.lotdt,x.isstype,x.description,x.division,x.borah,x.varname,x.actissnetwt,x.unitname
+
+order by x.rdivcode,divname,x.lotno,x.lotdt
+END
+Else
+BEGIN
+select distinct x.rdivcode,x.divname,x.lotno,x.lotdt,x.varcode, x.cntcd,x.netwt,
+sum(x.Value) value,count(x.baleno) bales,x.lotno,x.lotdt,x.isstype,
+x.description,x.division,x.borah,x.unitname,x.varname,x.actissnetwt
+
+ from (
+select distinct a.rdivcode,c.divname,b.lotno,b.lotdt,B.varcode, a.cntcd,round(sum(isswt),2) isswt,
+(case bblflg when 'B' then COUNT(B.BALENO)  end) bales,
+(case when bblflg  IN ('R','H') then COUNT(B.BALENO) end)  borah,
+round(sum(isswt),2) netwt,
+round(d.ratekg*sum(b.ACTISSKGS),2) Value ,b.baleno,a.isstype,f.description,f.divcode division,
+h.varname varname,g.netwtt as actissnetwt,ISNULL(c.DIV_UNITNAME,'')unitname from rm_issh a inner join rm_issb b on  a.isstype=b.isstype and a.divcode=b.divcode and a.docno=b.docno and a.docdt=b.docdt 
+inner join pp_divmas c  on a.rdivcode=c.divcode
+inner join rm_lot d on b.lotno=d.lotno and b.lotdt=d.lotdt and b.catcd=d.catcd and a.divcode=d.divcode and b.divcode=d.divcode
+inner join rm_issuetype  e  on a.isstype=e.issue_code AND       b.isstype=e.issue_code 
+inner join    (select distinct ISNULL(rdivcode,'')"divcode", A.ISSTYPE,e.ISSUE_DESC AS description from 
+   rm_issh a,rm_issb b,pp_divmas  c,rm_lot d,RM_ISSUETYPE E where b.lotno=d.lotno and b.lotdt=d.lotdt and b.catcd=d.catcd  and a.isstype=b.isstype   and a.isstype=E.issUE_CODE   and B.isstype=E.issUE_CODE and E.isstype in ('T','J') and a.divcode=b.divcode and a.divcode=d.divcode and b.divcode=d.divcode and a.rdivcode=c.divcode  and  a.docno=b.docno and a.docdt=b.docdt  AND a.divcode=@divcode and a.docdt Between @fdate and @tdate) f  on f.divcode=a.rdivcode
+   inner join (
+select distinct a.rdivcode,b.lotno,b.lotdt,B.varcode, a.cntcd,round(Sum(isnull(b.isskgs,0)),2) netwt,bales=(case bblflg when 'B' then COUNT(B.BALENO)  end), borah=(case when bblflg  IN ('R','H') then COUNT(B.BALENO) end),round(Sum(isnull(b.actisskgs,0)),2) netwtt,Value=round((sum(isnull(b.actisskgs,0)))*ISNULL(D.RATEKG,0),2)  from rm_issh a,rm_issb b,pp_divmas c,rm_lot d,rm_issuetype f where A.isstype='TT' AND  b.lotno=d.lotno and b.lotdt=d.lotdt and b.catcd=d.catcd  and a.isstype=b.isstype   and a.isstype=f.issue_code and b.isstype=f.issue_code and f.isstype in ('T','J') and a.divcode=b.divcode and a.divcode=d.divcode and b.divcode=d.divcode and a.rdivcode=c.divcode   and a.docno=b.docno and a.docdt=b.docdt  AND a.divcode=@divcode and a.docdt Between @fdate and @tdate  and d.lotyear=year(@yfdate) group by a.rdivcode,b.lotno,b.lotdt,B.varcode, a.cntcd,bblflg,ratekg,D.RATECY ) g  on g.rdivcode=f.divcode
+ inner join rm_var h on  g.varcode=h.varcode 
+where  A.isstype='TT'  and e.isstype in ('T','J') AND a.divcode=@divcode and 
+a.docdt Between @fdate and @tdate and 
+  d.lotyear=year(@yfdate)  group by a.rdivcode,c.divname,b.lotno,b.lotdt,B.varcode, a.cntcd,bblflg,ratekg,baleno,a.isstype, h.varname,g.netwtt ,f.description,f.divcode,c.DIV_UNITNAME 
+
+) x   group by x.rdivcode,x.divname,x.lotno,x.lotdt,x.varcode, x.cntcd,x.netwt,
+x.lotno,x.lotdt,x.isstype,x.description,x.division,x.borah,x.varname,x.actissnetwt,x.unitname
+
+order by x.rdivcode,divname,x.lotno,x.lotdt
+END
+

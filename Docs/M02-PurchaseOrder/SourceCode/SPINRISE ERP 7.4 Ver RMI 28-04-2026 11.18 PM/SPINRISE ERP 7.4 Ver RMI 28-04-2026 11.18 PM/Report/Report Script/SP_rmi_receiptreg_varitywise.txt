@@ -1,0 +1,26 @@
+--SP_rmi_receiptreg_varitywise '01','2012-04-01','2012-08-01',2012  
+alter proc SP_rmi_receiptreg_varitywise  
+@Divcode as varchar(5),                  
+@FromDate as varchar(10),                  
+@Todate as varchar(10),                  
+@Lotyear as varchar(5)                  
+as                  
+SELECT     A.VARCODE, B.VARNAME, A.ARRDT, A.LOTNO, C.slname, SUM(A.BALES) AS Bales_qty,   
+CASE WHEN A.BBLFLG = 'B' THEN 'Bales' ELSE 'Borah' END AS UNIT, ROUND(SUM(A.favaourablewgt), 2) AS KGS,   
+AVG(A.RATEKG) AS 'RATE/CANDY', SUM(A.NETWT) * ROUND(ISNULL(A.RATECY, 0) / 355.6187, 2) AS 'VALUE',  
+ISNULL(A.RATECY, 0) AS ratecy, SUM(A.TOTLANDCOST) AS totlandcost, A.ARRNO, A.inwardno, A.inwarddate,  
+e.ORDQTY, e.CANDYRATE, e.CONTNO, e.CONTDT, SUM(A.LRFRTAMT) AS freight, d.PRNO AS SERIALNO,   
+PP_DIVMAS.DIVNAME, PP_DIVMAS.ADD1  
+FROM         RM_LOT AS A INNER JOIN  
+RM_ARRIVAL AS d ON A.ARRNO = d.ARRNO AND A.DIVCODE = d.DIVCODE AND A.ARRDT = d.ARRDATE AND   
+A.VARCODE = d.VARCODE AND A.LOTNO = d.LOTNO AND A.LOTDT = d.lotdt AND A.SUPCD = d.SUPCD INNER JOIN  
+RM_CONT AS e ON d.CONTNO = e.CONTNO AND d.CONTDT = e.CONTDT AND d.DIVCODE = e.DIVCODE AND  
+A.SUPCD = e.SUPCD AND d.VARCODE = e.VARCODE AND A.DIVCODE = e.DIVCODE INNER JOIN  
+RM_VAR AS B ON A.VARCODE = B.VARCODE INNER JOIN  
+FA_SLMAS AS C ON A.SUPCD = C.slcode INNER JOIN  
+PP_DIVMAS ON A.DIVCODE = PP_DIVMAS.DIVCODE  
+WHERE     (A.LOTDT BETWEEN @FromDate AND @Todate) AND (A.OPFLG = 'N') AND   
+(A.REJFLG = 'N') AND (A.LOTYEAR = @Lotyear) AND (A.DIVCODE = @Divcode)  
+GROUP BY A.VARCODE, B.VARNAME, A.ARRDT, A.LOTNO, C.slname, A.BBLFLG, A.RATECY, A.ARRNO, A.inwardno,   
+A.inwarddate, e.ORDQTY, e.CANDYRATE, e.CONTNO, e.CONTDT, d.PRNO, PP_DIVMAS.DIVNAME, PP_DIVMAS.ADD1  
+ORDER BY A.LOTNO

@@ -1,0 +1,13 @@
+
+Alter Proc SP_rmi_journalvoucher
+@Divcode as varchar(5),
+@Vocno as numeric(5),
+@VDate as varchar(15),
+@Tc as numeric(5)
+as
+select x.*,p.divname,p.add1,p.add3,p.city,p.phone1 from 
+(
+select 'A' as ord,slcode as sl,divcode,vocdt,trntype,tc,vocno,NARRATION1,debit,credit from fa_cstrn 
+union
+select 'Z' as ord,glcode as sl,divcode,vocdt,trntype,tc,vocno,NARRATION1,debit,credit from fa_cgtrn )x,pp_divmas p
+where x.divcode=p.divcode  and  x.trntype='PU' and tc=@Tc and x.divcode=@Divcode and vocno=@Vocno and vocdt=@VDate

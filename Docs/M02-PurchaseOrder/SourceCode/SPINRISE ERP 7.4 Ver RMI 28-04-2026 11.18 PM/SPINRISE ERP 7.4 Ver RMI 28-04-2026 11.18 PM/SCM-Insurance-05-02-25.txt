@@ -1,0 +1,26 @@
+/*
+	KSP_RMI_INSURANCE '01','',''
+*/
+alter PROCEDURE KSP_RMI_INSURANCE
+(
+@DIVCODE VARCHAR(02),
+@FDATE VARCHAR (15),
+@TDATE VARCHAR (15)
+)
+AS 
+BEGIN
+
+SELECT b.div_printname,b.div_unitname, date1,opbales as Openbale,opborah as OPENBOARH,optot as oPENTOTAL,optotkg as opkgs,
+opvalue as opvalue,isstotval as isstotval,recbale as Recpbale,recborah recpborah,rectot Rectotal,rectotkg as reckgs,
+recvalue as recvalue,oprecbale as oprebale,oprecborah opreborah,oprectot opretot,oprectotkg oprekgs,
+oprectotval as oprectotval,issbale as issbale,issboarh as issborah,isstot as isstotal,isstotkg as isskgs,
+isstotvalue as issval,isstran,isstrantot,isstrantotval,totbale as closbale,totborah as closborah,
+total as closbaleboar,totkg  as closing,totval as closingvalue,rejkg as rejectedkgs,rejvalue as rejectedval,
+adjkg as adjustedkgs,adjval as adjval,adjtype 
+
+FROM insurance a
+LEFT JOIN PP_DIVMAS b on b.DIVCODE='01'
+WHERE Date1 between @FDATE and @TDATE 
+ORDER BY date1 
+
+END

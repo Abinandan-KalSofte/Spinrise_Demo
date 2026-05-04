@@ -1,0 +1,9 @@
+alter table RM_ARRIVAL add LR_InDt datetime
+go
+alter table RM_ARRIVAL add  LR_InTime datetime
+go
+alter table RM_ARRIVAL add  LR_OutDt datetime
+go
+alter table RM_ARRIVAL add  LR_OutTime datetime
+go
+alter table RM_ARRIVAL add  cccode varchar(10)

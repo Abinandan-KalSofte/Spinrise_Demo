@@ -1,0 +1,39 @@
+
+
+
+
+CREATE TABLE [dbo].[RM_varGroup](
+	[GVarcode] [varchar](10) NULL,
+	[GVarName] [varchar](45) NULL
+) ON [PRIMARY]
+
+GO
+ alter table rm_var add  gvarcode varchar(10)  
+                              
+go
+
+alter proc Sp_Transfer_Reg
+(
+@divcode varchar(2),
+@fdate varchar(15),
+@tdate varchar(15),
+@yldate varchar(15),
+@isstype varchar(4)
+
+)as
+select  c.div_printname divname,c.div_unitname unitname, a.ISSTYPE,d.issue_desc Description,b.lotno,
+f.ABBR Division, v.VARNAME,b.lotno ,b.lotdt,case when isnull(l.BBLFLG,'B')='B' then count(b.baleno) else 
+0 end bales,case when isnull(l.BBLFLG,'B')='o' then count(b.baleno) else 0 end borah,sum(b.ACTISSKGS ) actissnetwt, sum(b.ACTISSKGS *l.RATEKG) value
+from rm_issh a 
+inner join rm_issb b on a.docno=b.docno and  a.docdt=b.docdt and a.divcode=b.divcode 
+left join rm_lot l on l.lotno=b.lotno and l.lotdt=b.lotdt and l.divcode=b.divcode and b.varcode=l.varcode and l.catcd=b.catcd and isnull(opflg,'N')<>'Y'
+left join rm_var v on v.varcode=b.varcode 
+inner join pp_divmas c on a.divcode=c.divcode
+left join rm_issuetype d on d.issue_code=a.ISSTYPE
+left join pp_divmas f on f.divcode=a.rdivcode
+where a.divcode=@divcode and a.docdt between @fdate and @tdate and( @isstype='A' or a.isstype=@isstype)  and d.isstype='T'
+group by  c.div_printname ,c.div_unitname , a.ISSTYPE,d.issue_desc ,b.lotno,
+f.ABBR , v.VARNAME,b.lotno ,b.lotdt,l.BBLFLG
+
+
+

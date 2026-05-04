@@ -1,0 +1,193 @@
+alter table rm_acont add PRVRatekg numeric(12,7)
+go
+alter table rm_acont add PRVORDQty numeric(12)
+go
+alter table rm_acont add PRVORDkgs numeric(15,3)
+go
+alter table rm_cont add PRVRatekg numeric(12,7)
+go
+alter table rm_cont add PRVORDQty numeric(12)
+go
+alter table rm_cont add PRVORDkgs numeric(15,3)
+
+go
+
+alter table rm_acont add PRVCANDYRATE numeric(15,7)  
+go
+alter table rm_cont add PRVCANDYRATE numeric(15,7)   
+go
+
+
+CREATE TABLE [dbo].[RM_Setup_Log](
+	[Divcode] [varchar](2) NULL,
+	[moduleNo] [int] NULL,
+	[Trans_Name] [varchar](30) NULL,
+	[Trans_Mod] [varchar](5) NULL,
+	[Trans_Host] [varchar](18) NULL,
+	[Trans_IPADD] [varchar](18) NULL,
+	[Trans_UserId] [varchar](12) NULL,
+	[Trans_date] [datetime] NULL,
+	[TC] [numeric](3) NULL,
+	[Code] [varchar](15) NULL,
+	[Description] varchar(80)NULL
+	)
+
+
+go
+
+alter table RM_Setup_Log add DrGlCode varchar(8)
+go
+alter table RM_Setup_Log add CrGlCode varchar(8)
+
+go
+
+alter table RM_Setup_Log add CATCD varchar(2)
+go
+alter table RM_Setup_Log add TAXCODE varchar(4)
+go
+alter table RM_Setup_Log add HSN varchar(8)
+go
+alter table RM_Setup_Log add Station varchar(18)
+go
+alter table RM_Setup_Log add StateCode varchar(4)
+go
+alter table RM_Setup_Log add HSN varchar(8)
+go
+alter table RM_Setup_Log add slcode varchar(35)
+go
+alter table RM_Setup_Log add gstinno varchar(15)
+go
+alter table RM_Setup_Log add Company varchar(25)
+go
+alter table RM_Setup_Log add City varchar(20)
+
+
+go
+
+
+
+create Proc KSP_OrderAmentment
+(
+--KSP_OrderAmentment '02','2019-04-01','2019-11-11',''
+@divcode varchar(2),
+@Fdate varchar(15),
+@Tdate varchar(15),
+@IPadd varchar(18)
+)
+as
+
+
+select distinct  a.AContNo AmdPONo,a.ACONTDT AmdPOdt, a.contdt,c.varname,b.slname as SupplierName,
+z.slname as BrokerName,v.areaname,
+cast(a.contno as varchar) as contno,round(bb.candyrate,0) AS CandyRate,
+unit=case when a.dlytype='F' then 'FOR' else 'SPOT' end,
+isnull(a.ordqty,0)ordqty,a.duedate,
+isnull(a.ordkgs,0)ordkgs,a.MillRefNo,a.PRVRatekg,a.PRVORDQty,a.PRVORDkgs,pp.DIV_PRINTNAME ,pp.DIV_UNITNAME 
+,round(a.candyrate,0)*isnull(a.ordkgs,0) Amdvalue,round(isnull(a.PRVRatekg,0),0)*isnull(isnull(bb.PRVORDkgs,0),0) PrvOrdValue
+from rm_acont a 
+inner join RM_CONT bb on a.CONTNO=bb.contno and bb.CONTDT=a.CONTDT and a.DIVCODE =bb.DIVCODE and a.VARCODE =bb.VARCODE 
+inner Join fa_slmas b on a.SUPCD=b.SLCODE 
+Left Join  fa_slmas z on a.brkcd =z.slcode  
+left JOin rm_var c on c.varcode=a.varcode 
+Left Join rm_area v on a.areacOdE=v.areacode 
+inner join pp_divmas pp on pp.DIVCODE=a.DIVCODE 
+where a.acontdt Between @Fdate and @Tdate
+ and a.divcode=@divcode
+ 
+go
+
+
+--KSP_RMI_Trans_PO_Amd '01','2016-09-01','46','SRICHERAN'                            
+--KSP_RMI_Trans_PO_Amd '02','2019-10-01','65','PALLAVAA'                        
+--KSP_RMI_Trans_PO_Amd  '01','2019-11-05','1','SRICHERAN'     
+                                        
+alter PROC [dbo].[KSP_RMI_Trans_PO_Amd]                                                                    
+(                                                                    
+ @Divcode VARCHAR(2),                                                                    
+ @OrdDate VARCHAR(25),                                                                    
+ @OrdNo VARCHAR(10),                                                                                 
+ @Dbname VARCHAR(25)                               
+)                                                                    
+AS                                                 
+                                              
+    begin                                                              
+SELECT                                                        
+a.sno,  a.acontNo,a.acontdt,                                                                
+A.CONTNO,A.CONTDT,A.SUPCD,A.ORDQTY,A.CANDYRATE,A.DLYTYPE,A.BBFLAG,                                
+--A.DIVCODE,                                
+a.MILLREFNO,                                                    
+A.duedate,A.PAYTERMS,A.rateunit,A.remarks,                                                                    
+A.contperson,rs.SEANAME season ,                                
+--A.MILLREFNO,                                
+A.FinalWeighment,A.TransPort,                                                                    
+B.slname 'B_Slname',B.add1 'B_Add1',B.add2 'B_Add2',B.add3 'B_Add3',B.city 'B_City',B.pin 'B_Pin',                                
+b.StateCode,                                                                    
+J.[NAME] 'B_STATE',B.COUNTRY B_COUNTRY,f.TNGST, f.TNGSTDT, f.CGSTDT, f.CGST,                                                                    
+C.slname 'D_Slname',C.add1 'D_Add1',C.add2 'D_Add2',C.add3 'D_Add3',C.city 'D_City',C.pin 'D_Pin',                                
+--c.StateCode,                                                              
+K.NAME 'D_STATE',C.Country 'D_COUNTRY',                                                              
+D.AREANAME,E.VARNAME,                                
+F.DIVCODE,                                
+F.DIVNAME,f.add1,F.ADD2,F.ADD3,F.CITY,                                                                    
+F.PINCODE,f.HOState,F.PHONE1,F.FAX,F.EMAIL,F.WEBADDR,                                
+--F.CGSTDT,F.CGST,                                
+F.TINNO,f.DIV_PRINTNAME,'' DIV_UNITNAME,F.DIV_LOGO,                                                                  
+F.HOADD2,                                
+--F.HOADD2,                                
+F.HOADD3,F.HOCity,F.HOPin,F.HOPhone,F.HOFax,F.HOEmail,                                                                  
+G.slname AS S_slname,G.add1 AS S_Add1,G.add2 AS S_add2,G.add3 AS S_Add3,G.city AS S_City,G.pin AS S_Pin,                                                                    
+G.state AS s_State,G.country AS S_Country,G.phone1 AS S_Phone1,g.TINNO AS s_tin,g.cgst AS s_cst,                                                                    
+G_1.slname as A_slname,G_1.add1 AS A_ADD1,G_1.add2 AS a_aDD2,G_1.add3 AS a_ADD3,G_1.city AS A_cITY,                                                                    
+G_1.pin AS A_PIN,G_1.state AS A_STATE,G_1.country AS A_COUNTRY,H.STAPLEN25,H.TRASH_PER,H.MICRONAIRE,H.MOITURE,                                                                    
+--H.REMARKS,                                
+H.GTEX,h.COLOURGRADE,h.POTYPE AS cont_terms,I.paydesc,(SELECT isnull(MicRange,'')MicRange FROM RM_PARAM)AS MicRange,                                
+--a.contperson,                
+h.trashavl ,h.moisAVL,h.plotno,h.prno,CurrCode,DeliveryTerms,ORDKGS,RATEKG,          
+CASE WHEN (ISNULL(ORDKGS,0)>0 AND RATEKG > 0) THEN ORDKGS*RATEKG End AS VALUE,
+CASE WHEN (ISNULL(PRVORDkgs,0)>0 AND PRVRatekg > 0) THEN PRVORDkgs*PRVRatekg End AS PreVALUE,
+CASE WHEN (ISNULL(PRVORDkgs,0)>0 AND PRVRatekg > 0) THEN PRVORDkgs*PRVRatekg End AS PreVALUE,
+ 0 TAXPER,                               
+BEDPER,CESSPER,HSCESSPER,CASHDISPER,SEDPER,                          
+f.gstinno as div_gstinno,f.gststatecode as div_gststatecode,f.pan as div_pan,                          
+g.gstinno as sup_gstinno,g.gststatecode as sup_gststatecode,g.pan as sup_pan,g.phone1 as sup_phone,                        
+E.hsn AS itemHsn,G.email AS S_email,a.CESSPER,                        
+  ( ((ISNULL(ORDKGS,0.00)*ISNULL(RATEKG,0.00))*isnull(A.cessper,0.00))/100) AS cessamt,    
+    ( ((ISNULL(PRVORDkgs,0.00)*ISNULL(PRVRatekg,0.00))*isnull(A.cessper,0.00))/100) AS Precessamt,                        
+isnull(A.cgstper,0.00) AS cgstper,isnull(A.sgstper,0.00) AS sgstper,isnull(A.igstper,0.00) AS igstper,isnull(A.insper,0.00) AS insper,                        
+((((ISNULL(ORDKGS,0.00)*ISNULL(RATEKG,0.00)))+( ((ISNULL(ORDKGS,0.00)*ISNULL(RATEKG,0.00)*isnull(A.CESSPER,0.00))/100) ))*isnull(A.cgstper,0.00))/100 AS cgstamt,                        
+((((ISNULL(ORDKGS,0.00)*ISNULL(RATEKG,0.00)))+( ((ISNULL(ORDKGS,0.00)*ISNULL(RATEKG,0.00)*isnull(A.CESSPER,0.00))/100) ))*isnull(A.sgstper,0.00))/100 AS sgstamt,                        
+((((ISNULL(ORDKGS,0.00)*ISNULL(RATEKG,0.00)))+( ((ISNULL(ORDKGS,0.00)*ISNULL(RATEKG,0.00)*isnull(A.CESSPER,0.00))/100) ))*isnull(A.igstper,0.00))/100 AS igstamt,  
+                     
+((((ISNULL(PRVORDkgs,0.00)*ISNULL(PRVRatekg,0.00)))+( ((ISNULL(PRVORDkgs,0.00)*ISNULL(PRVRatekg,0.00)*isnull(A.CESSPER,0.00))/100) ))*isnull(A.cgstper,0.00))/100 AS Precgstamt,                        
+((((ISNULL(PRVORDkgs,0.00)*ISNULL(PRVRatekg,0.00)))+( ((ISNULL(PRVORDkgs,0.00)*ISNULL(PRVRatekg,0.00)*isnull(A.CESSPER,0.00))/100) ))*isnull(A.sgstper,0.00))/100 AS Presgstamt,                        
+((((ISNULL(PRVORDkgs,0.00)*ISNULL(PRVRatekg,0.00)))+( ((ISNULL(PRVORDkgs,0.00)*ISNULL(PRVRatekg,0.00)*isnull(A.CESSPER,0.00))/100) ))*isnull(A.igstper,0.00))/100 AS Preigstamt,  
+
+
+((ISNULL(ORDKGS,0.00)*ISNULL(RATEKG,0.00))*isnull(A.INSPER,0.00))/100 AS insamt,                           
+ ((ISNULL(PRVORDkgs,0.00)*ISNULL(PRVRatekg,0.00))*isnull(A.INSPER,0.00))/100 AS preinsamt,                        
+B.GSTINNO AS B_GSTINNO,B.GSTSTATECODE AS B_GSTSTATECODE,  B.PAN AS B_PAN,B.PhoneNO AS B_PHONENO,                        
+C.GSTINNO AS D_GSTINNO,C.GSTSTATECODE AS D_GSTSTATECODE,  C.PAN AS D_PAN,C.PhoneNO AS D_PHONENO,              
+A.FIRST_APPDATE,A.SECOND_APPDATE,'R.HARIHARAN' as GMpur,'A.ARULSAMY' as VPfin,'S.RAMESH' as prepared,          
+a.prepdate as pdtime   ,a.AmdReason ,a.PRVRatekg,a.PRVORDQty,a.PRVORDkgs        
+                      
+                        
+                                
+FROM  RM_aCONT A                                                                     
+LEFT OUTER JOIN RM_BILLADD B ON  A.billadd = B.slcode                                                                    
+LEFT OUTER JOIN RM_deladd C ON  A.deladd = C.slcode                                                                    
+INNER JOIN RM_AREA D ON D.AREACODE=A.AREACODE                                                              
+INNER JOIN RM_VAR E ON A.VARCODE = E.VARCODE                                                                   
+INNER JOIN PP_DIVMAS F ON A.DIVCODE = F.DIVCODE                                                                    
+INNER JOIN FA_SLMAS G ON A.SUPCD = G.slcode                                                    
+left join rm_season rs on rs.SEACODE=a.SEASON                                                                    
+LEFT OUTER JOIN FA_SLMAS_1 G_1 ON A.BRKCD = G_1.slcode                                                                    
+LEFT OUTER JOIN RM_SAMPLE H ON A.DIVCODE = H.DIVCODE AND A.SNO = H.SNO                                                       
+AND A.SUPCD = H.SUPCODE --AND a.contdt  =h.date                                                          
+and A.VARCODE = H.VARCODE                                                                    
+LEFT OUTER JOIN rm_pmode I ON A.PAYMODE = I.paymode                                                                      
+LEFT OUTER JOIN IG_STATE J ON J.STATE_CODE=B.StateCode                                                              
+LEFT OUTER JOIN IG_STATE K ON K.STATE_CODE=C.StateCode                                       
+LEFT OUTER JOIN RM_RATEUNIT R ON A.rateunit=R.UNITNAME                                                           
+WHERE F.DIVCODE = @Divcode AND A.aCONTDT=@OrdDate AND A.aCONTNO = @OrdNo AND A.DIVCODE = @Divcode                    
+END                   
+

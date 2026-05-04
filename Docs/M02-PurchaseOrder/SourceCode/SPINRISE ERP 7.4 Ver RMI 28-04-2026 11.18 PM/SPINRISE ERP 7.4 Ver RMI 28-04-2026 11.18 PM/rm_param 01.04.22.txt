@@ -1,0 +1,4 @@
+
+alter table rm_param add Rate_ROff tinyint
+alter table rm_param add DutyInsurance_GST  tinyint
+alter table RM_CINVhd add Delvery_ID varchar(15)

@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { lookupApi } from '../api/lookupApi'
+import { lookupApi } from '@/shared/lookup/api/lookupApi'
 import type {
   DepartmentLookup,
   EmployeeLookup,

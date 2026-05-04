@@ -1,0 +1,13 @@
+
+ALTER PROCEDURE sp_purchasedaybook @fdate AS varchar(10),@tdate AS varchar(10),@divcode AS varchar(10),@lotyear AS varchar(10) AS 
+select lotdt,arrdt,z.varname as varcode,billno,billdt,supcd,lotno,f.state_code,s.state_code as divstate,
+bales= (case when BBLFLG ='B' then bales ELSE 0 end),borah=(case when bblflg<>'B' then bales ELSE 0 end),
+round(netwt,2) as netwt,a.ratekg as rate_qntl,a.pjamt as itemvalue,a.pjamt as insamt,
+vatamt= (case when f.state_code=s.state_code then isnull(vatamt,0) else 0 end),
+cstamt=(case when f.state_code<>s.state_code then isnull(vatamt,0) else 0 end),
+isnull(a.fbillvalue,0) as fbillvalue ,isnull(a.totlandcost,0) as totlandcost, isnull(lrfrtamt, 0) As Freight
+,a.SuppBillvalue AS Purchase_Value 
+from  rm_lot a ,rm_var z, fa_slmas f, pp_divmas s  
+where a.divcode=@divcode and a.opflg in('N','n') and a.lotyear=@lotyear and lotdt BETWEEN @fdate AND @tdate 
+and pjdt BETWEEN @fdate AND @tdate and a.varcode=z.varcode and pjno is not null and a.supcd=f.slcode 
+and a.divcode=s.divcode ORDER BY LOTDT , arrdt, varcode

@@ -1,0 +1,20 @@
+USE [Pallavaa]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+create trigger [dbo].[DeleteVariety] on [dbo].[RM_Var] for delete as declare 
+@VARCODE varchar(20),@VARNAME varchar(50)
+bEgin
+select @VARCODE=VARCODE,@VARNAME=VARNAME froM deleted  
+
+delete from  Pallavaa ..RM_Var  where VARCODE=@VARCODE 
+delete from Sricheran ..RM_Var  where VARCODE=@VARCODE 
+end
+
+GO
+

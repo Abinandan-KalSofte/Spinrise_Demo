@@ -1,0 +1,2 @@
+
+alter table ig_rINVdt add MixRate decimal(7,3)

@@ -1,0 +1,3 @@
+
+ALTER TABLE masterlen ALTER COLUMN ptypecottonsales VARCHAR(8)
+GO

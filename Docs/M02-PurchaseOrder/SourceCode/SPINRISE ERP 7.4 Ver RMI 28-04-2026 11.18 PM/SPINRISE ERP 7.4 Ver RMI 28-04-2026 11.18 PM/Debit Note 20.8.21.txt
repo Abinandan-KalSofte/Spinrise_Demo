@@ -1,0 +1,39 @@
+/*  
+        KSP_RMI_Debitnote '01','21000001','2021-08-19','2021'   
+*/                                   
+create Procedure KSP_RMI_Debitnote                                          
+@Divcode Varchar(2),                                          
+@InvNo Varchar(10),                                          
+@InvDt Varchar(10),                                              
+@Lotyear VARCHAR(10),
+@invtype Varchar(4)
+as                                      
+Begin                     
+Select pd.div_logo,pd.div_printname,pd.div_unitname,pd.add1,pd.add2,pd.add3,pd.city,pd.pincode,pd.statename,pd.HOCountry,  
+pd.gstinno,pd.gststatecode,pd.cinno,pd.email,pd.webaddr,pd.phone1,Sl.slname,Sl.add1 as sadd1,Sl.add2 as sadd2,Sl.add3 as sadd3,  
+Sl.city as scity,Sl.pin as spin,Sl.state as sstate,Sl.gstinno as sgstinno,Sl.gststatecode as sstatecode,  
+Sl.slname as cname,Sl.add1 as cadd1,Sl.add2 as cadd2,Sl.add3 as cadd3,Sl.city as ccity,Sl.pin as cpin,Sl.state as cstate,  
+Sl.gstinno as cgstinno,Sl.gststatecode as cstatecode,hd.INV_NO as docno,Hd.date as docdt,l.billno as billsno,l.billdt as billsdt,  
+Vr.VarName as pdesc,dt.hsn as hsncode,'KGS' as uom,Dt.inv_kgs as qty,Dt.RAte_ex as rate,Dt.VALUE as value,dt.cgstper,dt.sgstper,dt.igstper,  
+hd.cgstamt as cgst,hd.sgstamt as sgst,hd.igstamt as igst,hd.RND_OFF as roff, hd.TOTAL_AMT as totamt,hd.Remarks,  
+k.name as bname,k.branch as bbranch,k.ADD1 as badd,k.Acno as baccno,k.IFSCCode as ifsc,hd.matl_value,l.plotno,l.lotno as milllotno,  
+l.BALES,ar.prno                                             
+FROM RM_CinvHd hd                                                 
+INNER JOIN RM_Cinvdt dt ON Hd.Divcode=dt.Divcode and Hd.Inv_Type=Dt.Inv_Type and Hd.Inv_No=dt.Inv_No                                                
+LEFT OUTER JOIN RM_Lot L ON L.LotNo=Dt.PRODUCT_CODE and L.Divcode=Dt.Divcode  and l.LOTYEAR=@Lotyear  and dt.lotdt =l.LOTDT                                          
+INNER JOIN Fa_SlMas Sl ON Sl.SlCode=Hd.Cust_Code                                                
+INNER JOIN RM_Var Vr ON Vr.VarCode=L.VarCode --and vr.hsn=L.hsn                                            
+LEFT OUTER JOIN PP_DIVMAS pd ON pd.DIVCODE = hd.DIVCODE                                           
+LEFT OUTER JOIN po_car Car ON Car.CARCODE=Hd.Carrier_Code                                        
+LEFT OUTER JOIN IG_BANK k ON k.BANK_CODE = hd.BANK_CODE                                            
+LEFT JOIN IG_INVTYPE INVTYPE ON INVTYPE.DIVCODE=hd.DIVCODE AND INVTYPE.INV_TYPE=hd.INV_TYPE   
+LEFT JOIN rm_arrival ar on ar.DIVCODE=l.divcode and ar.lotno=l.lotno and ar.lotdt=l.lotdt and ar.ARRNO =l.ARRNO and ar.ARRDATE =l.ARRDT and ar.VARCODE =l.VARCODE             
+WHERE Hd.Inv_No=@InvNo and Hd.Date=@InvDt and Hd.Divcode=@Divcode and l.LOTYEAR=@Lotyear   and hd.INV_TYPE=@invtype          
+END   
+  
+--select * from RM_Cinvdt  
+--select * from rm_arrival  
+  
+  
+  go
+  

@@ -1,0 +1,34 @@
+
+CREATE TRIGGER [dbo].[DELFA_SLMAS] ON [dbo].FA_SLMAS FOR DELETE AS                                     
+DECLARE                                                                  
+@SLCODE varchar(10),  
+@sno int  
+BEGIN    
+  
+	select @SLCODE=SLCODE from deleted  
+  
+	set @sno=(select count(SLCODE) from 
+	(
+		SELECT SLCODE SLCODE FROM RM_ISSH where SLCODE=@SLCODE		
+			UNION ALL
+		SELECT SLCODE SLCODE FROM RM_OutpassHd where SLCODE=@SLCODE		
+			UNION ALL
+		SELECT SUPCD SLCODE FROM RM_CONT where SUPCD=@SLCODE		
+			UNION ALL
+		SELECT SUPCD SLCODE FROM RM_ARRIVAL where SUPCD=@SLCODE		
+			UNION ALL
+		SELECT SUPCD SLCODE FROM RM_LOT where SUPCD=@SLCODE		
+			UNION ALL
+		SELECT CUST_CODE SLCODE FROM RM_CINVHD where CUST_CODE=@SLCODE			
+			UNION ALL
+		SELECT AGENT_CODE SLCODE FROM RM_CINVHD where AGENT_CODE=@SLCODE		
+			UNION ALL
+		SELECT AGENTCODE SLCODE FROM RM_DespatchHD where AGENTCODE=@SLCODE				
+	) x  
+	where SLCODE=@SLCODE)  
+	if isnull(@sno,0)> 0    
+	begin   
+		rollback  
+		RAISERROR ('Dependencies exists. Unable to delete the record at this time', 16 ,10)	
+	end   
+END

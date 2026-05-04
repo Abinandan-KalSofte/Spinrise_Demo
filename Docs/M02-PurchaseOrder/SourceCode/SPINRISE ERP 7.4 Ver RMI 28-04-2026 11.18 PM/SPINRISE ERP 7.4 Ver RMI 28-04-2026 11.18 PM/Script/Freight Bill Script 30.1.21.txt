@@ -1,0 +1,49 @@
+ alter table RM_FreightBillHD add PaidDate Date
+ go
+
+create view VW_RM_FreightBillPaid
+as
+select  Distinct  h.divcode ,h.DocNo ,h.Docdt ,s.slname ,Billno ,Billdt ,h.Slcode 
+ FROM  RM_FreightBillHD h,RM_FreightBillDT l, FA_SLMAS s 
+ Where  h.divcode = l.divcode and h.DocNo = l.DocNo And h.Docdt = l.Docdt 
+ and h.Slcode = s.slcode 
+ and PaidDate is null
+ go
+/*      
+    KSP_FreightBillList '02','2020-12-01','2020-12-09','192.168.3.8','a'      
+*/      
+      
+alter Proc KSP_FreightBillList        
+(        
+@divcode varchar(2),        
+@Fdate varchar(10),        
+@tdate Varchar(10),       
+@ipAdd varchar(20) ,
+@BillStatus varchar(2)       
+)        
+as        
+Begin    
+Select a.Docno ,a.Docdt ,a.Billno ,a.Billdt ,c.slname 'Transpoter',d.CARNAME carrier,        
+f.DIV_PRINTNAME ,DIV_UNITNAME ,c.add1 tadd1,c.add2 Tadd2,c.add3 tadd3,c.city tcity,c.pin tpin,        
+f.add1 ppadd1,f.add2 ppadd2,f.add3 ppadd3,f.city ppcity,f.pincode pppin,g.slname 'Supplier',        
+b.LRNo,InvoiceNo,Invoicedt,PJVNO,PJVDT,p.plname 'Plant',Bales,b.TotalKgs,inv_Amt,FreightAmtBill,FreightAmtMill,FreightAmtApp,CGSTPER,        
+b.CGSTAmt,SGSTPER,b.SGSTAmt,IGSTPER,b.IGSTAmt,b.TDSPER,b.TDSAmt,b.TotalAmt,    
+case when isnull(a.FirstFR_AppFlg,'N') = 'Y' then 'Approved' else '' end as app1,    
+case when isnull(a.SecondFR_AppFlg,'N') = 'Y' then 'Approved' else '' end as app2   
+,convert(varchar,a.PaidDate,103) paidon   
+    
+From RM_FreightBillHD a         
+inner join RM_FreightBilldt b on a.docno=b.docno and a.Divcode=b.Divcode  and a.Docdt =b.Docdt         
+inner join fa_slmas c on c.slcode=a.slcode         
+left join fa_slmas g on g.slcode=b.Supcd        
+inner join po_car d on d.CARCODE =a.Carcode         
+left join rm_plant p on p.plcode=  b.PLCode        
+inner join pp_divmas f on f.divcode=a.divcode        
+where a.docdt between  @Fdate and @Tdate  and a.Divcode=@divcode     
+  and a.carcode in (select supcd from RM_ProductprintDet where divcode=@divcode and IPadd=@ipAdd )  
+  and 
+  ((@BillStatus='P' and a.PaidDate is null) or (@BillStatus='A' ) or (@BillStatus='C' and a.PaidDate is not null))
+End    
+    
+--select * From RM_FreightBillHD  
+  

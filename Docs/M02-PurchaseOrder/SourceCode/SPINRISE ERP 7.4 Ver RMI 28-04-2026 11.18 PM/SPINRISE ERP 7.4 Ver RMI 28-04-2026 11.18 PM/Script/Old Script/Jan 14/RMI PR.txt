@@ -1,0 +1,104 @@
+alter PROCEDURE [dbo].[SP_PRToPO_RMIFilter]                        
+ -- Add the parameters for the stored procedure here                        
+ @DIVCODE AS VARCHAR(2),                          
+ @DOCFDT AS Datetime ,                
+ @cnt as numeric(5,0),              
+ @indent AS VARCHAR(20),              
+ @itemcode AS VARCHAR(10),              
+ @itemname AS VARCHAR(250)               
+AS                        
+BEGIN                        
+ -- SET NOCOUNT ON added to prevent extra result sets from                        
+ -- interfering with SELECT statements.                        
+ SET NOCOUNT ON;                       
+ SET @ITEMCODE = '%'+@ITEMCODE+'%'              
+ SET @INDENT = '%'+@INDENT+'%'              
+ SET @ITEMNAME = '%'+@ITEMNAME+'%'               
+           
+  if @cnt =1                 
+  begin                         
+  SELECT a.PRNO as 'Indent No.',a.PRDATE AS 'Indent Date',A.varcode 'Varity Code',              
+ varname 'Description',Packtype,ISNULL(qtyind,0)-ISNULL(qtyord,0) BALQTY,    
+ ISNULL(qtyindKG,0)-ISNULL(qtyordKG,0) BALQTYKG,d.ename,PrSNo FROM              
+ Rm_PRL A  INNER JOIN rm_var B ON  A.varcode = B.varcode INNER JOIN  RM_prh c ON              
+   a.divcode=c.divcode  AND a.prno=c.prno AND  a.prdate=c.prdate     
+   left outer join pr_emp d              
+    ON d.divcode = a.divcode and c.REQNAME =d.empno     
+ WHERE                 
+     isnull(c.APPFLG,'N') ='A'
+     AND   a.divcode=@DIVCODE and  ISNULL(qtyind,0)-ISNULL(QTYORD,0)>0 and isnull(qtyord,0)-isnull(qtyrec,0)>=0                 
+    and a.Prdate <=@DOCFDT     
+   and a.varcode LIKE @itemcode AND a.prno LIKE @INDENT AND b.VARNAME  LIKE @itemname              
+        
+   ORDER BY A.PRNO,A.PRDATE,prsno          
+         
+              
+      
+  end                    
+  else                
+     begin                
+      
+  SELECT a.PRNO as 'Indent No.',a.PRDATE AS 'Indent Date',A.varcode 'Varity Code',              
+ varname 'Description',Packtype,ISNULL(qtyind,0)-ISNULL(qtyord,0) BALQTY,    
+ ISNULL(qtyindKG,0)-ISNULL(qtyordKG,0) BALQTYKG,d.ename,PrSNo FROM              
+   Rm_PRL A  INNER JOIN rm_var B ON  A.varcode = B.varcode     
+   INNER JOIN  RM_prh c ON              
+   a.divcode=c.divcode  AND a.prno=c.prno AND  a.prdate=c.prdate     
+   left outer join pr_emp d              
+    ON d.divcode = a.divcode and c.REQNAME =d.empno     
+ WHERE                 
+    isnull(c.APPFLG,'N') ='A'
+     AND   a.divcode=@DIVCODE and  ISNULL(qtyind,0)-ISNULL(QTYORD,0)>0 and isnull(qtyord,0)-isnull(qtyrec,0)>=0                 
+     and a.Prdate <=@DOCFDT     
+     and a.varcode LIKE @itemcode AND a.prno LIKE @INDENT AND b.VARNAME  LIKE @itemname              
+     ORDER BY b.varname,a.PRNO,A.PRDATE,prsno                    
+    end                
+                
+END   
+
+go
+
+alter PROCEDURE [dbo].[SP_PRToPO_RMI]                        
+ -- Add the parameters for the stored procedure here                        
+ @DIVCODE AS VARCHAR(2),                          
+ @DOCFDT AS Datetime ,                
+ @cnt as numeric(5,0)           
+AS                        
+BEGIN                        
+ -- SET NOCOUNT ON added to prevent extra result sets from                        
+ -- interfering with SELECT statements.                        
+ SET NOCOUNT ON;                                
+  if @cnt =1                 
+  begin                         
+ SELECT a.PRNO as 'Indent No.',a.PRDATE AS 'Indent Date',A.varcode 'Varity Code',                
+ varname 'Description',Packtype,ISNULL(qtyind,0)-ISNULL(qtyord,0) BALQTY,ISNULL(qtyindKG,0)-ISNULL(qtyordKG,0) BALQTYKG,PrSNo,d.ename FROM                
+ Rm_PRL A  INNER JOIN rm_var B ON  A.varcode = B.varcode INNER JOIN  RM_prh c ON                
+   a.divcode=c.divcode  AND a.prno=c.prno AND  a.prdate=c.prdate       
+   left outer join pr_emp d                
+    ON d.divcode = a.divcode and c.REQNAME =d.empno       
+ WHERE                   
+    isnull(c.APPFLG,'N') ='A'
+     AND   a.divcode=@DIVCODE and  ISNULL(qtyind,0)-ISNULL(QTYORD,0)>0 and isnull(qtyord,0)-isnull(qtyrec,0)>=0                 
+       --and isnull(c.cancelflag,'N')<>'Y'      
+        --and     and isnull(Fclosed,'N')<>'Y'                  
+        and ISNULL(qtyindKG,0)-ISNULL(qtyordKG,0) >0   
+     and a.Prdate <=@DOCFDT ORDER BY A.PRNO,A.PRDATE,prsno                
+  end                    
+ else                
+     begin                
+ SELECT a.PRNO as 'Indent No.',a.PRDATE AS 'Indent Date',A.varcode 'Varity Code',                
+ varname 'Description',Packtype,ISNULL(qtyind,0)-ISNULL(qtyord,0) BALQTY,ISNULL(qtyindKG,0)-ISNULL(qtyordKG,0) BALQTYKG,PrSNo FROM                
+ Rm_PRL A  INNER JOIN rm_var B ON  A.varcode = B.varcode INNER JOIN  RM_prh c ON                
+   a.divcode=c.divcode  AND a.prno=c.prno AND  a.prdate=c.prdate       
+   left outer join pr_emp d                
+    ON d.divcode = a.divcode and c.REQNAME =d.empno       
+ WHERE                   
+     isnull(c.APPFLG,'N') ='A'
+     AND   a.divcode=@DIVCODE and  ISNULL(qtyind,0)-ISNULL(QTYORD,0)>0 and isnull(qtyord,0)-isnull(qtyrec,0)>=0                 
+       --and isnull(c.cancelflag,'N')<>'Y'      
+        --and     and isnull(Fclosed,'N')<>'Y'                  
+     and ISNULL(qtyindKG,0)-ISNULL(qtyordKG,0) >0  
+     and a.Prdate <=@DOCFDT ORDER BY A.varcode,a.PRNO,A.PRDATE,prsno                
+end                   
+      
+END 

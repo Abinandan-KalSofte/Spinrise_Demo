@@ -1,0 +1,22 @@
+CREATE proc Sp_Periodical_MixingCost  
+-- Exec Sp_Periodical_MixingCost '02','2009-12-01','2009-12-17'  
+@Divcode varchar(5),  
+@FromDate varchar(15),  
+@ToDate varchar(15)  
+as  
+(  
+select a.docno,A.DOCDT,a.varcode,a.lotno,sum(a.bale) as bale,a.unit ,round(sum(isnull(a.netkgs,0)),2)netkg,  
+sum(isnull(a.quintal,0)) ratequin,sum(isnull(a.Amount,0)) amount,avg(a.ratekg),a.plotno,round(avg(ratecandy),0)  
+as ratecandy,slname,docno from (select C.docno,C.DOCDT,a.varcode,a.lotno,Bale=(count(b.baleno)),  
+unit=(case when a.bblflg='R' then 'Borah'  else 'Bales' end),round(Sum(isnull(b.actisskgs,0)-isnull(e.tarewt,0)),2)   
+'netkgs',a.plotno,avg(a.ratekg)'quintal',round((sum(isnull(b.actisskgs,0))-sum(isnull(e.tarewt,0)))*ROUND(a.ratekg,4),2)   
+'Amount',a.ratekg as ratekg,round((ratecy),0)  ratecandy,f.slname   
+from rm_lot a,rm_issb b,rm_issh c,rm_bale e,fa_slmas f   
+Where a.divcode=@Divcode and a.divcode=b.divcode and a.divcode=c.divcode and a.divcode=e.divcode and a.lotno=b.lotno   
+and a.lotdt=b.lotdt and a.catcd=b.catcd and b.docno=c.docno and b.docdt=c.docdt and b.isstype=c.isstype   
+and a.lotno=e.lotno and a.lotdt=e.lotdt and a.catcd=e.catcd and a.lottype=b.lottype and a.lottype=e.lottype   
+and f.slcode=a.supcd and b.baleno=e.baleno and c.DOCDT Between @FromDate and @ToDate AND a.rejflg='N'   
+and a.lotyear='2009'  group by c.docno,b.isstype,a.bblflg,RATEKG,RATECY,a.varcode,a.lotno,C.DOCDT,a.plotno,f.slname) a    
+group by docno,varcode,a.lotno,A.DOCDT,unit,a.plotno,Slname   
+--order by a.docno,a.lotno  
+)

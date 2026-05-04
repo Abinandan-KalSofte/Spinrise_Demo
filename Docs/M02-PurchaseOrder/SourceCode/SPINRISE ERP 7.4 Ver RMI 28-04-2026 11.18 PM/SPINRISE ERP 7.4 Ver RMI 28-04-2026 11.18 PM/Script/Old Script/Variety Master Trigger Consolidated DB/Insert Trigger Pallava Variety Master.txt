@@ -1,0 +1,21 @@
+
+---Pallava DB
+USE [Pallavaa]
+GO
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+create trigger [dbo].[InsertVariety] on [dbo].RM_VAR for insert 
+as 
+declare @VarCode varchar(20),@VARNAME varchar(50)
+Begin
+select @VarCode=VARCODE,@VARNAME= VARNAME  froM inserted 
+insert into Sricheran..RM_VAR
+selecT * from Pallavaa..RM_VAR where VARCODE=@VarCode 
+end
+GO
+
+

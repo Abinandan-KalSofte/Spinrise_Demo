@@ -1,0 +1,37 @@
+
+ALTER TABLE [PO_PARA] ADD  [PDFExportFlag] [char](2) NULL
+go
+ALTER TABLE rm_param ADD  [OpenKeyflg] [varchar](5) NULL
+go	 
+ALTER TABLE rm_param ADD  [Transflg] [varchar](5) NULL
+go
+ALTER TABLE rm_param ADD  [iqa] [varchar](1) NULL
+go
+ALTER TABLE rm_param ADD [PRBased] [varchar](1) NULL
+
+go
+        
+alter PROCEDURE Ksp_RMI_ArrivalList_Datewise          
+@Divcode  VARCHAR(2),                
+@FDate    VARCHAR(10),                
+@TDate    VARCHAR(10),      
+@FSupcd varchar(8),      
+@Tsupcd varchar(8)      
+-- Ksp_RMI_ArrivalList_Datewise '01','2013-06-01','2013-07-10'       
+AS          
+BEGIN          
+              
+select a.arrdate,a.arrno,a.lotno,a.lotdt,a.plotno,a.quantity,a.lrno,isnull(a.freight,0) as freight,a.netwt,a.prno,          
+b.carname,c.Slname , d.areaname, a.LORRYNOS,a.VARCODE,v.VARNAME,e.slname AS Agent_Name,a.RATECY          
+,pd.DIV_PRINTNAME,pd.DIV_UNITNAME        
+ from rm_arrival a          
+ LEFT OUTER JOIN po_car b ON b.CARCODE = a.CARCODE          
+ LEFT OUTER JOIN fa_slmas c ON c.Slcode = a.SUPCD          
+ LEFT OUTER JOIN rm_area d ON a.areacode=d.areacode          
+ LEFT OUTER JOIN RM_VAR V ON v.VARCODE=a.VARCODE          
+ LEFT OUTER JOIN fa_slmas e ON e.slcode=a.BRKCD          
+ left outer join PP_DIVMAS pd ON a.DIVCODE=pd.DIVCODE          
+where a.arrdate Between @FDate and @TDate and a.divcode=@Divcode and  (@FSupcd='A' or a.SUPCD between @FSupcd and @TSupcd)         
+END 
+
+

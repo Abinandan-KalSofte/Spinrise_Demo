@@ -1,0 +1,69 @@
+--KSP_TCSAmountCheck '' ,'2020-04-01','2020-12-01','121','2020-10-01'
+
+CREATE proc KSP_TCSAmountCheck
+(
+@divcode varchar(2),
+@Yfdate varchar(15),
+@Yldate varchar(15),
+@Cust_code varchar(20),
+@pdate varchar(15)
+
+)
+as
+select sum(Amount) TotalAmt from (
+/*
+select   divcode,TOTAL_AMT Amount,date invdate,CUST_CODE  from wvg_invhd a 
+inner join fa_slmas s on a.cust_code=s.slcode where date between @Yfdate and @Yldate and divcode=@divcode and s.pan=@Cust_code and date<=@pdate
+union all */
+select  divcode ,TOTAL_AMT Amount, DATE invdate,CUST_CODE  from IG_RINVHD a
+inner join fa_slmas s on a.cust_code=s.slcode  where date between @Yfdate and @Yldate and divcode=@divcode and s.pan=@Cust_code and date<=@pdate
+union all
+select divcode,TOTALAMT Amount,INVDT invdate,PARTY_CODE CUST_CODE from IG_WINVHD a
+inner join fa_slmas s on a.PARTY_CODE=s.slcode  where INVDT between @Yfdate and @Yldate and divcode=@divcode and s.pan=@Cust_code and INVDT<=@pdate
+/*union all 
+select divcode,  InvoiceAmt Amount,  InvDate invdate ,a.SLCODE CUST_CODE  from Yn_SizingInvHd  a
+inner join fa_slmas s on a.slcode=s.slcode  where InvDate between @Yfdate and @Yldate and divcode=@divcode and s.pan=@Cust_code and InvDate<=@pdate
+union all
+select divcode,  InvoiceAmt Amount,  InvDate invdate ,a.SLCODE CUST_CODE  from Yn_OtherInvHd  a 
+inner join fa_slmas s on a.slcode=s.slcode where InvDate between @Yfdate and @Yldate and divcode=@divcode and s.pan=@Cust_code and InvDate<=@pdate
+*/
+union all
+select divcode,  TOTAL_AMT Amount,  date invdate ,a.CUST_CODE CUST_CODE  from ig_invhdDepo  a 
+inner join fa_slmas s on a.CUST_CODE=s.slcode where date between @Yfdate and @Yldate and divcode=@divcode and s.pan=@Cust_code and date<=@pdate
+
+union all
+select divcode,  TOTAL_AMT Amount,  date invdate ,a.CUST_CODE CUST_CODE  from ig_invhd  a 
+inner join fa_slmas s on a.CUST_CODE=s.slcode where date between @Yfdate and @Yldate and divcode=@divcode and s.pan=@Cust_code and date<=@pdate
+union all
+select divcode,  TOTAL_AMT Amount,  date invdate ,a.CUST_CODE CUST_CODE  from rm_cinvhd  a 
+inner join fa_slmas s on a.CUST_CODE=s.slcode where date between @Yfdate and @Yldate and divcode=@divcode and s.pan=@Cust_code and date<=@pdate
+
+)x 
+
+go
+alter table rm_param add TCSPer numeric(9,3)
+go
+alter table rm_param add FDisc_ROFF numeric(2)
+go
+alter table RM_DespatchDT add TCS_Per numeric(9,3)
+go
+alter table RM_DespatchDT add TCS_amt numeric(9,2)
+go
+alter table rm_param add TCS_FLG varchar(1)
+go
+alter table rm_param add cess_tcs varchar(1)
+go
+alter table rm_param add pack_tcs varchar(1)
+
+go
+alter table rm_param add INVTCS_GrossAmt numeric(15,2)
+go
+alter table rm_param add INVTCSPER_WOPan numeric(9,3)
+go
+alter table rm_param add InvTCSPER_WPan numeric(9,3)
+go
+alter table rm_param add RInvTCS_Roff numeric(3)
+go
+alter table rm_cinvhd alter column TCS_PER numeric(9,3)
+go
+alter table rm_cinvdt alter column TCS_PER numeric(9,3)

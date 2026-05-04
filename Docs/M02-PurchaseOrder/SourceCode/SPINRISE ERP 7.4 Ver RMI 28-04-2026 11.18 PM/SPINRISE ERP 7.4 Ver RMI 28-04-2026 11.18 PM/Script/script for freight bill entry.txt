@@ -1,0 +1,108 @@
+
+CREATE TABLE [dbo].[rm_frtentryhd](
+	[divcode] [varchar](5) NULL,
+	[slcode] [varchar](25) NULL,
+	[contcode] [varchar](25) NULL,
+	[carrier] [varchar](25) NULL,
+	[arrno] [numeric](15, 0) NULL,
+	[arrdt] [datetime] NULL,
+	[fbillno] [numeric](15, 0) NULL,
+	[fbilldt] [datetime] NULL,
+	[frtamt] [numeric](15, 2) NULL,
+	[apprfrtamt] [numeric](15, 2) NULL,
+	[docno] [numeric](15, 0) NULL,
+	[docdt] [datetime] NULL,
+	[carcode] [varchar](25) NULL,
+	[frtsuppcopy] [varchar](100) NULL,
+	[FirstFR_AppFlg] [char](1) NULL,
+	[FirstFR_AppDate] [datetime] NULL,
+	[FirstFR_AppUser] [varchar](25) NULL,
+	[FirstFR_AppIP] [varchar](50) NULL,
+	[SecondFR_AppFlg] [char](1) NULL,
+	[SecondFR_AppDate] [datetime] NULL,
+	[SecondFR_AppUser] [varchar](25) NULL,
+	[SecondFR_AppIP] [varchar](50) NULL,
+	[FirstFR_AppRemarks] [varchar](50) NULL,
+	[SecondFR_AppRemarks] [varchar](50) NULL,
+	[LORRYNOS] [varchar](50) NULL,
+	[LRNo] [varchar](50) NULL,
+	[createdby] [varchar](100) NULL,
+	[createddt] [datetime] NULL,
+	[trans_ipadd] [varchar](25) NULL,
+	[modifiedby] [varchar](100) NULL,
+	[modifieddt] [datetime] NULL,
+	[mod_ipadd] [varchar](25) NULL,
+	[createuserid] [varchar](100) NULL,
+	[moidifyuserid] [varchar](100) NULL
+) ON [PRIMARY]
+
+GO
+
+
+
+CREATE TABLE [dbo].[rm_frtentrydt](
+	[DIVCODE] [varchar](2) NOT NULL,
+	[ARRNO] [int] NOT NULL,
+	[ARRDATE] [datetime] NOT NULL,
+	[CONTNO] [varchar](10) NOT NULL,
+	[CONTDT] [datetime] NOT NULL,
+	[SUPCD] [varchar](10) NOT NULL,
+	[VARCODE] [varchar](10) NOT NULL,
+	[CNTCODE] [varchar](10) NOT NULL,
+	[FREIGHT] [decimal](9, 2) NULL,
+	[RATECY] [decimal](15, 7) NULL,
+	[QUANTITY] [smallint] NOT NULL,
+	[GROSSWT] [decimal](10, 3) NOT NULL,
+	[TAREWT] [decimal](8, 3) NOT NULL,
+	[NETWT] [decimal](10, 3) NOT NULL,
+	[docno] [numeric](15, 0) NULL,
+	[docdt] [datetime] NULL,
+	[EmptyTruckWgt] [numeric](15, 2) NULL,
+	[FullTruckWgt] [numeric](15, 2) NULL,
+	[rm_arrival] [numeric](15, 2) NULL,
+	[commwt] [numeric](15, 2) NULL
+) ON [PRIMARY]
+
+GO
+
+
+
+/*        
+      Sp_Freight_Trans_new '01','5','2020-09-16'        
+*/        
+        
+CREATE procedure Sp_Freight_Trans_new              
+(        
+@Divcode varchar (15),        
+@docno varchar (15),        
+@docdt varchar (15)        
+)        
+as        
+Begin        
+Select a.divcode,d.DIV_LOGO,d.DIV_PRINTNAME,d.DIV_UNITNAME,d.ADD1,d.ADD2,d.ADD3,d.CITY,d.PINCODE,d.STATENAME,        
+d.PHONE1,d.gstinno,d.cinno,d.EMAIL,d.WEBADDR,a.contcode,a.arrno,a.arrdt,a.fbillno,a.fbilldt,a.frtamt,a.apprfrtamt,    
+p.CARNAME as carname,a.LORRYNOS as lorrynos,a.LRNo as lrno,'' wname,'' as areaname,0 as prno,'' as prmark,b.FREIGHT,    
+b.QUANTITY,b.contno,b.contdt,f.VARNAME as varname,b.netwt,b.ratecy,a.docno,a.docdt,a.divcode,c.slname,e.slname as agent,        
+e.add1 as aadd1,e.add2 as aadd2,e.add3 as aadd3,e.city as acity,e.state as astate,e.country as acountry,e.pin as apin,    
+e.phone1 as aphone,e.email as aemail,e.gstinno as agstno,e.gststatecode as agststcode,a.FirstFR_AppUser,a.FirstFR_AppDate,    
+a.SecondFR_AppUser,a.SecondFR_AppDate,a.createdby,a.createddt    
+        
+from rm_frtentryhd a        
+Inner Join rm_frtentrydt b on b.divcode = a.divcode and b.arrno = a.arrno and b.arrdate = a.arrdt and        
+b.docno = a.docno and b.docdt = a.docdt        
+inner Join fa_slmas c on c.slcode=a.slcode        
+inner Join PP_DIVMAS d on d.DIVCODE=a.divcode        
+inner Join fa_slmas e on e.slcode=a.contcode        
+inner Join rm_var f on f.VARCODE=b.varcode   
+LEFT join po_car p ON p.carcode=a.carcode        
+WHERE a.docno=@docno AND a.docdt=@docdt AND a.divcode=@divcode        
+End        
+  
+GO
+
+
+
+
+alter table rm_arrival add frtentrapp varchar(10)
+GO
+

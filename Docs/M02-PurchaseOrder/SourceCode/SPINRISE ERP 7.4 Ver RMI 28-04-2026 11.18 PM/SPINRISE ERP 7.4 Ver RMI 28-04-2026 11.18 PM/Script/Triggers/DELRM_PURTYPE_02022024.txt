@@ -1,0 +1,20 @@
+
+CREATE TRIGGER [dbo].[DELRM_PURTYPE] ON [dbo].RM_PURTYPE FOR DELETE AS                                     
+DECLARE                                                                  
+@PURTYPE varchar(10),  
+@sno int  
+BEGIN    
+  
+	select @PURTYPE=PURTYPE from deleted  
+  
+	set @sno=(select count(PURTYPE) from 
+	(
+		SELECT PURTYPE PURTYPE FROM RM_CONT where PURTYPE=@PURTYPE						
+	) x  
+	where PURTYPE=@PURTYPE)  
+	if isnull(@sno,0)> 0    
+	begin   
+		rollback  
+		RAISERROR ('Dependencies exists. Unable to delete the record at this time', 16 ,10)	
+	end   
+END

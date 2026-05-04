@@ -1,0 +1,82 @@
+--ksp_QualityrankingDet '01','2013-11-01','2013-11-30','2013-04-01'                        
+alter Proc ksp_QualityrankingDet                        
+(                        
+ @DivCode VARCHAR(2),                        
+ @FDate VARCHAR(10),                        
+ @TDate VARCHAR(10),          
+ @YFDATE VARCHAR(10)          
+)                        
+AS                        
+BEGIN                    
+SELECT m.*,DENSE_RANK () OVER (ORDER BY m.FinRank asc)AS GFinRank FROM     
+(                       
+SELECT x.*,isnull(x.STAPLEN,0)+ISNULL(x.GTEX,0)+isnull(x.MICRONAIRE,0)+                        
+ISNULL(x.MR,0)+ISNULL(x.UNIRATIO,0)-ISNULL(X.TRASH_PER,0) Total,                    
+y.SupTotal,    
+CASE WHEN y.SupTotal<> 0 THEN DENSE_RANK () OVER (ORDER BY y.suptotal DESC) else 1000000 end TotRank,    
+Y.SUPCOUNT,                    
+case when y.SupStaplen <> 0 then DENSE_RANK () OVER (ORDER BY y.SupStaplen DESC)ELSE 0 end SupStaplenRANK                    
+,CASE WHEN y.supGtex <> 0 then DENSE_RANK () OVER (ORDER BY y.supGtex DESC) ELSE 0 end  SupGtexRANK,
+case WHEN y.SupMiC <> 0 THEN DENSE_RANK () OVER (ORDER BY y.SupMiC DESC) ELSE 0 end  SupMICRANK,                     
+case WHEN y.supMR <> 0 THEN DENSE_RANK () OVER (ORDER BY y.supMR DESC) ELSE 0 end SupMRRANK,                    
+case WHEN y.SupUR <> 0 THEN DENSE_RANK () OVER (ORDER BY y.SupUR  DESC) ELSE 0 end SupURRANK,                    
+case WHEN y.SupTrash <> 0 THEN DENSE_RANK () OVER (ORDER BY y.SupTrash asc) ELSE 0 end SupTrashRank,                  
+(case when y.SupStaplen <> 0 then DENSE_RANK () OVER (ORDER BY y.SupStaplen DESC)ELSE 0 end +                    
+CASE WHEN y.supGtex <> 0 then DENSE_RANK () OVER (ORDER BY y.supGtex DESC) ELSE 0 end  +                    
+case WHEN y.SupMiC <> 0 THEN DENSE_RANK () OVER (ORDER BY y.SupMiC DESC) ELSE 0 end  +                     
+case WHEN y.supMR <> 0 THEN DENSE_RANK () OVER (ORDER BY y.supMR DESC) ELSE 0 end +              
+case WHEN y.SupUR <> 0 THEN DENSE_RANK () OVER (ORDER BY y.SupUR  DESC) ELSE 0 end +                    
+case WHEN y.SupTrash <> 0 THEN DENSE_RANK () OVER (ORDER BY y.SupTrash asc) ELSE 0 end )/6.00 AS FinRank                
+                
+                    
+FROM                         
+(SELECT RL.LOTNO,rl.LOTDT,rl.PLOTNO,supcd,FS.slname,RL.BALES,RL.VARCODE,RV.VARNAME,                        
+RL.STAPLEN,isnull(F.SPANLEN25,0) AS N_SPANLEN25,(ISNULL(RL.STAPLEN,0)-ISNULL(F.SPANLEN25,0))SPANLEN25DIFF,              
+case WHEN ISNULL(rl.STAPLEN,0) >0 then DENSE_RANK () OVER (ORDER BY RL.STAPLEN DESC) ELSE 0 END  AS STAPLENRANK,                       
+                     
+ISNULL(RL.GTEX,0)GTEX,isnull(F.GTEX,0) AS N_GTEX,(ISNULL(RL.GTEX,0)- ISNULL(F.GTEX,0))GTEXDIFF,                        
+case WHEN ISNULL(RL.GTEX,0) >0 THEN DENSE_RANK () OVER (ORDER BY RL.GTEX DESC) ELSE 0 END AS GTEXRANK,                        
+                        
+RL.MICRONAIRE,isnull(F.MIC,0)N_MIC,(ISNULL(RL.MICRONAIRE,0)- ISNULL(F.MIC,0))MICDIFF,                        
+CASE WHEN ISNULL(RL.MICRONAIRE,0) >0 THEN  DENSE_RANK () OVER (ORDER BY RL.MICRONAIRE ASC) ELSE 0 END AS MICRONAIRERANK,                        
+                        
+RL.TRASH_PER,isnull(F.TRASHPER,0) AS N_TRASHPER,(ISNULL(RL.TRASH_PER,0)- ISNULL(F.TRASHPER,0))TRASHDIFF,                        
+CASE WHEN ISNULL(RL.TRASH_PER,0) <>0 THEN  DENSE_RANK ()                   
+OVER ( ORDER BY CASE WHEN RL.TRASH_PER=0 THEN                  
+999 ELSE RL.TRASH_PER END Asc) ELSE 0 END AS TRASH_PERRANK,                        
+                        
+RL.MR,isnull(F.ML,0) AS N_MATURE,(ISNULL(RL.mr,0)- ISNULL(F.ML,0))MATUREDIFF,                        
+CASE WHEN ISNULL(RL.mr,0)>0 THEN DENSE_RANK () OVER (ORDER BY RL.mr DESC) ELSE 0 END AS MATURERANK,                        
+                        
+ISNULL(RL.UNIRATIO,0)UNIRATIO,isnull(F.UR,0) AS N_UR,(ISNULL(RL.UNIRATIO,0)- ISNULL(F.UR,0))URDIFF,                        
+CASE WHEN ISNULL(RL.UNIRATIO,0)>0 THEN DENSE_RANK () OVER (ORDER BY RL.UNIRATIO DESC)  ELSE 0 END AS UNIRATIORANK                        
+                        
+FROM RM_LOT RL      
+INNER JOIN FA_SLMAS FS ON RL.SUPCD=FS.slcode      
+inner JOIN RM_FibreNorms F ON rl.VARCODE=f.VARCODE      
+INNER JOIN RM_VAR RV ON RL.VARCODE=RV.VARCODE      
+WHERE        
+rl.DIVCODE=@DivCode AND RL.LOTDT BETWEEN @FDate AND @TDate AND rl.LOTYEAR=YEAR(@YFDATE)    
+AND isnull(rl.ins_flg,'N')='Y' AND isnull(Rl.STAPLEN,0)<>0 and isnull(RL.UNIRATIO,0)<>0    
+and isnull(RL.MICRONAIRE,0) <>0 AND isnull(RL.TRASH_PER,0)<>0     
+)x                        
+LEFT JOIN (                    
+SELECT w.supcd,w.slname,avg(isnull(w.STAPLEN,0))+avg(ISNULL(w.GTEX,0))+avg(isnull(w.MICRONAIRE,0))+                        
+avg(ISNULL(w.MR,0))+avg(ISNULL(w.UNIRATIO,0))-avg(ISNULL(w.TRASH_PER,0)) SupTotal,                    
+AVG(isnull(w.STAPLEN,0))SupStaplen,                    
+AVG(ISNULL(w.GTEX,0))supGtex,AVG(isnull(w.MICRONAIRE,0))SupMiC,                    
+AVG(ISNULL(w.MR,0))supMR,AVG(ISNULL(w.UNIRATIO,0))SupUR,AVG(ISNULL(w.TRASH_PER,0))SupTrash,                    
+(SELECT COUNT(Lotno) FROM rm_lot u WHERE W.SUPCD=U.SUPCD AND U.DIVCODE=@DivCode AND U.LOTDT BETWEEN @FDate                     
+AND @TDate GROUP BY U.SUPCD)SUPCOUNT                     
+ FROM                         
+(SELECT supcd,FS.slname,RL.STAPLEN,ISNULL(RL.GTEX,0)GTEX,RL.MICRONAIRE,RL.TRASH_PER,RL.MR,                    
+ISNULL(RL.UNIRATIO,0)UNIRATIO                    
+FROM RM_LOT RL,FA_SLMAS FS WHERE rl.SUPCD=fs.slcode                     
+AND rl.DIVCODE=@DivCode AND RL.LOTDT BETWEEN @FDate AND @TDate AND RL.LOTYEAR=YEAR(@YFDATE)  
+      
+AND (rl.STAPLEN<> 0 or RL.GTEX<>0 or RL.MICRONAIRE<> 0 or RL.TRASH_PER <>0 or RL.MR<>0 or                  
+ISNULL(RL.UNIRATIO,0)<>0)   
+      
+)w GROUP BY w.supcd,w.slname)y  ON x.supcd=y.supcd    
+)M                     
+END       

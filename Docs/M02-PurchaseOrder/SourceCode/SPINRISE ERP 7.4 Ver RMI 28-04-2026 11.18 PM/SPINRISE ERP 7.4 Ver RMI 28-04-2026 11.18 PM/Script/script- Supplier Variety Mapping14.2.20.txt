@@ -1,0 +1,296 @@
+create table RM_Suppliervariety (Divcode varchar(2),Docdate datetime,DocSNo numeric(2),Supcd varchar(8),catcd varchar(2),varcode varchar(10) primary key(varcode,supcd))
+
+go
+create view vw_VarietyList
+as
+select a.varcode,a.varname ,a.catcd,b.catname from rm_var a
+inner join rm_cat b on a.catcd=b.catcd
+
+go
+
+
+CREATE TABLE [dbo].[RM_DiscountType](
+	[Code] [varchar](4) NULL,
+	[Description] [varchar](20) NULL,
+	[RPTFLG] [varchar](2) NULL
+) ON [PRIMARY]
+
+go
+
+
+
+go
+
+
+
+CREATE TABLE [dbo].[RM_FibreRate](
+	[Divcode] [varchar](2) NULL,
+	[Docno] [numeric](9, 0) not NULL,
+	[Docdate] [datetime] not NULL,
+	[DocSno] [numeric](2, 0) not NULL,
+	[Supcd] [varchar](8) not NULL,
+	[CATCD] [varchar](2) NULL,
+	[Varcode] [varchar](10) not NULL,
+	Plant varchar(5),
+	RateUnit varchar(10),
+	CandyRate numeric(15,5),
+	RATEKG numeric(10,5),
+	Appflg varchar(1),
+	AppuserId varchar(8),
+	AppDate datetime,
+	Effdate datetime,
+	Ipadd varchar(16)
+	primary key(docno,docdate,varcode)
+)
+go
+CREATE TABLE [dbo].[RM_FibreRateDisc](
+	[Divcode] [varchar](2) NULL,
+	[Docno] [numeric](9, 0) not NULL,
+	[Docdate] [datetime] not NULL,
+	[VSno] [numeric](2, 0) not NULL,
+	[DocSno] [numeric](3, 0) not NULL,
+	[SUPCD] [varchar](8) not NULL,
+	[Varcode] [varchar](10) not NULL,
+	DType varchar(4) not null,
+	DRate numeric(9,2),
+	Ipadd varchar(16),
+	primary key(docno,docdate,varcode,DType),
+	CONSTRAINT fk_fabricrate FOREIGN KEY (docno,docdate,varcode) 
+	REFERENCES RM_FibreRate(docno,docdate,varcode)
+
+) ON [PRIMARY]
+
+
+go
+CREATE TABLE [dbo].[RM_FibreRateDiscTXN](
+	Divcode varchar(2),
+	[Docno] [numeric](9) ,
+	Docdate datetime,	
+	SupCD varchar(8),
+	[VSno] [numeric](2, 0) not NULL,
+	[DocSno] [numeric](3, 0) not NULL,
+	[Varcode] [varchar](10) not NULL,
+	DType varchar(4) not null,
+	DRate numeric(9,2),
+	IPAdd varchar(16)
+) ON [PRIMARY]
+
+go
+
+CREATE TABLE [dbo].[RM_TransportRate](
+	[Divcode] [varchar](2) NULL,
+	[Docno] [numeric](9, 0) not NULL,
+	[Docdate] [datetime] not NULL,
+	[DocSno] [numeric](3, 0) not NULL,
+	[SUPCD] [varchar](8) not NULL,
+	[plant] [varchar](10) not NULL,
+	[Vslcode] [varchar](3) not  NULL,
+	VslCapacity numeric(15,3),
+	MinQty numeric(15,3),
+	Bales numeric(6),
+	Freight_Amt numeric(15,2),
+	TransitDays numeric(3),
+	primary key(docno,docdate,SUPCD,plant,Vslcode)
+
+
+) ON [PRIMARY]
+
+go
+
+create PROC KSP_VARIETYSTOCK 
+(
+@DIVCODE VARCHAR(2),
+@SDATE VARCHAR(15),
+@LOTYEAR VARCHAR(4),
+@VARCODE VARCHAR(10)
+)
+AS
+SELECT 'UOM: KGS -- Current Stock Qty: '+ cast(sum(isnull(CURRENTSTOCK,0)) as varchar)+ ' - Pending Qty: '+ cast(sum(isnull(pendingqty,0)) as varchar)+ ' - Last 7 Days Consumption Qty: '+ cast(sum(isnull(CONSUMPTION7,0)) as varchar)
++ ' - Last 15 Days Consumption Qty: '+ cast(sum(isnull(CONSUMPTION15,0)) as varchar)+ ' - Last 30 Days Consumption Qty: '+ cast(sum(isnull(CONSUMPTION30,0)) as varchar)
+
+ VarDetail  from( 
+SELECT SUM(BALANCEQTY) CURRENTSTOCK , 0 CONSUMPTION7,0 CONSUMPTION15,0 CONSUMPTION30,0 pendingqty FROM vw_LotBaleStockData WHERE LOTDT<=@SDATE AND LOTYEAR=@LOTYEAR AND DIVCODE=@DIVCODE AND VARCODE=@VARCODE
+UNION ALL 
+SELECT 0 CURRENTSTOCK ,SUM(ISSKGS) CONSUMPTION7,0 CONSUMPTION15,0 CONSUMPTION30,0 pendingqty FROM rm_issb WHERE DOCDT BETWEEN DateAdd(DAY, -7, Convert(date,@SDATE)) AND @SDATE AND VARCODE=@VARCODE
+UNION ALL 
+SELECT 0 CURRENTSTOCK ,0 CONSUMPTION7 ,SUM(ISSKGS) CONSUMPTION15,0 CONSUMPTION30,0 pendingqty FROM rm_issb WHERE DOCDT BETWEEN DateAdd(DAY, -15, Convert(date,@SDATE)) AND @SDATE AND VARCODE=@VARCODE
+UNION ALL 
+SELECT 0 CURRENTSTOCK ,0 CONSUMPTION7 ,0 CONSUMPTION15,SUM(ISSKGS) CONSUMPTION30,0 pendingqty FROM rm_issb WHERE DOCDT BETWEEN DateAdd(DAY, -30, Convert(date,@SDATE)) AND @SDATE AND VARCODE=@VARCODE
+union all
+SELECT 0 CURRENTSTOCK ,0 CONSUMPTION7 ,0 CONSUMPTION15,0 CONSUMPTION30,ordkgs-isnull(rcdkgs,0)-isnull(cancelkgs,0) pendingqty FROM rm_cont a 
+left join rm_arrival b on a.contno=b.contno and a.contdt=b.contdt and a.varcode=b.varcode  
+ WHERE a.contdt< @SDATE AND a.VARCODE=@VARCODE
+ and ordkgs-isnull(rcdkgs,0)-isnull(cancelkgs,0)>0
+
+)x
+
+
+go
+
+alter table rm_param add MasterEntryFlg char(1)
+go
+
+
+create view VW_rm_SupplierVariety
+as
+select distinct slcode,slname,city,BrCode ,isnull(GSTSTATECODE,'0') GSTSTATECODE,isnull(GSTINNO,'') GSTINNO,isnull(supptype,'R')  Supptype   
+,v.varcode,v.varname,c.catcd,c.catname,v.hsn,v.cgstper,v.sgstper,v.igstper,v.taxcode ,b.docdate,b.CandyRate ,b.RATEKG,b.plant,b.Effdate,b.DocSno,b.docno   from fa_slmas  a   
+inner join RM_FibreRate b on a.slcode=b.supcd and isnull(b.appflg,'N')='Y'  
+inner join rm_var v on v.varcode=b.varcode   
+inner join rm_cat c on c.catcd=b.catcd  
+where b.Effdate=(select max(Effdate) from RM_FibreRate r where r.supcd=b.supcd and isnull(r.appflg,'N')='Y' )  
+
+
+
+
+
+go
+
+
+go
+
+
+
+
+--exec SP_PRToPO_RMI '01','22-Feb-2020',1
+
+
+alter PROCEDURE [dbo].[SP_PRToPO_RMI]                      
+ -- Add the parameters for the stored procedure here                      
+ @DIVCODE AS VARCHAR(2),                        
+ @DOCFDT AS Datetime ,              
+ @cnt as numeric(5,0),
+ @SupCD AS VARCHAR(8),    
+ @plant AS VARCHAR(8)         
+AS                      
+BEGIN                      
+ -- SET NOCOUNT ON added to prevent extra result sets from                      
+ -- interfering with SELECT statements.                      
+ SET NOCOUNT ON;                              
+  if @cnt =1               
+  begin                       
+ SELECT a.PRNO as 'Indent No.',a.PRDATE AS 'Indent Date',A.varcode 'Varity Code',              
+ b.varname 'Description',Packtype,ISNULL(qtyind,0)-ISNULL(qtyord,0) BALQTY,ISNULL(qtyindKG,0)-ISNULL(qtyordKG,0) BALQTYKG,PrSNo,d.ename, ms.docno MsDocno,ms.docsno MSSno FROM              
+ Rm_PRL A  INNER JOIN rm_var B ON  A.varcode = B.varcode INNER JOIN  RM_prh c ON              
+   a.divcode=c.divcode  AND a.prno=c.prno AND  a.prdate=c.prdate     
+   left outer join pr_emp d              
+    ON d.divcode = a.divcode and c.REQNAME =d.empno    
+  left join  VW_rm_SupplierVariety  ms on ms.varcode=b.varcode and b.catcd=ms.catcd and ms.effdate<=@DOCFDT and ms.plant=@plant and ms.slcode=@SupCD
+  
+ WHERE                 
+     a.divcode=@DIVCODE and  ISNULL(qtyind,0)-ISNULL(QTYORD,0)>0 and isnull(qtyord,0)-isnull(qtyrec,0)>=0   
+     
+     and (     ((select isnull(MasterEntryFlg,'N') from rm_param)='Y' and ms.varcode is not null)
+      or ((select isnull(MasterEntryFlg,'N') from rm_param)='N' and ms.varcode is  null)   )         
+       --and isnull(c.cancelflag,'N')<>'Y'    
+        --and     and isnull(Fclosed,'N')<>'Y'                
+     and a.Prdate <=@DOCFDT ORDER BY A.PRNO,A.PRDATE,prsno              
+  end                  
+ else              
+     begin              
+ SELECT a.PRNO as 'Indent No.',a.PRDATE AS 'Indent Date',A.varcode 'Varity Code',              
+ b.varname 'Description',Packtype,ISNULL(qtyind,0)-ISNULL(qtyord,0) BALQTY,ISNULL(qtyindKG,0)-ISNULL(qtyordKG,0) BALQTYKG,PrSNo , ms.docno MsDocno,ms.docsno MSSno FROM              
+ Rm_PRL A  INNER JOIN rm_var B ON  A.varcode = B.varcode INNER JOIN  RM_prh c ON              
+   a.divcode=c.divcode  AND a.prno=c.prno AND  a.prdate=c.prdate     
+   left outer join pr_emp d              
+    ON d.divcode = a.divcode and c.REQNAME =d.empno     
+      left join  VW_rm_SupplierVariety  ms on ms.varcode=b.varcode and b.catcd=ms.catcd and ms.effdate<=@DOCFDT and ms.plant=@plant and ms.slcode=@SupCD
+ WHERE                 
+     a.divcode=@DIVCODE and  ISNULL(qtyind,0)-ISNULL(QTYORD,0)>0 and isnull(qtyord,0)-isnull(qtyrec,0)>=0 
+          and (     ((select isnull(MasterEntryFlg,'N') from rm_param)='Y' and ms.varcode is not null)
+      or ((select isnull(MasterEntryFlg,'N') from rm_param)='N' and ms.varcode is  null)   )    
+       --and isnull(c.cancelflag,'N')<>'Y'    
+        --and     and isnull(Fclosed,'N')<>'Y'                
+     and a.Prdate <=@DOCFDT ORDER BY A.varcode,a.PRNO,A.PRDATE,prsno              
+end                 
+    
+END 
+
+
+go
+
+alter PROCEDURE [dbo].[SP_PRToPO_RMIFilter]                        
+ -- Add the parameters for the stored procedure here                        
+ @DIVCODE AS VARCHAR(2),                          
+ @DOCFDT AS Datetime ,                
+ @cnt as numeric(5,0),
+ @SupCD AS VARCHAR(8),    
+ @plant AS VARCHAR(8),               
+ @indent AS VARCHAR(20),              
+ @itemcode AS VARCHAR(10),              
+ @itemname AS VARCHAR(250)               
+AS                        
+BEGIN                        
+ -- SET NOCOUNT ON added to prevent extra result sets from                        
+ -- interfering with SELECT statements.                        
+ SET NOCOUNT ON;                       
+ SET @ITEMCODE = '%'+@ITEMCODE+'%'              
+ SET @INDENT = '%'+@INDENT+'%'              
+ SET @ITEMNAME = '%'+@ITEMNAME+'%'               
+           
+  if @cnt =1                 
+  begin                         
+  SELECT a.PRNO as 'Indent No.',a.PRDATE AS 'Indent Date',A.varcode 'Varity Code',              
+ b.varname 'Description',Packtype,ISNULL(qtyind,0)-ISNULL(qtyord,0) BALQTY,    
+ ISNULL(qtyindKG,0)-ISNULL(qtyordKG,0) BALQTYKG,d.ename,PrSNo, ms.docno MsDocno,ms.docsno MSSno FROM              
+ Rm_PRL A  INNER JOIN rm_var B ON  A.varcode = B.varcode INNER JOIN  RM_prh c ON              
+   a.divcode=c.divcode  AND a.prno=c.prno AND  a.prdate=c.prdate     
+   left outer join pr_emp d              
+    ON d.divcode = a.divcode and c.REQNAME =d.empno   
+        left join  VW_rm_SupplierVariety  ms on ms.varcode=b.varcode and b.catcd=ms.catcd and ms.effdate<=@DOCFDT  and ms.plant=@plant and ms.slcode=@SupCD
+ WHERE                 
+     a.divcode=@DIVCODE and  ISNULL(QTYind,0)-ISNULL(QTYORD,0)>0 and isnull(qtyord,0)-isnull(qtyrec,0)>=0                    
+    and a.Prdate <=@DOCFDT     
+   and a.varcode LIKE @itemcode AND a.prno LIKE @INDENT AND b.VARNAME  LIKE @itemname 
+              and (     ((select isnull(MasterEntryFlg,'N') from rm_param)='Y' and ms.varcode is not null)
+      or ((select isnull(MasterEntryFlg,'N') from rm_param)='N' and ms.varcode is  null)   )                
+        
+   ORDER BY A.PRNO,A.PRDATE,prsno          
+         
+              
+      
+  end                    
+  else                
+     begin                
+      
+  SELECT a.PRNO as 'Indent No.',a.PRDATE AS 'Indent Date',A.varcode 'Varity Code',              
+ b.varname 'Description',Packtype,ISNULL(qtyind,0)-ISNULL(qtyord,0) BALQTY,    
+ ISNULL(qtyindKG,0)-ISNULL(qtyordKG,0) BALQTYKG,d.ename,PrSNo, ms.docno MsDocno,ms.docsno MSSno FROM              
+   Rm_PRL A  INNER JOIN rm_var B ON  A.varcode = B.varcode     
+   INNER JOIN  RM_prh c ON              
+   a.divcode=c.divcode  AND a.prno=c.prno AND  a.prdate=c.prdate     
+   left outer join pr_emp d ON d.divcode = a.divcode and c.REQNAME =d.empno   
+  left join  VW_rm_SupplierVariety  ms on ms.varcode=b.varcode and b.catcd=ms.catcd and ms.effdate<=@DOCFDT  and ms.plant=@plant and ms.slcode=@SupCD
+ WHERE                 
+     a.divcode=@DIVCODE and  ISNULL(QTYind,0)-ISNULL(QTYORD,0)>0 and isnull(qtyord,0)-isnull(qtyrec,0)>=0                    
+     and a.Prdate <=@DOCFDT   
+           and (     ((select isnull(MasterEntryFlg,'N') from rm_param)='Y' and ms.varcode is not null)
+      or ((select isnull(MasterEntryFlg,'N') from rm_param)='N' and ms.varcode is  null)   )      
+     and a.varcode LIKE @itemcode AND a.prno LIKE @INDENT AND b.VARNAME  LIKE @itemname              
+     ORDER BY b.varname,a.PRNO,A.PRDATE,prsno                    
+    end                
+                
+END   
+  
+
+go
+
+
+
+alter table rm_cont add MSDocno numeric(8)
+
+go
+alter table rm_cont add MSDocsno numeric(3)
+
+go
+
+
+
+
+CREATE View Vw_RM_FibreRate  
+as  
+select distinct slcode,slname,v.varcode,v.varname,c.catcd,c.catname,v.hsn,v.cgstper,v.sgstper,v.igstper,v.taxcode ,b.docdate,b.CandyRate ,b.RATEKG,b.docno,r.UNITNAME  
+,convert(varchar,b.docdate,103) docdt,p.plname ,b.DocSno ,b.appflg from RM_FibreRate b   
+inner join fa_slmas a on a.slcode=b.supcd inner join rm_var v on v.varcode=b.varcode inner join rm_cat c on c.catcd=b.catcd left join rm_plant p on p.plcode=b.plant   
+inner join rm_rateunit r on r.UNITCODE=b.RateUnit  
+

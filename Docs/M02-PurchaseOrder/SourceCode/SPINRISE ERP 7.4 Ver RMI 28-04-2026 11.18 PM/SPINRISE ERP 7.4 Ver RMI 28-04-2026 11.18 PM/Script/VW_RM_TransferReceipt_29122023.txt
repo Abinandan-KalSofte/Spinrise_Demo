@@ -1,0 +1,12 @@
+
+Alter view VW_RM_TransferReceipt  
+as  
+select ISSUE_DESC,supcd, Supplier,LOTNO,plotno,lotdt,varname ,billno,bales ,unit,
+round(netwt,2) netwt,round(Comm_Wt,2) Comm_Wt,ratecy,[Rate/Quintal], value  from Vw_Rmi_Transfer_receiptregister  
+union all  
+select ISSUE_DESC,'Supplier Total'  supcd, Supplier,10000 LOTNO,10000 plotno,'2050-01-01' lotdt,''varname ,''billno,sum(bales) bales ,''unit,sum(netwt) netwt,sum(Comm_Wt) Comm_Wt,0 ratecy,0 [Rate/Quintal], sum(value) value  from Vw_Rmi_Transfer_receiptregister  
+  
+group by supcd,Supplier,ISSUE_DESC  
+union all  
+select 'zzzzzz' ISSUE_DESC,'Grand Total'  supcd,'' Supplier,50000 LOTNO,50000 plotno,'2050-01-01' lotdt,''varname ,''billno,sum(bales) bales ,''unit,sum(netwt) netwt,sum(Comm_Wt) Comm_Wt,0 ratecy,0 [Rate/Quintal], sum(value) value  from Vw_Rmi_Transfer_receiptregister  
+  

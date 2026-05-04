@@ -1,0 +1,5 @@
+CREATE TABLE rm_sustainrmtype ( code VARCHAR(15),DESCRIPTION VARCHAR(25))
+Go
+
+alter table rm_cont add SusCatType varchar(10)
+Go

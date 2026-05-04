@@ -1,0 +1,30 @@
+--select distinct transport from rm_cont
+-- Ksp_RMI_Purchasedaybooklist '01','2017-11-01','2017-11-30'                              
+ Alter PROCEDURE Ksp_RMI_Purchasedaybooklist
+  (                              
+	@divcode AS varchar(10),                              
+	@fdate AS varchar(10),                              
+	@tdate AS varchar(10)                              
+  )                                
+ AS                              
+ BEGIN                              
+SELECT a.PJNO AS vno,a.PJDT AS vdate,a.BILLNO AS inv,a.BILLDT AS inv_dt,a.LOTNO,fs.OLDSLCODE AS pc,fs.slname                              
+ ,v.VARNAME AS vac,v.VARNAME,CASE WHEN (pd.STATE_CODE=fs.state_code) THEN '1' ELSE '2' END tp,a.BALES AS qty,a.SICAAmt AS sl                            
+ ,a.CHARITYAMT AS ch,a.NETWT AS qtl,a.PJAMT AS basic_val,a.VATAMT AS vat,a.CashDisAmt AS discount,                            
+ a.BillValue AS val,a.FBILLVALUE AS camt,a.OTHERSAMT AS ulc,0 AS acno,0 AS rc,pd2.DIV_PRINTNAME,pd2.DIV_UNITNAME                  
+ ,a.HSN,a.cgstper,a.cgstamt,a.sgstper,a.sgstamt,a.igstper,a.igstamt,fs.gstinno as supp_gstinno  ,arr.contno pono,arr.contdt podt,a.ARRNO,a.arrdt arrdate,GRSWGT as GrossWt,COMM_wt as commwt,        
+   a.be_no AS beno,a.be_date AS bedt,arr.plotno supplotno,a.OTHERSAMT
+   ,c.MILLREFNO,c.TransPort,arr.LORRYNOS,(select slname from fa_slmas where slcode=a.brkcd) as AgentName,c.purtype,'' as station
+   ,'' as state,a.TAREWT,arr.GROSSWT as SupGrsWt,arr.TAREWT as SupTarWt,arr.NETWT as SupNetWt
+   ,a.RATECY as ratpcy,a.tcs_amt,a.TOTLANDCOST as lndrtkgs,c.LORRYFRT,'' as transporter,arr.lotstatus,
+   0 as DebtVal   
+  FROM RM_LOT a                              
+ LEFT OUTER JOIN FA_SLMAS fs ON fs.slcode = a.SUPCD                 
+ left join  rm_arrival arr on arr.divcode=a.divcode and arr.arrno=a.arrno and a.arrdt=arr.arrdate  and a.varcode=arr.varcode                      
+ LEFT OUTER JOIN PP_DIVMAS pd ON pd.DIVCODE = a.DIVCODE AND fs.state_code=pd.STATE_CODE                            
+ LEFT OUTER JOIN PP_DIVMAS pd2 ON a.DIVCODE=pd2.DIVCODE                            
+ LEFT OUTER JOIN RM_VAR v ON a.VARCODE=v.VARCODE
+ left outer join rm_cont c on arr.contno = c.contno
+ WHERE a.DIVCODE=@divcode and a.LOTDT BETWEEN @fdate AND @tdate   and isnull(a.opflg,'N')<>'Y'                          
+ --AND a.PJDT BETWEEN @fdate AND @tdate                             
+ END 

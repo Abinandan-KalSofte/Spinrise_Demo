@@ -1,0 +1,109 @@
+/*    
+      
+  Sp_AR_Varietywiseabs '01','2019-04-01','2020-03-31','1','902','2019'      
+  Sp_AR_Varietywiseabs '01','2020-01-01','2020-07-14','1','902','2020'     
+             
+*/      
+              
+create PROCEDURE Sp_AR_Varietywiseabs              
+@divcode AS varchar(10),     
+@fdate AS varchar(10),              
+@tdate AS varchar(10),     
+@flot as varchar(10),    
+@tlot as varchar(10),             
+@lotyear AS varchar(10)               
+AS    
+Begin         
+    
+Select distinct v.varname,sum(l.bales) as bales,sum(l.pnetwt) as pnetwt,sum(l.netwt) as netwt ,    
+sum(l.ratecy*l.pnetwt)as ptyvalue,sum(l.ratecy*l.netwt)as millvalue,sum(l.pnetwt-l.netwt)as wtdiff,     
+sum(l.ratecy*l.pnetwt)-sum(l.ratecy*l.netwt)as valdiff,c.div_printname,c.div_unitname,  
+case when sum(l.pnetwt-l.netwt) > 0 then sum(l.pnetwt-l.netwt) else 0 end as wtexcess,  
+case when sum(l.pnetwt-l.netwt) < 0 then sum(l.pnetwt-l.netwt) else 0 end as wtshort,  
+case when sum(l.ratekg*l.pnetwt)-sum(l.ratekg*l.netwt) > 0 then sum(l.ratekg*l.pnetwt)-sum(l.ratekg*l.netwt) else 0 end as valexcess,  
+case when sum(l.ratekg*l.pnetwt)-sum(l.ratekg*l.netwt) < 0 then sum(l.ratekg*l.pnetwt)-sum(l.ratekg*l.netwt) else 0 end as valshort    
+         
+From rm_lot l
+left join fa_slmas f on l.supcd=f.slcode
+left join rm_var v  on v.catcd=l.catcd and v.varcode=l.varcode 
+left join pp_divmas c on c.divcode=l.divcode
+inner join rm_arrival a  on a.divcode=l.divcode and a.arrno=l.arrno and a.arrdate=l.arrdt 
+and a.lotno=l.lotno and a.lotdt=l.lotdt and a.varcode=l.varcode and a.supcd=l.supcd  
+where    l.divcode=@divcode    
+and l.arrdt between @fdate AND @tdate --and l.lotno between @flot and @tlot 
+And L.Lotyear = @lotyear     
+   and isnull(l.opflg,'n')<>'Y'
+
+Group by v.varname,c.div_printname,c.div_unitname Order by v.varname    
+    
+End
+
+go
+
+
+/*  
+    
+  Sp_AR_Suppwiseabs '01','2019-04-01','2020-03-08','C1.001','ODK0009','2019','ALL'    
+  Sp_AR_Suppwiseabs '01','2020-07-01','2020-07-15','C1A0002','C1V0003','2020',' '   
+           
+*/    
+            
+create PROCEDURE Sp_AR_Suppwiseabs            
+@divcode AS varchar(10),   
+@fdate AS varchar(10),            
+@tdate AS varchar(10),   
+@fcust as varchar(10),  
+@tcust as varchar(10),           
+@lotyear AS varchar(10),
+@type as varchar(2)             
+AS  
+Begin      
+
+Select distinct c.div_printname,c.div_unitname,f.slname,v.varname,sum(l.bales) as bales,
+sum(l.pnetwt) as pnetwt,sum(l.netwt) as netwt,sum(l.ratekg*l.pnetwt)as ptyvalue,
+sum(l.ratekg*a.netwt)as millvalue,sum(l.pnetwt-a.netwt)as wtdiff,
+sum(l.ratekg*l.pnetwt)-sum(l.ratekg*a.netwt)as valdiff,
+
+case when sum(l.pnetwt-a.netwt) > 0 then sum(l.pnetwt-a.netwt) else 0 end as wtexcess,
+case when sum(l.pnetwt-a.netwt) < 0 then sum(l.pnetwt-a.netwt) else 0 end as wtshort,
+
+case when sum(l.ratekg*l.pnetwt)-sum(l.ratekg*a.netwt) > 0 then 
+sum(l.ratekg*l.pnetwt)-sum(l.ratekg*a.netwt) else 0 end as valexcess,
+case when sum(l.ratekg*l.pnetwt)-sum(l.ratekg*a.netwt) < 0 then 
+sum(l.ratekg*l.pnetwt)-sum(l.ratekg*a.netwt) else 0 end as valshort  
+ 
+From rm_arrival a
+inner join rm_lot l on a.divcode=l.divcode and a.arrno=l.arrno and a.arrdate=l.arrdt 
+and a.lotno=l.lotno and a.lotdt=l.lotdt and a.varcode=l.varcode and a.supcd=l.supcd
+inner join rm_cont cn on cn.contno=a.contno and a.contdt=cn.contdt and cn.varcode=a.varcode and cn.divcode=a.divcode and a.supcd=cn.supcd
+left join fa_slmas f on a.supcd=f.slcode
+left join rm_var v  on a.varcode=v.varcode and v.catcd=l.catcd 
+left join PP_DIVMAS c   on c.divcode=a.divcode 
+where 
+
+ a.divcode=@divcode and 
+a.arrdate between @fdate AND @tdate and a.supcd between @fcust and @tcust 
+And L.Lotyear = @lotyear and isnull(l.opflg,'n')<>'Y'
+Group by f.slname,v.varname,c.div_printname,c.div_unitname Order by f.slname,v.varname  
+
+End
+
+--select sum(a.netwt)from 
+ 
+-- rm_arrival a
+----left join rm_lot l on a.divcode=l.divcode and a.arrno=l.arrno and a.arrdate=l.arrdt 
+----and a.lotno=l.lotno and a.lotdt=l.lotdt and a.varcode=l.varcode and a.supcd=l.supcd
+-- where arrdate between '2020-07-01' and '2020-07-17' and a.supcd between 'C1A0001' and 'C1W0001'
+ 
+--  select sum(netwt)from rm_lot  a where lotdt between '2020-07-01' and '2020-07-17' and a.supcd between 'C1A0001' and 'C1W0001' and a.lottype='a'
+  
+--  select sum(netwt)from rm_arrival  a where arrdate between '2020-07-01' and '2020-07-17' and a.supcd between 'C1A0001' and 'C1W0001' and a.lottype='a'
+  
+--select a.netwt,l.netwt,a.varcodel.varcode,l.arrno,a.arrno from 
+ 
+--  rm_lot l  
+--left join rm_arrival a on a.divcode=l.divcode and a.arrno=l.arrno and a.arrdate=l.arrdt 
+--and a.lotno=l.lotno and a.lotdt=l.lotdt and a.varcode=l.varcode and a.supcd=l.supcd
+-- where arrdt between '2020-07-01' and '2020-07-17' and l.supcd between 'C1A0001' and 'C1W0001' and l.lottype='a'
+ 
+-- and a.netwt<>l.netwt 

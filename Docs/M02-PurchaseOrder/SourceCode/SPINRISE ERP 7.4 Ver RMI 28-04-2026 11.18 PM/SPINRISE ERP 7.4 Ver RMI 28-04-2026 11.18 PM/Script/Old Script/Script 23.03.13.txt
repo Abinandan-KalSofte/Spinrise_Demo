@@ -1,0 +1,1 @@
+ALTER TABLE rm_cont ADD TransPort VARCHAR(50)

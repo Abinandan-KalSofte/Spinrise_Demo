@@ -1,0 +1,114 @@
+USE [Sricheran]
+GO
+
+/****** Object:  Trigger [dbo].[InsertAccVariety]    Script Date: 25/06/2020 8:11:58 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+create trigger [dbo].[InsertvarGroup] on [dbo].[RM_varGroup] for insert 
+as 
+declare @VarCode varchar(20),@VARNAME varchar(50)
+Begin
+select @VarCode=GVarcode,@VARNAME= GVarName  froM inserted 
+insert into Pallavaa..RM_varGroup
+select * from Sricheran..RM_varGroup where GVarcode=@VarCode 
+end
+
+
+GO
+
+
+USE [Sricheran]
+GO
+/****** Object:  Trigger [dbo].[UPDATEAccVARIETY]    Script Date: 25/06/2020 8:14:03 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+create TRIGGER [dbo].[UPDATEvargroup] ON [dbo].[RM_varGroup] FOR Update AS   
+Declare    
+	 @VARNAME  varchar(50)
+,@AccVarcode varchar(10)
+	 
+  Begin  
+	Select @AccVarcode =GVarcode, @VARNAME=GVarName FROM Inserted
+
+	IF (SELECT cOUNT(*) FROM Pallavaa..RM_varGroup WHERE GVarcode=@AccVarcode )>0 
+	    BEGIN 
+		UPDATE Pallavaa..RM_varGroup SET GVarName=@VARNAME
+
+		WHERE GVarcode =@AccVarcode
+	END
+		
+  End                
+    
+
+
+go
+
+
+USE [Sricheran]
+GO
+
+/****** Object:  Trigger [dbo].[DeleteACCVariety]    Script Date: 25/06/2020 8:16:08 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+create  trigger [dbo].[DeleteVarGroup] on [dbo].[RM_varGroup] for delete as declare 
+@VARCODE varchar(20),@VARNAME varchar(50)
+bEgin
+select @VARCODE=GVarcode froM deleted  
+
+delete from  Sricheran ..RM_varGroup  where GVarcode=@VARCODE 
+delete from Pallavaa ..RM_varGroup  where GVarcode=@VARCODE 
+end
+
+
+
+GO
+
+USE [Sricheran]
+GO
+/****** Object:  Trigger [dbo].[UPDATEVARIETY]    Script Date: 25/06/2020 8:20:07 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+ALTER TRIGGER [dbo].[UPDATEVARIETY] ON [dbo].[RM_VAR] FOR Update AS   
+Declare    
+	@VARCODE VARCHAR(10), @VARNAME  varchar(50),@CATCD varchar(1),@IMPORTED varchar(1),
+	@drawno varchar(10),@oldvarcode varchar(20),@VARTYPE varchar(1),@SHADENO varchar(20),@Denier varchar(20),
+	@LENGTH varchar(20),@CATTYPE varchar(1) ,@AccVarcode varchar(10),@taxcode varchar(10),
+	@HSN  varchar(10) ,@cgstper numeric(9,2),@sgstper numeric(9,2) ,@igstper numeric(9,2)  ,@gVarcode varchar(10)
+	 
+  Begin  
+	Select @VARCODE =VARCODE, @VARNAME=VARNAME ,@CATCD=CATCD,@IMPORTED=IMPORTED,@drawno=drawno,
+	@oldvarcode=oldvarcode,@VARTYPE=VARTYPE,@SHADENO=SHADENO,@Denier=Denier,@LENGTH=LENGTH,@CATTYPE=CATTYPE,@AccVarcode =AccVarcode,
+	@taxcode=taxcode,@HSN=HSN,@cgstper=cgstper,@sgstper=sgstper,@igstper=igstper,@gVarcode=gVarcode	FROM Inserted
+
+	IF (SELECT cOUNT(*) FROM Pallavaa..RM_VAR WHERE VARCODE=@VARCODE )>0 
+	    BEGIN 
+		UPDATE Pallavaa..[RM_VAR] SET VARNAME=@VARNAME,CATCD=@CATCD,IMPORTED=@IMPORTED,
+		drawno =@drawno, oldvarcode=@oldvarcode,VARTYPE =@VARTYPE , SHADENO=@SHADENO,
+		Denier = @Denier, LENGTH=@LENGTH ,CATTYPE=@CATTYPE,AccVarcode=@AccVarcode,
+		taxcode=@taxcode,HSN=@HSN,cgstper=@cgstper,sgstper=@sgstper,igstper= @igstper,gVarcode=@gVarcode
+		WHERE VARCODE =@VARCODE
+	END
+		
+  End                
+    
+
+
+go
+

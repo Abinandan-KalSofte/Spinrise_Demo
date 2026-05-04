@@ -1,0 +1,37 @@
+
+
+alter table rm_lotallowance add CGSTPER Decimal(8,2) 
+go
+alter table rm_lotallowance add sGSTPER Decimal(8,2) 
+go
+alter table rm_lotallowance add iGSTPER Decimal(8,2) 
+go
+
+alter table rm_lotallowance add CGSTAMT Decimal(9,2) 
+go
+alter table rm_lotallowance add SGSTAMT Decimal(9,2) 
+go
+alter table rm_lotallowance add IGSTAMT Decimal(9,2) 
+go
+alter table rm_lotallowance add DBTaxableAmt Decimal(12,2) 
+go
+alter table rm_lotallowance add DBBillNo Varchar(15)
+go
+alter table rm_lotallowance add DBdate Date
+go
+alter table rm_lotallowance add roff Decimal(9,2) 
+go
+alter table rm_lotallowance add TCS_PER Decimal(9,3) 
+go
+alter table rm_lotallowance add TCS_AMT Decimal(9,2) 
+
+go
+alter table rm_lotallowance add ACGSTAMT Decimal(6,2) 
+go
+alter table rm_lotallowance add ASGSTAMT Decimal(6,2) 
+go
+alter table rm_lotallowance add AIGSTAMT Decimal(6,2) 
+go
+alter table rm_lotallowance add ATCSAMT Decimal(6,2) 
+
+ALTER TABLE rm_lot ALTER COLUMN dbnarr vARCHAR(250)

@@ -31,6 +31,7 @@ interface AppHeaderProps {
   switcherOpen:           boolean
   onSwitcherOpenChange:   (open: boolean) => void
   switcherContent:        React.ReactNode
+  pendingCount:           number
 }
 
 export function AppHeader({
@@ -41,6 +42,7 @@ export function AppHeader({
   switcherOpen,
   onSwitcherOpenChange,
   switcherContent,
+  pendingCount,
 }: AppHeaderProps) {
   const navigate  = useNavigate()
   const { user, processingDate, clearAuthSession } = useAuthStore()
@@ -159,14 +161,16 @@ export function AppHeader({
           </Tooltip>
         )}
 
-        <Badge count={0} size="small" offset={[-2, 2]}>
-          <Button
-            type="text"
-            shape="circle"
-            icon={<BellOutlined />}
-            className="topbar__icon-btn"
-          />
-        </Badge>
+        <Tooltip title={pendingCount > 0 ? `${pendingCount} pending approval${pendingCount > 1 ? 's' : ''}` : 'Notifications'}>
+          <Badge count={pendingCount} size="small" offset={[-2, 2]} overflowCount={99}>
+            <Button
+              type="text"
+              shape="circle"
+              icon={<BellOutlined />}
+              className="topbar__icon-btn"
+            />
+          </Badge>
+        </Tooltip>
 
         <Dropdown
           menu={{ items: profileMenu }}

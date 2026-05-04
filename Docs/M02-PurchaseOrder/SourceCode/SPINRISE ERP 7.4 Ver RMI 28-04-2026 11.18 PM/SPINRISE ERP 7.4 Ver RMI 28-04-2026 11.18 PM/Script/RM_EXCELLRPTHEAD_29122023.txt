@@ -1,0 +1,2 @@
+insert into RM_EXCELLRPTHEAD values(4,'Supplier Lot no','TRNREC')
+insert into RM_EXCELLRPTHEAD values(12,'Commercial Wt','TRNREC')

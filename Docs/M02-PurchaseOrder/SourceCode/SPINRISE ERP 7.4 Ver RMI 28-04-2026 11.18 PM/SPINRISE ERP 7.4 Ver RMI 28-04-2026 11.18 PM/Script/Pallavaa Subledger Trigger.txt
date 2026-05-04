@@ -1,0 +1,229 @@
+USE [Pallavaa]
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+create trigger [dbo].[InsertSubledger] on [dbo].[Fa_Slmas] for insert 
+as 
+declare @Slcode varchar(20),@Slname varchar(90)
+Begin
+select @Slcode=slcode,@Slname=slname  froM inserted 
+insert into sricheran..Fa_Slmas (slcode,slname,abbr,add1,add2,add3,city,pin,state,country,phone1,phone2,email,telegram,webaddr,fax,crlimit,bankadd1,bankadd2
+,carcode,areacode,pay_terms,crddays,tngst,tngstdt,cgstdt,cgst,ecc,pan,trn_debt,contper,contdesg,contphone,prtytyp,BRCODE,tax_code,insper,DISC_PER,CDISC_PER,passwd
+,stcode,PAYMODE,PARTY_TYPE,RANGE,DIVISION,AGENT_CODE,CARRIER_CODE,RC_NO,COLLECTORATE,AC_SL,INSPECT,APPROVE,GROUPCODE,state_code,TINNO,TINDT,odper,self,COMM_TYPE,COMM_PER
+,org_type,OFF_ADD1,OFF_ADD2,OFF_ADD3,OFF_CITY,OFF_PIN,OFF_STATE,OFF_COUNTRY,OFF_PHONE1,OFF_PHONE2,OFF_EMAIL,OFF_TELEGRAM,OFF_WEBSITE,OFF_FAX,OFF_CONTPER,OFF_contdesg,OFF_CONTPHONE
+,OFF_SSINO,OFF_MICRONO,default_Add,grp,COURIERTHROUGH,BANKACNO,IFSCCODE,USERID,CustGrp,CRLimitflg,ptype,OLDSLCODE,email2,ACTYPE,GSTSTATECODE,GSTINNO,Supptype,CRDDAYS2,ISACTIVE
+,mod_date,mod_user,ipaddr,hostname,mod_form,mod_username,ACTIVE,FIRST_APPFLG,FIRST_APPUSERID,FIRST_APPIP,FIRST_APPDATE,Second_APPFLG,Second_APPUSERID,Second_APPIP,Second_APPDATE
+,scanfilename,app_remarks,slcodenew,CR_DaysLock,BankRemarks)
+select slcode,slname,abbr,add1,add2,add3,city,pin,state,country,phone1,phone2,email,telegram,webaddr,fax,crlimit,bankadd1,bankadd2
+,carcode,areacode,pay_terms,crddays,tngst,tngstdt,cgstdt,cgst,ecc,pan,trn_debt,contper,contdesg,contphone,prtytyp,BRCODE,tax_code,insper,DISC_PER,CDISC_PER,passwd
+,stcode,PAYMODE,PARTY_TYPE,RANGE,DIVISION,AGENT_CODE,CARRIER_CODE,RC_NO,COLLECTORATE,AC_SL,INSPECT,APPROVE,GROUPCODE,state_code,TINNO,TINDT,odper,self,COMM_TYPE,COMM_PER
+,org_type,OFF_ADD1,OFF_ADD2,OFF_ADD3,OFF_CITY,OFF_PIN,OFF_STATE,OFF_COUNTRY,OFF_PHONE1,OFF_PHONE2,OFF_EMAIL,OFF_TELEGRAM,OFF_WEBSITE,OFF_FAX,OFF_CONTPER,OFF_contdesg,OFF_CONTPHONE
+,OFF_SSINO,OFF_MICRONO,default_Add,grp,COURIERTHROUGH,BANKACNO,IFSCCODE,USERID,CustGrp,CRLimitflg,ptype,OLDSLCODE,email2,ACTYPE,GSTSTATECODE,GSTINNO,Supptype,CRDDAYS2,ISACTIVE
+,mod_date,mod_user,ipaddr,hostname,mod_form,mod_username,ACTIVE,FIRST_APPFLG,FIRST_APPUSERID,FIRST_APPIP,FIRST_APPDATE,Second_APPFLG,Second_APPUSERID,Second_APPIP,Second_APPDATE
+,scanfilename,app_remarks,slcodenew,CR_DaysLock,BankRemarks from pallavaa..Fa_Slmas where slcode=@Slcode
+end
+
+
+GO
+
+
+
+USE [pallavaa]
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+create trigger [dbo].[DeleteSubledger] on [dbo].[Fa_Slmas]  for delete as  
+declare @Slcode varchar(20),@Slname varchar(90)
+bEgin
+select @Slcode=slcode,@Slname=slname froM deleted  
+
+delete from  Sricheran..Fa_Slmas  where slcode=@Slcode 
+end
+GO
+USE [pallavaa]
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+alter TRIGGER [dbo].[UPDATESubledger] on [dbo].[Fa_Slmas] FOR Update AS   
+Declare    
+	@slcode varchar(8)  ,
+	@slname varchar(250) ,
+	@abbr varchar(5) ,
+	@add1 varchar(250) ,
+	@add2 varchar(250) ,
+	@add3 varchar(50) ,
+	@city varchar(50) ,
+	@pin varchar(50) ,
+	@state varchar(50) ,
+	@country varchar(30) ,
+	@phone1 varchar(30) ,
+	@phone2 varchar(30) ,
+	@email varchar(35) ,
+	@telegram varchar(30) ,
+	@webaddr varchar(40) ,
+	@fax varchar(20) ,
+	@crlimit decimal(15, 3) ,
+	@bankadd1 varchar(30) ,
+	@bankadd2 varchar(30) ,
+	@carcode varchar(4) ,
+	@areacode varchar(4) ,
+	@pay_terms varchar(70) ,
+	@crddays decimal(3, 0) ,
+	@tngst varchar(30) ,
+	@tngstdt datetime ,
+	@cgstdt datetime ,
+	@cgst varchar(30) ,
+	@ecc varchar(20) ,
+	@pan varchar(20) ,
+	@trn_debt char(1) ,
+	@contper varchar(30) ,
+	@contdesg varchar(30) ,
+	@contphone varchar(30) ,
+	@prtytyp varchar(2) ,
+	@BRCODE varchar(7) ,
+	@tax_code varchar(3) ,
+	@insper decimal(5, 2) ,
+	@DISC_PER decimal(5, 2) ,
+	@CDISC_PER decimal(5, 2) ,
+	@passwd varchar(10) ,
+	@stcode numeric(1, 0) ,
+	@PAYMODE tinyint ,
+	@PARTY_TYPE varchar(2) ,
+	@RANGE varchar(50) ,
+	@DIVISION varchar(50) ,
+	@AGENT_CODE varchar(6) ,
+	@CARRIER_CODE varchar(4) ,
+	@RC_NO varchar(15) ,
+	@COLLECTORATE varchar(25) ,
+	@AC_SL varchar(6) ,
+	@INSPECT char(1) ,
+	@APPROVE char(1) ,
+	@GROUPCODE varchar(2) ,
+	@state_code varchar(3) ,
+	@TINNO varchar(50) ,
+	@TINDT varchar(15) ,
+	@odper decimal(5, 2) ,
+	@self char(1) ,
+	@COMM_TYPE char(1) ,
+	@COMM_PER numeric(5, 3) ,
+	@org_type varchar(3) ,
+	@OFF_ADD1 varchar(70) ,
+	@OFF_ADD2 varchar(70) ,
+	@OFF_ADD3 varchar(70) ,
+	@OFF_CITY varchar(70) ,
+	@OFF_PIN varchar(12) ,
+	@OFF_STATE varchar(25) ,
+	@OFF_COUNTRY varchar(30) ,
+	@OFF_PHONE1 varchar(40) ,
+	@OFF_PHONE2 varchar(30) ,
+	@OFF_EMAIL varchar(40) ,
+	@OFF_TELEGRAM varchar(30) ,
+	@OFF_WEBSITE varchar(40) ,
+	@OFF_FAX varchar(40) ,
+	@OFF_CONTPER varchar(30) ,
+	@OFF_contdesg varchar(30) ,
+	@OFF_CONTPHONE varchar(30) ,
+	@OFF_SSINO varchar(30) ,
+	@OFF_MICRONO varchar(30) ,
+	@default_Add varchar(100) ,
+	@grp varchar(1) ,
+	@COURIERTHROUGH nvarchar(100) ,
+	@BANKACNO varchar(50) ,
+	@IFSCCODE varchar(50) ,
+	@USERID varchar(15) ,
+	@CustGrp varchar(8) ,
+	@CRLimitflg varchar(2) ,
+	@ptype varchar(2) ,
+	@OLDSLCODE varchar(8) ,
+	@email2 varchar(50) ,
+	@ACTYPE varchar(10) ,
+	@GSTSTATECODE varchar(15) ,
+	@GSTINNO varchar(15) ,
+	@Supptype varchar(2) ,
+	@CRDDAYS2 decimal(3, 0) ,
+	@ISACTIVE char(1) ,
+	@mod_date datetime ,
+	@mod_user varchar(15) ,
+	@ipaddr varchar(20) ,
+	@hostname varchar(25) ,
+	@mod_form varchar(25) ,
+	@mod_username varchar(15) ,
+	@ACTIVE char(2) ,
+	@FIRST_APPFLG char(1) ,
+	@FIRST_APPUSERID varchar(40) ,
+	@FIRST_APPIP varchar(40) ,
+	@FIRST_APPDATE datetime ,
+	@Second_APPFLG char(1) ,
+	@Second_APPUSERID varchar(40) ,
+	@Second_APPIP varchar(40) ,
+	@Second_APPDATE datetime ,
+	@scanfilename varchar(200) ,
+	@app_remarks varchar(200) ,
+	@slcodenew varchar(7) ,
+	@CR_DaysLock tinyint ,
+	@BankRemarks varchar(150) 
+	 
+  Begin  
+	Select @slcode=slcode,@slname=slname,@abbr=abbr,@add1=add1,@add2=add2,@add3=add3,@city=city,@pin=pin,@state=state,@country=country,@phone1=phone1,@phone2=phone2,
+	@email=email,@telegram=telegram,@webaddr=webaddr,@fax=fax,@crlimit=crlimit,@bankadd1=bankadd1,@bankadd2=bankadd2
+,@carcode=carcode,@areacode=areacode,@pay_terms=pay_terms,@crddays=crddays,@tngst=tngst,@tngstdt=tngstdt,@cgstdt=cgstdt,@cgst=cgst,@ecc=ecc,@pan=pan,@trn_debt=trn_debt,
+@contper=contper,@contdesg=contdesg,@contphone=contphone,@prtytyp=prtytyp,@BRCODE=BRCODE,@tax_code=tax_code,@insper=insper,@DISC_PER=DISC_PER,@CDISC_PER=CDISC_PER,@passwd=passwd
+,@stcode=stcode,@PAYMODE=PAYMODE,@PARTY_TYPE=PARTY_TYPE,@RANGE=RANGE,@DIVISION=DIVISION,@AGENT_CODE=AGENT_CODE,@CARRIER_CODE=CARRIER_CODE,@RC_NO=RC_NO,@COLLECTORATE=COLLECTORATE,
+@AC_SL=AC_SL,@INSPECT=INSPECT,@APPROVE=APPROVE,@GROUPCODE=GROUPCODE,@state_code=state_code,@TINNO=TINNO,@TINDT=TINDT,@odper=odper,@self=self,@COMM_TYPE=COMM_TYPE,@COMM_PER=COMM_PER
+,@org_type=org_type,@OFF_ADD1=OFF_ADD1,@OFF_ADD2=OFF_ADD2,@OFF_ADD3=OFF_ADD3,@OFF_CITY=OFF_CITY,@OFF_PIN=OFF_PIN,@OFF_STATE=OFF_STATE,@OFF_COUNTRY=OFF_COUNTRY,
+@OFF_PHONE1=OFF_PHONE1,@OFF_PHONE2=OFF_PHONE2,@OFF_EMAIL=OFF_EMAIL,@OFF_TELEGRAM=OFF_TELEGRAM,@OFF_WEBSITE=OFF_WEBSITE,@OFF_FAX=OFF_FAX,@OFF_CONTPER=OFF_CONTPER,@OFF_contdesg=OFF_contdesg
+,@OFF_CONTPHONE=OFF_CONTPHONE
+,@OFF_SSINO=OFF_SSINO,@OFF_MICRONO=OFF_MICRONO,@default_Add=default_Add,@grp=grp,@COURIERTHROUGH=COURIERTHROUGH,@BANKACNO=BANKACNO,@IFSCCODE=IFSCCODE,@USERID=USERID,
+@CustGrp=CustGrp,@CRLimitflg=CRLimitflg,@ptype=ptype,@OLDSLCODE=OLDSLCODE,@email2=email2,@ACTYPE=ACTYPE,@GSTSTATECODE=GSTSTATECODE,@GSTINNO=GSTINNO,@Supptype=Supptype,
+@CRDDAYS2=CRDDAYS2,@ISACTIVE=ISACTIVE,@mod_date=mod_date,@mod_user=mod_user,@ipaddr=ipaddr,@hostname=hostname,@mod_form=mod_form,@mod_username=mod_username,@ACTIVE=ACTIVE,
+@FIRST_APPFLG=FIRST_APPFLG,@FIRST_APPUSERID=FIRST_APPUSERID,@FIRST_APPIP=FIRST_APPIP,@FIRST_APPDATE=FIRST_APPDATE,@Second_APPFLG=Second_APPFLG,@Second_APPUSERID=Second_APPUSERID,
+@Second_APPIP=Second_APPIP,@Second_APPDATE=Second_APPDATE,@scanfilename=scanfilename,@app_remarks=app_remarks,@slcodenew=slcodenew,@CR_DaysLock=CR_DaysLock,@BankRemarks=BankRemarks	FROM Inserted
+
+	IF (SELECT cOUNT(slcode) FROM sricheran..fa_slmas WHERE slcode=@slcode )>0 
+	    BEGIN 
+
+		print @add1
+		UPDATE sricheran..fa_slmas SET slname=@slname,abbr=@abbr,add1=@add1,add2=@add1,add3=@add3,city=@city,pin=@pin,state=@state,country=@country
+		,phone1=@phone1,phone2=@phone2,
+	email=@email,telegram=@telegram,webaddr=@webaddr,fax=@fax,crlimit=@crlimit,bankadd1=@bankadd1,bankadd2=@bankadd2
+,carcode=@carcode,areacode=@areacode,pay_terms=@pay_terms,crddays=@crddays,tngst=@tngst,tngstdt=@tngstdt,cgstdt=@cgstdt,cgst=@cgst,ecc=@ecc,pan=@pan,trn_debt=@trn_debt,
+contper=@contper,contdesg=@contdesg,contphone=@contphone,prtytyp=@prtytyp,BRCODE=@BRCODE,tax_code=@tax_code,insper=@insper,DISC_PER=@DISC_PER,CDISC_PER=@CDISC_PER,passwd=@passwd
+,stcode=@stcode,PAYMODE=@PAYMODE,PARTY_TYPE=@PARTY_TYPE,RANGE=@RANGE,DIVISION=@DIVISION,AGENT_CODE=@AGENT_CODE,CARRIER_CODE=@CARRIER_CODE
+,RC_NO=@RC_NO,COLLECTORATe=@COLLECTORATE,
+AC_SL=@AC_SL,INSPECT=@INSPECT
+
+,APPROVE=@APPROVE,GROUPCODE=@GROUPCODE,state_code=@state_code,TINNO=@TINNO,TINDT=@TINDT,odper=@odper,self=@self,COMM_TYPE=@COMM_TYPE,COMM_PER=@COMM_PER
+,org_type=@org_type,OFF_ADD1=@OFF_ADD1,OFF_ADD2=@OFF_ADD2,OFF_ADD3=@OFF_ADD3,OFF_CITY=@OFF_CITY,OFF_PIN=@OFF_PIN,OFF_STATE=@OFF_STATE,OFF_COUNTRY=@OFF_COUNTRY,
+OFF_PHONE1=@OFF_PHONE1,OFF_PHONE2=@OFF_PHONE2,OFF_EMAIL=@OFF_EMAIL,OFF_TELEGRAM=@OFF_TELEGRAM,OFF_WEBSITE=@OFF_WEBSITE,OFF_FAX=@OFF_FAX,OFF_CONTPER=@OFF_CONTPER,OFF_contdesg=@OFF_contdesg
+,OFF_CONTPHONE=@OFF_CONTPHONE
+,OFF_SSINO=@OFF_SSINO,OFF_MICRONO=@OFF_MICRONO,default_Add=@default_Add,grp=@grp,COURIERTHROUGH=@COURIERTHROUGH,BANKACNO=@BANKACNO,IFSCCODE=@IFSCCODE,USERID=@USERID,
+CustGrp=@CustGrp,CRLimitflg=@CRLimitflg,ptype=@ptype,OLDSLCODE=@OLDSLCODE,email2=@email2,ACTYPE=@ACTYPE,GSTSTATECODE=@GSTSTATECODE,GSTINNO=@GSTINNO,Supptype=@Supptype,
+
+CRDDAYS2=@CRDDAYS2,ISACTIVE=@ISACTIVE,mod_date=@mod_date,mod_user=@mod_user,ipaddr=@ipaddr,hostname=@hostname,mod_form=@mod_form,mod_username=@mod_username,ACTIVE=@ACTIVE,
+FIRST_APPFLG=@FIRST_APPFLG,FIRST_APPUSERID=@FIRST_APPUSERID,FIRST_APPIP=@FIRST_APPIP,FIRST_APPDATE=@FIRST_APPDATE,Second_APPFLG=@Second_APPFLG,Second_APPUSERID=@Second_APPUSERID,
+Second_APPIP=@Second_APPIP,Second_APPDATE=@Second_APPDATE,scanfilename=@scanfilename,app_remarks=@app_remarks,slcodenew=@slcodenew,CR_DaysLock=@CR_DaysLock,BankRemarks	=@BankRemarks
+WHERE slcode =@slcode
+
+print @slcode
+	END
+		
+  End                
+    
+
+
+
+GO
+
+
+
+
+
+
+

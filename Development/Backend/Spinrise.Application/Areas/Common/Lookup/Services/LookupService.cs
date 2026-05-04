@@ -8,13 +8,15 @@ public class LookupService : ILookupService
 {
     private readonly ILookupRepository       _repo;
     private readonly IUnitOfWork             _uow;
+    private readonly IJATUnitOfWork          _jatUow;
     private readonly ILogger<LookupService>  _logger;
 
-    public LookupService(ILookupRepository repo, IUnitOfWork uow, ILogger<LookupService> logger)
+    public LookupService(ILookupRepository repo, IUnitOfWork uow, IJATUnitOfWork jatUow, ILogger<LookupService> logger)
     {
-        _repo   = repo;
-        _uow    = uow;
-        _logger = logger;
+        _repo    = repo;
+        _uow     = uow;
+        _jatUow  = jatUow;
+        _logger  = logger;
     }
 
     public async Task<IEnumerable<DepartmentLookupDto>> GetDepartmentsAsync(string divCode)
@@ -85,12 +87,12 @@ public class LookupService : ILookupService
         }
     }
 
-    public async Task<IEnumerable<MachineLookupDto>> GetMachinesAsync(string divCode)
+    public async Task<IEnumerable<MachineLookupDto>> GetMachinesAsync(string divCode, string? depCode = null)
     {
         await _uow.BeginAsync();
         try
         {
-            var data = await _repo.GetMachinesAsync(divCode);
+            var data = await _repo.GetMachinesAsync(divCode, depCode);
             await _uow.CommitAsync();
             return data;
         }
@@ -149,6 +151,91 @@ public class LookupService : ILookupService
         {
             _logger.LogError(ex, "Failed to get active divisions list");
             await _uow.RollbackAsync();
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<SupplierLookupDto>> GetSuppliersAsync(string search)
+    {
+        await _jatUow.BeginAsync();
+        try
+        {
+            var data = await _repo.GetSuppliersAsync(search);
+            await _jatUow.CommitAsync();
+            return data;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to get suppliers lookup for search '{Search}'", search);
+            await _jatUow.RollbackAsync();
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<VarietyLookupDto>> GetVarietiesAsync(string search)
+    {
+        await _jatUow.BeginAsync();
+        try
+        {
+            var data = await _repo.GetVarietiesAsync(search);
+            await _jatUow.CommitAsync();
+            return data;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to get varieties lookup for search '{Search}'", search);
+            await _jatUow.RollbackAsync();
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<AreaLookupDto>> GetAreasAsync(string search)
+    {
+        await _jatUow.BeginAsync();
+        try
+        {
+            var data = await _repo.GetAreasAsync(search);
+            await _jatUow.CommitAsync();
+            return data;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to get areas lookup for search '{Search}'", search);
+            await _jatUow.RollbackAsync();
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<PaymentModeLookupDto>> GetPaymentModesAsync()
+    {
+        await _jatUow.BeginAsync();
+        try
+        {
+            var data = await _repo.GetPaymentModesAsync();
+            await _jatUow.CommitAsync();
+            return data;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to get payment modes lookup");
+            await _jatUow.RollbackAsync();
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<CurrencyLookupDto>> GetCurrenciesAsync()
+    {
+        await _jatUow.BeginAsync();
+        try
+        {
+            var data = await _repo.GetCurrenciesAsync();
+            await _jatUow.CommitAsync();
+            return data;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to get currencies lookup");
+            await _jatUow.RollbackAsync();
             throw;
         }
     }

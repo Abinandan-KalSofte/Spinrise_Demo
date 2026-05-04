@@ -1,0 +1,80 @@
+
+/****** Object:  Table [dbo].[RM_QualityParamRank]    Script Date: 03/01/2013 16:57:32 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[RM_QualityParamRank](
+	[Identity] [numeric](18, 0) NOT NULL,
+	[Divcode] [varchar](2) NOT NULL,
+	[VarCode] [varchar](10) NOT NULL,
+	[SpanLen_UnitDiff] [numeric](12, 2) NOT NULL,
+	[SpanLen_Points] [numeric](12, 2) NOT NULL,
+	[Strength_UnitDiff] [numeric](12, 2) NOT NULL,
+	[Strength_Points] [numeric](12, 2) NOT NULL,
+	[Micronar_UnitDiff] [numeric](12, 2) NOT NULL,
+	[MicroNar_Points] [numeric](12, 2) NOT NULL,
+	[Trash_UnitDiff] [numeric](12, 2) NOT NULL,
+	[Trash_Points] [numeric](12, 2) NOT NULL,
+	[Maturity_unitDiff] [numeric](12, 2) NOT NULL,
+	[Maturity_Points] [numeric](12, 2) NOT NULL,
+	[Uniformity_UnitDiff] [numeric](12, 2) NOT NULL,
+	[Uniformity_Points] [numeric](12, 2) NOT NULL,
+	[EffectiveDate] [datetime] NOT NULL DEFAULT GETDATE()
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[RM_QualityParamRank] ADD  CONSTRAINT [DF_RM_QualityParamRank_SpanLen_UnitDiff]  DEFAULT ((0)) FOR [SpanLen_UnitDiff]
+GO
+
+ALTER TABLE [dbo].[RM_QualityParamRank] ADD  CONSTRAINT [DF_RM_QualityParamRank_SpanLen_Points]  DEFAULT ((0)) FOR [SpanLen_Points]
+GO
+
+ALTER TABLE [dbo].[RM_QualityParamRank] ADD  CONSTRAINT [DF_RM_QualityParamRank_Strength_UnitDiff]  DEFAULT ((0)) FOR [Strength_UnitDiff]
+GO
+
+ALTER TABLE [dbo].[RM_QualityParamRank] ADD  CONSTRAINT [DF_RM_QualityParamRank_Strength_Points]  DEFAULT ((0)) FOR [Strength_Points]
+GO
+
+ALTER TABLE [dbo].[RM_QualityParamRank] ADD  CONSTRAINT [DF_RM_QualityParamRank_Micronar_UnitDiff]  DEFAULT ((0)) FOR [Micronar_UnitDiff]
+GO
+
+ALTER TABLE [dbo].[RM_QualityParamRank] ADD  CONSTRAINT [DF_RM_QualityParamRank_MicroNar_Points]  DEFAULT ((0)) FOR [MicroNar_Points]
+GO
+
+ALTER TABLE [dbo].[RM_QualityParamRank] ADD  CONSTRAINT [DF_RM_QualityParamRank_Trash_UnitDiff]  DEFAULT ((0)) FOR [Trash_UnitDiff]
+GO
+
+ALTER TABLE [dbo].[RM_QualityParamRank] ADD  CONSTRAINT [DF_RM_QualityParamRank_Trash_Points]  DEFAULT ((0)) FOR [Trash_Points]
+GO
+
+ALTER TABLE [dbo].[RM_QualityParamRank] ADD  CONSTRAINT [DF_RM_QualityParamRank_Maturity_unitDiff]  DEFAULT ((0)) FOR [Maturity_unitDiff]
+GO
+
+ALTER TABLE [dbo].[RM_QualityParamRank] ADD  CONSTRAINT [DF_RM_QualityParamRank_Maturity_Points]  DEFAULT ((0)) FOR [Maturity_Points]
+GO
+
+ALTER TABLE [dbo].[RM_QualityParamRank] ADD  CONSTRAINT [DF_RM_QualityParamRank_Uniformity_UnitDiff]  DEFAULT ((0)) FOR [Uniformity_UnitDiff]
+GO
+
+ALTER TABLE [dbo].[RM_QualityParamRank] ADD  CONSTRAINT [DF_RM_QualityParamRank_Uniformity_Points]  DEFAULT ((0)) FOR [Uniformity_Points]
+GO
+
+ALTER TABLE [dbo].[RM_QualityParamRank] ADD  CONSTRAINT [PK_RM_QualityParamRank] PRIMARY KEY NONCLUSTERED 
+(
+	[DIVCODE] ASC,
+	[VARCODE] ASC,
+	[EFFECTIVEDATE] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+
+

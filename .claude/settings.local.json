@@ -32,7 +32,31 @@
       "Bash(npm init *)",
       "Bash(node generate.js)",
       "Bash(node append_validations.js)",
-      "Bash(node gen_full_checklist.js)"
+      "Bash(node gen_full_checklist.js)",
+      "Bash(grep *)",
+      "Bash(node_modules/.bin/tsc --noEmit)",
+      "Bash(dir %APPDATA%\\\\Thunderbird\\\\Profiles *)",
+      "Read(//c/Users/Admin/AppData/Roaming/Thunderbird/Profiles//**)",
+      "Read(//mnt/c/Users/Admin/AppData/Roaming/Thunderbird/**)",
+      "Bash(findstr *)",
+      "Bash(python -c \"import docx; print\\('python-docx ok'\\)\")",
+      "Bash(python -c \"import openpyxl; print\\('openpyxl ok'\\)\")",
+      "Bash(pip install *)",
+      "Bash(python *)",
+      "Bash(awk -F: '$2 ~ /^-- ksp_|^CREATE/ {print NR\": \"$0}')",
+      "Bash(ls /mnt/)",
+      "Read(//c//**)",
+      "Bash(dotnet add *)",
+      "Bash(xargs -I{} basename {} .sql)",
+      "Bash(dotnet clean *)",
+      "Bash(netstat -ano)",
+      "PowerShell($env:ASPNETCORE_ENVIRONMENT = \"Development\"; & \"D:\\\\Spinrise\\\\Development\\\\Backend\\\\Spinrise.API\\\\bin\\\\Debug\\\\net8.0\\\\Spinrise.API.exe\" 2>&1)",
+      "PowerShell(Push-Location \"D:\\\\Spinrise\\\\Development\\\\Backend\\\\Spinrise.API\"; $env:ASPNETCORE_ENVIRONMENT = \"Development\"; & \".\\\\bin\\\\Debug\\\\net8.0\\\\Spinrise.API.exe\" 2>&1; Pop-Location)",
+      "PowerShell(Stop-Process *)",
+      "PowerShell(Push-Location \"D:\\\\Spinrise\\\\Development\\\\Backend\\\\Spinrise.API\"; $env:ASPNETCORE_ENVIRONMENT = \"Development\"; .\\\\bin\\\\Debug\\\\net8.0\\\\Spinrise.API.exe; Pop-Location)",
+      "PowerShell(dotnet run *)",
+      "PowerShell(dotnet exec *)",
+      "PowerShell(Get-ChildItem \"D:\\\\Spinrise\\\\Docs\\\\Email\\\\\" | Where-Object { $_.Name -ne \"EmailSummary.md\" } | Sort-Object Name | Select-Object -ExpandProperty Name)"
     ]
   }
 }

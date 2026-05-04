@@ -1,0 +1,33 @@
+
+-- KSL_RMI_SampleRegister_Date '01','2013-09-01','2013-10-01','All','1','47','CRA0001','CRV0001','BCI','S6'  
+CREATE PROC KSL_RMI_SampleRegister_Date     
+(       
+ @divcode VARCHAR(4),      
+ @FDate VARCHAR(10),      
+ @TDate VARCHAR(10),      
+ @POTYPE VARCHAR(20),      
+ @FSNO  VARCHAR(5),      
+ @TSNO VARCHAR(10),      
+ @Fsup VARCHAR(20),  
+ @Tsup VARCHAR(20),   
+ @Fvar VARCHAR(20),  
+ @Tvar VARCHAR(20)      
+)      
+AS      
+BEGIN      
+SELECT a.SNO,a.DATE,a.prty_sampno,f.slname,a.varcode,e.slname AS brname,d.varname,a.SUPCODE,a.VARCODE,  
+a.station_code,c.Areaname,c.Station,a.STAPLEN25 as STAPLEN25,a.STAPLEN50 as STAPLEN50,  
+a.MICRONAIRE as MICRONAIRE,a.TRASH_PER as TRASH_PER,a.UNIRATIO as UNIRATIO,  
+a.MOITURE as MOITURE,a.SHORTFIBRE,a.PLOTNO as PLOTNO,a.prno as prno,a.QUANTITY,  
+a.rate,a.FQI,a.SCI,a.COLOR as COLOR,a.COLOURGRADE as COLOURGRADE,a.STRENGTH as STRENGTH,  
+a.MCOEFF,a.STAPHANDTEST,a.HVITEST,a.AVGCOUNT,a.YARNAPP,a.csp ,a.tpi, a.avrstrength ,rd, bplus,a.corr_strenth,  
+a.spot_for,a.brokercode,a.POTYPE,a.GRADE,a.GTEX,a.AREA_CODE,a.STATION_NAME,a.CROP_YEAR,a.state_code,a.remarks,  
+a.yellowtouch,a.immature,pd.DIV_PRINTNAME,pd.DIV_UNITNAME  
+FROM RM_SAMPLE a,rm_area c, fa_slmas e, rm_var d,fa_slmas f,PP_DIVMAS pd   
+where a.varcode = d.varcode and a.AREA_CoDe = c.areacode and a.supcode = f.slcode and a.brokercode = e.slcode   
+AND pd.DIVCODE=a.DIVCODE and a.Date Between @FDate and @TDate and a.Supcode Between @Fsup and @Tsup   
+and a.varcode Between @Fvar and @Tvar AND a.divcode=@divcode AND a.SNO BETWEEN @FSNO AND @TSNO AND ((@POTYPE='All') OR (@POTYPE<>'All' and a.POTYPE=@POTYPE))  
+order by a.SNO,a.DATE,a.prty_sampno,f.slname,a.varcode,e.slname,d.varname  
+END  
+  
+  

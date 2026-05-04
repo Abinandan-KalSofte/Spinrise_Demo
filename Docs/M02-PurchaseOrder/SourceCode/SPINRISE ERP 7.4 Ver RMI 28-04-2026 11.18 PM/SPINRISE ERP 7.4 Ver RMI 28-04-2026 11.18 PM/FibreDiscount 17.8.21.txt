@@ -1,0 +1,696 @@
+
+delete from RM_EXCELLRPTHEAD where rptname='CRDisc'
+go
+
+insert into RM_EXCELLRPTHEAD values(1,'S.No','CRDisc')
+insert into RM_EXCELLRPTHEAD values(2,'UNIT','CRDisc')
+insert into RM_EXCELLRPTHEAD values(3,'Fibre','CRDisc')
+insert into RM_EXCELLRPTHEAD values(4,'FSC/NON FSC','CRDisc')
+insert into RM_EXCELLRPTHEAD values(5,'Supplier Name','CRDisc')
+insert into RM_EXCELLRPTHEAD values(6,'PO. No.','CRDisc')
+insert into RM_EXCELLRPTHEAD values(7,'Invoice No.','CRDisc')
+insert into RM_EXCELLRPTHEAD values(8,'Invoice Type.','CRDisc')
+insert into RM_EXCELLRPTHEAD values(9,'Invoice Date.','CRDisc')
+insert into RM_EXCELLRPTHEAD values(10,'Invoice Wt.','CRDisc')
+insert into RM_EXCELLRPTHEAD values(11,'Currency','CRDisc')
+insert into RM_EXCELLRPTHEAD values(12,'Plant(Source)','CRDisc')
+insert into RM_EXCELLRPTHEAD values(13,'Line No.','CRDisc')
+insert into RM_EXCELLRPTHEAD values(14,'Color.','CRDisc')
+
+insert into RM_EXCELLRPTHEAD values(15,'Invoice Basic Price.','CRDisc')
+insert into RM_EXCELLRPTHEAD values(16,'Invoice Disc1','CRDisc')
+insert into RM_EXCELLRPTHEAD values(17,'Invoice Disc2','CRDisc')
+insert into RM_EXCELLRPTHEAD values(18,'Invoice Disc3','CRDisc')
+insert into RM_EXCELLRPTHEAD values(19,'Invoice Disc4','CRDisc')
+insert into RM_EXCELLRPTHEAD values(20,'Invoice Disc5','CRDisc')
+insert into RM_EXCELLRPTHEAD values(21,'Invoice Disc6','CRDisc')
+insert into RM_EXCELLRPTHEAD values(22,'Invoice Disc7','CRDisc')
+insert into RM_EXCELLRPTHEAD values(23,'Invoice Disc8','CRDisc')
+
+insert into RM_EXCELLRPTHEAD values(24,'Agreed Basic Price.','CRDisc')
+insert into RM_EXCELLRPTHEAD values(25,'Agreed Disc1','CRDisc')
+insert into RM_EXCELLRPTHEAD values(26,'Agreed Disc2','CRDisc')
+insert into RM_EXCELLRPTHEAD values(27,'Agreed Disc3','CRDisc')
+insert into RM_EXCELLRPTHEAD values(28,'Agreed Disc4','CRDisc')
+insert into RM_EXCELLRPTHEAD values(29,'Agreed Disc5','CRDisc')
+insert into RM_EXCELLRPTHEAD values(30,'Agreed Disc6','CRDisc')
+insert into RM_EXCELLRPTHEAD values(31,'Agreed Disc7','CRDisc')
+insert into RM_EXCELLRPTHEAD values(32,'Agreed Disc8','CRDisc')
+
+
+insert into RM_EXCELLRPTHEAD values(33,'Difference Inv. Price.','CRDisc')
+insert into RM_EXCELLRPTHEAD values(34,'Difference Inv. Disc1','CRDisc')
+insert into RM_EXCELLRPTHEAD values(35,'Difference Inv. Disc2','CRDisc')
+insert into RM_EXCELLRPTHEAD values(36,'Difference Inv. Disc3','CRDisc')
+insert into RM_EXCELLRPTHEAD values(37,'Difference Inv. Disc4','CRDisc')
+insert into RM_EXCELLRPTHEAD values(38,'Difference Inv. Disc5','CRDisc')
+insert into RM_EXCELLRPTHEAD values(39,'Difference Inv. Disc6','CRDisc')
+insert into RM_EXCELLRPTHEAD values(40,'Difference Inv. Disc7','CRDisc')
+insert into RM_EXCELLRPTHEAD values(41,'Difference Inv. Disc8','CRDisc')
+
+insert into RM_EXCELLRPTHEAD values(42,'Credit Note1.','CRDisc')
+insert into RM_EXCELLRPTHEAD values(43,'Credit Note2','CRDisc')
+insert into RM_EXCELLRPTHEAD values(44,'Credit Note3','CRDisc')
+insert into RM_EXCELLRPTHEAD values(45,'Credit Note4','CRDisc')
+insert into RM_EXCELLRPTHEAD values(46,'Credit Note5','CRDisc')
+insert into RM_EXCELLRPTHEAD values(47,'Credit Note6','CRDisc')
+insert into RM_EXCELLRPTHEAD values(48,'Credit Note7','CRDisc')
+insert into RM_EXCELLRPTHEAD values(49,'Credit Note8','CRDisc')
+
+insert into RM_EXCELLRPTHEAD values(50,'Inv. Diff. Receivable Basic Price.','CRDisc')
+insert into RM_EXCELLRPTHEAD values(51,'Inv. Diff. Receivable Disc1','CRDisc')
+insert into RM_EXCELLRPTHEAD values(52,'Inv. Diff. Receivable Disc2','CRDisc')
+insert into RM_EXCELLRPTHEAD values(53,'Inv. Diff. Receivable Disc3','CRDisc')
+insert into RM_EXCELLRPTHEAD values(54,'Inv. Diff. Receivable Disc4','CRDisc')
+insert into RM_EXCELLRPTHEAD values(55,'Inv. Diff. Receivable Disc5','CRDisc')
+insert into RM_EXCELLRPTHEAD values(56,'Inv. Diff. Receivable Disc6','CRDisc')
+insert into RM_EXCELLRPTHEAD values(57,'Inv. Diff. Receivable Disc7','CRDisc')
+insert into RM_EXCELLRPTHEAD values(58,'Inv. Diff. Receivable Disc8','CRDisc')
+
+
+insert into RM_EXCELLRPTHEAD values(59,'CN Receivable Disc1','CRDisc')
+insert into RM_EXCELLRPTHEAD values(60,'CN Receivable Disc2','CRDisc')
+insert into RM_EXCELLRPTHEAD values(61,'CN Receivable Disc3','CRDisc')
+insert into RM_EXCELLRPTHEAD values(62,'CN Receivable Disc4','CRDisc')
+insert into RM_EXCELLRPTHEAD values(63,'CN Receivable Disc5','CRDisc')
+insert into RM_EXCELLRPTHEAD values(64,'CN Receivable Disc6','CRDisc')
+insert into RM_EXCELLRPTHEAD values(65,'CN Receivable Disc7','CRDisc')
+insert into RM_EXCELLRPTHEAD values(66,'CN Receivable Disc8','CRDisc')
+
+
+
+insert into RM_EXCELLRPTHEAD values(67,'Inv. Diff. Received Basic Price.','CRDisc')
+insert into RM_EXCELLRPTHEAD values(68,'Inv. Diff. Received Disc1','CRDisc')
+insert into RM_EXCELLRPTHEAD values(69,'Inv. Diff. Received Disc2','CRDisc')
+insert into RM_EXCELLRPTHEAD values(70,'Inv. Diff. Received Disc3','CRDisc')
+insert into RM_EXCELLRPTHEAD values(71,'Inv. Diff. Received Disc4','CRDisc')
+insert into RM_EXCELLRPTHEAD values(72,'Inv. Diff. Received Disc5','CRDisc')
+insert into RM_EXCELLRPTHEAD values(73,'Inv. Diff. Received Disc6','CRDisc')
+insert into RM_EXCELLRPTHEAD values(74,'Inv. Diff. Received Disc7','CRDisc')
+insert into RM_EXCELLRPTHEAD values(75,'Inv. Diff. Received Disc8','CRDisc')
+
+insert into RM_EXCELLRPTHEAD values(76,'CN Received Disc1','CRDisc')
+insert into RM_EXCELLRPTHEAD values(77,'CN Received Disc2','CRDisc')
+insert into RM_EXCELLRPTHEAD values(78,'CN Received Disc3','CRDisc')
+insert into RM_EXCELLRPTHEAD values(79,'CN Received Disc4','CRDisc')
+insert into RM_EXCELLRPTHEAD values(80,'CN Received Disc5','CRDisc')
+insert into RM_EXCELLRPTHEAD values(81,'CN Received Disc6','CRDisc')
+insert into RM_EXCELLRPTHEAD values(82,'CN Received Disc7','CRDisc')
+insert into RM_EXCELLRPTHEAD values(83,'CN Received Disc8','CRDisc')
+
+
+insert into RM_EXCELLRPTHEAD values(84,'Inv. Diff. Not Yet Received Basic Price.','CRDisc')
+insert into RM_EXCELLRPTHEAD values(85,'Inv. Diff. Not Yet Received Disc1','CRDisc')
+insert into RM_EXCELLRPTHEAD values(86,'Inv. Diff. Not Yet Received Disc2','CRDisc')
+insert into RM_EXCELLRPTHEAD values(87,'Inv. Diff. Not Yet Received Disc3','CRDisc')
+insert into RM_EXCELLRPTHEAD values(88,'Inv. Diff. Not Yet Received Disc4','CRDisc')
+insert into RM_EXCELLRPTHEAD values(89,'Inv. Diff. Not Yet Received Disc5','CRDisc')
+insert into RM_EXCELLRPTHEAD values(90,'Inv. Diff. Not Yet Received Disc6','CRDisc')
+insert into RM_EXCELLRPTHEAD values(91,'Inv. Diff. Not Yet Received Disc7','CRDisc')
+insert into RM_EXCELLRPTHEAD values(92,'Inv. Diff. Not Yet Received Disc8','CRDisc')
+
+insert into RM_EXCELLRPTHEAD values(93,'CN Not Yet Received Disc1','CRDisc')
+insert into RM_EXCELLRPTHEAD values(94,'CN Not Yet Received Disc2','CRDisc')
+insert into RM_EXCELLRPTHEAD values(95,'CN Not Yet Received Disc3','CRDisc')
+insert into RM_EXCELLRPTHEAD values(96,'CN Not Yet Received Disc4','CRDisc')
+insert into RM_EXCELLRPTHEAD values(97,'CN Not Yet Received Disc5','CRDisc')
+insert into RM_EXCELLRPTHEAD values(98,'CN Not Yet Received Disc6','CRDisc')
+insert into RM_EXCELLRPTHEAD values(99,'CN Not Yet Received Disc7','CRDisc')
+insert into RM_EXCELLRPTHEAD values(100,'CN Not Yet Received Disc8','CRDisc')
+go
+
+
+
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[RM_CNReceived](
+	[Divcode] [varchar](2) NOT NULL,
+	[DocNo] Decimal(8, 0) NOT NULL,
+	[Docdt] [datetime] NOT NULL,
+	DOCSNO SMALLINT,
+	[ContNo] Decimal(4, 0) NOT NULL,
+	[Contdt] [datetime] NOT NULL,
+	[Lotno] Decimal(4, 0) NOT NULL,
+	[Lotdt] [datetime] NOT NULL,
+	[MDocno] Decimal (9, 0) NOT NULL,
+	[MDocdate] [datetime] NOT NULL,
+	[SUPCD] [varchar](8) NOT NULL,
+	[Varcode] [varchar](10) NOT NULL,
+	[DType] [varchar](4) NOT NULL,
+	[Bill_DRate] Decimal(9, 2) NULL,
+	[PO_DRate] Decimal(9, 2) NULL,
+	[Rate_Diff] Decimal(9, 2) NULL,
+	[Receivable_Amt] Decimal(13, 2) NULL,
+	[Received_Amt] Decimal(13, 2) NULL,
+	Flg Varchar(1),
+	[IPADD] [varchar](18) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Docno] ASC,
+	[Docdt] ASC,
+	[Divcode] ASC,
+	[Lotno] ASC,
+	[Lotdt] ASC,
+	[ContNo] ASC,
+	[Contdt] ASC,
+	[Varcode] ASC,
+	[DType] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+
+
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[RM_CNReceivedTXN](
+	[Divcode] [varchar](2) NOT NULL,
+	[DocNo] Decimal(8, 0) NOT NULL,
+	[Docdt] [datetime] NOT NULL,
+	DOCSNO SMALLINT,
+	[ContNo] Decimal(4, 0) NOT NULL,
+	[Contdt] [datetime] NOT NULL,
+	[Lotno] Decimal(4, 0) NOT NULL,
+	[Lotdt] [datetime] NOT NULL,
+	[MDocno] Decimal (9, 0) NOT NULL,
+	[MDocdate] [datetime] NOT NULL,
+	[SUPCD] [varchar](8) NOT NULL,
+	[Varcode] [varchar](10) NOT NULL,
+	[DType] [varchar](4) NOT NULL,
+	[Bill_DRate] Decimal(9, 2) NULL,
+	[PO_DRate] Decimal(9, 2) NULL,
+	[Rate_Diff] Decimal(9, 2) NULL,
+	[Receivable_Amt] Decimal(13, 2) NULL,
+	[Received_Amt] Decimal(13, 2) NULL,
+	Flg Varchar(1),
+	[IPADD] [varchar](18) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Docno] ASC,
+	[Docdt] ASC,
+	[Divcode] ASC,
+	[Lotno] ASC,
+	[Lotdt] ASC,
+	[ContNo] ASC,
+	[Contdt] ASC,
+	[Varcode] ASC,
+	[DType] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+
+
+GO
+
+/****** Object:  Table [dbo].[RM_CNReceivedHD]    Script Date: 26/08/2021 18:21:12 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[RM_CNReceivedHD](
+	[Divcode] [varchar](2) NOT NULL,
+	[Docno] [decimal](4, 0) NOT NULL,
+	[Docdt] [date] NOT NULL,
+	[slcode] [varchar](8) NOT NULL,
+	[Billno] [varchar](15) NULL,
+	[Billdt] [date] NOT NULL,
+	[MDApp_copy] [varchar](40) NULL,
+	[TotalBales] [decimal](4, 0) NULL,
+	[TotalKgs] [decimal](14, 3) NULL,
+	[Disc_Value] [decimal](14, 2) NOT NULL,
+	[other_amt] [decimal](9, 2) NULL,
+	[GSTCode] [varchar](4) NULL,
+	[GSTPer] [decimal](9, 2) NULL,
+	[GSTAmt] [decimal](10, 2) NULL,
+	[CGSTAmt] [decimal](10, 2) NULL,
+	[SGSTAmt] [decimal](10, 2) NULL,
+	[IGSTAmt] [decimal](10, 2) NULL,
+	[Roff_amt] [decimal](6, 2) NULL,
+	[Total_Amt] [decimal](14, 2) NOT NULL,
+	[Remarks] [varchar](100) NULL,
+	[PJVTC] [decimal](3, 0) NULL,
+	[PJVNO] [decimal](5, 0) NULL,
+	[PJVDT] [date] NULL,
+	[CreatedBy] [varchar](8) NULL,
+	[CreatedDate] [datetime] NULL,
+	[ModifiedBy] [varchar](8) NULL,
+	[ModifiedDate] [datetime] NULL,
+	[HostID] [varchar](15) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Docno] ASC,
+	[Docdt] ASC,
+	[Divcode] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+
+
+GO
+
+/****** Object:  Table [dbo].[RM_CNReceivedDT]    Script Date: 26/08/2021 18:22:43 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[RM_CNReceivedDT](
+	[Divcode] [varchar](2) NOT NULL,
+	[Docno] [decimal](4, 0) NOT NULL,
+	[Docdt] [date] NOT NULL,
+	[DOCSNO] [smallint] NOT NULL,
+	[PJVTC] [decimal](3, 0) NOT NULL,
+	[PJVNO] [decimal](4, 0) NOT NULL,
+	[PJVDT] [date] NOT NULL,
+	[InvoiceNo] [varchar](16) NULL,
+	[InvoiceDT] [date] NULL,
+	[CONTNO] [decimal](4, 0) NOT NULL,
+	[CONTDT] [date] NOT NULL,
+	[LOTNO] [decimal](4, 0) NOT NULL,
+	[LOTDT] [date] NOT NULL,
+	[Varcode] [varchar](10) NULL,
+	[Rate] [decimal](9, 4) NOT NULL,
+	[Bales] [decimal](7, 0) NULL,
+	[TotalKgs] [decimal](14, 3) NULL,
+	[inv_Amt] [decimal](15, 2) NOT NULL,
+	[Agreed_Rate] [decimal](10, 4) NULL,
+	[Basic_Rate] [decimal](10, 4) NULL,
+	[Rate_Diff] [decimal](10, 3) NULL,
+	[Basic_Amt] [decimal](12, 2) NULL,
+	[Receivable_Amt] [decimal](12, 2) NULL,
+	[Received_Amt] [decimal](12, 2) NULL,
+	[TotCN_Rate] [decimal](12, 2) NULL,
+	[TotCN_RecvableAmt] [decimal](15, 2) NULL,
+	[TotCN_Amt] [decimal](12, 2) NULL,	
+	[TotDisc_Amt] [decimal](12, 2) NULL,
+	[TAx_Code] [varchar](4) NULL,
+	[CGSTPER] [decimal](9, 2) NOT NULL,
+	[CGSTAmt] [decimal](10, 2) NOT NULL,
+	[SGSTPER] [decimal](9, 2) NOT NULL,
+	[SGSTAmt] [decimal](10, 2) NOT NULL,
+	[IGSTPER] [decimal](9, 2) NOT NULL,
+	[IGSTAmt] [decimal](10, 2) NOT NULL,
+	[TotalAmt] [decimal](14, 2) NOT NULL,
+	[REMARKS] [varchar](20) NULL,
+	[MDOCNO] [decimal](8, 0) NULL,
+	[MDOCDT] [date] NULL,	
+
+PRIMARY KEY CLUSTERED 
+(
+	[Docno] ASC,
+	[Docdt] ASC,
+	[Divcode] ASC,
+	[PJVTC] ASC,
+	[PJVNO] ASC,
+	[PJVDT] ASC,
+	[DOCSNO] ASC,
+	[CONTNO] ASC,
+	[CONTDT] ASC,
+	[LOTNO] ASC,
+	[LOTDT] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[RM_CNReceivedDT]  WITH CHECK ADD  CONSTRAINT [fk_RM_CNReceivedDT] FOREIGN KEY([Docno], [Docdt], [Divcode])
+REFERENCES [dbo].[RM_CNReceivedHD] ([Docno], [Docdt], [Divcode])
+GO
+
+ALTER TABLE [dbo].[RM_CNReceivedDT] CHECK CONSTRAINT [fk_RM_CNReceivedDT]
+GO
+
+
+
+
+
+
+
+
+
+-- ksp_FibreDiscount '01','2021-07-01','2021-07-02','192.16'    
+create proc ksp_FibreDiscount    
+(    
+@Divcode VArchar(25),    
+@Fdate Varchar(15),    
+@Tdate Varchar(15),    
+@IPADD Varchar(15)    
+)    
+as    
+    
+    
+select row_number() over (order by a.BILLNO ) SNo, pp.ABBR unit,d.VARNAME ,'' FSCnonfsc,c.slname,--a.lotno,a.pjno,  
+a.ContNum,a.BILLNO ,    
+case when cn.im_ind='I' then 'Import'     
+when cn.im_ind='L' then 'Domestic'    
+when cn.im_ind='U' then 'Interstate' End InvoiceType,    
+a.BILLDT ,a.Comm_Wt ,CurrCode,e.PLName 'Plant',a.Line_No,'' Color ,a.Bill_Rate ,    
+--BDType1,BDType2,BDType3,BDType4,BDType5,BDType6,BDType7,BDType8,    
+BDRate1,BDRate2,BDRate3,BDRate4,BDRate5,BDRate6,BDRate7,BDRate8    
+,a.RATECY,    
+--DType1,DType2,DType3,DType4,DType5,DType6,DType7,DType8,    
+DRate1,DRate2,DRate3,DRate4,DRate5,DRate6,DRate7,DRate8    
+,a.Bill_Rate - a.RATECY Elig_Diff_Inv_Rate,    
+---- Difference in invoice     
+(BDRate1-DRate1) Elig_Diff_Inv_Rate1 ,    
+(BDRate2-DRate2) Elig_Diff_Inv_Rate2 ,    
+(BDRate3-DRate3) Elig_Diff_Inv_Rate3 ,    
+(BDRate4-DRate4) Elig_Diff_Inv_Rate4 ,    
+(BDRate5-DRate5) Elig_Diff_Inv_Rate5 ,    
+(BDRate6-DRate6) Elig_Diff_Inv_Rate6 ,    
+(BDRate7-DRate7) Elig_Diff_Inv_Rate7 ,    
+(BDRate8-DRate8) Elig_Diff_Inv_Rate8 ,    
+    
+--CNDType1,CNDType2,CNDType3,CNDType4,CNDType5,CNDType6,CNDType7,CNDType8,    
+CNDRate1,CNDRate2,CNDRate3,CNDRate4,CNDRate5,CNDRate6,CNDRate7,CNDRate8,    
+--- invoice Receivable    
+round(a.Comm_Wt*(a.Bill_Rate - a.RATECY) ,0) Diff_Inv_Price_Receivable,  
+round(a.Comm_Wt*(BDRate1-DRate1) ,0)  Diff_Inv_Receivable1,    
+round(a.Comm_Wt*(BDRate2-DRate2) ,0)  Diff_Inv_Receivable2,    
+round(a.Comm_Wt*(BDRate3-DRate3) ,0)  Diff_Inv_Receivable3,    
+round(a.Comm_Wt*(BDRate4-DRate4) ,0)  Diff_Inv_Receivable4,    
+round(a.Comm_Wt*(BDRate5-DRate5) ,0)  Diff_Inv_Receivable5,    
+round(a.Comm_Wt*(BDRate6-DRate6) ,0)  Diff_Inv_Receivable6,    
+round(a.Comm_Wt*(BDRate7-DRate7) ,0)  Diff_Inv_Receivable7,    
+round(a.Comm_Wt*(BDRate8-DRate8) ,0)  Diff_Inv_Receivable8,    
+-----Credit Note    
+round(a.Comm_Wt*(CNDRate1) ,0)  CreditNote_Receivable1,    
+round(a.Comm_Wt*(CNDRate2) ,0)  CreditNote_Receivable2,    
+round(a.Comm_Wt*(CNDRate3) ,0)  CreditNote_Receivable3,    
+round(a.Comm_Wt*(CNDRate4) ,0)  CreditNote_Receivable4,    
+round(a.Comm_Wt*(CNDRate5) ,0)  CreditNote_Receivable5,    
+round(a.Comm_Wt*(CNDRate6) ,0)  CreditNote_Receivable6,    
+round(a.Comm_Wt*(CNDRate7) ,0)  CreditNote_Receivable7,    
+round(a.Comm_Wt*(CNDRate8) ,0)  CreditNote_Receivable8,    
+  
+------Received  
+basic_Received_Amt Diff_Inv_Price_Received,  
+contRec.ReceivedAmt1 Diff_Inv_Received1,    
+contRec.ReceivedAmt2 Diff_Inv_Received2,    
+contRec.ReceivedAmt3  Diff_Inv_Received3,    
+contRec.ReceivedAmt4  Diff_Inv_Received4,    
+contRec.ReceivedAmt5  Diff_Inv_Received5,    
+contRec.ReceivedAmt6  Diff_Inv_Received6,    
+contRec.ReceivedAmt7  Diff_Inv_Received7,    
+contRec.ReceivedAmt8  Diff_Inv_Received8,    
+-----Credit Note    
+CRRec.CNDRecRate1  CreditNote_Received1,    
+CRRec.CNDRecRate2 CreditNote_Received2,    
+CRRec.CNDRecRate3  CreditNote_Received3,    
+CRRec.CNDRecRate4 CreditNote_Received4,    
+CRRec.CNDRecRate5 CreditNote_Received5,    
+CRRec.CNDRecRate6  CreditNote_Received6,    
+CRRec.CNDRecRate7  CreditNote_Received7,    
+CRRec.CNDRecRate8 CreditNote_Received8,    
+  
+  
+-------- Blaance To be Received      
+round(a.Comm_Wt*(a.Bill_Rate - a.RATECY) ,0)- ISNULL(basic_Received_Amt ,0) Price_Balance_Receivable1,  
+round(a.Comm_Wt*(BDRate1-DRate1) ,0)- ISNULL(ReceivedAmt1 ,0)  Balance_Receivable1,    
+round(a.Comm_Wt*(BDRate2-DRate2) ,0)- ISNULL(ReceivedAmt2 ,0)  Balance_Receivable2,    
+round(a.Comm_Wt*(BDRate3-DRate3) ,0)- ISNULL(ReceivedAmt3 ,0)  Balance_Receivable3,    
+round(a.Comm_Wt*(BDRate4-DRate4) ,0)- ISNULL(ReceivedAmt4 ,0)  Balance_Receivable4,    
+round(a.Comm_Wt*(BDRate5-DRate5) ,0)- ISNULL(ReceivedAmt5 ,0)  Balance_Receivable5,    
+round(a.Comm_Wt*(BDRate6-DRate6) ,0)- ISNULL(ReceivedAmt6 ,0)  Balance_Receivable6,    
+round(a.Comm_Wt*(BDRate7-DRate7) ,0)- ISNULL(ReceivedAmt7 ,0)  Balance_Receivable7,    
+round(a.Comm_Wt*(BDRate8-DRate8) ,0)- ISNULL(ReceivedAmt8 ,0)  Balance_Receivable8,    
+-----Balcne Credit Note To be Received    
+round(a.Comm_Wt*(CNDRate1) ,0)-ISNULL(CRRec.CNDRecRate1,0)  Balance_CR_Receivable1,    
+round(a.Comm_Wt*(CNDRate2) ,0)-ISNULL(CRRec.CNDRecRate2,0)   Balance_CR_Receivable2,    
+round(a.Comm_Wt*(CNDRate3) ,0)-ISNULL(CRRec.CNDRecRate3,0)   Balance_CR_Receivable3,    
+round(a.Comm_Wt*(CNDRate4) ,0)-ISNULL(CRRec.CNDRecRate4,0)   Balance_CR_Receivable4,    
+round(a.Comm_Wt*(CNDRate5) ,0)-ISNULL(CRRec.CNDRecRate5,0)   Balance_CR_Receivable5,    
+round(a.Comm_Wt*(CNDRate6) ,0)-ISNULL(CRRec.CNDRecRate6,0)   Balance_CR_Receivable6,    
+round(a.Comm_Wt*(CNDRate7) ,0)-ISNULL(CRRec.CNDRecRate7,0)   Balance_CR_Receivable7,    
+round(a.Comm_Wt*(CNDRate8) ,0)-ISNULL(CRRec.CNDRecRate8,0)   Balance_CR_Receivable8     
+    
+from RM_LOT a     
+inner join fa_slmas c on a.supcd=c.slcode     
+inner join RM_CONT cn on cn.CONTNO =a.ContNum and a.Contdate =cn.CONTDT and a.VARCODE =cn.VARCODE and cn.SUPCD =a.SUPCD     
+inner join rm_var d on d.varcode=a.varcode       
+left join rm_plant e on e.PLCode=a.PlCode      
+inner join pp_Divmas pp on pp.divcode=a.divcode     
+    
+--------------------------------Agreed Discount Note    
+left join     
+(    
+select a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate, supcd    
+,MAX(DType1) DType1 ,MAX(DType2) DType2 ,MAX(DType3) DType3 ,MAX(DType4) DType4    
+,MAX(DType5) DType5 ,MAX(DType6) DType6 ,MAX(DType7) DType7 ,MAX(DType8) DType8,    
+isnull(SUM(DRate1),0) DRate1,isnull(SUM(DRate2),0) DRate2    
+,isnull(SUM(DRate3),0) DRate3,isnull(SUM(DRate4),0) DRate4,isnull(SUM(DRate5),0) DRate5    
+,isnull(SUM(DRate6),0) DRate6,isnull(SUM(DRate7),0) DRate7,isnull(SUM(DRate8),0) DRate8    
+from    
+(    
+select  a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,supcd,    
+case when SNo=1 then a.DType  end DType1 ,case when SNo=2 then a.DType  end DType2,     
+case when SNo=3 then a.DType  end DType3 ,case when SNo=4 then a.DType  end DType4,     
+case when SNo=5 then a.DType  end DType5 ,case when SNo=6 then a.DType  end DType6 ,    
+case when SNo=7 then a.DType  end DType7, case when SNo=8 then a.DType  end DType8,     
+case when SNo=9 then a.DType  end DType9,     
+    
+case when SNo=1 then a.DRate  end DRate1 ,case when SNo=2 then a.DRate  end DRate2,     
+case when SNo=3 then a.DRate  end DRate3 ,case when SNo=4 then a.DRate  end DRate4,     
+case when SNo=5 then a.DRate  end DRate5 ,case when SNo=6 then a.DRate  end DRate6 ,    
+case when SNo=7 then a.DRate  end DRate7, case when SNo=8 then a.DRate  end DRate8,     
+case when SNo=9 then a.DRate  end DRate9    
+from    
+(    
+select  a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,a.DType ,a.DRate,supcd,    
+ROW_NUMBER() over (partition by contno,contdt,Divcode,varcode order by contno,contdt,Divcode,varcode)  SNo    
+from RM_ContDiscntRate a     
+inner join RM_DiscountType f on f.Code =a.DType and RPTFLG='N'      
+)a    
+)a group by  a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,supcd    
+) cdisc on  a.ContNum  =cdisc.ContNo and cdisc.Contdt=a.Contdate and a.Varcode=cdisc.Varcode and cdisc.supcd=a.supcd      
+    
+---------------------------------------------------invoiced Discount    
+left join     
+(    
+select a.Lotno,a.Lotdt, a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate, supcd    
+,MAX(DType1) BDType1 ,MAX(DType2) BDType2 ,MAX(DType3) BDType3 ,MAX(DType4) BDType4    
+,MAX(DType5) BDType5 ,MAX(DType6) BDType6 ,MAX(DType7) BDType7 ,MAX(DType8) BDType8,    
+isnull(SUM(DRate1),0) BDRate1,isnull(SUM(DRate2),0) BDRate2    
+,isnull(SUM(DRate3),0) BDRate3,isnull(SUM(DRate4),0) BDRate4,isnull(SUM(DRate5),0) BDRate5    
+,isnull(SUM(DRate6),0) BDRate6,isnull(SUM(DRate7),0) BDRate7,isnull(SUM(DRate8),0) BDRate8    
+from    
+(    
+select a.Lotno,a.Lotdt, a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,supcd,    
+case when SNo=1 then a.DType  end DType1 ,case when SNo=2 then a.DType  end DType2,     
+case when SNo=3 then a.DType  end DType3 ,case when SNo=4 then a.DType  end DType4,     
+case when SNo=5 then a.DType  end DType5 ,case when SNo=6 then a.DType  end DType6 ,    
+case when SNo=7 then a.DType  end DType7, case when SNo=8 then a.DType  end DType8,     
+case when SNo=9 then a.DType  end DType9,     
+    
+case when SNo=1 then a.DRate  end DRate1 ,case when SNo=2 then a.DRate  end DRate2,     
+case when SNo=3 then a.DRate  end DRate3 ,case when SNo=4 then a.DRate  end DRate4,     
+case when SNo=5 then a.DRate  end DRate5 ,case when SNo=6 then a.DRate  end DRate6 ,    
+case when SNo=7 then a.DRate  end DRate7, case when SNo=8 then a.DRate  end DRate8,     
+case when SNo=9 then a.DRate  end DRate9    
+from    
+(    
+select  a.Lotno,a.Lotdt,a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,a.DType ,a.DRate,supcd,    
+ROW_NUMBER() over (partition by contno,contdt,Divcode,varcode,lotno order by contno,contdt,Divcode,varcode,lotno)  SNo    
+from RM_lotDiscntRate  a     
+inner join RM_DiscountType f on f.Code =a.DType and RPTFLG='N'      
+)a    
+)a group by  a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,a.Lotno,a.Lotdt,supcd    
+) Lot on  a.ContNum  =Lot.ContNo and Lot.Contdt=a.Contdate and a.Varcode=Lot.Varcode and Lot.supcd=a.supcd     
+and a.LOTNO =Lot.lotno and Lot.lotdt=a.LOTDT     
+--------------------------------Credit Note    
+left join     
+(    
+    
+select a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate, supcd    
+,MAX(DType1) CNDType1 ,MAX(DType2) CNDType2 ,MAX(DType3) CNDType3 ,MAX(DType4) CNDType4    
+,MAX(DType5) CNDType5 ,MAX(DType6) CNDType6 ,MAX(DType7) CNDType7 ,MAX(DType8) CNDType8,    
+isnull(SUM(DRate1),0) CNDRate1,isnull(SUM(DRate2),0) CNDRate2    
+,isnull(SUM(DRate3),0) CNDRate3,isnull(SUM(DRate4),0) CNDRate4,isnull(SUM(DRate5),0) CNDRate5    
+,isnull(SUM(DRate6),0) CNDRate6,isnull(SUM(DRate7),0) CNDRate7,isnull(SUM(DRate8),0) CNDRate8     
+    
+from    
+(    
+select  a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,supcd,    
+case when SNo=1 then a.DType  end DType1 ,case when SNo=2 then a.DType  end DType2,     
+case when SNo=3 then a.DType  end DType3 ,case when SNo=4 then a.DType  end DType4,     
+case when SNo=5 then a.DType  end DType5 ,case when SNo=6 then a.DType  end DType6 ,    
+case when SNo=7 then a.DType  end DType7, case when SNo=8 then a.DType  end DType8,     
+case when SNo=9 then a.DType  end DType9,     
+    
+case when SNo=1 then a.DRate  end DRate1 ,case when SNo=2 then a.DRate  end DRate2,     
+case when SNo=3 then a.DRate  end DRate3 ,case when SNo=4 then a.DRate  end DRate4,     
+case when SNo=5 then a.DRate  end DRate5 ,case when SNo=6 then a.DRate  end DRate6 ,    
+case when SNo=7 then a.DRate  end DRate7, case when SNo=8 then a.DRate  end DRate8,     
+case when SNo=9 then a.DRate  end DRate9    
+from    
+(    
+select  c.ContNo ,c.Contdt ,a.Varcode ,a.Divcode ,b.refdocno Docno ,b.refdocdt Docdate ,a.DType ,a.DRate,c.supcd,    
+ROW_NUMBER() over (partition by contno,contdt,c.Divcode,c.varcode order by contno,contdt,c.Divcode,c.varcode)  SNo    
+from  RM_FibreDiscCNDRate a     
+inner join RM_FibreDiscCN b on a.Docno =b.docno and a.Docdate =b.docdate and a.Varcode =b.varcode and a.VSno=b.DocSno    
+inner join RM_Cont c on  c.MSDocno =b.refdocno and c.MSDocsno =a.VSno and  c.VARCODE =a.varcode and b.Supcd=c.supcd   
+inner join RM_DiscountType f on f.Code =a.DType and RPTFLG='Y'      
+)a    
+)a group by  a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,supcd    
+) CR on  a.ContNum  =CR.ContNo and CR.Contdt=a.Contdate and a.Varcode=CR.Varcode and CR.supcd=a.supcd   
+-------------------- credit  Note  Report 'Y' Received
+left join     
+(    
+  
+  select a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate, supcd    
+,MAX(DType1) CNDRecType1 ,MAX(DType2) CNDRecType2 ,MAX(DType3) CNDRecType3 ,MAX(DType4) CNDRecType4    
+,MAX(DType5) CNDRecType5 ,MAX(DType6) CNDRecType6 ,MAX(DType7) CNDRecType7 ,MAX(DType8) CNDRecType8,    
+isnull(SUM(DRate1),0) CNDRecRate1,isnull(SUM(DRate2),0) CNDRecRate2    
+,isnull(SUM(DRate3),0) CNDRecRate3,isnull(SUM(DRate4),0) CNDRecRate4,isnull(SUM(DRate5),0) CNDRecRate5    
+,isnull(SUM(DRate6),0) CNDRecRate6,isnull(SUM(DRate7),0) CNDRecRate7,isnull(SUM(DRate8),0) CNDRecRate8    
+ 
+from    
+(    
+select  a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,supcd,    
+case when SNo=1 then a.DType  end DType1 ,case when SNo=2 then a.DType  end DType2,     
+case when SNo=3 then a.DType  end DType3 ,case when SNo=4 then a.DType  end DType4,     
+case when SNo=5 then a.DType  end DType5 ,case when SNo=6 then a.DType  end DType6 ,    
+case when SNo=7 then a.DType  end DType7, case when SNo=8 then a.DType  end DType8,     
+case when SNo=9 then a.DType  end DType9,     
+    
+case when SNo=1 then a.DRate  end DRate1 ,case when SNo=2 then a.DRate  end DRate2,     
+case when SNo=3 then a.DRate  end DRate3 ,case when SNo=4 then a.DRate  end DRate4,     
+case when SNo=5 then a.DRate  end DRate5 ,case when SNo=6 then a.DRate  end DRate6 ,    
+case when SNo=7 then a.DRate  end DRate7, case when SNo=8 then a.DRate  end DRate8,     
+case when SNo=9 then a.DRate  end DRate9    
+from    
+(    
+select  c.ContNo ,c.Contdt ,a.Varcode ,a.Divcode ,b.refdocno Docno ,b.refdocdt Docdate ,a.DType ,a.DRate,c.supcd,    
+ROW_NUMBER() over (partition by c.contno,c.contdt,c.Divcode,c.varcode order by c.contno,c.contdt,c.Divcode,c.varcode)  SNo    
+from  RM_FibreDiscCNDRate a     
+inner join RM_FibreDiscCN b on a.Docno =b.docno and a.Docdate =b.docdate and a.Varcode =b.varcode and a.VSno=b.DocSno    
+inner join RM_Cont c on  c.MSDocno =b.refdocno and c.MSDocsno  =a.VSno and  c.VARCODE =a.varcode and b.Supcd=c.supcd   
+inner join RM_DiscountType f on f.Code =a.DType and RPTFLG='Y' 
+inner join rm_lot lot on lot.DIVCODE =c.Divcode  and lot.SUPCD=c.SUPCD and lot.VARCODE =c.Varcode    
+and lot.contnum=c.contno and lot.contdate=c.contdt  
+inner join ( select  DType,Divcode,Varcode ,ContNo,Contdt,Lotno,Lotdt ,SUPCD ,MDocno ,mdocdate,isnull(sum(Received_Amt),0) ReceivedAmt from  RM_CNReceived    
+group by DType,Divcode,Varcode ,ContNo,Contdt,Lotno,Lotdt ,SUPCD ,MDocno ,mdocdate    
+) rec on lot.DIVCODE =rec.Divcode and lot.LOTDT =rec.Lotdt and lot.LOTNO=rec.Lotno and lot.SUPCD=rec.SUPCD and lot.VARCODE =rec.Varcode     
+and lot.contnum=rec.contno and lot.contdate=rec.contdt and a.DType=rec.dtype  and rec.MDocno =a.Docno and rec.MDocdate =a.Docdate 
+)a    
+)a group by  a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,supcd    
+) CRRec on  a.ContNum  =CRRec.ContNo and CRRec.Contdt=a.Contdate and a.Varcode=CRRec.Varcode and CRRec.supcd=a.supcd   
+
+--------------------------------------- Basic Rate Difference Received
+left join     
+(    
+select a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate, supcd    
+,MAX(DType1) DType1 ,MAX(DType2) DType2 ,MAX(DType3) DType3 ,MAX(DType4) DType4    
+,MAX(DType5) DType5 ,MAX(DType6) DType6 ,MAX(DType7) DType7 ,MAX(DType8) DType8,    
+isnull(SUM(DRate1),0) ReceivedAmt1,isnull(SUM(DRate2),0) ReceivedAmt2    
+,isnull(SUM(DRate3),0) ReceivedAmt3,isnull(SUM(DRate4),0) ReceivedAmt4,isnull(SUM(DRate5),0) ReceivedAmt5    
+,isnull(SUM(DRate6),0) ReceivedAmt6,isnull(SUM(DRate7),0) ReceivedAmt7,isnull(SUM(DRate8),0) ReceivedAmt8  
+,basic_Received_Amt
+from    
+(    
+select  a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,supcd,    
+case when SNo=1 then a.DType  end DType1 ,case when SNo=2 then a.DType  end DType2,     
+case when SNo=3 then a.DType  end DType3 ,case when SNo=4 then a.DType  end DType4,     
+case when SNo=5 then a.DType  end DType5 ,case when SNo=6 then a.DType  end DType6 ,    
+case when SNo=7 then a.DType  end DType7, case when SNo=8 then a.DType  end DType8,     
+case when SNo=9 then a.DType  end DType9,     
+    
+case when SNo=1 then a.ReceivedAmt  end DRate1 ,case when SNo=2 then a.ReceivedAmt   end DRate2,     
+case when SNo=3 then a.ReceivedAmt   end DRate3 ,case when SNo=4 then a.ReceivedAmt   end DRate4,     
+case when SNo=5 then a.ReceivedAmt  end DRate5 ,case when SNo=6 then a.ReceivedAmt   end DRate6 ,    
+case when SNo=7 then a.ReceivedAmt   end DRate7, case when SNo=8 then a.ReceivedAmt   end DRate8,     
+case when SNo=9 then a.ReceivedAmt   end DRate9   ,basic_Received_Amt
+from    
+(    
+select  a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,a.DType ,a.DRate,a.supcd,   rec.ReceivedAmt, 
+ROW_NUMBER() over (partition by a.contno,a.contdt,a.Divcode,a.varcode order by a.contno,a.contdt,a.Divcode,a.varcode)  SNo ,
+dt.basic_Received_Amt 
+from RM_ContDiscntRate a     
+inner join RM_DiscountType f on f.Code =a.DType and RPTFLG='N' 
+inner join rm_lot lot on lot.DIVCODE =a.Divcode and lot.SUPCD=a.SUPCD and lot.VARCODE =a.Varcode    
+and lot.contnum=a.contno and lot.contdate=a.contdt --and c.dtype=b.dtype  
+inner join (select lotno,lotdt,divcode ,varcode,CONTNO ,CONTDT ,PJVNO ,PJVDT ,PJVTC,isnull(SUM(Received_Amt),0) basic_Received_Amt from
+RM_CNReceivedDT where Divcode =@Divcode and Docdt <=@Tdate  group by lotno,lotdt,divcode ,varcode,CONTNO ,CONTDT ,PJVNO ,PJVDT ,PJVTC ) dt  on dt.LOTNO =lot.LOTNO and lot.LOTDT =dt.LOTDT and dt.Divcode =lot.DIVCODE and lot.VARCODE =dt.Varcode
+and lot.Contdate =dt.CONTDT and lot.ContNum =dt.CONTNO  and dt.PJVNO =lot.PJNO and lot.PJDT =dt.PJVDT  
+left join ( select  DType,Divcode,Varcode ,ContNo,Contdt,Lotno,Lotdt ,SUPCD ,MDocno ,mdocdate,isnull(sum(Received_Amt),0) ReceivedAmt from  RM_CNReceived    
+group by DType,Divcode,Varcode ,ContNo,Contdt,Lotno,Lotdt ,SUPCD ,MDocno ,mdocdate    
+) rec on lot.DIVCODE =rec.Divcode and lot.LOTDT =rec.Lotdt and lot.LOTNO=rec.Lotno and lot.SUPCD=rec.SUPCD and lot.VARCODE =rec.Varcode     
+and lot.contnum=rec.contno and lot.contdate=rec.contdt and a.DType=rec.dtype    and rec.MDocno =a.Docno and rec.MDocdate =a.Docdate 
+
+)a    
+)a group by  a.ContNo ,a.Contdt ,a.Varcode ,a.Divcode ,a.Docno ,a.Docdate ,supcd ,basic_Received_Amt   
+) contRec on  a.ContNum  =contRec.ContNo and contRec.Contdt=a.Contdate and a.Varcode=contRec.Varcode and contRec.supcd=a.supcd      
+
+where a.Divcode=@Divcode and cn.CONTDT between @Fdate and @Tdate   and a.pjno is not null  
+and a.SUPCD in (select supcd from RM_ProductprintDet where IPAdd=@IPADD)
+and a.varcode in (select varcode from RM_ProductprintDet where IPAdd=@IPADD)
+  
+
+
+
+go
+
+
+go
+
+
+         
+CREATE View VW_RM_FibreDisc_Receivable      
+as      
+select  a.Code,a.Description ,b.ContNo ,b.Contdt ,c.lotno ,c.lotdt,c.varcode,b.docno,b.docdate,b.supcd,c.DRate 'Inv_DRate' ,b.DRate 'PO_DRate',       
+isnull(c.DRate,0)-isnull(b.DRate,0) DRate_Diff, Round((isnull(c.DRate,0)-isnull(b.DRate,0)) *lot.comm_wt,2) - isnull(ReceivedAmt,0) Receivable_Value,      
+lot.pjno,lot.pjdt,lot.PJTC ,lot.divcode,lot.comm_wt,lot.bill_rate ,lot.RATECY ,lot.Fbillno,lot.FBILLDT,sl.slname ,lot.BALES ,lot.FBILLVALUE ,lot.line_no      
+,lot.PlCode ,plant.PLName, lot.bill_rate -lot.RATECY Basic_Rate_Diff  ,a.RPTFLG    
+    
+from RM_DiscountType a       
+inner join RM_ContDiscntRate b on a.Code=b.DType      
+inner join RM_lotDiscntRate c on  c.SUPCD =b.SUPCD and c.ContNo =b.ContNo and c.Contdt =b.Contdt and c.Varcode =b.Varcode and c.Docno =b.Docno  and a.Code=c.dtype      
+inner join rm_lot lot on lot.DIVCODE =c.Divcode and lot.LOTDT =c.Lotdt and lot.LOTNO=c.Lotno and lot.SUPCD=c.SUPCD and lot.VARCODE =c.Varcode      
+and lot.contnum=c.contno and lot.contdate=c.contdt and c.dtype=b.dtype      
+left join RM_Plant plant on plant.PLCode =lot.PlCode       
+left join ( select  DType,Divcode,Varcode ,ContNo,Contdt,Lotno,Lotdt ,SUPCD ,MDocno ,mdocdate,isnull(sum(Received_Amt),0) ReceivedAmt from  RM_CNReceived      
+group by DType,Divcode,Varcode ,ContNo,Contdt,Lotno,Lotdt ,SUPCD ,MDocno ,mdocdate      
+) rec on lot.DIVCODE =rec.Divcode and lot.LOTDT =rec.Lotdt and lot.LOTNO=rec.Lotno and lot.SUPCD=rec.SUPCD and lot.VARCODE =rec.Varcode       
+and lot.contnum=rec.contno and lot.contdate=rec.contdt and c.DType=rec.dtype    and rec.MDocno =c.Docno and rec.MDocdate =c.Docdate   
+inner join FA_SLMAS sl on sl.slcode =lot.SUPCD       
+where RPTFLG='N' and lot.pjno is not null and  (((Round((isnull(c.DRate,0)-isnull(b.DRate,0)) *lot.comm_wt,0)- isnull(ReceivedAmt,0))<>0)) --or (lot.bill_rate -lot.RATECY)<>0)  --RPTFLG='N' and    
+union all    
+    
+select  a.Code,a.Description ,b.ContNo ,b.Contdt ,lot.lotno ,lot.lotdt,lot.varcode,c.docno,c.docdate,b.supcd,c.DRate 'Inv_DRate', 0 'PO_DRate',       
+isnull(c.DRate,0) DRate_Diff, Round((isnull(c.DRate,0)) *lot.comm_wt,2) - isnull(ReceivedAmt,0) Receivable_Value,      
+lot.pjno,lot.pjdt,lot.PJTC ,lot.divcode,lot.comm_wt,lot.bill_rate ,lot.RATECY ,lot.Fbillno,lot.FBILLDT,sl.slname ,lot.BALES ,lot.FBILLVALUE ,lot.line_no      
+,lot.PlCode ,plant.PLName, lot.bill_rate -lot.RATECY Basic_Rate_Diff  ,a.RPTFLG    
+    
+from RM_DiscountType a       
+inner join RM_FibreDiscCNDRate c on a.Code=c.DType      
+inner join RM_FibreDiscCN cn on  c.SUPCD =cn.SUPCD and c.docno =cn.docno and c.Docdate  =cn.Docdate and c.Varcode =cn.Varcode     
+inner join  RM_Cont b  on cn.RefDocno=b.MSDocno   and  b.SUPCD=cn.SUPCD    
+and c.Varcode =b.Varcode--  and a.Code=b.dtype      
+    
+inner join rm_lot lot on lot.DIVCODE =b.Divcode  and lot.SUPCD=b.SUPCD and lot.VARCODE =b.Varcode      
+and lot.contnum=b.contno and lot.contdate=b.contdt       
+left join RM_Plant plant on plant.PLCode =lot.PlCode       
+left join ( select  DType,Divcode,Varcode ,ContNo,Contdt,Lotno,Lotdt ,SUPCD ,MDocno ,mdocdate,isnull(sum(Received_Amt),0) ReceivedAmt from  RM_CNReceived      
+group by DType,Divcode,Varcode ,ContNo,Contdt,Lotno,Lotdt ,SUPCD ,MDocno ,mdocdate      
+) rec on lot.DIVCODE =rec.Divcode and lot.LOTDT =rec.Lotdt and lot.LOTNO=rec.Lotno and lot.SUPCD=rec.SUPCD and lot.VARCODE =rec.Varcode       
+and lot.contnum=rec.contno and lot.contdate=rec.contdt and c.DType=rec.dtype  and rec.MDocno =c.Docno and rec.MDocdate =c.Docdate     
+inner join FA_SLMAS sl on sl.slcode =lot.SUPCD       
+where RPTFLG='Y' and lot.pjno is not null and  (((Round((isnull(c.DRate,0)) *lot.comm_wt,0)- isnull(ReceivedAmt,0))<>0)) --or (lot.bill_rate -lot.RATECY)<>0)  --RPTFLG='N' and    
+    
+  go
+
+
+

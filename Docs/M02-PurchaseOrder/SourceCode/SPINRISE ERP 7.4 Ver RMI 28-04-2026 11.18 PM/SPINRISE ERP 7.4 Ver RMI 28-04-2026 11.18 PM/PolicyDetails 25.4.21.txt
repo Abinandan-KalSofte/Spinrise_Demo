@@ -1,0 +1,26 @@
+Alter table Rm_Outpasshd add 
+
+Driver_Name	varchar (30),	     	     
+WBTicketNo	varchar	(12),     	     
+WbNetWt	decimal (12,3),    	  
+WBWtDiff decimal (14 ,3) ,               
+total_Grskgs decimal (12 ,3 )
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[IG_PolicyDetails](
+	[Divcode] [varchar](2) NULL,
+	[Policy_No] [varchar](20) NULL,
+	[FromDate] [date] NULL,
+	[ToDate] [date] NULL
+) ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+GO
+
+

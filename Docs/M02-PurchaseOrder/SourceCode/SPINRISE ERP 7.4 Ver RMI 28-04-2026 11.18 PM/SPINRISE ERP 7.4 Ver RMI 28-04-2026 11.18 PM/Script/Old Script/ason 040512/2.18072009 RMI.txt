@@ -1,0 +1,2 @@
+ALTER TABLE rm_lot ADD uhml numeric(5,1),ml numeric(5,1),ui numeric(5,1),nepcv numeric(5,1),scncv numeric(5,1)
+go

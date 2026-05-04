@@ -1,0 +1,20 @@
+alter Procedure Ksp_SetupTax
+
+--Ksp_SetupTax '01'
+@divcode varchar(02)
+as
+begin
+
+
+select tax_code 'TaxCode',description'Description',a.abbr'Abbreviation',isnull(st_per,0) 'SalesTax%',
+isnull(sc_per,0)'Surcharge%',isnull(st_sl,'')'ST slcode',isnull(sc_sl,'')'SC Slcode',
+case when isnull(TAXSTATUS,'')='Y' then isnull(ITCPER,0)  else '0' end Itcper,
+isnull(ITCGLCODE,0) as itcglcode,
+ItctaxStatus,efffromdt,efftodate,pd.DIV_PRINTNAME,pd.DIV_UNITNAME from ig_tax  a
+inner join PP_DIVMAS pd on pd.DIVCODE=@divcode
+order by tax_code
+
+
+end
+
+

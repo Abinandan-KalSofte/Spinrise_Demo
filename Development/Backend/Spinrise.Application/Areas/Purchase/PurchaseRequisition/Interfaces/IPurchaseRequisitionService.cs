@@ -36,6 +36,6 @@ public interface IPurchaseRequisitionService
         DateTime? startDate = null, DateTime? endDate = null);
 
     Task<(bool Success, string Message)> DeleteLineAsync(
-        string divCode, long prNo, int prSNo, string deleteReasonCode, AuditContext audit,
+        string divCode, long prNo, int prSNo, string? deleteReasonCode, AuditContext audit,
         DateTime? startDate = null, DateTime? endDate = null);
 }

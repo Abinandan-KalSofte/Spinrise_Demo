@@ -1,0 +1,159 @@
+Alter Procedure [dbo].[FormIVDatas]      
+@date1 varchar(15)      
+as      
+Select date1,opbales as Openbale,opborah as OPENBOARH,optot as oPENTOTAL,optotkg as opkgs,recbale as Recpbale,recborah recpborah,rectot Rectotal,rectotkg as reckgs,oprecbale as oprebale,oprecborah opreborah,oprectot opretot,oprectotkg oprekgs,    
+issbale as issbale,issboarh as issborah,isstot as isstotal,isstotkg as isskgs,isstran,isstrantot,totbale as closbale,totborah as closborah,total as closbaleboar,totkg  as closing,REJBALE AS REJBALES,rejkg as rejectedkgs,ADJBALE AS ADJBALES,adjkg as adjustedkgs,adjtype,isskgs as isskgsNew
+from formiv where Date1 <= @date1 order by date1 
+Go
+
+       
+--sp_rmi_receiptregdtwise '2012-04-01','2012-08-09','C2A0001','C2Z001','01'    
+Create proc sp_rmi_receiptregdtwise                  
+@Fdate varchar(15),            
+@Tdate varchar(15),            
+@FSubCd varchar(20),            
+@TSubCd  varchar(20),            
+@Divcode  varchar(2)          
+      
+AS    
+    
+select distinct X.inwardno,X.inwarddate,X.PLOTNO,X.PGRSWT,X.PTAREWT,X.GRSWGT,    
+X.carcode, X.arrno, X.arrdt,     
+--X.dcno, X.dcdt,     
+X.lotdt,X.lotno,X.lotyear,X.prmark,X.pjno,X.contno,                        
+X.dlytype,X.varcode,x.varname,    
+--x.delfrom,X.mergeno,     
+X.pnetwt,    
+--X.CURRCODE,     
+X.bales,x.contdt,X.netwt,X.ratecy,X.pjamt,                        
+X.taxamt,X.vatamt,X.ldgulg,X.freight,X.totalvalue,X.supplier,X.Broker,X.CARNAME,                        
+X.brkcd,X.lorrynos,X.LRFRTAMT,X.CSTAMT,X.CSTVAL,X.VATVAL,                        
+X.DBTAMT,X.fbillno, X.AssValue,X.OthersAmt,x.scamt,                        
+X.RateKg,X.commamt,X.brkcom,X.vcatcd,                        
+X.tratekg,X.DIFF,X.ITEMVALUE,X.billvalue,                        
+X.Purcost,X.otherchrg,                        
+(X.Purcost/X.netwt) AS Rate_Kg, X.DIVNAME AS DIVNAME, X.add1 AS ADDR,x.DIV_UNITNAME
+From                        
+(select isnull(a.aedamt,0) as aedamt,isnull(a.bedamt,0) as bedamt,                        
+isnull(a.sedamt,0) as sedamt,ISNULL(a.insamt,0) AS insamt,isnull(a.cessamt,0)as cessamt,                        
+a.inwardno,a.inwarddate,isnull(a.PLOTNO,0) as PLOTNO,isnull(a.PGRSWT,0) as PGRSWT,    
+isnull(a.PTAREWT,0) as PTAREWT,isnull(a.GRSWGT,0) as GRSWGT,                        
+b.carcode,a.arrno, a.arrdt,     
+--a.dcno, a.dcdt,     
+a.lotdt,a.lotno,    
+--a.delfrom,a.mergeno,     
+a.pnetwt,     
+a.lotyear,b.prmark,a.pjno,b.contno as pono,                        
+c.dlytype,a.varcode,v.varname, a.bales,c.contdt, ISNULL(a.ratecy,0) AS ratecy,a.pjamt,                        
+ISNULL(a.taxamt,0) AS taxamt,ISNULL(a.vatamt,0) AS vatamt,                        
+a.ldgulg,ISNULL(b.freight,0) AS FREIGHT,ISNULL(a.totlandcost,0) as totalvalue,e.slname as supplier,    
+g.slname AS Broker,h.CarName as CARNAME,                        
+isnull(b.brkcd,'') as brkcd,ISNULL(A.NETWT,0) AS NETWT,c.contno,b.lorrynos,                        
+ISNULL(a.LRFRTAMT,0) AS LRFRTAMT,ISNULL(A.CSTAMT,0) AS CSTAMT,                        
+CASE WHEN a.vcatcd='O' THEN ISNULL(a.vatamt,0) END AS CSTVAL,                        
+CASE WHEN a.vcatcd<>'O' THEN ISNULL(a.vatamt,0) END AS VATVAL,                        
+ISNULL(A.DBAMT,0) AS DBTAMT,a.fbillno, ISNULL(a.AssValue,0) AS AssValue,ISNULL(a.OthersAmt,0) AS OthersAmt,                        
+ISNULL(a.RateKg,0) AS RateKg,ISNULL(a.commamt,0) AS commamt,ISNULL(a.brkcom,0) AS brkcom,a.vcatcd,     
+--C.currcode,                    
+(IsNull(totlandcost,0)/ ISNULL(A.NETWT,0)) AS tratekg,                        
+(ISNULL(A.NETWT,0) - ISNULL(A.NETWT,0)) AS DIFF,ISNULL(A.scamt,0) AS scamt,                        
+(ISNULL(a.AssValue,0)-ISNULL(a.OthersAmt,0)) AS ITEMVALUE,                        
+(ISNULL(a.AssValue,0)-ISNULL(a.OthersAmt,0)) + ISNULL(a.vatamt,0) + ISNULL(a.scamt,0)+ ISNULL(A.CSTAMT,0) + ISNULL(a.OthersAmt,0) + isnull(a.aedamt,0) + isnull(a.bedamt,0) + isnull(a.cessamt,0) + isnull(a.sedamt,0)- isnull(a.cashdisamt,0) -               
+  
+    
+      
+        
+isnull(a.tradedisamt,0) AS billvalue,                        
+(ISNULL(a.AssValue,0)-ISNULL(a.OthersAmt,0)) + ISNULL(a.vatamt,0) + ISNULL(a.scamt,0)+ ISNULL(A.CSTAMT,0) + ISNULL(a.OthersAmt,0) + isnull(a.aedamt,0) + isnull(a.bedamt,0) + isnull(a.cessamt,0) + isnull(a.sedamt,0) - isnull(a.cashdisamt,0) -              
+  
+    
+      
+        
+         
+isnull(a.tradedisamt,0) - ISNULL(a.vatamt,0) - ISNULL(a.scamt,0) + ISNULL(a.LRFRTAMT,0) - ISNULL(A.DBAMT,0) - ISNULL(a.commamt,0) - ISNULL(a.brkcom,0) - isnull(a.aedamt,0) - isnull(a.bedamt,0) - isnull(a.cessamt,0) - isnull(a.sedamt,0)                    
+  
+    
+AS Purcost,                        
+ISNULL(a.commamt,0) + ISNULL(a.brkcom,0) AS otherchrg, pd.DIVNAME, pd.add1,pd.DIV_UNITNAME
+from  rm_lot a                  
+inner join rm_arrival b on A.ARRDT=B.ARRDATE AND a.ARRno = b.ARRno and a.lotno=b.lotno and a.lotdt=b.lotdt AND                  
+a.arrno=b.arrno and a.divcode=b.divcode and a.supcd=b.supcd                  
+inner join rm_cont c on b.contno = c.contno and b.contdt=c.contdt and b.divcode=c.divcode                  
+inner join fa_slmas e on a.supcd=e.slcode                  
+left join fa_slmas g on c.brkcd=g.slcode                  
+inner join PO_CAR h on h.CARCODE = b.CARCODE                  
+inner join rm_var v on a.varcode=v.varcode  
+INNER JOIN PP_DIVMAS pd ON pd.DIVCODE = a.divcode  
+WHERE  a.supcd between @FSubCd and @TSubCd                   
+and a.arrdt between @Fdate  and @Tdate AND a.OPFLG<>'Y'                        
+AND LOTYEAR=year(@Fdate)      
+--and isnull(a.delflg,'N')<>'Y'                  
+and a.DivCode =@Divcode)X                        
+group by X.aedamt,X.bedamt,X.sedamt,X.insamt,X.cessamt,                        
+X.inwardno,X.inwarddate,X.PLOTNO,X.PGRSWT,X.PTAREWT,X.GRSWGT,                        
+X.carcode,X.lotdt,x.arrno, x.arrdt,     
+--x.dcno, x.dcdt,     
+X.lotno,X.lotyear,X.prmark,X.pjno,X.contno,                       
+X.dlytype,X.varcode,X.bales,x.contdt,X.netwt,X.ratecy,X.pjamt,                        
+x.varname,    
+--x.delfrom, X.mergeno,    
+X.pnetwt, X.taxamt,X.vatamt,X.ldgulg,X.freight,X.totalvalue,X.supplier,X.Broker,X.CARNAME,                        
+X.brkcd,    
+--X.CURRCODE,     
+X.lorrynos,X.LRFRTAMT,X.CSTAMT,X.CSTVAL,X.VATVAL,                        
+X.DBTAMT,X.fbillno, X.AssValue,X.OthersAmt,x.scamt,                        
+X.RateKg,X.commamt,X.brkcom,X.vcatcd,                        
+X.tratekg,X.DIFF,X.ITEMVALUE,X.billvalue,                        
+X.purcost,X.otherchrg,x.DIVNAME, x.add1,x.DIV_UNITNAME
+go
+
+--Sp_Periodical_MixingCost '01','2012-10-01','2012-10-30','2012'
+ALTER PROC Sp_Periodical_MixingCost        
+(
+	@Divcode varchar(5),
+	@FromDate varchar(15),
+	@ToDate varchar(15),@LOTYEAR VARCHAR(10)
+)
+as        
+BEGIN
+select distinct X.varcode,cntcd,docno,X.Catcd,X.lotno,X.lotdt,slname,SUM(Bales) AS BALE,UNIT,  
+ SUM(Kgs) AS netkg, isnull(ratekg,0) as ratekg,SUM(Value) AS Amount,AVG(ratecandy) AS RATECANDY,  
+ bblflg,x.DIVNAME,x.ADD1,x.DIV_PRINTNAME,x.DIV_UNITNAME
+ FROM(   
+  select distinct cntcd,b.Catcd,a.lotno,a.lotdt,b.supcd,  
+  Unit=(case when bblflg='B' then 'Bales' else 'Borah' end),B.varcode,a.docno,count(baleno) as Bales,bblflg,  
+  SUM(A.ACTisskgs) as Kgs,   
+  ratekg, ROUND(avg(ratekg)*355.616,0) as ratecandy,ROUND(ratekg*sum(a.ACTisskgs),2) as VALUE,p.DIVNAME,p.ADD1,p.DIV_PRINTNAME,p.DIV_UNITNAME  
+ from rm_issb a,rm_lot b,rm_issh h,PP_DIVMAS p where B.LOTYEAR=@LOTYEAR  
+ AND a.docno=h.docno and a.docdt=h.docdt and a.isstype=h.isstype and a.divcode=h.divcode  AND a.DIVCODE=p.DIVCODE
+ and a.lotno=b.lotno and a.catcd=b.catcd and a.lotdt=b.lotdt and a.divcode=b.divcode AND ISSUED='Y'   
+ AND H.divcode=@Divcode AND H.DOCDT Between @FromDate and  @ToDate   
+ group by cntcd,b.Catcd,a.lotno,a.lotdt,b.supcd,B.varcode,bblflg,ratekg,a.docno,p.DIVNAME,p.ADD1,p.DIV_PRINTNAME,p.DIV_UNITNAME  )X, fa_slmas f 
+ where x.supcd=f.slcode  
+ GROUP BY X.varcode,cntcd,X.Catcd,X.lotno,X.lotdt,slname,docno,bblflg,ratekg,UNIT,x.DIVNAME,x.ADD1,x.DIV_PRINTNAME,x.DIV_UNITNAME  
+ ORDER BY x.docno,X.VARCODE,X.CNTCD,X.LOTNO 	
+END
+Go
+
+ALTER PROCEDURE sp_marketcomrep  
+(  
+ @Divcode VARCHAR (3),  
+ @fdate VARCHAR(15),  
+ @tdate VARCHAR(15),  
+ @lotyear VARCHAR(5)  
+)  
+AS     
+BEGIN  
+select   
+a.arrdate,a.supcd,f.slname,ISNULL(a.areacode,'') AS AREACODE,ISNULL(b.areaname,'') as areaname,  
+a.varcode,c.VARNAME,bale=(case when a.bbflag = 'B' then a.quantity else 0 end),bora=(case when a.bbflag='R' then a.quantity  else 0 end),  
+unit=case when a.bbflag = 'B' then 'Bales' else 'Borahs' end, round(l.Favaourablewgt,2) as netwt,round(L.Favaourablewgt *  l.ratekg,2) as  'Value',  
+L.LOTNO,L.BILLNO,L.BILLDT,L.PJDT,L.PJNO,FBILLNO ,FBILLDT,isnull(a.ratecy,0)as ratecy,ISNULL(TAXAMT,0) AS TAX,A.ARRNO,b.L_OR_U as LUI,  
+b.state,f.add1,f.add2,d.DLYTYPE,p.DIVNAME,P.ADD1,P.DIV_PRINTNAME,P.DIV_UNITNAME
+From   rm_arrival a,fa_slmas f,rm_area b,rm_var c,rm_lot l,RM_CONT d,PP_DIVMAS P
+Where a.supcd = f.slcode and a.areacode=b.areacode   and a.varcode=c.varcode and a.arrdate between @fdate and @tdate and l.lotno=a.lotno   
+AND L.LOTDT =A.LOTDT  AND L.LOTTYPE=A.LOTTYPE and l.lotyear=@lotyear and a.divcode=l.divcode and a.divcode=@Divcode AND   
+a.DIVCODE=d.DIVCODE AND a.CONTNO=d.CONTNO AND a.CONTDT=d.CONTDT AND a.SUPCD=d.SUPCD AND a.VARCODE=d.VARCODE    
+order by L.LOTNO  
+END
+Go

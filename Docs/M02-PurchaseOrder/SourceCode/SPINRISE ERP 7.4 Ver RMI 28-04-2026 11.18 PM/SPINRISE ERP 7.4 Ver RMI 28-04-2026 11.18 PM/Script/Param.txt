@@ -1,0 +1,1 @@
+alter table rm_param add TCSINLANDCOSTflg varchar(1)

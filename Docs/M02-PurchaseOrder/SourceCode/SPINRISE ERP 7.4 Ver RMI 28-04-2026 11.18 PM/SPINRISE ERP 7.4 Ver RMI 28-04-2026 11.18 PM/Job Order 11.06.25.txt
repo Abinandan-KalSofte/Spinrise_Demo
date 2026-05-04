@@ -1,0 +1,136 @@
+
+
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[RM_JobOrderHD](
+	[DivCode] [varchar](2) NOT NULL,
+	[docNo] [decimal](8, 0) NOT NULL,
+	[docDate] [datetime] NOT NULL,
+	[SLCode] [varchar](7) NULL,
+	[AgentCode] [varchar](7) NULL,
+	[AgentComm] decimal(8,2)NULL,
+	[RefNo] [varchar](25) NULL,
+	[RefDate] [datetime] NULL,
+	[PaymentTerm] [varchar](8) NULL,
+	[Order_Type] [varchar](3) NULL,
+	[DeliveryDate] [date] NULL,
+	[DelCode] [varchar](8) NULL,
+	[Trans_Code] [varchar](8) NULL,
+	[TotQty] [decimal](10, 0) NULL,
+	[TotPacks] [decimal](10, 0) NULL,
+	[Mat_Amt] [decimal](14, 2) NULL,
+	[Disc_Per] [decimal](8, 2) NULL,
+	[Disc_Amt] [decimal](10, 2) NULL,
+	[Other_Amt] [decimal](10, 2) NULL,
+	[Freight_Amt] [decimal](10, 2) NULL,
+	[ins_Amt] [decimal](9, 2) NULL,
+	[Taxable_Amt] [decimal](14, 2) NULL,
+	[Tax_Amt] [decimal](14, 2) NULL,
+	[CGSTAmt] [decimal](14, 2) NULL,
+	[SGSTAmt] [decimal](14, 2) NULL,
+	[IGSTAmt] [decimal](14, 2) NULL,
+	[TCS_Per] [decimal](9, 3) NULL,
+	[TCS_amt] [decimal](9, 2) NULL,
+	[Roff_amt] [decimal](9, 2) NULL,
+	[TotalAmt] [decimal](18, 2) NULL,
+	[orderconfirm] [char](1) NULL,
+	[cancelled] [char](1) NULL,
+	[HostID] [varchar](20) NULL,
+	[CreatedBy] [varchar](8) NULL,
+	[CreatedDate] [datetime] NULL,
+	[ModifiedBy] [varchar](8) NULL,
+	[ModifiedDate] [datetime] NULL,
+
+PRIMARY KEY CLUSTERED 
+(
+	[docNo] ASC,
+	[docDate] ASC,
+	[DivCode] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+
+
+go
+
+
+GO
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[RM_JobOrderDT](
+	[DivCode] [varchar](2) NOT NULL,
+	[DocNo] [decimal](8, 0) NOT NULL,
+	[DocDate] [datetime] NOT NULL,
+	[DocSno] [decimal](2, 0) NOT NULL,
+	[Product_Type] [char](1) NOT NULL,
+	[Product_code] [varchar](8) NOT NULL,
+	[Product_Name] [varchar](150) NOT NULL,
+	[uom] [varchar](5) NULL,
+	[Packs] smallint NULL,
+	[Quantity] [decimal](12, 3) NULL,
+	[Rate] [decimal](12, 4) NULL,
+	[MixRate] [decimal](7, 3) NULL,
+	[Value] [decimal](14, 2) NULL,
+	[remarks] [varchar](50) NULL,
+	[Disc_Per] [decimal](9, 3) NULL,
+	[Disc_Amt] [decimal](12, 2) NULL,
+	[ins_Amt] [decimal](9, 2) NULL,
+	[Other_Amt] [decimal](10, 2) NULL,
+	[Freight_Amt] [decimal](10, 2) NULL,
+	[Tax_Code] [varchar](4) NULL,
+	[Taxable_Amt] [decimal](14, 2) NULL,
+	[Cgstper] [decimal](9, 2) NULL,
+	[CGSTAmt] [decimal](10, 2) NULL,
+	[Sgstper] [decimal](9, 2) NULL,
+	[SGSTAmt] [decimal](10, 2) NULL,
+	[Igstper] [decimal](9, 2) NULL,
+	[IGSTAmt] [decimal](10, 2) NULL,
+	[TCS_Per] [decimal](9, 3) NULL,
+	[TCS_amt] [decimal](9, 2) NULL,
+	[TotalAmt] [decimal](18, 2) NULL,
+	[HSN] [varchar](8) NULL,
+	[DelQty] [decimal](12, 3) NULL,
+	[DelBalQty] [decimal](12, 3) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[DivCode] ASC,
+	[DocNo] ASC,
+	[DocDate] ASC,
+	[Product_code] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[RM_JoborderDt]  WITH CHECK ADD  CONSTRAINT [RM_JoborderDtFKEY] FOREIGN KEY([DocNo], [DocDate], [DivCode])
+REFERENCES [dbo].[RM_JoborderHD] ([docNo], [docDate], [DivCode])
+GO
+
+ALTER TABLE [dbo].[RM_JoborderDt] CHECK CONSTRAINT [RM_JoborderDtFKEY]
+GO
+alter table MASTERLEN add RMVendor varchar(10)
+go
+update MASTERLEN set RMVendor='C2'
+go
+go
+
+alter table RM_CINVdt add JobOrdNo varchar(8)
+go
+alter table RM_CINVdt add JobOrddate datetime
+go
+alter table RM_CINVdt add MixRate decimal(7,3)
+go
+alter table IG_RBOhd add JobOrdNo varchar(8)
+go
+alter table IG_RBOhd add JobOrddate datetime
+go
+alter table IG_RBODT add MixRate decimal(7,3)
+go

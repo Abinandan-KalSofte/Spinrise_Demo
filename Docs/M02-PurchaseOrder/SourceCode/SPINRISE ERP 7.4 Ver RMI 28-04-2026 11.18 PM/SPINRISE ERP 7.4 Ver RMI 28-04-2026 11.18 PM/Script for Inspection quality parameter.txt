@@ -1,0 +1,29 @@
+
+alter table rm_lot add colorgrade numeric(15,2), FibreSFI numeric(15,2), FISI numeric(15,2) 
+GO
+
+
+--KSP_RMI_Inspct_Qutypara '01','64','2013-08-05'      
+alter PROC KSP_RMI_Inspct_Qutypara      
+(      
+ @divcode VARCHAR(5),      
+ @Lot_No NUMERIC(5),      
+ @LDate VARCHAR(10)      
+)      
+AS      
+BEGIN      
+ SELECT a.LOTNO,a.LOTDT,a.LOTTYPE,a.PTYWGT,a.GRSWGT,a.TAREWT,a.NETWT,a.BALES,a.STAPLEN,a.MICRONAIRE,a.TRASH_PER,      
+ a.PLOTNO,a.UNIRATIO,a.SCI,a.FibreSFI as SFI,a.ELG,a.GTEX,b.DIVNAME,b.DIV_PRINTNAME,b.DIV_UNITNAME,c.VARNAME,d.CATNAME,e.SPName ,
+isnull(colorgrade,0) colorgrade,isnull(FibreSFI,0), isnull(FISI,0) FISI,isnull(MCOEFF1,0) MCOEFF1
+ FROM RM_LOT a inner join       
+ PP_DIVMAS b ON b.DIVCODE = a.DIVCODE      
+ LEFT JOIN RM_VAR c ON c.VARCODE=a.VARCODE      
+ left join RM_CAT d ON d.CATCD=a.CATCD      
+ LEFT JOIN RM_SpotPass e ON e.SpCode=a.SPOTPasser      
+ WHERE      
+ a.DIVCODE = @divcode AND a.LOTNO = @Lot_No AND a.LOTDT = @LDate    
+END     
+  
+
+  GO
+

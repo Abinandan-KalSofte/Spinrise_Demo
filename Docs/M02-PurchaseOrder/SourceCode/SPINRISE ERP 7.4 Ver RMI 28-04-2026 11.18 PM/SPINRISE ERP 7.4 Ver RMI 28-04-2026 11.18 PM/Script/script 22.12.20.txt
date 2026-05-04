@@ -1,0 +1,243 @@
+
+create table RM_FA_FreightGL
+(
+Divcode varchar(2),
+Freight_GL varchar(8),
+CGST_GL varchar(8),
+SGST_GL varchar(8),
+IGST_GL varchar(8)
+)
+
+go
+
+CREATE view VW_RM_VarietyList  
+as  
+select a.varcode,a.VarDesc varname from variety a  
+
+go
+
+--select *  from [FA_JVLINE] where vocdt>='2020-12-01' and vocno=62
+create table RM_FreightBillHD add jvocno int
+
+go
+alter TRIGGER [dbo].[UPDATEFREIGHTBILL]        
+ON [dbo].[RM_FreightBillHD]                                                      
+ FOR UPDATE  AS                                                      
+             
+DECLARE      
+@v_DIVCODE VARCHAR(5),@V_TC varchar(2),@v_VOCNO decimal(6,0),@v_VOCDT VARCHAR(20),@v_SLCODE VARCHAR(7),      
+@v_CHAGL VARCHAR(6),@v_CGSTGL VARCHAR(6),  @v_SGSTGL VARCHAR(6),@v_IGSTGL VARCHAR(6),      
+@v_DISCGL VARCHAR(6),@v_FREIGHTGL VARCHAR(6),@v_OTHERSGL VARCHAR(6),@v_ROFFGL VARCHAR(6),      
+@v_CHA_AMT NUMERIC(9,2),@V_CGST_Amt NUMERIC(9, 2),@V_SGST_Amt NUMERIC(9, 2),@V_IGST_Amt NUMERIC(9, 2),      
+@v_DISC_AMT NUMERIC(9,2),@v_FREIGHT_AMT NUMERIC(9,2),@v_OTHERS_AMT NUMERIC(9,2),@v_ROFF_AMT NUMERIC(9,2),      
+@v_TOT_AMT NUMERIC(9,2),@v_MAT_AMT NUMERIC(9,2),@TDS_FLG VARCHAR(1) ,@Appflg varchar(2)  ,
+@v_DOCNO NUMERIC(6,0),@v_DOCDT VARCHAR(20),@v_BILLNO VARCHAR(20),@V_BILLDT VARCHAR(20),@V_SLNAME VARCHAR(150),@Narration varchar(800)
+      
+BEGIN      
+ SET @v_CHA_AMT= 0      
+ SET @V_CGST_Amt= 0      
+ SET @V_SGST_Amt= 0      
+ SET @V_IGST_Amt= 0      
+       
+ SET @v_DISC_AMT= 0      
+ SET @v_FREIGHT_AMT= 0      
+ SET @v_OTHERS_AMT= 0      
+ SET @v_ROFF_AMT= 0       
+ SET @v_MAT_AMT =0      
+ SET @v_FREIGHT_AMT =0      
+ SET @v_DISC_AMT =0      
+ SET @v_OTHERS_AMT =0      
+ SET @v_ROFF_AMT =0      
+    
+      
+      
+SELECT @V_TC=TC FROM fa_tcmas WHERE TC=40      
+      
+select @v_DIVCODE =DivCode,@v_VOCNO = isnull(jvocno,0),@v_VOCDT=DOCDT,@v_SLCODE=slcode, 
+  @V_CGST_Amt= isnull(CGSTAmt,0)   ,  
+  @V_SGST_Amt= isnull(SGSTAmt,0)  ,    
+  @V_IGST_Amt= isnull(IGSTAmt,0) ,
+
+@v_FREIGHT_AMT =isnull(Total_Amt,0) ,@v_MAT_AMT=isnull(Value,0),@Appflg=isnull(SecondFR_AppFlg,'N') from DELETED      
+      
+DELETE FROM FA_JVHEAD WHERE VOCNO=@v_VOCNO AND VOCDT=@v_VOCDT AND DIVCODE=@v_DIVCODE AND TC=@V_TC      
+DELETE FROM FA_JVLINE WHERE VOCNO=@v_VOCNO AND VOCDT=@v_VOCDT AND DIVCODE=@v_DIVCODE AND TC=@V_TC      
+
+select @v_DIVCODE =DivCode,@v_DOCNO=DOCNO,@v_VOCDT=DOCDT,@v_SLCODE=slcode,@v_FREIGHT_AMT=isnull(Total_Amt ,0) ,
+@v_BILLNO=Billno  ,@V_BILLDT=convert(varchar,Billdt  ,105),@Appflg=isnull(SecondFR_AppFlg,'N')
+from INSERTED
+
+print @Appflg
+print @v_VOCNO
+print @v_FREIGHT_AMT
+
+if @Appflg='Y'
+begin
+	if @v_VOCNO=0
+	begin
+		select @v_VOCNO=MAX(isnull(vocno,0))+1  from fa_jvhead where tc=40 and divcode =@v_DIVCODE and vocdt >=(select AYFDATE from pp_year where @v_VOCDT between AYFDATE and AYLDATE  ) 
+		print @v_VOCNO
+    end
+	SELECT @V_SLNAME=SLNAME FROM FA_SLMAS WHERE SLCODE =@v_SLCODE
+      
+	SELECT @v_FREIGHTGL=isnull(Freight_GL,''), @v_CGSTGL=isnull(CGST_GL,''),  @v_SGSTGL=isnull(sGST_GL,''),@v_IGSTGL=isnull(iGST_GL,'') FROM RM_FA_FreightGL where divcode=@v_DIVCODE
+
+	set @Narration = 'Cotton Arrival Freight Amount For Bill No.'+@v_BILLNO+' ,Bill Dt.'+@V_BILLDT+' ,Transporter: '+@V_SLNAME
+
+	INSERT INTO FA_JVHEAD(DIVCODE,TC,VOCNO,VOCDT) VALUES(@v_DIVCODE,@V_TC,@v_VOCNO,@v_VOCDT)      
+      
+	IF @v_FREIGHT_AMT >0       
+	 BEGIN      
+	  INSERT INTO FA_JVLINE(DIVCODE,TC,VOCNO,VOCDT,VOCSNO,ACCODE,NARRATION1,DEBIT,CREDIT)       
+	  VALUES(@v_DIVCODE,@V_TC,@v_VOCNO,@v_VOCDT,1,@v_SLCODE,@Narration,0,@v_FREIGHT_AMT)    
+	  
+	  update RM_FreightBillHD set jvocno = @v_VOCNO where divcode=@v_DIVCODE and docno=@v_DOCNO and docdt=@v_VOCDT  
+	 END      
+      
+	--MAT VALUE       
+	IF @v_MAT_AMT >0      
+	 BEGIN      
+	  INSERT INTO FA_JVLINE(DIVCODE,TC,VOCNO,VOCDT,VOCSNO,ACCODE,NARRATION1,DEBIT,CREDIT)       
+	  VALUES(@v_DIVCODE,@V_TC,@v_VOCNO,@v_VOCDT,2,@v_FREIGHTGL,@Narration,@v_MAT_AMT,0)      
+	 END      
+	 	--CGST VALUE       
+	IF @V_CGST_Amt >0      
+	 BEGIN      
+	  INSERT INTO FA_JVLINE(DIVCODE,TC,VOCNO,VOCDT,VOCSNO,ACCODE,NARRATION1,DEBIT,CREDIT)       
+	  VALUES(@v_DIVCODE,@V_TC,@v_VOCNO,@v_VOCDT,3,@v_CGSTGL,@Narration,@V_CGST_Amt,0)      
+	 END    
+	 	--SGST VALUE       
+	IF @V_SGST_Amt >0      
+	 BEGIN      
+	  INSERT INTO FA_JVLINE(DIVCODE,TC,VOCNO,VOCDT,VOCSNO,ACCODE,NARRATION1,DEBIT,CREDIT)       
+	  VALUES(@v_DIVCODE,@V_TC,@v_VOCNO,@v_VOCDT,4,@v_SGSTGL,@Narration,@V_SGST_Amt,0)      
+	 END     
+	 	--IGST VALUE       
+	IF @V_IGST_Amt >0      
+	 BEGIN      
+	  INSERT INTO FA_JVLINE(DIVCODE,TC,VOCNO,VOCDT,VOCSNO,ACCODE,NARRATION1,DEBIT,CREDIT)       
+	  VALUES(@v_DIVCODE,@V_TC,@v_VOCNO,@v_VOCDT,3,@v_IGSTGL,@Narration,@V_IGST_Amt,0)      
+	 END    
+
+ end     
+
+end
+
+--IF @TDS_FLG = 'Y' 
+--BEGIN
+--	DELETE FROM FA_TDS WHERE VOCNO=@v_VOCNO AND VOCDT=@v_VOCDT AND DIVCODE=@v_DIVCODE AND TC=@V_TC      
+--END
+
+
+
+go
+
+--select appflg, *from fa_jvhead where vocdt>='2020-09-22'  and tc=40 and  divcode='02' order by vocdt,vocno desc
+      
+  
+create TRIGGER [dbo].[DELFREIGHTBILL]        
+ON [dbo].[RM_FreightBillHD]                                                      
+FOR  DELETE                                                      
+AS              
+DECLARE      
+@v_DIVCODE VARCHAR(5),@V_TC varchar(2),@v_VOCNO decimal(6,0),@v_VOCDT VARCHAR(20),@v_SLCODE VARCHAR(7),      
+@v_CHAGL VARCHAR(6),@v_CGSTGL VARCHAR(6),  @v_SGSTGL VARCHAR(6),@v_IGSTGL VARCHAR(6),      
+@v_DISCGL VARCHAR(6),@v_FREIGHTGL VARCHAR(6),@v_OTHERSGL VARCHAR(6),@v_ROFFGL VARCHAR(6),      
+@v_CHA_AMT NUMERIC(9,2),@V_CGST_Amt NUMERIC(9, 2),@V_SGST_Amt NUMERIC(9, 2),@V_IGST_Amt NUMERIC(9, 2),      
+@v_DISC_AMT NUMERIC(9,2),@v_FREIGHT_AMT NUMERIC(9,2),@v_OTHERS_AMT NUMERIC(9,2),@v_ROFF_AMT NUMERIC(9,2),      
+@v_TOT_AMT NUMERIC(9,2),@v_MAT_AMT NUMERIC(9,2),@TDS_FLG VARCHAR(1),@Appflg varchar(2)  
+      
+BEGIN      
+ SET @v_CHA_AMT= 0      
+ SET @V_CGST_Amt= 0      
+ SET @V_SGST_Amt= 0      
+ SET @V_IGST_Amt= 0      
+       
+ SET @v_DISC_AMT= 0      
+ SET @v_FREIGHT_AMT= 0      
+ SET @v_OTHERS_AMT= 0      
+ SET @v_ROFF_AMT= 0       
+ SET @v_MAT_AMT =0      
+ SET @v_FREIGHT_AMT =0      
+ SET @v_DISC_AMT =0      
+ SET @v_OTHERS_AMT =0      
+ SET @v_ROFF_AMT =0      
+END      
+      
+      
+SELECT @V_TC=TC FROM fa_tcmas WHERE TC=40      
+      
+select @v_DIVCODE =DivCode,@v_VOCNO = jvocno,@v_VOCDT=DOCDT,@v_SLCODE=SLCODE,@Appflg=isnull(SecondFR_AppFlg,'N') from DELETED      
+      
+DELETE FROM FA_JVHEAD WHERE VOCNO=@v_VOCNO AND VOCDT=@v_VOCDT AND DIVCODE=@v_DIVCODE AND TC=@V_TC      
+DELETE FROM FA_JVLINE WHERE VOCNO=@v_VOCNO AND VOCDT=@v_VOCDT AND DIVCODE=@v_DIVCODE AND TC=@V_TC      
+
+
+--IF @TDS_FLG = 'Y' 
+--BEGIN
+--	DELETE FROM FA_TDS WHERE VOCNO=@v_VOCNO AND VOCDT=@v_VOCDT AND DIVCODE=@v_DIVCODE AND TC=@V_TC      
+--END
+
+--go
+
+
+
+
+
+      
+--create TRIGGER [dbo].[INSFREIGHTENTRY]        
+--ON [dbo].rm_frtentryhd                                                      
+--FOR  INSERT                                                      
+--AS              
+--DECLARE      
+--@v_DIVCODE VARCHAR(5),@V_TC varchar(2),@v_DOCNO NUMERIC(6,0),@v_DOCDT VARCHAR(20),@v_VOCNO decimal(6,0),@v_VOCDT VARCHAR(20)
+--,@v_SLCODE VARCHAR(8),      
+--@v_CHAGL VARCHAR(6),@v_CGSTGL VARCHAR(6),  @v_SGSTGL VARCHAR(6),@v_IGSTGL VARCHAR(6),      
+--@v_DISCGL VARCHAR(6),@v_FREIGHTGL VARCHAR(6),@v_OTHERSGL VARCHAR(6),@v_ROFFGL VARCHAR(6),      
+--@v_CHA_AMT NUMERIC(9,2),@V_CGST_Amt NUMERIC(9, 2),@V_SGST_Amt NUMERIC(9, 2),@V_IGST_Amt NUMERIC(9, 2),      
+--@v_DISC_AMT NUMERIC(9,2),@v_FREIGHT_AMT NUMERIC(9,2),@v_OTHERS_AMT NUMERIC(9,2),@v_ROFF_AMT NUMERIC(9,2),      
+--@v_TOT_AMT NUMERIC(9,2),@v_MAT_AMT NUMERIC(9,2),@Narration varchar(800),@v_VOCMDT VARCHAR(20),@v_VOCFDT VARCHAR(20),
+--@v_BILLNO VARCHAR(20),@V_BILLDT VARCHAR(20),@V_SLNAME VARCHAR(150),
+--@v_QTY NUMERIC(9,2),@v_RATE NUMERIC(9,2),@V_VALUE NUMERIC(9,2),@V_INVNO varchar(20),@V_INVDT varchar(20),@Appflg varchar(2)
+
+
+--BEGIN  
+      
+--SELECT @V_TC=TC FROM fa_tcmas WHERE TC=40     
+
+--select @v_DIVCODE =DivCode,@v_DOCNO=DOCNO,@v_VOCDT=DOCDT,@v_SLCODE=slcode,@v_FREIGHT_AMT=isnull(apprfrtamt,0) ,
+--@v_BILLNO=fbillno ,@V_BILLDT=convert(varchar,fbilldt ,105),@Appflg=isnull(SecondFR_AppFlg,'N')
+--from INSERTED
+
+--if @Appflg='Y'
+--begin
+--   select @v_VOCNO=MAX(isnull(vocno,0))+1  from fa_jvhead where tc=40 and divcode =@v_DIVCODE and vocdt >=(select AYFDATE from pp_year where @v_VOCDT between AYFDATE and AYLDATE  ) 
+--  update rm_frtentryhd set jvocno = @v_VOCNO where divcode=@v_DIVCODE and docno=@v_DOCNO and docdt=@v_VOCDT
+		
+
+--	SELECT @V_SLNAME=SLNAME FROM FA_SLMAS WHERE SLCODE =@v_SLCODE
+      
+--	SELECT @v_FREIGHTGL=isnull(FREIGHTGLCODE,'') FROM rm_param
+
+--		set @Narration = 'Cotton Arrival Freight Amount For Bill No.'+@v_BILLNO+' ,Bill Dt.'+@V_BILLDT+' ,Transporter: '+@V_SLNAME
+
+
+--	INSERT INTO FA_JVHEAD(DIVCODE,TC,VOCNO,VOCDT) VALUES(@v_DIVCODE,@V_TC,@v_VOCNO,@v_VOCDT)      
+      
+--	IF @v_FREIGHT_AMT >0       
+--	 BEGIN      
+--	  INSERT INTO FA_JVLINE(DIVCODE,TC,VOCNO,VOCDT,VOCSNO,ACCODE,NARRATION1,DEBIT,CREDIT)       
+--	  VALUES(@v_DIVCODE,@V_TC,@v_VOCNO,@v_VOCDT,1,@v_SLCODE,@Narration,0,@v_FREIGHT_AMT)      
+--	 END      
+      
+--	--MAT VALUE       
+--	IF @v_FREIGHT_AMT >0      
+--	 BEGIN      
+--	  INSERT INTO FA_JVLINE(DIVCODE,TC,VOCNO,VOCDT,VOCSNO,ACCODE,NARRATION1,DEBIT,CREDIT)       
+--	  VALUES(@v_DIVCODE,@V_TC,@v_VOCNO,@v_VOCDT,2,@v_FREIGHTGL,@Narration,@v_FREIGHT_AMT,0)      
+--	 END      
+      
+-- end     
+--END 
+
+

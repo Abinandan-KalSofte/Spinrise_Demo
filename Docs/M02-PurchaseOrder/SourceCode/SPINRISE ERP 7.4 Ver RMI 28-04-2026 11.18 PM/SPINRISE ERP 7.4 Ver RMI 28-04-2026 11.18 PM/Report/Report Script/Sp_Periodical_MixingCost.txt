@@ -1,0 +1,22 @@
+ALTER proc Sp_Periodical_MixingCost      
+-- Exec Sp_Periodical_MixingCost '02','2009-12-01','2009-12-17'      
+@Divcode varchar(5),      
+@FromDate varchar(15),      
+@ToDate varchar(15),  
+@LOTYEAR VARCHAR(10)      
+as      
+ select distinct X.varcode,cntcd,docno,X.Catcd,X.lotno,X.lotdt,slname,SUM(Bales) AS BALE,UNIT,
+ SUM(Kgs) AS netkg, isnull(ratekg,0) as ratekg,SUM(Value) AS Amount,AVG(ratecandy) AS RATECANDY,
+ bblflg FROM( 
+  select distinct cntcd,b.Catcd,a.lotno,a.lotdt,b.supcd,
+  Unit=(case when bblflg='B' then 'Bales' else 'Borah' end),B.varcode,a.docno,count(baleno) as Bales,bblflg,
+  SUM(A.ACTisskgs) as Kgs, 
+  ratekg, ROUND(avg(ratekg)*355.616,0) as ratecandy,ROUND(ratekg*sum(a.ACTisskgs),2) as Value 
+ from rm_issb a,rm_lot b,rm_issh h where B.LOTYEAR=@LOTYEAR
+ AND a.docno=h.docno and a.docdt=h.docdt and a.isstype=h.isstype and a.divcode=h.divcode 
+ and a.lotno=b.lotno and a.catcd=b.catcd and a.lotdt=b.lotdt and a.divcode=b.divcode AND ISSUED='Y' 
+ AND H.divcode=@Divcode AND H.DOCDT Between @FromDate and  @ToDate 
+  group by cntcd,b.Catcd,a.lotno,a.lotdt,b.supcd,B.varcode,bblflg,ratekg,a.docno)X, fa_slmas f where x.supcd=f.slcode  GROUP BY X.varcode,cntcd,X.Catcd,X.lotno,X.lotdt,slname,docno,bblflg,ratekg,UNIT 
+ ORDER BY x.docno,X.VARCODE,X.CNTCD,X.LOTNO
+
+

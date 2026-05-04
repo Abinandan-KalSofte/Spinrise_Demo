@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Badge, Drawer, Input, Layout, Menu,
   Select, Tooltip, Typography,
@@ -20,6 +20,7 @@ import {
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/features/auth/store/useAuthStore'
 import { AppHeader } from './AppHeader'
+import { purchaseRequisitionApi } from '@/features/purchase-requisition/api/purchaseRequisitionApi'
 
 const { Sider, Content } = Layout
 
@@ -37,7 +38,7 @@ interface AppModule {
 
 const MODULES: AppModule[] = [
   { key: 'purchase',   label: 'Purchase',    icon: <ShoppingCartOutlined />, category: 'Operations',    color: '#4f46e5', live: true,  landing: '/purchase/requisition' },
-  { key: 'inventory',  label: 'Inventory',   icon: <InboxOutlined />,        category: 'Operations',    color: '#0891b2', live: false, landing: '/inventory' },
+  { key: 'inventory',  label: 'Inventory',   icon: <InboxOutlined />,        category: 'Operations',    color: '#0891b2', live: true,  landing: '/purchase/order' },
   { key: 'sales',      label: 'Sales',       icon: <ShoppingOutlined />,     category: 'Operations',    color: '#f59e0b', live: false, landing: '/sales' },
   { key: 'accounts',   label: 'Accounts',    icon: <AccountBookOutlined />,  category: 'Finance',       color: '#059669', live: false, landing: '/accounts' },
   { key: 'budget',     label: 'Budget',      icon: <BarChartOutlined />,     category: 'Finance',       color: '#6366f1', live: false, landing: '/budget' },
@@ -57,8 +58,7 @@ const SIDEBAR_MENUS: Record<string, MenuProps['items']> = {
       type: 'group',
       children: [
         { key: 'purchase/requisition',   icon: <FileTextOutlined />,    label: 'Requisitions' },
-        { key: 'purchase/order',          icon: <ShoppingOutlined />,    label: 'Purchase Orders' },
-        { key: 'purchase/goods-receipt', icon: <InboxOutlined />,       label: 'Goods Receipt',    disabled: true },
+        // { key: 'purchase/goods-receipt', icon: <InboxOutlined />,       label: 'Goods Receipt',    disabled: true },
       ],
     },
     {
@@ -67,7 +67,17 @@ const SIDEBAR_MENUS: Record<string, MenuProps['items']> = {
       type: 'group',
       children: [
         { key: 'purchase/reports/datewise',             icon: <BarChartOutlined />, label: 'Date-wise' },
-        { key: 'purchase/reports/purchase-requisition', icon: <BarChartOutlined />, label: 'PR Report'  },
+        // { key: 'purchase/reports/purchase-requisition', icon: <BarChartOutlined />, label: 'PR Report'  },
+      ],
+    },
+  ],
+  inventory: [
+    {
+      key: 'grp-purchase-orders',
+      label: 'Purchase Orders',
+      type: 'group',
+      children: [
+        { key: 'purchase/order', icon: <ShoppingOutlined />, label: 'Purchase Orders' },
       ],
     },
   ],
@@ -76,9 +86,10 @@ const SIDEBAR_MENUS: Record<string, MenuProps['items']> = {
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
 function getModuleKey(pathname: string): string {
-  if (pathname.startsWith('/purchase'))   return 'purchase'
-  if (pathname.startsWith('/inventory'))  return 'inventory'
-  if (pathname.startsWith('/sales'))      return 'sales'
+  if (pathname.startsWith('/purchase/order')) return 'inventory'
+  if (pathname.startsWith('/purchase'))       return 'purchase'
+  if (pathname.startsWith('/inventory'))      return 'inventory'
+  if (pathname.startsWith('/sales'))          return 'sales'
   if (pathname.startsWith('/accounts') || pathname.startsWith('/finance')) return 'accounts'
   return 'purchase'
 }
@@ -160,9 +171,16 @@ export default function MainLayout() {
   const navigate    = useNavigate()
   const { user }    = useAuthStore()
 
-  const [collapsed,   setCollapsed]   = useState(false)
-  const [mobileOpen,  setMobileOpen]  = useState(false)
-  const [switcherOpen, setSwitcherOpen] = useState(false)
+  const [collapsed,     setCollapsed]   = useState(false)
+  const [mobileOpen,    setMobileOpen]  = useState(false)
+  const [switcherOpen,  setSwitcherOpen] = useState(false)
+  const [pendingCount,  setPendingCount] = useState(0)
+
+  useEffect(() => {
+    void purchaseRequisitionApi.getSummary()
+      .then((s) => setPendingCount(s.openCount))
+      .catch(() => undefined)
+  }, [])
 
   const activeModuleKey = getModuleKey(location.pathname)
   const activeModule    = MODULES.find((m) => m.key === activeModuleKey) ?? MODULES[0]
@@ -290,6 +308,7 @@ export default function MainLayout() {
           activeModule={activeModule}
           switcherOpen={switcherOpen}
           onSwitcherOpenChange={setSwitcherOpen}
+          pendingCount={pendingCount}
           switcherContent={
             <ModuleSwitcherContent
               activeModuleKey={activeModuleKey}

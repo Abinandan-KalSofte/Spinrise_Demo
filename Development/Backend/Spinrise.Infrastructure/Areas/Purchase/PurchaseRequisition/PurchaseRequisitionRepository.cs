@@ -84,16 +84,17 @@ public class PurchaseRequisitionRepository : IPurchaseRequisitionRepository
             StoredProcedures.PurchaseRequisition.GetPaginated,
             new
             {
-                DivCode    = divCode,
-                PrNo       = query.PrNo,
-                StartDate  = query.StartDate,
-                EndDate    = query.EndDate,
-                DepCode    = query.DepCode,
-                ReqName    = query.ReqName,
-                Status     = query.Status,
-                SearchText = query.SearchText,
-                Page       = query.Page,
-                PageSize   = query.PageSize,
+                DivCode         = divCode,
+                PrNo            = query.PrNo,
+                StartDate       = query.StartDate,
+                EndDate         = query.EndDate,
+                DepCode         = query.DepCode,
+                ReqName         = query.ReqName,
+                Status          = query.Status,
+                SearchText      = query.SearchText,
+                Page            = query.Page,
+                PageSize        = query.PageSize,
+                ExcludeAmended  = query.ExcludeAmended,
             },
             transaction: _uow.Transaction,
             commandType: CommandType.StoredProcedure);
@@ -229,7 +230,7 @@ public class PurchaseRequisitionRepository : IPurchaseRequisitionRepository
             StoredProcedures.PurchaseRequisition.InsertLine,
             new
             {
-                line.DivCode,          line.PrNo,              line.PrSNo,
+                line.DivCode,          line.PrNo,              line.PrDate,           line.PrSNo,
                 line.ItemCode,         line.ItemName,           line.Uom,
                 line.Rate,             line.CurrentStock,       line.QtyRequired,
                 line.RequiredDate,     line.Place,              line.ApproxCost,
@@ -244,11 +245,11 @@ public class PurchaseRequisitionRepository : IPurchaseRequisitionRepository
             commandType: CommandType.StoredProcedure);
     }
 
-    public async Task<int> GetMaxPrSNoAsync(string divCode, long prNo)
+    public async Task<int> GetMaxPrSNoAsync(string divCode, long prNo, DateTime prDate)
     {
         return await _uow.Connection!.ExecuteScalarAsync<int>(
             StoredProcedures.PurchaseRequisition.GetMaxPrSNo,
-            new { DivCode = divCode, PrNo = prNo },
+            new { DivCode = divCode, PrNo = prNo, PrDate = prDate },
             transaction: _uow.Transaction,
             commandType: CommandType.StoredProcedure);
     }
@@ -269,29 +270,29 @@ public class PurchaseRequisitionRepository : IPurchaseRequisitionRepository
             commandType: CommandType.StoredProcedure);
     }
 
-    public async Task SoftDeleteLinesAsync(string divCode, long prNo)
+    public async Task SoftDeleteLinesAsync(string divCode, long prNo, DateTime prDate)
     {
         await _uow.Connection!.ExecuteAsync(
             StoredProcedures.PurchaseRequisition.SoftDeleteLines,
-            new { DivCode = divCode, PrNo = prNo },
+            new { DivCode = divCode, PrNo = prNo, PrDate = prDate },
             transaction: _uow.Transaction,
             commandType: CommandType.StoredProcedure);
     }
 
-    public async Task<int> DeleteAsync(string divCode, long prNo, string deleteReasonCode)
+    public async Task<int> DeleteAsync(string divCode, long prNo, DateTime prDate, string deleteReasonCode)
     {
         return await _uow.Connection!.ExecuteScalarAsync<int>(
             StoredProcedures.PurchaseRequisition.Delete,
-            new { DivCode = divCode, PrNo = prNo, DeleteReason = deleteReasonCode },
+            new { DivCode = divCode, PrNo = prNo, PrDate = prDate, DeleteReason = deleteReasonCode },
             transaction: _uow.Transaction,
             commandType: CommandType.StoredProcedure);
     }
 
-    public async Task<int> DeleteLineAsync(string divCode, long prNo, int prSNo, string deleteReasonCode)
+    public async Task<int> DeleteLineAsync(string divCode, long prNo, DateTime prDate, int prSNo, string deleteReasonCode)
     {
         return await _uow.Connection!.ExecuteScalarAsync<int>(
             StoredProcedures.PurchaseRequisition.DeleteLine,
-            new { DivCode = divCode, PrNo = prNo, PrSNo = prSNo, DeleteReason = deleteReasonCode },
+            new { DivCode = divCode, PrNo = prNo, PrDate = prDate, PrSNo = prSNo, DeleteReason = deleteReasonCode },
             transaction: _uow.Transaction,
             commandType: CommandType.StoredProcedure);
     }

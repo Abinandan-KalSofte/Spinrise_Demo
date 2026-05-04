@@ -1,0 +1,151 @@
+
+go
+alter table rm_issb add RecKgs decimal(10,3)
+go
+alter table rm_lot add JBSentQty decimal(12,3)
+go
+create View Vw_JBRecDesc
+as
+select '01' Code,'YARN' Detail 
+ union all 
+ select  '02' Code, 'FABRIC' Detail
+go
+
+  
+create View Vw_JBInwardDesc  
+as  
+select '01' Code,'YARN' Detail   
+ union all   
+ select  '02' Code, 'FABRIC' Detail  
+  
+go
+
+create View VW_JBIssueDetailsFinished
+as
+select  a.ISSTYPE ,a.divcode, a.slcode,c.slname ,a.docno,b.docdt,b.varcode, d.VARNAME ,c.brcode,c.City
+, sum(b.ISSKGS) ISSKGS ,sum(b.ISSKGS-isnull(b.RecKgs,0)) BalKgs 
+from rm_issh a
+inner join rm_issb b on a.docno=b.docno and a.docdt=b.docdt and a.divcode=b.divcode
+inner join RM_VAR d on d.varcode=b.varcode
+inner join fa_slmas c on c.slcode=a.slcode 
+where --b.ISSKGS-isnull(b.RecKgs,0) >0 and 
+a.ISSTYPE='JJ'
+group by a.divcode, a.slcode,c.slname ,a.docno,b.docdt,b.varcode, d.VARNAME,a.ISSTYPE,c.brcode,c.City
+having  sum(b.ISSKGS-isnull(b.RecKgs,0))>0
+
+go
+
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[IG_JWRecHD](
+	[Divcode] [varchar](2) NOT NULL,
+	[Docno] [numeric](8, 0) NOT NULL,
+	[Docdate] [datetime] NOT NULL,
+	[Slcode] [varchar](8) NOT NULL,
+	[IssType] [varchar](2) NOT NULL,
+	[JBType] [varchar](2) NOT NULL,
+	[DCNo] [varchar](15) NULL,
+	[DCDate] [datetime] NULL,
+	InwardType [varchar](2) NOT NULL,
+	VehcileNo [varchar](15) NOT NULL,
+	CarCode [varchar](8) NOT NULL,
+	RealisationPer Decimal(8,2) NOT NULL,
+	TotIssKgs  Decimal(12,3) NOT NULL,
+	totRecKgs Decimal(12,3) NOT NULL,
+	TotWastekgs Decimal(12,3) NOT NULL,
+	TotInLosskgs Decimal(9,3) NOT NULL,
+	Totpacks int NOT NULL,
+	TotPackKgs Decimal(12,3) NOT NULL,
+	TotPackWastekg1 Decimal(12,3) NOT NULL,
+	TotPackWastekg2 Decimal(12,3) NOT NULL,
+	TotPackWastekg3 Decimal(12,3) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Divcode] ASC,
+	[Docno] ASC,
+	[Docdate] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+
+
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[IG_JWRecDT](
+	[Divcode] [varchar](2) NOT NULL,
+	[DocNo] [numeric](8, 0) NOT NULL,
+	[DocDate] [datetime] NOT NULL,	
+	Docsno smallint NOT NULL,	
+	Varcode varchar(10) not null,
+	IssDocno int not null,
+	IssDocDt datetime not null,
+	IssuedQty Decimal(12,3) not null,
+	BalKgs Decimal(12,3) not null,
+	RecKgs Decimal(12,3) not null,
+	WasteKgs Decimal(12,3) not null,
+	InvisibleKgs Decimal(12,3) not null,
+PRIMARY KEY CLUSTERED 
+(
+	[Docno] ASC,
+	[Docdate] ASC,
+	[Divcode] ASC,
+	Docsno asc,
+	Varcode asc
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[IG_JWRecFDT](
+	[Divcode] [varchar](2) NOT NULL,
+	[DocNo] [numeric](8, 0) NOT NULL,
+	[DocDate] [datetime] NOT NULL,	
+	Docsno smallint NOT NULL,	
+	Product_code varchar(10) not null,
+	PackNoCode varchar(4) not null,
+	PackType varchar(4) not null,
+	Noofpacks smallint,
+	Kgs Decimal(12,3) not null,
+	WProduct_Code1 varchar(8) null,
+	WasteKgs1 Decimal(12,3) not null,
+	WProduct_Code2 varchar(8) null,
+	WasteKgs2 Decimal(12,3)  null,
+	WProduct_Code3 varchar(8) null,
+	WasteKgs3 Decimal(12,3)  null,
+PRIMARY KEY CLUSTERED 
+(
+	[Docno] ASC,
+	[Docdate] ASC,
+	[Divcode] ASC,
+	Docsno asc,
+	Product_code asc
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO

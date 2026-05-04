@@ -1,0 +1,116 @@
+alter table rm_lot add TCS_AssAmt Decimal(14,2)
+alter table rm_lot add TCS_CalcAssAmtFlag tinyint
+go
+alter table rm_lot add SampleFlag tinyint
+go
+-- KSP_TransferReceipt '01','2021-02-01','2021-06-30','C190001','C1Z0004','a','a',0
+
+
+
+CREATE procedure KSP_TransferReceipt
+
+
+
+(
+
+
+
+@Divcode as varchar(10),
+
+
+
+@Fdate as varchar(20),
+
+
+
+@Tdate as varchar(20),
+
+
+
+@Fsupp As  varchar(20),
+
+
+
+@Tsupp As varchar(20),
+
+
+
+@Category as varchar(20),
+
+
+
+@TrnType as varchar(20),
+
+@SampleFlg varchar(1)
+
+
+
+)
+
+
+
+as
+
+
+
+begin
+
+
+
+SELECT isnull(transfertype,'BT')TransferType,ISSUE_DESC,a.supcd,f.slname as Supplier,g.slname as broker,A.AREACD,
+
+
+
+d.AREANAME, A.VARCODE ,LOTNO,lotdt,a.ARRNO,a.ARRDT,A.billno,c.varname,bales,
+
+
+
+unit=(case when bbLflg='B' then 'Bales' ELSE 'Borah'end),round(netwt,2) netwt,
+
+
+
+(round(ratekg*355.6187,0)) as ratecy,round(ratekg,2) 'Rate/Quintal',TotlandCost as value,isnull(freght,0) freight,
+
+
+
+0 as avgrate,a.pjamt,pd.div_printname  from  rm_lot A inner join rm_issuetype b on  a.transfertype=b.issue_code  
+
+
+
+inner join Rm_Var c on  A.VARCODE=c.varcode   
+
+left join RM_AREA d on  a.AREACD=d.AREACODE  
+
+
+
+inner join rm_cat e on  a.CATCD=e.CATCD  
+
+inner join fa_slmas f on A.supcd=f.slcode  
+
+
+
+left join fa_slmas g on a.brkcd=g.slcode  
+
+
+
+left join pp_divmas pd on pd.divcode=a.divcode   where b.isstype in ('T','J') AND lottype='T' 
+
+
+
+and a.LOTdt between @Fdate  and @Tdate and a.divcode=@Divcode and 
+
+
+
+a.SUPCD Between @Fsupp AND @Tsupp
+
+
+
+and (a.transfertype =@TrnType or  @TrnType='A') and  (@Category='A' or a.CatCd= @Category) and isnull(a.sampleflag,0)=@SampleFlg
+
+
+
+end 
+
+
+
+

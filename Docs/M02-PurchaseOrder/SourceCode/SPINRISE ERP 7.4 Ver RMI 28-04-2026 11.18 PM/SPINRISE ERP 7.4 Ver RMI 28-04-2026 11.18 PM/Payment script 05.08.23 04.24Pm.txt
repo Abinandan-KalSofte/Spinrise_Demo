@@ -1,0 +1,90 @@
+--exec ksp_MIS_RM_CottonPayRpt '01',12,'2023-04-18','2023-04-18',''   -- JAT   
+
+create    PROC KSP_MIS_RM_PaymentList                                                      
+@Divcode varchar(5),                                                      
+@Fdate  varchar(15),     
+@ToDate varchar(15),      
+@IPADD varchar(15)      
+As  
+select *from RM_MIS_CottonPayAdv1
+Delete from RM_MIS_CottonPayAdv1  
+INSERT INTO RM_MIS_CottonPayAdv1 (                                                      
+Sno,SuppName,AgentName,Spot,BulkTest_dt,Invoice_by ,Invoice_dt ,VarietyName,SpotRate_Candy,TotBale ,PartyWt_Kgs,TotBillAmt,TDS_Amount
+,Pay80PerAmt,Pay80PerDt,Payment20Per,ReportHead,DivisionName,BalAmt)   
+
+select 1 Sno, Supplier,Agent,lotno,Pay80PerDt BulkTest_dt,BILLNO ,BILLDT ,VARNAME ,RATECY,BALES, PNETWT
+, TotBillAmt, sum(TDSAMT) TDSAMT,sum(isnull(Pay80PerAmt,0)) as Pay80PerAmt , Pay80PerDt Pay80PerDt,sum(Payment20Per) Payment20Per
+,ReportHead,divname, BalAmt
+from (
+select 1 Sno,e.slname Supplier, f.slname AS [Agent],c.lotno,c.arrdt AS BulkTest_dt,pp.BILLNO ,pp.BILLDT ,rm.VARNAME ,c.RATECY,c.BALES, c.PNETWT
+,pp.billamt TotBillAmt,isnull(c.TDSAMT ,0) TDSAMT,isnull(pay80.DEBIT,0) as Pay80PerAmt , pay80.VOCDT as Pay80PerDt ,0 Payment20Per 
+
+,'COTTON PAYMENT LIST FROM '+ convert(varchar,cast( @Fdate  as date),103)+' TO '+ convert(varchar,cast( @ToDate  as date),103)  ReportHead       
+,div.divname , bb.AMTDUE BalAmt
+
+from rm_lot c 
+left join fa_purhd pp on pp.DIVCODE =c.DIVCODE and c.PJNO =pp.PJVNO and c.PJDT =pp.PJVDT and c.SUPCD =pp.SLCODE       
+left join rm_var rm on rm.varcode=c.varcode  
+left join (select Divcode ,divname from pp_divmas) div on div.DIVCODE=c.DIVCODE 
+left JOIN FA_APAYM AS bb ON bb.DIVCODE = pp.DIVCODE AND c.PJTC = bb.TC  AND c.PJNO = bb.VOCNO AND c.PJDT = bb.VOCDT                       
+AND pp.slcode = bb.SLCODE                        
+INNER JOIN FA_SLMAS AS e ON c.SUPCD = e.slcode
+left JOIN FA_SLMAS AS f ON c.BRKCD = f.slcode  
+inner join (SELECT distinct  ISNULL(c.AMOUNT,0)+isnull(a.TDSAMT ,0)    DEBIT  --                    
+,a.lotno,a.LOTDT ,a.PJDT ,a.PJNO ,a.PJTC,c.VOCDT FROM RM_LOT AS a                 
+INNER JOIN FA_APAYM AS b ON a.DIVCODE = b.DIVCODE AND a.PJTC = b.TC  AND a.PJNO = b.VOCNO AND a.PJDT = b.VOCDT                       
+AND a.SUPCD = b.SLCODE                       
+INNER JOIN FA_APDBTL AS c ON b.DIVCODE = c.DIVCODE AND b.SLCODE = c.SLCODE AND b.TC = c.REFTC                       
+AND b.VOCDT = c.REFVOCDT AND b.VOCNO = c.REFVOCNO AND b.VOCSNO = c.REFVOCSNO                      
+Where a.DIVCODE=@Divcode and a.opflg ='N'   -- and a.LOTNO=@Lotno  and LOTDT=@LotDt       
+and  ( c.vocdt  between @Fdate and @ToDate)       
+and a.PJTC<>c.TC     and c.tc<>41      and c.tc<>40              
+and c.VOCDT=(select min(VOCDT) from FA_APDBTL ap where  b.DIVCODE = ap.DIVCODE AND b.SLCODE = ap.SLCODE AND b.TC = ap.REFTC                       
+AND b.VOCDT = ap.REFVOCDT AND b.VOCNO = ap.REFVOCNO AND b.VOCSNO = ap.REFVOCSNO and a.PJTC<>ap.TC and ap.tc<>41   and ap.tc<>40)                      
+--Order by c.VOCDT,c.VOCNO                      
+)  pay80 on pay80.LOTDT =c.LOTDT and pay80.LOTNO=c.lotno and pay80.PJDT =c.PJDT and pay80.PJNO =c.PJNO and pay80.pjtc =c.PJTC  
+    
+union all
+select 1 Sno,e.slname Supplier, f.slname AS [Agent],c.lotno,c.arrdt AS BulkTest_dt,pp.BILLNO ,pp.BILLDT ,rm.VARNAME ,c.RATECY,c.BALES, c.PNETWT
+,pp.billamt TotBillAmt,isnull(c.TDSAMT ,0) TDSAMT,0 as Pay80PerAmt , pay20.VOCDT as Pay80PerDt  ,isnull(pay20.DEBIT,0) Payment20Per
+
+,'COTTON PAYMENT LIST FROM '+ convert(varchar,cast( @Fdate  as date),103)+' TO '+ convert(varchar,cast( @ToDate  as date),103)  ReportHead       
+,div.divname , bb.AMTDUE BalAmt
+ from rm_lot c 
+left join fa_purhd pp on pp.DIVCODE =c.DIVCODE and c.PJNO =pp.PJVNO and c.PJDT =pp.PJVDT and c.SUPCD =pp.SLCODE       
+left join rm_var rm on rm.varcode=c.varcode     
+left join (select Divcode ,divname from pp_divmas) div on div.DIVCODE=c.DIVCODE
+left JOIN FA_APAYM AS bb ON bb.DIVCODE = pp.DIVCODE AND c.PJTC = bb.TC  AND c.PJNO = bb.VOCNO AND c.PJDT = bb.VOCDT                       
+AND pp.slcode = bb.SLCODE                   
+ inner JOIN                                                      
+RM_ARRIVAL AS b ON c.DIVCODE = b.DIVCODE AND c.ARRNO = b.ARRNO                                                       
+AND c.ARRDT = b.ARRDATE AND c.VARCODE = b.VARCODE                           
+inner JOIN                                                      
+RM_CONT AS a ON b.DIVCODE = a.DIVCODE AND b.CONTNO = a.CONTNO                                                
+AND b.CONTDT = a.CONTDT AND b.VARCODE = a.VARCODE                           
+INNER JOIN                                                      
+FA_SLMAS AS e ON c.SUPCD = e.slcode left JOIN                                                      
+FA_SLMAS AS f ON c.BRKCD = f.slcode   
+inner join (SELECT sum(ISNULL(c.AMOUNT,0))   DEBIT,a.lotno,a.LOTDT ,a.PJDT ,a.PJNO ,a.PJTC,max(c.VOCDT) VOCDT FROM RM_LOT AS a                       
+INNER JOIN FA_APAYM AS b ON a.DIVCODE = b.DIVCODE AND a.PJTC = b.TC  AND a.PJNO = b.VOCNO AND a.PJDT = b.VOCDT                       
+AND a.SUPCD = b.SLCODE                       
+INNER JOIN FA_APDBTL AS c ON b.DIVCODE = c.DIVCODE AND b.SLCODE = c.SLCODE AND b.TC = c.REFTC                       
+AND b.VOCDT = c.REFVOCDT AND b.VOCNO = c.REFVOCNO AND b.VOCSNO = c.REFVOCSNO                      
+Where a.DIVCODE=@Divcode         
+and ( c.vocdt  between @Fdate and @ToDate)      
+and a.PJTC<>c.TC                      
+and c.VOCDT>=(select min(VOCDT) from FA_APDBTL ap where  b.DIVCODE = ap.DIVCODE AND b.SLCODE = ap.SLCODE AND b.TC = ap.REFTC                       
+AND b.VOCDT = ap.REFVOCDT AND b.VOCNO = ap.REFVOCNO AND b.VOCSNO = ap.REFVOCSNO and a.PJTC<>ap.TC  and ap.tc<>41   and ap.tc<>40 )                      
+and c.vocno>(select min(vocno) from FA_APDBTL ap where  b.DIVCODE = ap.DIVCODE AND b.SLCODE = ap.SLCODE AND b.TC = ap.REFTC        
+AND b.VOCDT = ap.REFVOCDT AND b.VOCNO = ap.REFVOCNO AND b.VOCSNO = ap.REFVOCSNO and a.PJTC<>ap.TC  and ap.tc<>41   and ap.tc<>40 )                      
+        
+--Order by c.VOCDT,c.VOCNO                      
+and a.opflg ='N'     and c.tc<>41   and c.tc<>40                  
+group by a.lotno,a.LOTDT ,a.PJDT ,a.PJNO ,a.PJTC--,c.VOCDT                      
+)  pay20 on pay20.LOTDT =c.LOTDT and pay20.LOTNO=c.lotno and pay20.PJDT =c.PJDT and pay20.PJNO =c.PJNO and pay20.pjtc =c.PJTC                                       
+)x 
+group by Supplier,Agent,lotno, BulkTest_dt,BILLNO ,BILLDT ,VARNAME ,RATECY,BALES, PNETWT
+, TotBillAmt,Pay80PerDt ,ReportHead,divname, BalAmt
+
+
+

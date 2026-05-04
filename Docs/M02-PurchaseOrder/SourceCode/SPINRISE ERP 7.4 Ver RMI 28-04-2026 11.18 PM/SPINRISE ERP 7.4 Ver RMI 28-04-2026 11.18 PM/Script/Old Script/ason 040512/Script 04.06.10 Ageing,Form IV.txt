@@ -1,0 +1,189 @@
+/*
+UPDATE RM_ISSB SET ISSUED ='Y' WHERE LOTNO=311 AND LOTDT='2010-01-20' AND DIVCODE='01' AND DOCDT BETWEEN '2010-04-01' AND '2011-03-31'
+
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.016,isqty=isqty+0.016 where lotno=2081 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.016 where lotno=2081 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.056,isqty=isqty+0.056 where lotno=2082 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.056 where lotno=2082 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.06,isqty=isqty+0.06 where lotno=2083 and divcode='03' and baleno=89
+update rm_bale set netwt=netwt+0.06 where lotno=2083 and divcode='03' and baleno=89
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.056,isqty=isqty+0.056 where lotno=2084 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.056 where lotno=2084 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.056,isqty=isqty+0.056 where lotno=2086 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.056 where lotno=2086 and divcode='03' and baleno=88
+
+UPDATE rm_bale SET [Status] = 'AC',Rejflg = 'N',RejDt = NULL WHERE DIVCODE='03' AND LOTNO=271 AND LOTDT='2010-01-25'
+
+UPDATE RM_Bale SET FAVAOURABLEWGT = netwt,ISQTY = netwt WHERE DIVCODE='03' AND LOTNO=196 AND LOTDT='2009-12-16'
+
+UPDATE a SET a.ISSKGS = b.FAVAOURABLEWGT,a.ACTISSKGS = b.FAVAOURABLEWGT  FROM RM_issb a,RM_BALE b WHERE a.lotno=b.LOTNO AND a.lotdt=b.lotdt AND a.DIVCODE=b.DIVCODE AND
+ a.CATCD=b.CATCD AND a.VARCODE=b.VARCODE AND a.BALENO=b.BALENO AND a.DIVCODE='03' AND a.LOTNO =196 AND a.lotdt='2009-12-16'
+
+UPDATE rm_bale SET [Status] = 'AC',Rejflg = 'N',RejDt = NULL WHERE DIVCODE='03' AND LOTNO=289 AND LOTDT='2010-01-30'
+UPDATE rm_bale SET [Status] = 'AC',Rejflg = 'N',RejDt = NULL WHERE DIVCODE='03' AND LOTNO=290 AND LOTDT='2010-01-30'
+
+update RM_ISSB set docdt='2009-12-08' WHERE DIVCODE='03' AND LOTNO BETWEEN 2132 AND 2156 AND DOCDT BETWEEN '2009-12-01' AND '2009-12-07'
+AND DOCNO IN(402,407,408,409,418,419) 
+
+update RM_ISSH set docdt='2009-12-08' WHERE DIVCODE='03' AND DOCDT BETWEEN '2009-12-01' AND '2009-12-07'
+AND DOCNO IN(402,407,408,409,418,419) 
+
+
+
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.024 where lotno=2087 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.024 where lotno=2087 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.064 where lotno=2088 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.064 where lotno=2088 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.034 where lotno=2089 and divcode='03' and baleno=89
+update rm_bale set NETWT=NETWT+0.034 where lotno=2089 and divcode='03' and baleno=89
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.016 where lotno=2093 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.016 where lotno=2093 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.08 where lotno=2094 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.08 where lotno=2094 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.24 where lotno=2095 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.24 where lotno=2095 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.48 where lotno=2097 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.48 where lotno=2097 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.48 where lotno=2098 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.48 where lotno=2098 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.008 where lotno=2099 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.008 where lotno=2099 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.08 where lotno=2100 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.08 where lotno=2100 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.08 where lotno=2101 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.08 where lotno=2101 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.072 where lotno=2104 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.072 where lotno=2104 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.064 where lotno=2105 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.064 where lotno=2105 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.016 where lotno=2106 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.016 where lotno=2106 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.030 where lotno=2107 and divcode='03' and baleno=87
+update rm_bale set NETWT=NETWT+0.030 where lotno=2107 and divcode='03' and baleno=87
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.048 where lotno=2109 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.048 where lotno=2109 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.028 where lotno=2110 and divcode='03' and baleno=86
+update rm_bale set NETWT=NETWT+0.028 where lotno=2110 and divcode='03' and baleno=86
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.008 where lotno=2111 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.008 where lotno=2111 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.016 where lotno=2112 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.016 where lotno=2112 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.024 where lotno=2113 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.024 where lotno=2113 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.079 where lotno=2114 and divcode='03' and baleno=87
+update rm_bale set NETWT=NETWT+0.079 where lotno=2114 and divcode='03' and baleno=87
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.04 where lotno=2115 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.04 where lotno=2115 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.032 where lotno=2116 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.032 where lotno=2116 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.04 where lotno=2119 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.04 where lotno=2119 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.056 where lotno=2120 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.056 where lotno=2120 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.028 where lotno=2132 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.028 where lotno=2132 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.076 where lotno=2133 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.076 where lotno=2133 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.004 where lotno=2134 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.004 where lotno=2134 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.044 where lotno=2135 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.044 where lotno=2135 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.080 where lotno=2136 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.080 where lotno=2136 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.052 where lotno=2138 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.052 where lotno=2138 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.068 where lotno=2139 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.068 where lotno=2139 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.028 where lotno=2140 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.028 where lotno=2140 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.084 where lotno=2141 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.084 where lotno=2141 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.064 where lotno=2142 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.064 where lotno=2142 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.020 where lotno=2143 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.020 where lotno=2143 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.052 where lotno=2146 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.052 where lotno=2146 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.076 where lotno=2147 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.076 where lotno=2147 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.060 where lotno=2149 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.060 where lotno=2149 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.004 where lotno=2150 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.004 where lotno=2150 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.060 where lotno=2151 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.060 where lotno=2151 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.028 where lotno=2152 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.028 where lotno=2152 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.036 where lotno=2153 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.036 where lotno=2153 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.078 where lotno=2154 and divcode='03' and baleno=87
+update rm_bale set NETWT=NETWT+0.078 where lotno=2154 and divcode='03' and baleno=87
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.052 where lotno=2155 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.052 where lotno=2155 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.012 where lotno=2156 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.012 where lotno=2156 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+5 where lotno=184 and divcode='03' and baleno=100
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT-0.216 where lotno=2095 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT-0.216 where lotno=2095 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT-0.432 where lotno=2097 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT-0.432 where lotno=2097 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT-0.432 where lotno=2098 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT-0.432 where lotno=2098 and divcode='03' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.028 where lotno=2148 and divcode='03' and baleno=88
+update rm_bale set NETWT=NETWT+0.028 where lotno=2148 and divcode='03' and baleno=88
+
+
+update rm_bale set FAVAOURABLEWGT=round(16570.000/100,3) where lotno=186 and divcode='03' 
+update rm_bale SET ISQTY = FAVAOURABLEWGT where lotno=186 and divcode='03' and issued='Y'
+
+
+UPDATE a SET a.ISSKGS = b.FAVAOURABLEWGT FROM RM_issb a,RM_BALE b WHERE a.lotno=b.LOTNO AND a.lotdt=b.lotdt AND
+a.DIVCODE=b.DIVCODE AND a.CATCD=b.CATCD AND a.VARCODE=b.VARCODE AND a.BALENO=b.BALENO
+
+
+--shiva
+update rm_bale set FAVAOURABLEWGT=round(16150/97.000,3) where lotno=452 and divcode='01' 
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT-0.015 where lotno=452 and divcode='01' and baleno=97
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.052 where lotno=2122 and divcode='01' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.048 where lotno=2123 and divcode='01' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.084 where lotno=2124 and divcode='01' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.036 where lotno=2125 and divcode='01' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.032 where lotno=2126 and divcode='01' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.056 where lotno=2127 and divcode='01' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.016 where lotno=2128 and divcode='01' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.066 where lotno=2129 and divcode='01' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.056 where lotno=2130 and divcode='01' and baleno=88
+update rm_bale set FAVAOURABLEWGT=FAVAOURABLEWGT+0.048 where lotno=2131 and divcode='01' and baleno=88
+
+
+update RM_ISSB set issued='Y' WHERE DIVCODE='02' AND LOTNO=563
+
+UPDATE a SET a.ISSKGS = b.FAVAOURABLEWGT FROM RM_issb a,RM_BALE b WHERE a.lotno=b.LOTNO AND a.lotdt=b.lotdt AND
+a.DIVCODE=b.DIVCODE AND a.CATCD=b.CATCD AND a.VARCODE=b.VARCODE AND a.BALENO=b.BALENO
+
+*/
+
+/*
+-- update script after year end process
+
+update rm_lot SET ISSBAL = issbales from (select a.catcd,a.lotno,a.lotdt,a.divcode,Bales,a.Netwt,SUM(b.isskgs) AS 
+ISSWET,count(b.baleno) as issbales,bales-count(b.baleno) as Closingbales,a.Netwt-sum(b.isskgs) as Closingwt  
+from rm_lot a ,rm_issb b,rm_bale c where a.lotdt<='2010-03-31' and (a.rejflg='N' or a.rejdt>'2010-03-31') and 
+a.divcode='02' and lotyear='2010' and a.lotno=c.lotno and a.lotdt=c.lotdt and a.divcode=c.divcode and a.catcd=c.catcd 
+and b.baleno=c.baleno and a.lotno=b.lotno and a.lotdt=b.lotdt and a.divcode=b.divcode and a.catcd=b.catcd and b.docdt 
+between '2010-04-01' and '2011-03-31' AND b.ISSUED='Y' group by a.catcd,a.lotno,a.lotdt,a.divcode,bales,a.netwt )z,rm_lot a 
+where a.divcode='02' and a.lotno=z.lotno and a.lotdt=z.lotdt and a.catcd=z.catcd and a.divcode=z.divcode 
+and lotyear='2010'
+
+
+update rm_lot SET isswt=ISNULL(ISSWET,0) from (select a.catcd,a.lotno,a.lotdt,a.divcode,Bales,a.Netwt,SUM(b.isskgs) AS 
+ISSWET,count(b.baleno) as issbales,bales-count(b.baleno) as Closingbales,a.Netwt-sum(b.isskgs) as Closingwt  
+from rm_lot a ,rm_issb b,rm_bale c where a.lotdt<='2010-03-31' and (a.rejflg='N' or a.rejdt>'2010-03-31') and 
+a.divcode='02' and lotyear='2010' and a.lotno=c.lotno and a.lotdt=c.lotdt and a.divcode=c.divcode and a.catcd=c.catcd 
+and b.baleno=c.baleno and a.lotno=b.lotno and a.lotdt=b.lotdt and a.divcode=b.divcode and a.catcd=b.catcd and b.docdt 
+between '2010-04-01' and '2011-03-31' group by a.catcd,a.lotno,a.lotdt,a.divcode,bales,a.netwt )z,rm_lot a 
+where a.divcode='02' and a.lotno=z.lotno and a.lotdt=z.lotdt and a.catcd=z.catcd and a.divcode=z.divcode 
+and lotyear='2010' 
+
+*/
+

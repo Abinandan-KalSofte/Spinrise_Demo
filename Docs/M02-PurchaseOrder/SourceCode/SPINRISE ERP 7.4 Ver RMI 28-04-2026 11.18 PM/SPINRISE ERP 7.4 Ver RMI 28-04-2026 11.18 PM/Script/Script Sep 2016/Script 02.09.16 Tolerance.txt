@@ -1,0 +1,1 @@
+   ALTER TABLE rm_param add POWtTolerance NUMERIC(5,2)

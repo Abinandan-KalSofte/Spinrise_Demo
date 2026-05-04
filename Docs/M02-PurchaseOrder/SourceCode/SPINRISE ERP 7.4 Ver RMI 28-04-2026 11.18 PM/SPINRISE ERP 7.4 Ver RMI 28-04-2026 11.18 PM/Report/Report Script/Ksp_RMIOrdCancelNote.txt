@@ -1,0 +1,11 @@
+CREATE PROC Ksp_RMIOrdCancelNote  
+@divcode VARCHAR(2),  
+@FDate VARCHAR(15),  
+@OrdNo NUMERIC(10)  
+AS   
+SELECT a.divcode,pd.DIV_PRINTNAME,pd.DIV_UNITNAME,pd.div_logo,a.docno,a.docdt,b.slname as supname,d.areaname,a.orderno,  
+a.reason,a.approvedby,c.varname,ORDERDT,a.CANCELBALES,  
+A.VARCODE from rm_ordcancel a,fa_slmas b,rm_var c ,rm_area d,PP_DIVMAS pd Where a.slcode = b.slcode   
+AND pd.DIVCODE =a.divcode and  
+a.varcode = c.varcode And a.station = d.areacode and A.orderdt=@FDate and orderno=@OrdNo  
+AND a.divcode=@divcode

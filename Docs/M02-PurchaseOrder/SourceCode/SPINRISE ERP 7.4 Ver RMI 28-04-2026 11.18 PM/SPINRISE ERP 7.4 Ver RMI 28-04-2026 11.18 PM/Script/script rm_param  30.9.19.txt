@@ -1,0 +1,3 @@
+alter table rm_param add RID_Roff numeric(9,2)
+go
+alter table rm_param add RSW_Roff numeric(9,2)

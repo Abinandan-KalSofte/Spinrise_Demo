@@ -1,0 +1,252 @@
+  
+  create table RM_EXCELLRPTHEAD (Sno numeric(3),RptHead varchar(40),Rptname varchar(10)) 
+go
+  
+alter PROCEDURE Ksp_RMI_ArrivalList_Datewise    
+@Divcode  VARCHAR(2),          
+@FDate    VARCHAR(10),          
+@TDate    VARCHAR(10),
+@FSupcd varchar(8),
+@Tsupcd varchar(8)
+-- Ksp_RMI_ArrivalList_Datewise '01','2013-06-01','2013-07-10'    
+AS    
+BEGIN    
+        
+select a.arrdate,a.lotno,a.lotdt,a.plotno,a.quantity,a.lrno,isnull(a.freight,0) as freight,a.netwt,a.prno,    
+b.carname,c.Slname , d.areaname, a.LORRYNOS,a.VARCODE,v.VARNAME,e.slname AS Agent_Name    
+,pd.DIV_PRINTNAME,pd.DIV_UNITNAME ,a.arrno 
+ from rm_arrival a    
+ LEFT OUTER JOIN po_car b ON b.CARCODE = a.CARCODE    
+ LEFT OUTER JOIN fa_slmas c ON c.Slcode = a.SUPCD    
+ LEFT OUTER JOIN rm_area d ON a.areacode=d.areacode    
+ LEFT OUTER JOIN RM_VAR V ON v.VARCODE=a.VARCODE    
+ LEFT OUTER JOIN fa_slmas e ON e.slcode=a.BRKCD    
+ left outer join PP_DIVMAS pd ON a.DIVCODE=pd.DIVCODE    
+where a.arrdate Between @FDate and @TDate and a.divcode=@Divcode and  (@FSupcd='A' or a.SUPCD between @FSupcd and @TSupcd)   
+END  
+
+go
+
+
+CREATE TABLE [dbo].[RPTArrivalDetails](
+	[arrdate] [datetime] NOT NULL,
+	[Arrno] [smallint] NULL,
+	[lotno] [smallint] NULL,
+	[lotdt] [datetime] NULL,
+	[plotno] [varchar](15) NULL,
+	[quantity] [smallint] NOT NULL,
+	[lrno] [varchar](20) NULL,
+	[freight] [decimal](9, 2) NOT NULL,
+	[netwt] [decimal](10, 3) NOT NULL,
+	[prno] [varchar](20) NULL,
+	[carname] [varchar](35) NULL,
+	[Slname] [varchar](250) NULL,
+	[areaname] [varchar](30) NULL,
+	[LORRYNOS] [varchar](50) NULL,
+	[VARCODE] [varchar](10) NOT NULL,
+	[VARNAME] [varchar](35) NULL,
+	[Agent_Name] [varchar](250) NULL,
+	[DIV_PRINTNAME] [varchar](60) NULL,
+	[DIV_UNITNAME] [varchar](100) NULL
+) ON [PRIMARY]
+
+go
+
+
+create view VW_RM_ArrivalList
+as 
+
+    select * from (   
+select arrdate adate,cast(arrno as varchar) arrno ,Slname, Agent_Name ,lotno,plotno,carname 
+, areaname,VARNAME,quantity ,netwt,LORRYNOS ,isnull(freight,0) as freight --,, convert(varchar,a.lotdt,103) lotdt,a.lrno,a.prno,    
+   
+ from RPTArrivalDetails
+ union all
+ select arrdate adate,'' arrno,'Sub Total' Slname,'' AS Agent_Name  ,'' lotno,'' plotno,''carname ,
+ ''areaname,''VARNAME,SUM(quantity) quantity,SUM(netwt) netwt ,''LORRYNOS ,sum(isnull(a.freight,0)) as freight   --,'' lotdt,'' lrno,'' prno,    
+  from RPTArrivalDetails a 
+  group by arrdate
+  union all
+ select '2050-01-01' adate,'' arrno,'Grand Total' Slname,'' AS Agent_Name  ,'' lotno,'' plotno,''carname ,
+ ''areaname,''VARNAME,SUM(quantity) quantity,SUM(netwt) netwt ,''LORRYNOS ,sum(isnull(a.freight,0)) as freight   --,'' lotdt,'' lrno,'' prno,    
+  from RPTArrivalDetails a  
+ )x --order by x.arrdate,lotno desc
+ 
+ go
+
+go
+
+
+
+ create view VW_RM_ArrivalListAbs
+as 
+
+     select * from (   
+select ROW_NUMBER () over (order by Slname,varname) Sno,  Slname,VARNAME,sum(quantity) quantity ,sum(netwt) netwt,sum(isnull(freight,0)) as freight  
+   
+ from RPTArrivalDetails group by slname,varname
+ union all
+
+ select 10000, 'Grand Total' Slname,''VARNAME,SUM(quantity) quantity,SUM(netwt) netwt ,sum(isnull(a.freight,0)) as freight      
+  from RPTArrivalDetails a  
+ )x 
+ 
+
+
+go
+
+
+insert into RM_EXCELLRPTHEAD values (1,'Arrival Date','ArrDate')
+go
+insert into RM_EXCELLRPTHEAD values (2,'Arrival No.','ArrDate')
+go
+insert into RM_EXCELLRPTHEAD values (3,'Supplier Name','ArrDate')
+go
+insert into RM_EXCELLRPTHEAD values (4,'Agent Name','ArrDate')
+go
+insert into RM_EXCELLRPTHEAD values (5,'Mill Lot No.','ArrDate')
+go
+insert into RM_EXCELLRPTHEAD values (6,'Supplier Lot No.','ArrDate')
+go
+insert into RM_EXCELLRPTHEAD values (7,'Carrier Name','ArrDate')
+go
+insert into RM_EXCELLRPTHEAD values (8,'Station','ArrDate')
+go
+insert into RM_EXCELLRPTHEAD values (9,'Variety Name','ArrDate')
+go
+insert into RM_EXCELLRPTHEAD values (10,'Arrival Qty in Bales','ArrDate')
+go
+insert into RM_EXCELLRPTHEAD values (11,'Net Wt. in Kgs','ArrDate')
+go
+insert into RM_EXCELLRPTHEAD values (12,'Lorry No','ArrDate')
+go
+insert into RM_EXCELLRPTHEAD values (13,'Lorry Freight','ArrDate')
+
+
+go
+----ABs
+
+insert into RM_EXCELLRPTHEAD values (0,'S.No.','ArrDateAbs')
+go
+insert into RM_EXCELLRPTHEAD values (1,'Supplier Name','ArrDateAbs')
+go
+
+insert into RM_EXCELLRPTHEAD values (2,'Variety Name','ArrDateAbs')
+go
+insert into RM_EXCELLRPTHEAD values (3,'Arrival Qty in Bales','ArrDateAbs')
+go
+insert into RM_EXCELLRPTHEAD values (4,'Net Wt. in Kgs','ArrDateAbs')
+
+insert into RM_EXCELLRPTHEAD values (5,'Lorry Freight','ArrDateAbs')
+
+go
+
+
+
+ 
+ go
+insert into RM_EXCELLRPTHEAD values (1,'Supplier Name','ArrSup')
+go
+insert into RM_EXCELLRPTHEAD values (2,'Arrival Date','ArrSup')
+go
+insert into RM_EXCELLRPTHEAD values (3,'Arrival No.','ArrSup')
+go
+insert into RM_EXCELLRPTHEAD values (4,'Mill Lot No.','ArrSup')
+go
+insert into RM_EXCELLRPTHEAD values (5,'Supplier Lot No.','ArrSup')
+go
+insert into RM_EXCELLRPTHEAD values (6,'Carrier Name','ArrSup')
+go
+insert into RM_EXCELLRPTHEAD values (7,'Station','ArrSup')
+go
+insert into RM_EXCELLRPTHEAD values (8,'Variety Name','ArrSup')
+go
+insert into RM_EXCELLRPTHEAD values (9,'Arrival Qty in Bales','ArrSup')
+go
+insert into RM_EXCELLRPTHEAD values (10,'Net Wt. in Kgs','ArrSup')
+go
+insert into RM_EXCELLRPTHEAD values (11,'Lorry No','ArrSup')
+go
+insert into RM_EXCELLRPTHEAD values (12,'Lorry Freight','ArrSup')
+
+go
+
+ create view VW_RM_ArrivalListSupAbs
+as 
+
+     select * from (   
+select ROW_NUMBER () over (order by Slname) Sno,  Slname,sum(quantity) quantity ,sum(netwt) netwt,sum(isnull(freight,0)) as freight  
+   
+ from RPTArrivalDetails group by slname
+ union all
+
+ select 10000, 'Grand Total' Slname,SUM(quantity) quantity,SUM(netwt) netwt ,sum(isnull(a.freight,0)) as freight      
+  from RPTArrivalDetails a  
+ )x 
+ 
+go
+
+  --select   *from VW_RM_ArrivalListSup order by slname ,lotno desc
+create view VW_RM_ArrivalListSup
+as 
+
+    select * from (   
+select Slname,convert(varchar,arrdate,103)  adate,cast(arrno as varchar) arrno ,lotno,plotno,carname 
+, areaname,VARNAME,quantity ,netwt,LORRYNOS ,isnull(freight,0) as freight --,, convert(varchar,a.lotdt,103) lotdt,a.lrno,a.prno,    
+   
+ from RPTArrivalDetails
+ union all
+ select  Slname ,'' adate,'' arrno, '' lotno,'' plotno,'Sub Total' carname ,
+ ''areaname,''VARNAME,SUM(quantity) quantity,SUM(netwt) netwt ,''LORRYNOS ,sum(isnull(a.freight,0)) as freight   --,'' lotdt,'' lrno,'' prno,    
+  from RPTArrivalDetails a 
+  group by Slname
+  union all
+ select ''Slname  ,'' adate,'' arrno,'' lotno,'' plotno,'Grand Total'  carname ,
+ ''areaname,''VARNAME,SUM(quantity) quantity,SUM(netwt) netwt ,''LORRYNOS ,sum(isnull(a.freight,0)) as freight   --,'' lotdt,'' lrno,'' prno,    
+  from RPTArrivalDetails a  
+ )x --order by x.arrdate,lotno desc
+ 
+
+go
+go
+----ABs
+
+insert into RM_EXCELLRPTHEAD values (0,'S.No.','ArrSupAbs')
+go
+insert into RM_EXCELLRPTHEAD values (1,'Supplier Name','ArrSupAbs')
+go
+
+go
+insert into RM_EXCELLRPTHEAD values (2,'Arrival Qty in Bales','ArrSupAbs')
+go
+insert into RM_EXCELLRPTHEAD values (3,'Net Wt. in Kgs','ArrSupAbs')
+
+insert into RM_EXCELLRPTHEAD values (4,'Lorry Freight','ArrSupAbs')
+
+go
+
+
+  --select   *from VW_RM_ArrivalListSup where isnumeric(lotno)=0 order by slname ,lotno desc
+  
+
+alter view VW_RM_ArrivalListSup
+as 
+
+    select * from (   
+select Slname,convert(varchar,arrdate,103)  adate,cast(arrno as varchar) arrno ,lotno,plotno,carname 
+, areaname,VARNAME,quantity ,netwt,LORRYNOS ,isnull(freight,0) as freight --,, convert(varchar,a.lotdt,103) lotdt,a.lrno,a.prno,    
+   
+ from RPTArrivalDetails
+ union all
+ select  Slname ,'' adate,'' arrno, 0 lotno,'' plotno,'Sub Total' carname ,
+ ''areaname,''VARNAME,SUM(quantity) quantity,SUM(netwt) netwt ,''LORRYNOS ,sum(isnull(a.freight,0)) as freight   --,'' lotdt,'' lrno,'' prno,    
+  from RPTArrivalDetails a 
+  group by Slname
+  union all
+ select 'zzzz'Slname  ,'' adate,'' arrno,1000 lotno,'' plotno,'Grand Total'  carname ,
+ ''areaname,''VARNAME,SUM(quantity) quantity,SUM(netwt) netwt ,''LORRYNOS ,sum(isnull(a.freight,0)) as freight   --,'' lotdt,'' lrno,'' prno,    
+  from RPTArrivalDetails a  
+ )x --order by x.arrdate,lotno desc
+ 
+ go
+go

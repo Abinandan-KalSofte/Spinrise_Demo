@@ -1,0 +1,2 @@
+Alter table rm_param add TDSFull varchar(5)
+Alter table rm_param add TDSExceed varchar(5)

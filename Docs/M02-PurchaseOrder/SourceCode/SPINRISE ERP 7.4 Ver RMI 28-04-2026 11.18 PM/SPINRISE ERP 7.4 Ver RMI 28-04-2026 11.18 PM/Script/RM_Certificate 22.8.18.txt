@@ -1,0 +1,19 @@
+
+
+CREATE TABLE [dbo].[RM_Certificate](
+	[DIVCODE] [varchar](2) NOT NULL,
+	[Docno] [numeric](9, 0) NOT NULL,
+	[DocDt] [datetime] NOT NULL,
+	[SlotNo] [varchar](10) NOT NULL,
+	[LotNo] [numeric](10, 0) NOT NULL,
+	[Lotdt] [datetime] NOT NULL,
+	[CertificateNo] [varchar](15) NOT NULL,
+	[CertificateDt] DateTime NOT NULL,
+	[slcode] [varchar](9) NULL
+) ON [PRIMARY]
+
+GO
+alter table rm_lot add CertificateNo  varchar(20)
+go
+alter table rm_lot add CertificateDt  datetime
+

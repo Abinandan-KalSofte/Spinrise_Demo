@@ -1,0 +1,25 @@
+
+
+CREATE PROCEDURE Ksp_pendingLotBeInspected    
+(    
+ -- Ksp_pendingLotBeInspected '01','2013-04-01','2013-10-01','1','106','CRA0001','CRV0001'    
+ @divcode VARCHAR(4),        
+ @FDate VARCHAR(10),        
+ @TDate VARCHAR(10),     
+ @FLot VARCHAR(20),    
+ @TLot VARCHAR(20),    
+ @Fsup VARCHAR(20),    
+ @Tsup VARCHAR(20)    
+)    
+AS    
+BEGIN    
+     
+Select a.ARRNO,a.LOTDT,a.LOTNO,a.SUPCD,fs.slname,fs.abbr,a.AREACD,ra.AREANAME,a.BALES,a.NETWT,a.GODOWN,    
+pd.DIV_PRINTNAME,pd.DIV_UNITNAME    
+  from rm_lot a     
+LEFT OUTER JOIN RM_AREA ra ON ra.AREACODE = a.AREACD    
+LEFT OUTER JOIN FA_SLMAS fs ON fs.slcode=a.SUPCD    
+LEFT OUTER JOIN PP_DIVMAS pd ON a.DIVCODE=pd.DIVCODE    
+WHERE a.DIVCODE=@divcode AND a.lotyear=Year(@FDate) AND a.lotno between @FLot AND @TLot     
+AND a.LOTDT BETWEEN @FDate AND @TDate AND a.SUPCD BETWEEN @Fsup AND @Tsup    
+END  

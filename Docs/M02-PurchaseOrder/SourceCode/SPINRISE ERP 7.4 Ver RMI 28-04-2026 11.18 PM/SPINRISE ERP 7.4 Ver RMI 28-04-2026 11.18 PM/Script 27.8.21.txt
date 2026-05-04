@@ -1,0 +1,378 @@
+
+--  
+--KSP_RMIDAY_IssueDetails '01,02','PTL-II,PTL-I','2021-07-01','2021-08-20','172.16.16.31','01'  
+alter proc KSP_RMIDAY_IssueDetails  
+(  
+@Divcode varchar(20),
+@DivAbbr varchar(100) , 
+@Fdate Varchar(15),  
+@Tdate Varchar(15),  
+@Ipadd Varchar(15),  
+@PrintDiv varchar(4)  
+)  
+as  
+select  cast( day(a.Docdt) as int) Day, cast(month(a.docdt) as varchar)+' - '+cast(datename(mm,a.Docdt) as varchar) Month  
+,c.Varname,sum(a.ISSKGS)/1000 ISSKGS ,  
+d.div_printname,d.DIV_UNITNAME  
+  
+ from rm_issb a  
+inner join Rm_issh b on a.Divcode=b.Divcode and a.Docno=b.Docno and a.Docdt=b.Docdt  
+inner join rm_Var c on a.Varcode=c.Varcode  
+inner join pp_Divmas d on d.Divcode=@PrintDiv  
+inner join RM_ProductprintDet e on e.Divcode=@PrintDiv and a.Varcode=e.varcode and e.IPadd=@Ipadd  
+where  
+ a.Divcode in (select items from dbo.Split(@Divcode ,','))  
+and   
+a.Docdt between @Fdate and @tdate   
+group by c.Varname,a.Docdt,d.div_printname,d.DIV_UNITNAME  
+order by cast(month(a.docdt) as varchar)+' - '+cast(datename(mm,a.Docdt) as varchar)  , cast( day(a.Docdt )  as int )  
+  
+--select *from RM_ProductprintDet where lotdt is null
+go
+
+
+--KSP_RMIDAY_IssueDetails_Excel '01,02','01','2021-07-01','2021-08-20','172.16.16.31','01' ,'D' 
+create proc KSP_RMIDAY_IssueDetails_Excel
+(  
+@Divcode varchar(20),  
+@DivAbbr varchar(100) , 
+@Fdate Varchar(10),  
+@Tdate Varchar(10),  
+@Ipadd Varchar(15),  
+@PrintDiv varchar(4) ,
+@RPTFlg varchar(4)
+)  
+
+as  
+DECLARE @cols AS NVARCHAR(MAX),@cols1 AS NVARCHAR(MAX),@product_name AS NVARCHAR(50),
+@query  AS NVARCHAR(MAX),@query1  AS NVARCHAR(MAX), @query2  AS NVARCHAR(MAX) ,@FFdate  AS NVARCHAR(15),@TTdate  AS NVARCHAR(15)
+set @FFdate=@Fdate
+set @TTdate=@tdate
+if OBJECT_ID ('RPT_RMI_IssueDetailsExcel') is not null  drop table RPT_RMI_IssueDetailsExcel
+if OBJECT_ID ('RPT_RMI_IssueDetailsExcel1') is not null  drop table RPT_RMI_IssueDetailsExcel1
+if OBJECT_ID ('Rmitest') is not null  drop table Rmitest
+if OBJECT_ID ('Rmitest1') is not null  drop table Rmitest1
+
+select @cols = STUFF((
+					SELECT   ',' + QUOTENAME( cast(datename(mm, a.Docdt) as varchar)+''+cast(day( a.docdt) as varchar)) 
+                    from(select docdt from   Pallavaa..RM_ISSB a inner join PP_DIVMAS b on  a.Divcode=b.Divcode   where a.DIVCODE in (select items from dbo.split(@Divcode,','))
+					and  b.abbr in (select items from dbo.split(@DivAbbr,','))  					
+					and 
+					a.DOCDT between @Fdate and @Tdate
+					union all 
+					select docdt from   sricheran..RM_ISSB a   inner join PP_DIVMAS b on  a.Divcode=b.Divcode   where a.DIVCODE in (select items from dbo.split(@Divcode,','))
+					and  b.abbr in (select items from dbo.split(@DivAbbr,','))   and 
+					a.DOCDT between @Fdate and @Tdate
+					)a
+					group by cast(datename(mm, a.Docdt) as varchar)+''+cast(day( a.docdt) as varchar),a.docdt
+                    order by a.docdt
+            FOR XML PATH(''), TYPE
+            ).value('.', 'NVARCHAR(MAX)') 
+        ,1,1,'')
+select @cols1 = STUFF((SELECT   ',' + 'Sum('+( cast(datename(mm, a.Docdt) as varchar)+''+ cast(day( a.docdt) as varchar)) +')'+  cast(datename(mm, a.Docdt) as varchar)+''+cast(day( a.docdt) as varchar)
+                    from  
+					(select docdt from   Pallavaa..RM_ISSB a inner join PP_DIVMAS b on  a.Divcode=b.Divcode   where a.DIVCODE in (select items from dbo.split(@Divcode,','))
+					and  b.abbr in (select items from dbo.split(@DivAbbr,','))   and 
+					a.DOCDT between @Fdate and @Tdate
+					union all 
+					select docdt from   sricheran..RM_ISSB a inner join PP_DIVMAS b on  a.Divcode=b.Divcode   where a.DIVCODE in (select items from dbo.split(@Divcode,','))
+					and  b.abbr in (select items from dbo.split(@DivAbbr,','))   and 
+					a.DOCDT between @Fdate and @Tdate
+					)a
+					group by cast(datename(mm, a.Docdt) as varchar)+''+cast(day( a.docdt) as varchar),a.docdt
+                    order by a.docdt
+            FOR XML PATH(''), TYPE
+            ).value('.', 'NVARCHAR(MAX)') 
+        ,1,1,'')
+
+if @RPTFlg='D'
+begin 
+select *into RPT_RMI_IssueDetailsExcel from (select pp.ABBR, c.CATNAME ,b.VARNAME, a.* from   Pallavaa..RM_ISSB a 
+					inner join Pallavaa..rm_var b on a.varcode=b.varcode
+					inner join Pallavaa..rm_cat c on c.catcd=b.catcd
+					inner join Pallavaa..pp_Divmas pp on pp.Divcode=a.divcode
+
+					where a.DIVCODE in (select items from dbo.split(@Divcode,',')) and  pp.abbr in (select items from dbo.split(@DivAbbr,','))  and 
+					a.DOCDT between @Fdate and @Tdate
+					union all 
+					select pp.ABBR, c.CATNAME ,b.VARNAME, a.* from   sricheran..RM_ISSB a   
+					inner join sricheran..rm_var b on a.varcode=b.varcode
+					inner join sricheran..rm_cat c on c.catcd=b.catcd
+					inner join sricheran..pp_Divmas pp on pp.Divcode=a.divcode
+					where a.DIVCODE in (select items from dbo.split(@Divcode,',')) and  pp.abbr in (select items from dbo.split(@DivAbbr,','))  and 
+					a.DOCDT between @Fdate and @Tdate
+					)a   
+		
+end 
+else if @RPTFlg='C'
+begin
+select *into RPT_RMI_IssueDetailsExcel from (select c.CATNAME ,b.VARNAME, a.* from   Pallavaa..RM_ISSB a 
+					inner join Pallavaa..rm_var b on a.varcode=b.varcode
+					inner join Pallavaa..rm_cat c on c.catcd=b.catcd
+					inner join Pallavaa..pp_Divmas pp on pp.Divcode=a.divcode
+
+					where a.DIVCODE in (select items from dbo.split(@Divcode,',')) and  pp.abbr in (select items from dbo.split(@DivAbbr,',')) and 
+					a.DOCDT between @Fdate and @Tdate
+					union all 
+					select  c.CATNAME ,b.VARNAME, a.* from   sricheran..RM_ISSB a   
+					inner join sricheran..rm_var b on a.varcode=b.varcode
+					inner join sricheran..rm_cat c on c.catcd=b.catcd
+					inner join sricheran..pp_Divmas pp on pp.Divcode=a.divcode
+					where a.DIVCODE in (select items from dbo.split(@Divcode,','))  and  pp.abbr in (select items from dbo.split(@DivAbbr,',')) and 
+					a.DOCDT between @Fdate and @Tdate
+					)a  
+
+
+end 
+
+
+print @cols
+print @cols1
+
+if @RPTFlg='D'
+begin 
+set @query = 'SELECT  abbr Division,CATNAME Category,Product_Name,' + @cols + ' into RPT_RMI_IssueDetailsExcel1 from 
+             (
+                select abbr,CATNAME, varname Product_Name , cast( (isskgs)/1000 as decimal(15,3)) isskgs,cast(datename(mm, a.Docdt) as varchar)+''''+cast(day( a.docdt) as varchar) DAY1
+                from RPT_RMI_IssueDetailsExcel a
+
+            ) x
+            pivot 
+            (
+                sum(isskgs)
+                for DAY1 in (' + @cols + ')
+            ) p order by abbr '
+set @query1 = 'select  Division, Category, ' + @cols1 + ' into Rmitest from RPT_RMI_IssueDetailsExcel1 a  group by  Division, Category '
+end
+else
+begin 
+set @query = 'SELECT  CATNAME Category,Product_Name,' + @cols + ' into RPT_RMI_IssueDetailsExcel1 from 
+             (
+                select CATNAME, varname Product_Name , cast( (isskgs)/1000 as decimal(15,3)) isskgs,cast(datename(mm, a.Docdt) as varchar)+''''+cast(day( a.docdt) as varchar) DAY1
+                from RPT_RMI_IssueDetailsExcel a
+
+            ) x
+            pivot 
+            (
+                sum(isskgs)
+                for DAY1 in (' + @cols + ')
+            ) p order by Category '
+set @query1 = 'select   Category, ' + @cols1 + ' into Rmitest from RPT_RMI_IssueDetailsExcel1 a  group by   Category '
+
+end
+
+
+
+if @RPTFlg='D'
+begin 
+set @query2 = 'select  Division, Category, Product_Name ,' + @cols + ' into Rmitest1 from RPT_RMI_IssueDetailsExcel1 a 
+				union all  select  Division, Category  , ''- Sub Total'' Product_Name,' + @cols1 + '  from Rmitest group by Division, Category --order by  Division, Category,Product_Name desc 
+				union all  select ''z'' Division, '''' Category  , ''- Grand Total'' Product_Name,' + @cols1 + '  from Rmitest order by  Division, Category,Product_Name desc '
+
+end
+else if @RPTFlg='C'
+begin 
+set @query2 = 'select   Category, Product_Name ,' + @cols1 + ' into Rmitest1 from RPT_RMI_IssueDetailsExcel1 a  group by Category, Product_Name
+				union all  select  Category  , ''- Sub Total'' Product_Name,' + @cols1 + '  from Rmitest group by Category --order by  Division, Category,Product_Name  
+				union all  select ''z'' Category  , ''-- Grand Total'' Product_Name,' + @cols1 + '  from Rmitest order by   Category ,Product_Name desc '
+
+end 
+print @cols
+execute(@query);
+execute(@query1);
+execute(@query2);
+
+select *  from Rmitest1 a -- group by  Division, Category
+
+
+
+go
+
+
+
+
+
+
+--  KSP_RMIDAY_IssueDetails_MonthExcel '01,02','PTL-II,PTL-I','2021-07-01','2021-08-20','172.16.16.31','01' ,'M' 
+create proc KSP_RMIDAY_IssueDetails_MonthExcel
+(  
+@Divcode varchar(20),  
+@DivAbbr varchar(100) , 
+@Fdate Varchar(10),  
+@Tdate Varchar(10),  
+@Ipadd Varchar(15),  
+@PrintDiv varchar(4) ,
+@RPTFlg varchar(4)
+)  
+
+as  
+DECLARE @cols AS NVARCHAR(MAX),@cols1 AS NVARCHAR(MAX),@product_name AS NVARCHAR(50),
+@query  AS NVARCHAR(MAX),@query1  AS NVARCHAR(MAX), @query2  AS NVARCHAR(MAX) ,@FFdate  AS NVARCHAR(15),@TTdate  AS NVARCHAR(15)
+set @FFdate=@Fdate
+set @TTdate=@tdate
+if OBJECT_ID ('RPT_RMI_IssueDetailsExcel') is not null  drop table RPT_RMI_IssueDetailsExcel
+if OBJECT_ID ('RPT_RMI_IssueDetailsExcel1') is not null  drop table RPT_RMI_IssueDetailsExcel1
+if OBJECT_ID ('Rmitest') is not null  drop table Rmitest
+if OBJECT_ID ('Rmitest1') is not null  drop table Rmitest1
+
+select @cols = STUFF((
+					SELECT   ',' + QUOTENAME( cast(datename(mm, a.Docdt) as varchar)+''+abbr ) 
+                    from(select distinct docdt,Replace(b.abbr,'-','') abbr from   Pallavaa..RM_ISSB a inner join PP_DIVMAS b on  a.Divcode=b.Divcode   where a.DIVCODE in (select items from dbo.split(@Divcode,','))
+					and  b.abbr in (select items from dbo.split(@DivAbbr,','))  					
+					and 
+					a.DOCDT between @Fdate and @Tdate
+					union all 
+					select distinct docdt, Replace(b.abbr,'-','')  abbr from   sricheran..RM_ISSB a   inner join PP_DIVMAS b on  a.Divcode=b.Divcode   where a.DIVCODE in (select items from dbo.split(@Divcode,','))
+					and  b.abbr in (select items from dbo.split(@DivAbbr,','))   and 
+					a.DOCDT between @Fdate and @Tdate
+
+					union all 
+					select distinct docdt, 'Total'  abbr from  RM_ISSB a   inner join PP_DIVMAS b on  a.Divcode=b.Divcode   where a.DIVCODE in (select items from dbo.split(@Divcode,','))
+					and  b.abbr in (select items from dbo.split(@DivAbbr,','))   and 
+					a.DOCDT between @Fdate and @Tdate
+					)a
+					group by QUOTENAME( cast(datename(mm, a.Docdt) as varchar)+''+abbr ) , cast(datename(mm, a.Docdt) as varchar),cast(month( a.Docdt) as varchar),cast(year( a.Docdt) as int)
+                    order by  
+					
+					 
+					   cast(month( a.Docdt) as varchar)
+   
+					 ,cast(year( a.Docdt) as int)
+
+					--QUOTENAME( cast(datename(mm, a.Docdt) as varchar)+''+abbr ) 
+            FOR XML PATH(''), TYPE
+            ).value('.', 'NVARCHAR(MAX)') 
+        ,1,1,'')
+		select @cols1 = STUFF((SELECT   ',' + 'Sum('+( cast(datename(mm, a.Docdt) as varchar)+''+ ABBR ) +')'+  cast(datename(mm, a.Docdt) as varchar)+''+ABBR 
+                    from  
+					(select distinct docdt,Replace(b.abbr,'-','')  ABBR  from   Pallavaa..RM_ISSB a inner join PP_DIVMAS b on  a.Divcode=b.Divcode   where a.DIVCODE in (select items from dbo.split(@Divcode,','))
+					and  b.abbr in (select items from dbo.split(@DivAbbr,','))   and 
+					a.DOCDT between @Fdate and @Tdate
+					union all 
+					select distinct  docdt,Replace(b.abbr,'-','')  ABBR  from   sricheran..RM_ISSB a inner join PP_DIVMAS b on  a.Divcode=b.Divcode   where a.DIVCODE in (select items from dbo.split(@Divcode,','))
+					and  b.abbr in (select items from dbo.split(@DivAbbr,','))   and 
+					a.DOCDT between @Fdate and @Tdate
+					union all 
+					select distinct docdt, 'Total'  abbr from  RM_ISSB a   inner join PP_DIVMAS b on  a.Divcode=b.Divcode   where a.DIVCODE in (select items from dbo.split(@Divcode,','))
+					and  b.abbr in (select items from dbo.split(@DivAbbr,','))   and 
+					a.DOCDT between @Fdate and @Tdate
+
+					)a
+					group by cast(datename(mm, a.Docdt) as varchar),ABBR
+                    order by cast(datename(mm, a.Docdt) as varchar)+''+ABBR
+            FOR XML PATH(''), TYPE
+            ).value('.', 'NVARCHAR(MAX)') 
+        ,1,1,'')
+
+		
+if @RPTFlg='M'
+begin 
+select *into RPT_RMI_IssueDetailsExcel from (select Replace(pp.abbr,'-','')  ABBR, c.CATNAME ,b.VARNAME, a.* from   Pallavaa..RM_ISSB a 
+					inner join Pallavaa..rm_var b on a.varcode=b.varcode
+					inner join Pallavaa..rm_cat c on c.catcd=b.catcd
+					inner join Pallavaa..pp_Divmas pp on pp.Divcode=a.divcode
+
+					where a.DIVCODE in (select items from dbo.split(@Divcode,',')) and  pp.abbr in (select items from dbo.split(@DivAbbr,','))  and 
+					a.DOCDT between @Fdate and @Tdate
+					union all 
+					select Replace(pp.abbr,'-','')  ABBR, c.CATNAME ,b.VARNAME, a.* from   sricheran..RM_ISSB a   
+					inner join sricheran..rm_var b on a.varcode=b.varcode
+					inner join sricheran..rm_cat c on c.catcd=b.catcd
+					inner join sricheran..pp_Divmas pp on pp.Divcode=a.divcode
+					where a.DIVCODE in (select items from dbo.split(@Divcode,',')) and  pp.abbr in (select items from dbo.split(@DivAbbr,','))  and 
+					a.DOCDT between @Fdate and @Tdate
+					)a   
+		
+end 
+else if @RPTFlg='A'
+begin
+select *into RPT_RMI_IssueDetailsExcel from (select c.CATNAME ,b.VARNAME, a.* from   Pallavaa..RM_ISSB a 
+					inner join Pallavaa..rm_var b on a.varcode=b.varcode
+					inner join Pallavaa..rm_cat c on c.catcd=b.catcd
+					inner join Pallavaa..pp_Divmas pp on pp.Divcode=a.divcode
+
+					where a.DIVCODE in (select items from dbo.split(@Divcode,',')) and  pp.abbr in (select items from dbo.split(@DivAbbr,',')) and 
+					a.DOCDT between @Fdate and @Tdate
+					union all 
+					select  c.CATNAME ,b.VARNAME, a.* from   sricheran..RM_ISSB a   
+					inner join sricheran..rm_var b on a.varcode=b.varcode
+					inner join sricheran..rm_cat c on c.catcd=b.catcd
+					inner join sricheran..pp_Divmas pp on pp.Divcode=a.divcode
+					where a.DIVCODE in (select items from dbo.split(@Divcode,','))  and  pp.abbr in (select items from dbo.split(@DivAbbr,',')) and 
+					a.DOCDT between @Fdate and @Tdate
+					)a  
+
+
+end 
+
+
+--print @cols
+print @cols1
+
+if @RPTFlg='M'
+begin 
+set @query = 'SELECT  abbr Division,CATNAME Category,Product_Name,' + @cols + ' into RPT_RMI_IssueDetailsExcel1 from 
+             (
+                select abbr,CATNAME, varname Product_Name , cast( (isskgs)/1000 as decimal(15,3)) isskgs,cast(datename(mm, a.Docdt) as varchar)+''''+abbr MonAbbr
+                from RPT_RMI_IssueDetailsExcel a
+				union all
+				select abbr,CATNAME, varname Product_Name , cast(sum (isskgs)/1000 as decimal(15,3)) isskgs,cast(datename(mm, a.Docdt) as varchar)+''''+''Total'' MonAbbr
+                from RPT_RMI_IssueDetailsExcel a group by abbr,CATNAME, varname,cast(datename(mm, a.Docdt) as varchar)
+            ) x
+            pivot 
+            (
+                sum(isskgs)
+                for MonAbbr in (' + @cols + ')
+            ) p order by abbr '
+set @query1 = 'select  Category, ' + @cols1 + ' into Rmitest from RPT_RMI_IssueDetailsExcel1 a  group by   Category '
+end
+else
+begin 
+set @query = 'SELECT  CATNAME Category,Product_Name,' + @cols + ' into RPT_RMI_IssueDetailsExcel1 from 
+             (
+                select CATNAME, varname Product_Name , cast( (isskgs)/1000 as decimal(15,3)) isskgs,cast(datename(mm, a.Docdt) as varchar)+''''+cast(day( a.docdt) as varchar) DAY1
+                from RPT_RMI_IssueDetailsExcel a
+            ) x
+            pivot 
+            (
+                sum(isskgs)
+                for DAY1 in (' + @cols + ')
+            ) p order by Category '
+set @query1 = 'select   Category, ' + @cols1 + ' into Rmitest from RPT_RMI_IssueDetailsExcel1 a  group by   Category '
+
+end
+
+
+
+if @RPTFlg='M'
+begin 
+set @query2 = 'select   Category, Product_Name ,' + @cols1 + ' into Rmitest1 from RPT_RMI_IssueDetailsExcel1 a group by Category, Product_Name
+				union all  select   Category  , ''- Sub Total'' Product_Name,' + @cols1 + '  from Rmitest  group by Category --order by  Division, Category,Product_Name desc 
+				union all  select ''z'' Category  , ''- Grand Total'' Product_Name,' + @cols1 + '  from Rmitest order by   Category,Product_Name desc '
+
+end
+else if @RPTFlg='C'
+begin 
+set @query2 = 'select   Category, Product_Name ,' + @cols1 + ' into Rmitest1 from RPT_RMI_IssueDetailsExcel1 a  group by Category, Product_Name
+				union all  select  Category  , ''- Sub Total'' Product_Name,' + @cols1 + '  from Rmitest group by Category --order by  Division, Category,Product_Name  
+				union all  select ''z'' Category  , ''-- Grand Total'' Product_Name,' + @cols1 + '  from Rmitest order by   Category ,Product_Name desc '
+
+end 
+print @cols
+execute(@query);
+execute(@query1);
+execute(@query2);
+
+select *  from Rmitest1 a -- group by  Division, Category
+
+--select *from RPT_RMI_IssueDetailsExcel1
+
+
+
+
+
+
+
+
+
+

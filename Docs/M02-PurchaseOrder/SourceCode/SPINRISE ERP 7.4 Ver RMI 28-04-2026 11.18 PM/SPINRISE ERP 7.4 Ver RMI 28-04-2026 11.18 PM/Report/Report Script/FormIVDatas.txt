@@ -1,0 +1,7 @@
+CREATE   Procedure [dbo].[FormIVDatas]    
+@date1 varchar(15)    
+as    
+Select date1,opbales as Openbale,opborah as OPENBOARH,optot as oPENTOTAL,optotkg as opkgs,recbale as Recpbale,recborah recpborah,rectot Rectotal,rectotkg as reckgs,oprecbale as oprebale,oprecborah opreborah,oprectot opretot,oprectotkg oprekgs,  
+issbale as issbale,issboarh as issborah,isstot as isstotal,isstotkg as isskgs,isstran,isstrantot,totbale as closbale,totborah as closborah,total as closbaleboar,totkg  as closing,REJBALE AS REJBALES,rejkg as rejectedkgs,ADJBALE AS ADJBALES,adjkg as adjust
+edkgs,  
+adjtype from formiv where Date1 <= @date1 order by date1    

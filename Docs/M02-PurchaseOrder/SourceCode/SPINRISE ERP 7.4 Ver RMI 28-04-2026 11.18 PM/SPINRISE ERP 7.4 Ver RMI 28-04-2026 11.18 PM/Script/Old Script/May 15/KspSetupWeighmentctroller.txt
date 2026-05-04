@@ -1,0 +1,11 @@
+Create procedure KspSetupWeighmentctroller
+--KspSetupVariety '01'
+@divcode varchar(02)
+as
+begin
+
+select code,wname,pd.DIV_PRINTNAME,pd.DIV_UNITNAME from rm_weighnment a
+inner join PP_DIVMAS pd on pd.DIVCODE= a.divcode
+where a.DivCode = @divcode 
+Order by code
+end

@@ -1,0 +1,58 @@
+
+
+CREATE TABLE [dbo].[RM_ISSRTNH](
+	[DIVCODE] [varchar](2) NOT NULL,
+	[DOCNO] [decimal](6, 0) NOT NULL,
+	[DOCDT] [datetime] NOT NULL,
+	[ISSTYPE] [char](2) NOT NULL,
+	[ISSNO] [decimal](6, 0) NOT NULL,
+	[ISSDT] [datetime] NOT NULL,
+	[slcode] [varchar](7) NULL,
+	[OILCODE] [varchar](3) NULL,
+	[OILWT] [decimal](8, 3) NULL,
+	[WTRWT] [decimal](8, 3) NULL,
+	[cntcd] [varchar](10) NULL,
+	[TINT] [varchar](20) NULL,
+	[MODUSRID] [varchar](5) NULL,
+	[ISSTO] [varchar](1) NULL,
+	[ordno] [varchar](20) NULL,
+	[vehicleno] [varchar](15) NULL,
+	[MIXGRP] [varchar](10) NULL,
+	[RDIVCODE] [varchar](3) NULL,
+	[Driver] [varchar](25) NULL,
+	[InvoiceNo] [varchar](15) NULL,
+	[InvDate] [datetime] NULL,
+	[TimeOut] [varchar](7) NULL,
+	[Form] [varchar](20) NULL,
+	[OILCODE1] [varchar](3) NULL,
+	[OILWT1] [decimal](8, 3) NULL,
+	[FormNo] [varchar](15) NULL,
+	[usable_waste] [money] NULL,
+	[SoftWaste] [varchar](10) NULL,
+ CONSTRAINT [PK_RM_ISSRTNH] PRIMARY KEY NONCLUSTERED 
+(
+	[DIVCODE] ASC,
+	[ISSTYPE] ASC,
+	[DOCNO] ASC,
+	[DOCDT] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[RM_ISSRTNH]  WITH CHECK ADD  CONSTRAINT [FK_RM_ISSRTNH_PP_DIVMAS] FOREIGN KEY([DIVCODE])
+REFERENCES [dbo].[PP_DIVMAS] ([DIVCODE])
+GO
+
+ALTER TABLE [dbo].[RM_ISSRTNH] CHECK CONSTRAINT [FK_RM_ISSRTNH_PP_DIVMAS]
+GO
+
+ALTER TABLE [dbo].[RM_ISSRTNH] ADD  CONSTRAINT [DF__rm_issrtnh__FormNo__68631BD1]  DEFAULT ('') FOR [FormNo]
+GO
+
+ALTER TABLE [dbo].[RM_ISSRTNH] ADD  DEFAULT (NULL) FOR [usable_waste]
+GO
+

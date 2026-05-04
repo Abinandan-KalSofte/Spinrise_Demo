@@ -1,0 +1,6 @@
+CREATE TABLE CountCodeTemp
+(
+	Divcode VARCHAR(3),
+	CntCode VARCHAR(3),
+	SystemIP VARCHAR(15)
+)

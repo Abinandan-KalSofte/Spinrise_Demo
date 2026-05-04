@@ -31,12 +31,13 @@ interface PRDataTableProps {
 const CELL_BASE: CellStyle = { display: 'flex', alignItems: 'center' }
 
 const STATUS_COLORS: Record<string, string> = {
-  OPEN:      'blue',
-  APPROVED:  'green',
-  RECEIVED:  'cyan',
-  CONVERTED: 'geekblue',
-  CANCELLED: 'red',
-  REJECTED:  'red',
+  OPEN:           'blue',
+  L1_APPROVED:    'orange',
+  L2_APPROVED:    'purple',
+  FINAL_APPROVED: 'green',
+  RECEIVED:       'cyan',
+  CONVERTED:      'geekblue',
+  CANCELLED:      'red',
 }
 
 export function PRDataTable({
@@ -48,8 +49,7 @@ export function PRDataTable({
   const gridRef  = useRef<AgGridReact<PRSummaryResponse>>(null)
 
   const canDelete = useCallback(
-    (row: PRSummaryResponse) =>
-      !row.isDeleted && row.prStatus !== 'CANCELLED' && row.prStatus !== 'CONVERTED',
+    (row: PRSummaryResponse) => !row.isDeleted && row.prStatus === 'OPEN',
     [],
   )
 
@@ -167,7 +167,7 @@ export function PRDataTable({
                 onClick={() => onDownload(data)}
               />
             </Tooltip>
-            <Tooltip title={deletable ? 'Cancel PR' : 'Already cancelled or converted'}>
+            <Tooltip title={deletable ? 'Delete PR' : 'Only open PRs can be deleted'}>
               <Button
                 type="text" size="small" danger icon={<DeleteOutlined />}
                 disabled={!deletable}
@@ -204,8 +204,6 @@ export function PRDataTable({
         defaultColDef={defaultColDef}
         getRowClass={getRowClass}
         loading={loading}
-        suppressRowClickSelection
-        rowSelection={{ mode: 'singleRow' }}
         enableCellTextSelection
         noRowsOverlayComponent={() => (
           <div style={{ textAlign: 'center', padding: '64px 0' }}>

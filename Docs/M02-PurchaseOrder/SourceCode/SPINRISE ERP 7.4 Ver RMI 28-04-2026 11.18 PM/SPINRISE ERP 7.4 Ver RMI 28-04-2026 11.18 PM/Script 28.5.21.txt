@@ -1,0 +1,5 @@
+alter table rm_param_fa add Exc_Gain_lossGL varchar(8)
+go
+alter table rm_param_fa add ImportDutyGL varchar(8)
+go
+alter table fa_purhd add Bill_Type char(1)
