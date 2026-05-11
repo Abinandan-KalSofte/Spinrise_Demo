@@ -10,7 +10,9 @@ BEGIN
 
     DECLARE @Term VARCHAR(101) = LTRIM(RTRIM(@SearchTerm));
 
-    IF LEN(@Term) < 2
+    -- Require at least 2 chars UNLESS a specific department is given.
+    -- When @DepCode is provided with an empty term, load all items (modal open with no filter).
+    IF LEN(@Term) < 2 AND @DepCode IS NULL
     BEGIN
         SELECT TOP 0
             CAST('' AS VARCHAR(10))      AS ItemCode,
@@ -26,9 +28,10 @@ BEGIN
         RETURN;
     END
 
-    SET @Term = @Term + '%';
+    -- Empty term with a dept context → match all (modal load-all on open)
+    SET @Term = CASE WHEN LEN(@Term) >= 1 THEN @Term + '%' ELSE '%' END;
 
-    -- Build temp aggregates for pending PR and PO qty — single pass instead of N subqueries
+    -- Pending PR qty — scoped to requesting dept when provided
     WITH PendingPr AS
     (
         SELECT
@@ -36,6 +39,7 @@ BEGIN
             SUM(ISNULL(prl.QTYREQD, 0)) AS TotalPendingPr
         FROM   dbo.PO_PRL prl
         WHERE  prl.DIVCODE = @DivCode
+          AND  (@DepCode IS NULL OR prl.DEPCODE = @DepCode)
           AND  ISNULL(prl.prstatus, ' ') NOT IN ('O', 'C')
           AND  ISNULL(prl.AmdFlg, '') <> 'Y'
         GROUP BY prl.ITEMCODE
@@ -56,7 +60,7 @@ BEGIN
           AND  (ISNULL(o.ORDQTY, 0) - ISNULL(o.RCVDQTY, 0)) > 0
         GROUP BY o.ITEMCODE
     )
-    SELECT  --TOP 20
+    SELECT
         i.ITEMCODE                                  AS ItemCode,
         i.ITEMNAME                                  AS ItemName,
         i.UOM                                       AS Uom,
@@ -65,13 +69,13 @@ BEGIN
         ISNULL(pp.TotalPendingPr, 0)                AS PendingPrQty,
         ISNULL(po.TotalPendingPo, 0)                AS PendingPoQty,
         ISNULL(i.DRAWNO, '')                        AS DrawNo,
-        ISNULL(ic.CATLNO, '')                        AS CatNo
+        ISNULL(i.CATLNO, '')                        AS CatNo
     FROM   dbo.in_item i
     LEFT JOIN PendingPr pp ON pp.ITEMCODE = i.ITEMCODE
     LEFT JOIN PendingPo po ON po.ITEMCODE = i.ITEMCODE
-	
     WHERE  i.IsItemActive = 1
       AND  (i.ITEMCODE LIKE @Term OR i.ITEMNAME LIKE @Term)
+      -- (@ItemGroup filter removed — ITEMGROUP column not in in_item)
     ORDER BY
         CASE WHEN i.ITEMCODE LIKE @Term THEN 0 ELSE 1 END,
         i.ITEMNAME;

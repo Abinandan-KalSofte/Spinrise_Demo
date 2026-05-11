@@ -145,6 +145,27 @@ public class PurchaseRequisitionRepository : IPurchaseRequisitionRepository
         return headers;
     }
 
+    // ── Navigation ────────────────────────────────────────────────────────────
+
+    public async Task<PRNavigationResultDto?> GetLastRecordAsync(string divCode, DateTime yfDate, DateTime ylDate)
+    {
+        return await _uow.Connection!.QueryFirstOrDefaultAsync<PRNavigationResultDto>(
+            StoredProcedures.PurchaseRequisition.GetLastRecord,
+            new { DivCode = divCode, YFDate = yfDate, YLDate = ylDate },
+            transaction: _uow.Transaction,
+            commandType: CommandType.StoredProcedure);
+    }
+
+    public async Task<PRNavigationResultDto?> NavigateAsync(
+        string divCode, string direction, long? currentPrNo, DateTime yfDate, DateTime ylDate)
+    {
+        return await _uow.Connection!.QueryFirstOrDefaultAsync<PRNavigationResultDto>(
+            StoredProcedures.PurchaseRequisition.Navigate,
+            new { DivCode = divCode, Direction = direction, CurrentPrNo = currentPrNo, YFDate = yfDate, YLDate = ylDate },
+            transaction: _uow.Transaction,
+            commandType: CommandType.StoredProcedure);
+    }
+
     // ── Item info ─────────────────────────────────────────────────────────────
 
     public async Task<PRItemInfoRaw?> GetItemInfoAsync(

@@ -1,0 +1,34 @@
+{
+  "_comment": "Set provider to: gemini (free), ollama (local/offline), or anthropic (paid)",
+
+  "provider": "ollama",
+
+  "thunderbird_path": "C:\\Users\\Admin\\AppData\\Roaming\\Thunderbird\\Profiles\\fjzej4xv.default-release\\ImapMail\\mail.kalsofte.com\\INBOX",
+
+  "_alt_paths": {
+    "imap_inbox":  "C:\\Users\\Admin\\AppData\\Roaming\\Thunderbird\\Profiles\\fjzej4xv.default-release\\ImapMail\\mail.kalsofte.com\\INBOX",
+    "pop3_inbox":  "C:\\Users\\Admin\\AppData\\Roaming\\Thunderbird\\Profiles\\fjzej4xv.default-release\\Mail\\mail.kalsofte.com\\Inbox",
+    "imap_sent":   "C:\\Users\\Admin\\AppData\\Roaming\\Thunderbird\\Profiles\\fjzej4xv.default-release\\ImapMail\\mail.kalsofte.com\\INBOX.sbd\\Sent",
+    "external":    "C:\\Users\\Admin\\AppData\\Roaming\\Thunderbird\\Profiles\\fjzej4xv.default-release\\Mail\\mail.kalsofte-4.com\\External"
+  },
+
+  "watch_mode": "mbox",
+
+  "summary_file": "D:\\Spinrise\\Docs\\Email\\EmailSummary.md",
+
+  "_gemini_note": "Free API key from https://aistudio.google.com/apikey — no credit card needed",
+  "gemini_api_key": "AIzaSyAM6uctq-JCDoEuFON0neGnIfVm90CEcHc",
+  "gemini_model": "gemini-2.0-flash",
+
+  "_ollama_note": "Install Ollama from https://ollama.com then run: ollama pull llama3.2",
+  "ollama_url": "http://localhost:11434",
+  "ollama_model": "llama3.2",
+
+  "_anthropic_note": "Paid — skip if using gemini or ollama",
+  "anthropic_api_key": "",
+  "anthropic_model": "claude-opus-4-7",
+
+  "log_file": "email_agent.log",
+
+  "skip_existing_on_first_run": true
+}

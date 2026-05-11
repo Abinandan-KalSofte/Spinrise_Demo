@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+body { background:#F5F5F3; min-height:100vh; display:flex; align-items:center; justify-content:center; }
+.login-card { width:420px; border-radius:14px; overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,.12); background:#fff; }
+.login-header { background:linear-gradient(135deg,#0C447C,#185FA5); padding:28px 32px 20px; text-align:center; color:#fff; }
+.brand { font-size:28px; font-weight:800; letter-spacing:-1px; }
+.tagline { font-size:12px; opacity:.75; margin-top:4px; }
+.company-box { margin-top:14px; background:rgba(255,255,255,.12); border-radius:8px; padding:10px 16px; text-align:left; }
+.company-box small { font-size:10px; opacity:.65; }
+.company-box div { font-size:14px; font-weight:700; margin-top:2px; }
+.login-body { padding:24px 32px; }
+.dt-row { display:flex; justify-content:space-between; font-size:11px; color:#888; margin-bottom:20px; }
+.dt-row .time { font-family:monospace; }
+.field-block { margin-bottom:14px; }
+.field-block label { font-size:11px; font-weight:600; color:#4A4A4A; display:block; margin-bottom:5px; }
+.field-block .req { color:#E24B4A; }
+.input-active { border:1.5px solid #185FA5; border-radius:8px; padding:8px 12px; font-size:13px; background:#F0F7FF; }
+.input-pass { border:1.5px solid #D0D0D0; border-radius:8px; padding:8px 12px; font-size:13px; color:#888; display:flex; justify-content:space-between; }
+.signin-btn { width:100%; background:linear-gradient(135deg,#185FA5,#1a6bbf); color:#fff; border:none; border-radius:8px; padding:11px; font-size:13px; font-weight:700; cursor:pointer; margin-top:8px; }
+.footer { text-align:center; font-size:10px; color:#aaa; margin-top:12px; }
+</style>
+</head>
+<body>
+
+<div class="login-card">
+  <div class="login-header">
+    <div class="brand">SpinRise</div>
+    <div class="tagline">Enterprise Resource Planning</div>
+    <div class="company-box">
+      <small>Company</small>
+      <div>Kalpatharu Spinners Pvt Ltd</div>
+      <small style="margin-top:6px;display:block">Division</small>
+      <div style="font-size:13px">Spinning Mill — Unit 1</div>
+    </div>
+  </div>
+  <div class="login-body">
+    <div class="dt-row">
+      <span>06 May 2026</span>
+      <span class="time">10:34:22 AM</span>
+    </div>
+    <div class="field-block">
+      <label>Username <span class="req">*</span></label>
+      <div class="input-active">abinandan.n</div>
+    </div>
+    <div class="field-block">
+      <label>Password <span class="req">*</span></label>
+      <div class="input-pass"><span>••••••••••</span><span>👁</span></div>
+    </div>
+    <button class="signin-btn">Sign In →</button>
+    <div class="footer">Kalpatharu Software Ltd — v1.0</div>
+  </div>
+</div>
+
+</body>
+</html>

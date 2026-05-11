@@ -70,6 +70,32 @@ export interface CurrencyLookup {
   currName: string
 }
 
+export interface RateUnitLookup {
+  unitName: string
+  value:    number    // divisor: rateKg = ROUND(candyRate / value, 5)
+}
+
+export interface WeighmentLookup {
+  wCode: string
+  wName: string
+}
+
+export interface AgentLookup {
+  agentCode: string
+  agentName: string
+}
+
+export interface EmployeeRMILookup {
+  empCode: string
+  empName: string
+}
+
+export interface TaxCodeLookup {
+  taxCode: string
+  taxName: string
+  taxPer:  number
+}
+
 // ── PR Line local form state ──────────────────────────────────────────────────
 
 export interface PRLineFormItem {
@@ -131,6 +157,8 @@ export interface PRItemInfoDto {
   lastPoDate?: string
   lastPoSupplierCode?: string
   lastPoSupplierName?: string
+  drawNo?: string
+  catNo?: string
   hasPendingIndent: boolean
   pendingIndentQty: number
   hasPendingPR: boolean

@@ -91,6 +91,31 @@ public class POLineResponseDto
     public int       NoOfLoad      { get; set; }
     public decimal   RateKg        { get; set; }
     public string?   CreatedBy     { get; set; }
+    // ── Extended header fields ────────────────────────────────────────────────
+    public string?   AgentCode       { get; set; }
+    public string?   ArrivalType     { get; set; }
+    public string?   FinalWeighment  { get; set; }
+    public string?   RateUnit        { get; set; }
+    public string?   ImInd           { get; set; }
+    public string?   MillRefNo       { get; set; }
+    public string?   BillingAddress  { get; set; }
+    public string?   DeliveryAddrCode{ get; set; }
+    public string?   ContactPerson   { get; set; }
+    public string?   Terms1          { get; set; }
+    public int?      Terms1Days      { get; set; }
+    public string?   Terms2          { get; set; }
+    public int?      Terms2Days      { get; set; }
+    public int?      CreditDays      { get; set; }
+    public decimal?  InterestPer     { get; set; }
+    public string?   DeliveryTerms   { get; set; }
+    public string?   PerBaleTruck    { get; set; }
+    // Quality — all string? because DB columns are varchar
+    public string?   Grade           { get; set; }
+    public string?   Staple          { get; set; }
+    public string?   Mic             { get; set; }
+    public string?   Strength        { get; set; }
+    public string?   Moisture        { get; set; }
+    public string?   Trash           { get; set; }
 }
 
 public class DeliveryScheduleResponseDto
@@ -103,6 +128,7 @@ public class DeliveryScheduleResponseDto
     public string    DelAddress  { get; set; } = string.Empty;
     public string    VarCode     { get; set; } = string.Empty;
     public string    Instruction { get; set; } = string.Empty;
+    public string?   Weighment   { get; set; }
 }
 
 public class DiscountRateDto
@@ -149,6 +175,8 @@ public class CreatePOLineDto
     public string?   MsDocSno      { get; set; }
     public int       NoOfLoad      { get; set; }
     public decimal   RateKg        { get; set; }
+    public string?   MillSampleNo  { get; set; }    // DB: SNO varchar(10)
+    // PTY_CONTNO (suppSampleNo) is read-only, set by SP from rm_sample — not in request DTO
 }
 
 public class CreateDeliveryScheduleDto
@@ -159,6 +187,7 @@ public class CreateDeliveryScheduleDto
     public string?   DelAddress  { get; set; }
     public string?   VarCode     { get; set; }
     public string?   Instruction { get; set; }
+    public string?   Weighment   { get; set; }    // from rm_WEIGHNMENT
 }
 
 public class CreateDiscountRateDto
@@ -174,11 +203,17 @@ public class CreatePODto
     [Required] public string   DivCode        { get; set; } = string.Empty;
     [Required] public DateTime ContDt         { get; set; }
     [Required] public string   SupCd          { get; set; } = string.Empty;
+    [Required(ErrorMessage = "Please enter the Payment Mode")]
     public string?   PayMode        { get; set; }
+    [Required(ErrorMessage = "Please enter the Area Name")]
     public string?   AreaCode       { get; set; }
+    [Required(ErrorMessage = "Please enter the Billing Currency")]
     public string?   CurrCode       { get; set; }
+    [Required(ErrorMessage = "Please enter the Delivery Type")]
     public string?   DlyType        { get; set; }
+    [Required(ErrorMessage = "Please enter the Accepted Person")]
     public string?   Acceptance     { get; set; }
+    [Required(ErrorMessage = "Please enter the Mode of Transport")]
     public string?   Transport      { get; set; }
     public string?   SupFileName    { get; set; }
     public string?   CropYear       { get; set; }
@@ -197,6 +232,34 @@ public class CreatePODto
     public string    SampleFlg      { get; set; } = "N";
     public decimal   LotFrom        { get; set; }
     public decimal   LotTo          { get; set; }
+    // ── Additional Header Fields ──────────────────────────────────────────────
+    public string?   AgentCode       { get; set; }          // DB: BRKCD varchar(10)
+    public string?   ImInd           { get; set; }          // DB: im_ind char(1) — I/L/U
+    public string?   MillRefNo       { get; set; }          // DB: MILLREFNO varchar(20)
+    public string?   RateUnit        { get; set; }          // DB: rateunit varchar(20)
+    public string?   ArrivalType     { get; set; }          // DB: arrivaltype varchar(1) — P/K
+    public string?   FinalWeighment  { get; set; }          // DB: FinalWeighment varchar(1) — M/S
+    // ── Payment & Terms (Tab 1) ───────────────────────────────────────────────
+    public string?   BillingAddress  { get; set; }          // DB: billadd varchar(10)
+    public string?   DeliveryAddrCode{ get; set; }          // DB: deladd varchar(10)
+    public string?   ContactPerson   { get; set; }          // DB: contperson varchar(50)
+    public string?   Terms1          { get; set; }          // DB: Terms1 varchar(50)
+    public int?      Terms1Days      { get; set; }          // DB: Terms1Days numeric
+    public string?   Terms2          { get; set; }          // DB: Terms2 varchar(50)
+    public int?      Terms2Days      { get; set; }          // DB: Terms2Days numeric
+    public int?      CreditDays      { get; set; }          // DB: CREDITDAYS numeric
+    public decimal?  InterestPer     { get; set; }          // DB: INTERESTPER numeric
+    public string?   DeliveryTerms   { get; set; }          // DB: DeliveryTerms varchar(200)
+    public string?   Remarks         { get; set; }          // DB: remarks nvarchar(255)
+    // ── Tax Details (Tab 2) ───────────────────────────────────────────────────
+    public string?   PerBaleTruck    { get; set; }          // DB: perbaletruckbale varchar(5) — T/B/blank
+    // ── Cotton Quality Parameters ─────────────────────────────────────────────
+    public string?   Grade           { get; set; }          // DB: grade varchar(15)
+    public string?   Staple          { get; set; }          // DB: STAPLE varchar(25)
+    public string?   Mic             { get; set; }          // DB: MIC varchar(15) — TEXT not decimal
+    public string?   Strength        { get; set; }          // DB: STRENGTH varchar(20) — TEXT not decimal
+    public string?   Moisture        { get; set; }          // DB: moisture varchar(20) — TEXT not decimal
+    public string?   Trash           { get; set; }          // DB: trash varchar(15) — TEXT not decimal
 
     [Required][MinLength(1, ErrorMessage = "At least one variety line is required.")]
     public List<CreatePOLineDto>           Lines            { get; set; } = new();
@@ -227,6 +290,7 @@ public class PRLineDto
     public string    VarName           { get; set; } = string.Empty;
     public string    PackType          { get; set; } = string.Empty;
     public decimal   BalanceQty        { get; set; }
+    public decimal   BalanceKgs        { get; set; }   // ISNULL(qtyindKG,0) - ISNULL(qtyordKG,0)
     public int       PrSno             { get; set; }
     public string    RequisitionerName { get; set; } = string.Empty;
     public decimal   MasterDocNo       { get; set; }
@@ -255,13 +319,15 @@ public class POParamDto
     public bool    ApprovalEnabled       { get; set; }
     public bool    AdditionalTaxRequired { get; set; }
     public decimal FtAmt                 { get; set; }
+    public bool    WoSample              { get; set; }    // RM_PARAM.wosample — with-sample mode default
 }
 
 public class PODefaultsDto
 {
-    public string  DefaultCurrency { get; set; } = "INR";
-    public bool    PRBased         { get; set; }
-    public bool    CentralizedOrder{ get; set; }
+    public string      DefaultCurrency  { get; set; } = "INR";
+    public bool        PRBased          { get; set; }
+    public bool        CentralizedOrder { get; set; }
+    public POParamDto? Param            { get; set; }    // full config — replaces the 3 partial flags (kept for backwards compatibility)
 }
 
 public class GSTConfigDto

@@ -72,6 +72,23 @@ public record DcCellConfig(
     float PadH = 2f,
     float PadR = 3f);
 
+public record TotalsCellConfig(
+    string Text,
+    DA Align,
+    uint ColumnSpan = 1u,
+    bool Bold = false,
+    float PadV = 2f,
+    float PadH = 2f,
+    float PadR = 3f);
+
+public record TotalsRowConfig(
+    IReadOnlyList<TotalsCellConfig> Cells,
+    float MinHeightMm,
+    float FontSizePt,
+    float BdSidePt,
+    string BdColor,
+    string BgColor = "#F2F2F2");
+
 public record MachCellConfig(
     float MinHeightMm,
     float BdSidePt,
@@ -96,7 +113,8 @@ public record TableConfig(
     IReadOnlyList<ColDef> Columns,
     TableHeaderConfig Header,
     MachCellConfig EmptyMachCell,
-    IReadOnlyList<DataRowConfig> Rows);
+    IReadOnlyList<DataRowConfig> Rows,
+    TotalsRowConfig? TotalsRow = null);
 
 // ── Signature ─────────────────────────────────────────────────────────────────
 public record SigBlockConfig(

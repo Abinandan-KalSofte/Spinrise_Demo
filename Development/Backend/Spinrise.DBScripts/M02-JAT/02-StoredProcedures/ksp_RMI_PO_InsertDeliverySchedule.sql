@@ -6,11 +6,13 @@ CREATE OR ALTER PROCEDURE dbo.ksp_RMI_PO_InsertDeliverySchedule
     @DelQty      NUMERIC(12,2),
     @DelAddress  VARCHAR(200) = NULL,
     @VarCode     VARCHAR(10)  = NULL,
-    @Instruction VARCHAR(500) = NULL
+    @Instruction VARCHAR(500) = NULL,
+    @Weighment   VARCHAR(10)  = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    INSERT INTO dbo.RM_DELSCHED (DIVCODE, CONTNO, CONTDATE, DELDATE, QTY, deladd, VARCODE, INSTRUCTION)
-    VALUES (@DivCode, @ContNo, @ContDt, @DelDate, @DelQty, @DelAddress, @VarCode, @Instruction);
+    INSERT INTO dbo.RM_DELSCHED (DIVCODE, CONTNO, CONTDATE, DELDATE, QTY, deladd, VARCODE, INSTRUCTION, weighment)
+    VALUES (@DivCode, @ContNo, @ContDt, @DelDate, @DelQty, @DelAddress, @VarCode, @Instruction, @Weighment);
 END;
+GO

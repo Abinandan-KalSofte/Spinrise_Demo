@@ -178,6 +178,68 @@ Update `README.md` in that folder with an index entry.
 
 ---
 
+## Common Dev Commands
+
+### Backend
+```
+cd Development/Backend
+dotnet run --project Spinrise.API                          # dev server → http://localhost:5000
+dotnet build Spinrise.sln                                  # build all projects
+dotnet test Spinrise.Tests/Spinrise.Tests.csproj           # run unit tests
+dotnet publish Spinrise.API/Spinrise.API.csproj -c Release -o <path>  # IIS publish
+```
+
+### Frontend
+```
+cd Development/spinrise-web
+npm run dev        # dev server → http://localhost:5173
+npm run build      # production build → dist/
+npm run test       # Vitest unit tests
+npm run lint       # ESLint
+npx orval          # regenerate API types from Swagger
+```
+
+### Database
+- Deploy M01 SPs: open `Spinrise.DBScripts/merged.sql` in SSMS → Execute against `SpinRiseSaranya`
+- Deploy M02 SPs: open `Spinrise.DBScripts/merged_jat.sql` in SSMS → Execute against `JAT`
+- Never run individual SP files in production — always use the merged file
+
+---
+
+## Dual-Database Architecture (M01 vs M02)
+
+Two separate SQL Server databases on the same host (`172.16.16.52\sql2016`):
+
+| | M01 — Purchase Requisition | M02 — RMI Purchase Order |
+|---|---|---|
+| **Database** | `SpinRiseSaranya` | `JAT` |
+| **UnitOfWork** | `IUnitOfWork` | `IJATUnitOfWork` |
+| **Merged deploy file** | `merged.sql` | `merged_jat.sql` |
+| **SP prefix** | `ksp_PR_*` | `ksp_RMI_PO_*` |
+| **SP folder** | `DBScripts/Scripts/02-StoredProcedures/` | `DBScripts/M02-JAT/02-StoredProcedures/` |
+
+**Rule:** Never run `merged_jat.sql` against `SpinRiseSaranya` or vice versa. They are entirely separate schemas.
+
+Lookup SPs that serve JAT data (supplier, variety, payment mode, currency) also use `IJATUnitOfWork` — not the default `IUnitOfWork`.
+
+---
+
+## Reporting Stack
+
+| Output | Library | Where |
+|---|---|---|
+| PDF prints | **QuestPDF** | `Spinrise.Application/Areas/Purchase/Reports/` |
+| Excel / CSV exports | **EPPlus** | Same reports folder |
+| Legacy (do not use) | FastReportService.cs | Exists in codebase — ignore, not active |
+
+**Rules:**
+- All PDF generation → QuestPDF only. No FastReports, no iTextSharp.
+- All Excel/CSV exports → EPPlus only.
+- Print layout standard: A4 Landscape for all purchase documents.
+- Decimal format: Qty = 3dp, Rate = 4dp, Value = 2dp — apply in both screen and print output.
+
+---
+
 ## Key Documentation
 
 - `Development/AI_CONTEXT.md` — architecture summary for AI context

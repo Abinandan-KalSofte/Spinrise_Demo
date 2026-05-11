@@ -30,6 +30,18 @@ const PurchaseOrderNewPage = lazy(
 const PurchaseOrderEditPage = lazy(
   () => import('@/features/purchase-order/pages/PurchaseOrderEditPage'),
 )
+const RequisitionV1NewPage = lazy(
+  () => import('@/features/purchase-requisition/pages/RequisitionV1NewPage'),
+)
+const RequisitionV2NewPage = lazy(
+  () => import('@/features/purchase-requisition/pages/RequisitionV2NewPage'),
+)
+const RequisitionV3NewPage = lazy(
+  () => import('@/features/purchase-requisition/pages/RequisitionV3NewPage'),
+)
+const RequisitionV1PrintPreviewPage = lazy(
+  () => import('@/features/purchase-requisition/pages/RequisitionV1PrintPreviewPage'),
+)
 
 export const dashboardRoutes: RouteObject[] = [
   {
@@ -64,6 +76,22 @@ export const dashboardRoutes: RouteObject[] = [
       {
         path: 'purchase/requisition/edit/:prNo',
         element: <PurchaseRequisitionEditPage />,
+      },
+      {
+        path: 'purchase/requisition/v1/new',
+        element: <RequisitionV1NewPage />,
+      },
+      {
+        path: 'purchase/requisition/v2/new',
+        element: <RequisitionV2NewPage />,
+      },
+      {
+        path: 'purchase/requisition/v3/new',
+        element: <RequisitionV3NewPage />,
+      },
+      {
+        path: 'purchase/requisition/v1/print-preview/:prNo',
+        element: <RequisitionV1PrintPreviewPage />,
       },
       {
         path: 'purchase/order',

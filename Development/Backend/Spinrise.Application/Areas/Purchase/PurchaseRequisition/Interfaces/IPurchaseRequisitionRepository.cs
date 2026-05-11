@@ -49,6 +49,10 @@ public interface IPurchaseRequisitionRepository
     // ── MINLEVEL ──────────────────────────────────────────────────────────────
     Task<decimal> GetItemMinLevelAsync(string divCode, string itemCode);
 
+    // ── Navigation ────────────────────────────────────────────────────────────
+    Task<PRNavigationResultDto?> GetLastRecordAsync(string divCode, DateTime yfDate, DateTime ylDate);
+    Task<PRNavigationResultDto?> NavigateAsync(string divCode, string direction, long? currentPrNo, DateTime yfDate, DateTime ylDate);
+
     // ── Existence checks (all use parameterised queries) ─────────────────────
     Task<bool> DepartmentExistsAsync(string divCode, string depCode);
     Task<bool> ItemExistsAsync(string divCode, string itemCode);

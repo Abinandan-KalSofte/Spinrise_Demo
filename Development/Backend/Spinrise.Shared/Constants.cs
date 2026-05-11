@@ -119,6 +119,8 @@ public static class StoredProcedures
         public const string CategoryExists            = "ksp_PR_CategoryExists";
         public const string SubCostExists             = "ksp_PR_SubCostExists";
         public const string GetItemHistory            = "ksp_PR_GetItemHistory";
+        public const string GetLastRecord             = "ksp_PR_GetLastRecord";
+        public const string Navigate                  = "ksp_PR_Navigate";
     }
 
     public static class Lookup
@@ -137,6 +139,12 @@ public static class StoredProcedures
         public const string GetAreas           = "ksp_RMI_GetAreas";
         public const string GetPaymentModes    = "ksp_RMI_GetPaymentModes";
         public const string GetCurrencies      = "ksp_RMI_GetCurrencies";
+        public const string GetRateUnits       = "ksp_RMI_GetRateUnits";
+        public const string GetWeighments      = "ksp_RMI_GetWeighments";
+        public const string SearchAgents       = "ksp_RMI_SearchAgents";
+        public const string SearchEmployees    = "ksp_RMI_SearchEmployees";
+        public const string GetActiveTaxCodes  = "ksp_RMI_GetActiveTaxCodes";
+        public const string GetItemsPaginated  = "ksp_GetItemsPaginated";
     }
 
     public static class Stock
@@ -170,6 +178,23 @@ public static class StoredProcedures
         public const string GetApprovalStatus     = "ksp_RMI_PO_GetApprovalStatus";
         public const string UpdateApproval        = "ksp_RMI_PO_UpdateApproval";
         public const string GetSummary            = "ksp_RMI_PO_GetSummary";
+        public const string DeleteLinesForUpdate  = "ksp_RMI_PO_DeleteLinesForUpdate";
+        public const string UpdatePRBalance       = "ksp_RMI_PO_UpdatePRBalance";
+    }
+
+    public static class Arrival
+    {
+        public const string GetParam          = "ksp_RMI_ARRIVAL_GetParam";
+        public const string GetCategories     = "ksp_RMI_ARRIVAL_GetCategories";
+        public const string GetOpenPOLines    = "ksp_RMI_ARRIVAL_GetOpenPOLines";
+        public const string ValidateLotRange  = "ksp_RMI_ARRIVAL_ValidateLotRange";
+        public const string Insert            = "ksp_RMI_ARRIVAL_Insert";
+        public const string Update            = "ksp_RMI_ARRIVAL_Update";
+        public const string FreightOnlyUpdate = "ksp_RMI_ARRIVAL_FreightOnlyUpdate";
+        public const string Delete            = "ksp_RMI_ARRIVAL_Delete";
+        public const string GetById           = "ksp_RMI_ARRIVAL_GetById";
+        public const string GetPaginated      = "ksp_RMI_ARRIVAL_GetPaginated";
+        public const string GetForPrint       = "ksp_RMI_ARRIVAL_GetForPrint";
     }
 }
 

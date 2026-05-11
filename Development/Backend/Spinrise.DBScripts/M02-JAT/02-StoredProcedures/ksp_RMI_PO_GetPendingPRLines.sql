@@ -24,7 +24,8 @@ BEGIN
         -- NOTE: VW_rm_SupplierVariety column names need verification on live DB
         ISNULL(rm.MSDOCNO,    0)                             AS MasterDocNo,
         ISNULL(rm.MSDOCSNO,   0)                             AS MasterDocSno,
-        ISNULL(rm.CANDYRATE,  0)                             AS CandyRate
+        ISNULL(rm.CANDYRATE,  0)                             AS CandyRate,
+        ISNULL(l.qtyindKG, 0) - ISNULL(l.qtyordKG, 0)      AS BalanceKgs
     FROM   dbo.Rm_PRL l
     INNER JOIN dbo.RM_PRH  h  ON h.divcode = l.DIVCODE AND h.PRNO = l.PRNO AND h.prdate = l.PRDATE
     INNER JOIN dbo.rm_var  v  ON v.VARCODE = l.varcode
@@ -48,3 +49,4 @@ BEGIN
         CASE WHEN @SortBy = 1 THEN h.prdate  END ASC,
         CASE WHEN @SortBy = 2 THEN l.varcode END ASC;
 END;
+GO

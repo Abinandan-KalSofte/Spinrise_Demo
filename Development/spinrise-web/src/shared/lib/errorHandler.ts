@@ -18,22 +18,54 @@ export function getErrorMessage(error: unknown): string {
   }
 
   if (axios.isAxiosError(error)) {
-    const apiMessage = error.response?.data?.message
-
-    if (typeof apiMessage === 'string' && apiMessage.trim()) {
-      return apiMessage
+    // ── No response: network or timeout ──────────────────────────────────────
+    if (!error.response) {
+      if (error.code === 'ECONNABORTED') {
+        return 'The request timed out. Please check your connection and try again.'
+      }
+      return 'Unable to reach the server. Please check your network connection.'
     }
 
-    if (error.response?.status === 401) {
-      return 'Your session has expired. Please sign in again.'
+    const data = error.response.data as Record<string, unknown> | string | null | undefined
+
+    // ── Plain string body — e.g. BadRequest("some message") ──────────────────
+    if (typeof data === 'string' && data.trim()) {
+      return data.trim()
     }
 
-    if (error.response?.status === 403) {
-      return 'You do not have permission to perform this action.'
+    if (data && typeof data === 'object') {
+      // ── Standard ApiResponse: { success, message } ────────────────────────
+      const apiMessage = data['message']
+      if (typeof apiMessage === 'string' && apiMessage.trim()) {
+        return apiMessage.trim()
+      }
+
+      // ── ASP.NET Core ProblemDetails / ModelState: { title, errors } ───────
+      // Produced by [ApiController] when DataAnnotations fail (400 validation)
+      const errorsObj = data['errors']
+      if (errorsObj && typeof errorsObj === 'object') {
+        const firstError = Object.values(errorsObj as Record<string, string[]>)
+          .flat()
+          .find((e): e is string => typeof e === 'string')
+        if (firstError) return firstError
+      }
+      const title = data['title']
+      if (typeof title === 'string' && title.trim()) {
+        return title.trim()
+      }
     }
 
-    if (error.response?.status && error.response.status >= 500) {
-      return 'The server is having trouble right now. Please try again later.'
+    // ── HTTP status fallbacks ─────────────────────────────────────────────────
+    switch (error.response.status) {
+      case 400: return 'The request could not be processed. Please review the form and try again.'
+      case 401: return 'Your session has expired. Please sign in again.'
+      case 403: return 'You do not have permission to perform this action.'
+      case 404: return 'The requested record was not found.'
+      case 409: return 'A conflict occurred. The record may have been modified by another user.'
+      case 422: return 'The submitted data is invalid. Please review the form and try again.'
+    }
+    if (error.response.status >= 500) {
+      return 'The server encountered an error. Please try again later.'
     }
   }
 

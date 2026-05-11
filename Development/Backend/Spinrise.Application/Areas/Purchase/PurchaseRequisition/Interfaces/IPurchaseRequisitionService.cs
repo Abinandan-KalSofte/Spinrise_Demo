@@ -35,6 +35,9 @@ public interface IPurchaseRequisitionService
         string divCode, long prNo, string deleteReasonCode, AuditContext audit,
         DateTime? startDate = null, DateTime? endDate = null);
 
+    Task<PRNavigationResultDto?> GetLastRecordAsync(string divCode, DateTime yfDate, DateTime ylDate);
+    Task<PRNavigationResultDto?> NavigateAsync(string divCode, string direction, long? currentPrNo, DateTime yfDate, DateTime ylDate);
+
     Task<(bool Success, string Message)> DeleteLineAsync(
         string divCode, long prNo, int prSNo, string? deleteReasonCode, AuditContext audit,
         DateTime? startDate = null, DateTime? endDate = null);

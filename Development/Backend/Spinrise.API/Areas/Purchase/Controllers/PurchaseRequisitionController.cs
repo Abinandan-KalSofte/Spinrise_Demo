@@ -32,6 +32,35 @@ public class PurchaseRequisitionController : BaseApiController
         return new AuditContext(userId, userName, ipAddress, Environment.MachineName);
     }
 
+    [HttpGet("last")]
+    public async Task<IActionResult> GetLastRecord(
+        [FromQuery] DateTime yfDate,
+        [FromQuery] DateTime ylDate)
+    {
+        var divCode = RequireDivCode();
+        var result  = await _service.GetLastRecordAsync(divCode, yfDate, ylDate);
+        if (result is null)
+            return Failure("No records found for the current financial year.", StatusCodes.Status404NotFound);
+        return Success(result, "Last PR record retrieved successfully.");
+    }
+
+    [HttpGet("navigate")]
+    public async Task<IActionResult> Navigate(
+        [FromQuery] string    direction,
+        [FromQuery] long?     currentPrNo,
+        [FromQuery] DateTime  yfDate,
+        [FromQuery] DateTime  ylDate)
+    {
+        if (string.IsNullOrWhiteSpace(direction))
+            return Failure("Direction is required.", StatusCodes.Status400BadRequest);
+
+        var divCode = RequireDivCode();
+        var result  = await _service.NavigateAsync(divCode, direction, currentPrNo, yfDate, ylDate);
+        if (result is null)
+            return Failure("No more records in that direction.", StatusCodes.Status404NotFound);
+        return Success(result, "Navigation successful.");
+    }
+
     [HttpGet("pre-checks")]
     public async Task<IActionResult> RunPreChecks()
     {

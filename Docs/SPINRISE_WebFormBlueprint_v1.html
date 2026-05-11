@@ -1,0 +1,2297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpinRise ERP — Web Form Blueprint v1.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════════════════════════ */
+:root {
+  /* Primary */
+  --blue-800: #0C447C;
+  --blue-600: #185FA5;
+  --blue-400: #3B82C4;
+  --blue-100: #E6F1FB;
+  --blue-50:  #F0F7FF;
+
+  /* Semantic — Success */
+  --green-700: #3B6D11;
+  --green-100: #EAF3DE;
+
+  /* Semantic — Warning */
+  --amber-700: #BA7517;
+  --amber-100: #FAEEDA;
+
+  /* Semantic — Error */
+  --red-700:   #A32D2D;
+  --red-400:   #E24B4A;
+  --red-100:   #FCEBEB;
+
+  /* Semantic — Info/Teal */
+  --teal-700:  #0F6E56;
+  --teal-100:  #E1F5EE;
+
+  /* Neutral surfaces */
+  --bg:        #F5F5F3;
+  --bg-2:      #FAFAF8;
+  --surface:   #FFFFFF;
+  --border:    #E2E2E2;
+  --border-2:  #D0D0D0;
+
+  /* Text hierarchy */
+  --text-900:  #1A1A1A;
+  --text-600:  #4A4A4A;
+  --text-400:  #888888;
+  --text-200:  #C0C0C0;
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+
+  /* Font sizes */
+  --fs-xs:   10px;
+  --fs-sm:   11px;
+  --fs-base: 12px;
+  --fs-md:   13px;
+  --fs-lg:   14px;
+  --fs-xl:   16px;
+  --fs-2xl:  18px;
+  --fs-3xl:  22px;
+  --fs-4xl:  28px;
+
+  /* Font weights */
+  --fw-normal:   400;
+  --fw-medium:   500;
+  --fw-semibold: 600;
+  --fw-bold:     700;
+  --fw-extrabold:800;
+
+  /* Line heights */
+  --lh-tight:  1.2;
+  --lh-snug:   1.35;
+  --lh-normal: 1.5;
+  --lh-relaxed:1.7;
+
+  /* Spacing (4px base grid) */
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-5:  20px;
+  --sp-6:  24px;
+  --sp-8:  32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+
+  /* Border radius */
+  --r-sm:  4px;
+  --r-md:  6px;
+  --r-lg:  8px;
+  --r-xl:  12px;
+  --r-2xl: 16px;
+  --r-full:9999px;
+
+  /* Shadows */
+  --shadow-sm:  0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md:  0 2px 6px rgba(0,0,0,0.08);
+  --shadow-lg:  0 4px 16px rgba(0,0,0,0.10);
+  --shadow-xl:  0 8px 32px rgba(0,0,0,0.12);
+
+  /* Form field height */
+  --field-h-sm: 28px;
+  --field-h-md: 32px;
+  --field-h-lg: 36px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; scroll-behavior: smooth; }
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text-900);
+  line-height: var(--lh-normal);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--blue-600); text-decoration: none; }
+
+/* ═══════════════════════════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════════════════════════ */
+.bp-page { max-width: 1120px; margin: 0 auto; padding: 40px 24px 80px; }
+
+.bp-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  margin-bottom: 32px;
+  overflow: hidden;
+}
+.bp-section-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-2);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.bp-section-number {
+  width: 28px; height: 28px;
+  border-radius: var(--r-md);
+  background: var(--blue-600);
+  color: #fff;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.bp-section-title {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--text-900);
+  letter-spacing: -0.01em;
+}
+.bp-section-sub {
+  font-size: var(--fs-sm);
+  color: var(--text-400);
+  margin-left: auto;
+}
+.bp-section-body { padding: 24px; }
+.bp-section-body + .bp-section-body { border-top: 1px solid var(--border); }
+
+/* Grid helpers */
+.bp-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.bp-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.bp-grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
+.bp-grid-5 { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; }
+
+/* Label inside section */
+.bp-label {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--text-400);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+.bp-spec-table { width: 100%; border-collapse: collapse; font-size: var(--fs-base); }
+.bp-spec-table th {
+  text-align: left;
+  padding: 8px 12px;
+  background: var(--bg);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--text-400);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--border);
+}
+.bp-spec-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-900);
+  vertical-align: middle;
+}
+.bp-spec-table tr:last-child td { border-bottom: none; }
+.bp-spec-table tr:hover td { background: var(--bg-2); }
+.bp-mono { font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--blue-600); background: var(--blue-50); padding: 1px 6px; border-radius: 3px; }
+.bp-rule { font-size: var(--fs-sm); color: var(--text-600); line-height: var(--lh-relaxed); }
+.bp-note {
+  background: var(--amber-100);
+  border: 1px solid #F3C97E;
+  border-radius: var(--r-md);
+  padding: 10px 14px;
+  font-size: var(--fs-sm);
+  color: var(--amber-700);
+  margin-top: 12px;
+}
+.bp-ok {
+  background: var(--green-100);
+  border: 1px solid #A8D07A;
+  border-radius: var(--r-md);
+  padding: 10px 14px;
+  font-size: var(--fs-sm);
+  color: var(--green-700);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   COVER PAGE
+═══════════════════════════════════════════════════════════════ */
+.bp-cover {
+  background: linear-gradient(135deg, #0C447C 0%, #185FA5 50%, #2171C1 100%);
+  border-radius: var(--r-2xl);
+  padding: 56px 48px;
+  margin-bottom: 40px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+.bp-cover::before {
+  content: '';
+  position: absolute;
+  right: -60px; top: -60px;
+  width: 320px; height: 320px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+}
+.bp-cover::after {
+  content: '';
+  position: absolute;
+  right: 60px; bottom: -80px;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+}
+.bp-cover-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: var(--r-full);
+  padding: 4px 14px;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.bp-cover h1 {
+  font-size: 36px;
+  font-weight: var(--fw-extrabold);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 10px;
+}
+.bp-cover h1 span { color: #93C5FD; }
+.bp-cover-sub {
+  font-size: var(--fs-lg);
+  opacity: 0.75;
+  margin-bottom: 32px;
+  font-weight: var(--fw-medium);
+}
+.bp-cover-meta {
+  display: flex; gap: 32px; flex-wrap: wrap;
+  padding-top: 28px;
+  border-top: 1px solid rgba(255,255,255,0.2);
+}
+.bp-cover-meta-item { font-size: var(--fs-sm); opacity: 0.75; }
+.bp-cover-meta-item strong { display: block; font-size: var(--fs-base); opacity: 1; font-weight: var(--fw-semibold); margin-bottom: 2px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   COLOR SWATCHES
+═══════════════════════════════════════════════════════════════ */
+.color-group { margin-bottom: 20px; }
+.color-group-title { font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text-600); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+.color-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.color-chip {
+  flex: 1; min-width: 100px;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.color-chip-swatch { height: 64px; }
+.color-chip-info { padding: 8px 10px; background: var(--surface); }
+.color-chip-name { font-size: var(--fs-xs); font-weight: var(--fw-semibold); color: var(--text-600); }
+.color-chip-hex { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--text-400); margin-top: 1px; }
+.color-chip-use { font-size: 9px; color: var(--text-400); margin-top: 3px; line-height: 1.4; }
+
+/* ═══════════════════════════════════════════════════════════════
+   TYPOGRAPHY SPECIMENS
+═══════════════════════════════════════════════════════════════ */
+.type-row {
+  display: flex; align-items: baseline;
+  gap: 20px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+.type-row:last-child { border-bottom: none; }
+.type-meta {
+  min-width: 160px;
+  font-size: var(--fs-xs);
+  font-family: var(--font-mono);
+  color: var(--text-400);
+  flex-shrink: 0;
+}
+.type-meta span { display: block; margin-top: 2px; }
+.type-specimen { flex: 1; }
+.type-use { font-size: var(--fs-xs); color: var(--text-400); min-width: 180px; text-align: right; }
+</style>
+</head>
+<body>
+<div class="bp-page">
+
+<!-- ══════════════════════════════════════════════════════════
+     COVER
+══════════════════════════════════════════════════════════ -->
+<div class="bp-cover">
+  <div class="bp-cover-badge">⬡ Design System · v1.0</div>
+  <h1>SpinRise ERP<br><span>Web Form Blueprint</span></h1>
+  <div class="bp-cover-sub">The complete design standard for every SpinRise screen.</div>
+  <div class="bp-cover-meta">
+    <div class="bp-cover-meta-item"><strong>Product</strong>SpinRise ERP</div>
+    <div class="bp-cover-meta-item"><strong>Company</strong>Kalpatharu Software Ltd</div>
+    <div class="bp-cover-meta-item"><strong>Author</strong>Abinandan N — Fullstack Dev</div>
+    <div class="bp-cover-meta-item"><strong>Reviewer</strong>Sasikumar R — TL-Dev</div>
+    <div class="bp-cover-meta-item"><strong>Version</strong>v1.0 · May 2026</div>
+    <div class="bp-cover-meta-item"><strong>Status</strong>First Draft</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     1 · DESIGN PRINCIPLES
+══════════════════════════════════════════════════════════ -->
+<div class="bp-section">
+  <div class="bp-section-header">
+    <div class="bp-section-number">1</div>
+    <div class="bp-section-title">Design Principles</div>
+    <div class="bp-section-sub">The five rules that govern every SpinRise screen</div>
+  </div>
+  <div class="bp-section-body">
+    <div class="bp-grid-3" style="gap:12px">
+      <div style="background:var(--blue-50);border:1px solid var(--blue-100);border-radius:var(--r-lg);padding:16px">
+        <div style="font-size:22px;margin-bottom:8px">①</div>
+        <div style="font-size:var(--fs-md);font-weight:var(--fw-bold);color:var(--blue-600);margin-bottom:6px">Single Screen</div>
+        <div style="font-size:var(--fs-sm);color:var(--text-600);line-height:1.6">Every transaction entry form must fit within one screen. No vertical or horizontal scroll. Header + grid + status bar visible simultaneously. Non-negotiable CEO directive.</div>
+      </div>
+      <div style="background:var(--green-100);border:1px solid #A8D07A;border-radius:var(--r-lg);padding:16px">
+        <div style="font-size:22px;margin-bottom:8px">②</div>
+        <div style="font-size:var(--fs-md);font-weight:var(--fw-bold);color:var(--green-700);margin-bottom:6px">Web-Native</div>
+        <div style="font-size:var(--fs-sm);color:var(--text-600);line-height:1.6">SpinRise does not replicate VB6 visuals. It retains the domain logic and field vocabulary users know, delivered in a modern, clean, browser-native standard.</div>
+      </div>
+      <div style="background:var(--teal-100);border:1px solid #6EC5A8;border-radius:var(--r-lg);padding:16px">
+        <div style="font-size:22px;margin-bottom:8px">③</div>
+        <div style="font-size:var(--fs-md);font-weight:var(--fw-bold);color:var(--teal-700);margin-bottom:6px">Fewer Keystrokes</div>
+        <div style="font-size:var(--fs-sm);color:var(--text-600);line-height:1.6">Benchmark: does this screen solve ERP 7.4 user pain points with fewer keystrokes, less training time, and fewer errors? Not Oracle Fusion or Zoho.</div>
+      </div>
+      <div style="background:var(--amber-100);border:1px solid #F3C97E;border-radius:var(--r-lg);padding:16px">
+        <div style="font-size:22px;margin-bottom:8px">④</div>
+        <div style="font-size:var(--fs-md);font-weight:var(--fw-bold);color:var(--amber-700);margin-bottom:6px">WYSIWYG</div>
+        <div style="font-size:var(--fs-sm);color:var(--text-600);line-height:1.6">What the user sees on screen must match what prints. Same field order, same labels, proportional column widths. Screen and print are always in sync.</div>
+      </div>
+      <div style="background:var(--red-100);border:1px solid #F5AAAA;border-radius:var(--r-lg);padding:16px">
+        <div style="font-size:22px;margin-bottom:8px">⑤</div>
+        <div style="font-size:var(--fs-md);font-weight:var(--fw-bold);color:var(--red-700);margin-bottom:6px">No Abbreviations</div>
+        <div style="font-size:var(--fs-sm);color:var(--text-600);line-height:1.6">"Qty" is Quantity. "Appr. Cost" is Approximate Cost. All labels are full descriptive text in Title Case. All-caps reduces readability on web forms.</div>
+      </div>
+      <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px">
+        <div style="font-size:22px;margin-bottom:8px">⑥</div>
+        <div style="font-size:var(--fs-md);font-weight:var(--fw-bold);color:var(--text-600);margin-bottom:6px">Review Gate</div>
+        <div style="font-size:var(--fs-sm);color:var(--text-600);line-height:1.6">No screen reaches CEO review without: Dev self-check → IST review → TL-IST sign-off → PM clearance. Each reviewer accountable for their scope.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     2 · COLOR SYSTEM
+══════════════════════════════════════════════════════════ -->
+<div class="bp-section">
+  <div class="bp-section-header">
+    <div class="bp-section-number">2</div>
+    <div class="bp-section-title">Color System</div>
+    <div class="bp-section-sub">All hex values are authoritative — use these exact codes across all screens</div>
+  </div>
+  <div class="bp-section-body">
+
+    <div class="color-group">
+      <div class="color-group-title">Primary — Brand Blue</div>
+      <div class="color-row">
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#0C447C"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Blue 800</div>
+            <div class="color-chip-hex">#0C447C</div>
+            <div class="color-chip-use">Hover state, deep accent</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#185FA5"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Blue 600 ★ Primary</div>
+            <div class="color-chip-hex">#185FA5</div>
+            <div class="color-chip-use">Primary buttons, links, active states, toolbar Save, toolbar icons</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#3B82C4"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Blue 400</div>
+            <div class="color-chip-hex">#3B82C4</div>
+            <div class="color-chip-use">Focus rings, secondary accent</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#E6F1FB"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Blue 100</div>
+            <div class="color-chip-hex">#E6F1FB</div>
+            <div class="color-chip-use">Icon backgrounds, info chips, KPI card tint</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#F0F7FF;border-bottom:1px solid #E2E2E2"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Blue 50</div>
+            <div class="color-chip-hex">#F0F7FF</div>
+            <div class="color-chip-use">Code labels, token badges</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="color-group-title">Semantic — Status Colors</div>
+      <div class="color-row">
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#3B6D11"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Green 700</div>
+            <div class="color-chip-hex">#3B6D11</div>
+            <div class="color-chip-use">Success, Save button, approved state</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#EAF3DE"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Green 100</div>
+            <div class="color-chip-hex">#EAF3DE</div>
+            <div class="color-chip-use">Approved badges, success alerts bg</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#BA7517"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Amber 700</div>
+            <div class="color-chip-hex">#BA7517</div>
+            <div class="color-chip-use">Warning text, budget values, Modify mode</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#FAEEDA"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Amber 100</div>
+            <div class="color-chip-hex">#FAEEDA</div>
+            <div class="color-chip-use">Warning alerts bg, Modify mode chip bg</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#A32D2D"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Red 700</div>
+            <div class="color-chip-hex">#A32D2D</div>
+            <div class="color-chip-use">Error text, Delete button text, required *</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#E24B4A"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Red 400</div>
+            <div class="color-chip-hex">#E24B4A</div>
+            <div class="color-chip-use">Delete button border, error field border</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#FCEBEB"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Red 100</div>
+            <div class="color-chip-hex">#FCEBEB</div>
+            <div class="color-chip-use">Error alerts bg, error field bg tint</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#0F6E56"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Teal 700</div>
+            <div class="color-chip-hex">#0F6E56</div>
+            <div class="color-chip-use">Approval pipeline header icon</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#E1F5EE"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Teal 100</div>
+            <div class="color-chip-hex">#E1F5EE</div>
+            <div class="color-chip-use">Approval pipeline header bg</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="color-group-title">Neutral — Surfaces &amp; Text</div>
+      <div class="color-row">
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#F5F5F3;border-bottom:1px solid #E2E2E2"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Background</div>
+            <div class="color-chip-hex">#F5F5F3</div>
+            <div class="color-chip-use">Page background</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#FAFAF8;border-bottom:1px solid #E2E2E2"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Background 2</div>
+            <div class="color-chip-hex">#FAFAF8</div>
+            <div class="color-chip-use">Card headers, section sub-headers</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#FFFFFF;border-bottom:1px solid #E2E2E2"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Surface</div>
+            <div class="color-chip-hex">#FFFFFF</div>
+            <div class="color-chip-use">Cards, forms, modals, toolbar</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#E2E2E2"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Border</div>
+            <div class="color-chip-hex">#E2E2E2</div>
+            <div class="color-chip-use">All dividers, card borders, field borders default</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#D0D0D0"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Border 2</div>
+            <div class="color-chip-hex">#D0D0D0</div>
+            <div class="color-chip-use">Button borders, stronger dividers</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#1A1A1A"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Text 900</div>
+            <div class="color-chip-hex">#1A1A1A</div>
+            <div class="color-chip-use">Primary text, values, headings</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#4A4A4A"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Text 600</div>
+            <div class="color-chip-hex">#4A4A4A</div>
+            <div class="color-chip-use">Form labels, secondary text</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#888888"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Text 400</div>
+            <div class="color-chip-hex">#888888</div>
+            <div class="color-chip-use">Placeholders, hints, metadata, timestamps</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#C0C0C0"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Text 200</div>
+            <div class="color-chip-hex">#C0C0C0</div>
+            <div class="color-chip-use">Disabled text, read-only values</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PR List Status Badge Colors -->
+    <div class="color-group">
+      <div class="color-group-title">PR Status Badge Colors</div>
+      <div class="color-row">
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#E6F1FB"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Requested</div>
+            <div class="color-chip-hex">bg #E6F1FB · text #185FA5</div>
+            <div class="color-chip-use">Draft / Pending status</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#EAF3DE"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Approved</div>
+            <div class="color-chip-hex">bg #EAF3DE · text #3B6D11</div>
+            <div class="color-chip-use">L1/L2/Final approved, Converted</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#FCEBEB"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Rejected</div>
+            <div class="color-chip-hex">bg #FCEBEB · text #A32D2D</div>
+            <div class="color-chip-use">Cancelled, rejected</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#EDE9FE"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">PO Raised</div>
+            <div class="color-chip-hex">bg #EDE9FE · text #5B21B6</div>
+            <div class="color-chip-use">Converted to PO</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="color-chip-swatch" style="background:#F1EFE8"></div>
+          <div class="color-chip-info">
+            <div class="color-chip-name">Open / Draft</div>
+            <div class="color-chip-hex">bg #F1EFE8 · text #5F5E5A</div>
+            <div class="color-chip-use">Newly created, not submitted</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bp-note">⚠ Never use colours outside this palette without CEO approval. Do not use raw Ant Design default blue (#1677FF) in SpinRise — the brand blue is #185FA5.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     3 · TYPOGRAPHY
+══════════════════════════════════════════════════════════ -->
+<div class="bp-section">
+  <div class="bp-section-header">
+    <div class="bp-section-number">3</div>
+    <div class="bp-section-title">Typography System</div>
+    <div class="bp-section-sub">Font family · sizes · weights · usage rules</div>
+  </div>
+  <div class="bp-section-body">
+    <div class="bp-grid-2" style="margin-bottom:24px">
+      <div>
+        <div class="bp-label">Primary Font — UI</div>
+        <div style="font-size:28px;font-weight:700;letter-spacing:-0.02em;margin-bottom:4px">Inter</div>
+        <div style="font-size:var(--fs-sm);color:var(--text-400);margin-bottom:12px">Google Fonts · Weights: 400, 500, 600, 700, 800</div>
+        <div style="font-size:var(--fs-sm);color:var(--text-600)">CSS: <span class="bp-mono">'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif</span></div>
+        <div style="margin-top:12px;font-size:var(--fs-sm);color:var(--text-600)">Fallback when Google Fonts unavailable: system-ui renders natively. The form is readable without Inter — it is an enhancement, not a dependency.</div>
+      </div>
+      <div>
+        <div class="bp-label">Monospace Font — Codes &amp; Values</div>
+        <div style="font-family:var(--font-mono);font-size:28px;font-weight:700;letter-spacing:-0.02em;margin-bottom:4px">JetBrains Mono</div>
+        <div style="font-size:var(--fs-sm);color:var(--text-400);margin-bottom:12px">Google Fonts · Weights: 400, 500</div>
+        <div style="font-size:var(--fs-sm);color:var(--text-600)">Used for: Item Codes, PR numbers, hex values, document numbers. Never for labels or body text.</div>
+      </div>
+    </div>
+
+    <div class="bp-label">Type Scale</div>
+    <div style="border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden">
+      <div class="type-row" style="padding:14px 16px">
+        <div class="type-meta">Display<span>28px / 800 / -0.03em</span></div>
+        <div class="type-specimen" style="font-size:28px;font-weight:800;letter-spacing:-0.03em;line-height:1.1">Purchase Requisition</div>
+        <div class="type-use">Page titles, modal hero text</div>
+      </div>
+      <div class="type-row" style="padding:14px 16px">
+        <div class="type-meta">Heading 1<span>22px / 700 / -0.02em</span></div>
+        <div class="type-specimen" style="font-size:22px;font-weight:700;letter-spacing:-0.02em">SpinRise ERP</div>
+        <div class="type-use">Section headings</div>
+      </div>
+      <div class="type-row" style="padding:14px 16px">
+        <div class="type-meta">Heading 2<span>18px / 700 / -0.01em</span></div>
+        <div class="type-specimen" style="font-size:18px;font-weight:700;letter-spacing:-0.01em">Document Header</div>
+        <div class="type-use">Card titles, dialog headings</div>
+      </div>
+      <div class="type-row" style="padding:14px 16px">
+        <div class="type-meta">Heading 3<span>14px / 600 / 0</span></div>
+        <div class="type-specimen" style="font-size:14px;font-weight:600">Item Details Grid</div>
+        <div class="type-use">Sub-section titles, panel headers</div>
+      </div>
+      <div class="type-row" style="padding:14px 16px">
+        <div class="type-meta">Body Medium<span>13px / 500 / 0</span></div>
+        <div class="type-specimen" style="font-size:13px;font-weight:500">Yarn Spindle Bearing Assembly Type A</div>
+        <div class="type-use">Form values, table data, important body</div>
+      </div>
+      <div class="type-row" style="padding:14px 16px">
+        <div class="type-meta">Body<span>12px / 400 / 0</span></div>
+        <div class="type-specimen" style="font-size:12px;font-weight:400">The item must be available in the Item Master before it can be added to a requisition.</div>
+        <div class="type-use">Grid data, descriptions, help text</div>
+      </div>
+      <div class="type-row" style="padding:14px 16px">
+        <div class="type-meta">Form Label<span>11px / 600 / 0.01em</span></div>
+        <div class="type-specimen" style="font-size:11px;font-weight:600;color:var(--text-600);letter-spacing:0.01em">Department <span style="color:var(--red-400)">*</span></div>
+        <div class="type-use">All form field labels — Title Case</div>
+      </div>
+      <div class="type-row" style="padding:14px 16px">
+        <div class="type-meta">Caption / Chip<span>10px / 600 / 0.04em</span></div>
+        <div class="type-specimen" style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--text-400)">Total Lines</div>
+        <div class="type-use">KPI strip labels, section meta labels</div>
+      </div>
+      <div class="type-row" style="padding:14px 16px">
+        <div class="type-meta" style="font-family:var(--font-mono)">Monospace<span style="font-family:var(--font-mono)">12px / 400–500</span></div>
+        <div class="type-specimen" style="font-family:var(--font-mono);font-size:12px;font-weight:500;color:var(--blue-600)">YSPN-001 &nbsp; PR-00042 &nbsp; #185FA5</div>
+        <div class="type-use">Item codes, PR numbers, hex values</div>
+      </div>
+    </div>
+
+    <div style="margin-top:24px">
+      <div class="bp-label">Label Rules</div>
+      <table class="bp-spec-table">
+        <thead><tr><th>Rule</th><th>Correct</th><th>Wrong</th></tr></thead>
+        <tbody>
+          <tr><td>Use Title Case</td><td style="color:var(--green-700);font-weight:600">Requested By</td><td style="color:var(--red-700)">REQUESTED BY &nbsp; / &nbsp; requested by</td></tr>
+          <tr><td>No abbreviations</td><td style="color:var(--green-700);font-weight:600">Quantity Required</td><td style="color:var(--red-700)">Qty Req. / Qty</td></tr>
+          <tr><td>No abbreviations</td><td style="color:var(--green-700);font-weight:600">Approximate Cost</td><td style="color:var(--red-700)">Appr. Cost / Approx Cost</td></tr>
+          <tr><td>No abbreviations</td><td style="color:var(--green-700);font-weight:600">Reference Number</td><td style="color:var(--red-700)">Ref No. / Ref #</td></tr>
+          <tr><td>Required indicator</td><td style="color:var(--green-700);font-weight:600">Department <span style="color:var(--red-400)">*</span></td><td style="color:var(--red-700)">(Required) &nbsp; / &nbsp; bold label only</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     4 · SPACING & GRID
+══════════════════════════════════════════════════════════ -->
+<div class="bp-section">
+  <div class="bp-section-header">
+    <div class="bp-section-number">4</div>
+    <div class="bp-section-title">Spacing &amp; Grid System</div>
+    <div class="bp-section-sub">4px base unit · 12-column responsive grid</div>
+  </div>
+  <div class="bp-section-body">
+    <div class="bp-label">Spacing Scale (4px base)</div>
+    <div style="display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;margin-bottom:24px">
+      <div style="text-align:center">
+        <div style="height:4px;background:var(--blue-600);width:40px;border-radius:2px;margin:0 auto 4px"></div>
+        <div style="font-size:10px;font-family:var(--font-mono);color:var(--text-400)">sp-1<br>4px</div>
+      </div>
+      <div style="text-align:center">
+        <div style="height:8px;background:var(--blue-600);width:40px;border-radius:2px;margin:0 auto 4px"></div>
+        <div style="font-size:10px;font-family:var(--font-mono);color:var(--text-400)">sp-2<br>8px</div>
+      </div>
+      <div style="text-align:center">
+        <div style="height:12px;background:var(--blue-600);width:40px;border-radius:2px;margin:0 auto 4px"></div>
+        <div style="font-size:10px;font-family:var(--font-mono);color:var(--text-400)">sp-3<br>12px</div>
+      </div>
+      <div style="text-align:center">
+        <div style="height:16px;background:var(--blue-600);width:40px;border-radius:2px;margin:0 auto 4px"></div>
+        <div style="font-size:10px;font-family:var(--font-mono);color:var(--text-400)">sp-4<br>16px</div>
+      </div>
+      <div style="text-align:center">
+        <div style="height:20px;background:var(--blue-600);width:40px;border-radius:2px;margin:0 auto 4px"></div>
+        <div style="font-size:10px;font-family:var(--font-mono);color:var(--text-400)">sp-5<br>20px</div>
+      </div>
+      <div style="text-align:center">
+        <div style="height:24px;background:var(--blue-600);width:40px;border-radius:2px;margin:0 auto 4px"></div>
+        <div style="font-size:10px;font-family:var(--font-mono);color:var(--text-400)">sp-6<br>24px</div>
+      </div>
+      <div style="text-align:center">
+        <div style="height:32px;background:var(--blue-600);width:40px;border-radius:2px;margin:0 auto 4px"></div>
+        <div style="font-size:10px;font-family:var(--font-mono);color:var(--text-400)">sp-8<br>32px</div>
+      </div>
+      <div style="text-align:center">
+        <div style="height:40px;background:var(--blue-600);width:40px;border-radius:2px;margin:0 auto 4px"></div>
+        <div style="font-size:10px;font-family:var(--font-mono);color:var(--text-400)">sp-10<br>40px</div>
+      </div>
+      <div style="text-align:center">
+        <div style="height:48px;background:var(--blue-600);width:40px;border-radius:2px;margin:0 auto 4px"></div>
+        <div style="font-size:10px;font-family:var(--font-mono);color:var(--text-400)">sp-12<br>48px</div>
+      </div>
+    </div>
+
+    <div class="bp-label">Form Header Layout — 5-Column Grid</div>
+    <div style="border:2px dashed var(--blue-100);border-radius:var(--r-lg);padding:12px;margin-bottom:16px">
+      <div style="display:grid;grid-template-columns:5fr 4fr 4fr 4fr 3fr;gap:8px">
+        <div style="background:var(--blue-100);border:1px dashed var(--blue-400);border-radius:var(--r-md);padding:8px 10px;font-size:var(--fs-xs);font-weight:600;color:var(--blue-600)">Department<br><span style="font-weight:400;opacity:.7">~5 parts · widest</span></div>
+        <div style="background:var(--blue-100);border:1px dashed var(--blue-400);border-radius:var(--r-md);padding:8px 10px;font-size:var(--fs-xs);font-weight:600;color:var(--blue-600)">Section<br><span style="font-weight:400;opacity:.7">~4 parts</span></div>
+        <div style="background:var(--blue-100);border:1px dashed var(--blue-400);border-radius:var(--r-md);padding:8px 10px;font-size:var(--fs-xs);font-weight:600;color:var(--blue-600)">Requested By<br><span style="font-weight:400;opacity:.7">~4 parts</span></div>
+        <div style="background:var(--blue-100);border:1px dashed var(--blue-400);border-radius:var(--r-md);padding:8px 10px;font-size:var(--fs-xs);font-weight:600;color:var(--blue-600)">Requisition Type<br><span style="font-weight:400;opacity:.7">~4 parts</span></div>
+        <div style="background:var(--blue-100);border:1px dashed var(--blue-400);border-radius:var(--r-md);padding:8px 10px;font-size:var(--fs-xs);font-weight:600;color:var(--blue-600)">Reference Number<br><span style="font-weight:400;opacity:.7">~3 parts</span></div>
+      </div>
+      <div style="font-size:10px;color:var(--text-400);margin-top:8px;text-align:center">gap: 8px between fields · form padding: 10px 20px · Ant Design size="small"</div>
+    </div>
+
+    <div class="bp-label">Page Anatomy Proportions (single-screen constraint)</div>
+    <div style="display:flex;flex-direction:column;gap:4px;font-size:var(--fs-xs)">
+      <div style="background:#185FA5;color:#fff;padding:6px 12px;border-radius:4px;font-weight:600">Toolbar — 44px fixed</div>
+      <div style="background:#E6F1FB;padding:6px 12px;border-radius:4px;color:#185FA5;font-weight:600">Document Header (card-bar + form fields) — ~90px</div>
+      <div style="background:#FAEEDA;padding:6px 12px;border-radius:4px;color:#BA7517;font-weight:600">KPI Strip (5 compact cards) — ~68px</div>
+      <div style="background:#E1F5EE;padding:6px 12px;border-radius:4px;color:#0F6E56;font-weight:600">Approval Pipeline — ~80px</div>
+      <div style="background:#EAF3DE;padding:4px 12px;border-radius:4px;color:#3B6D11;font-weight:600;flex:1;min-height:60px;display:flex;align-items:center">Item Grid — flex: 1 · takes all remaining height</div>
+      <div style="background:#F5F5F3;border:1px solid #E2E2E2;padding:6px 12px;border-radius:4px;color:#888;font-weight:600">Status Bar — 30px fixed</div>
+    </div>
+    <div class="bp-note" style="margin-top:12px">Target viewport: 1280×768 minimum. All sections above must be visible without scroll at 1366×768 (most common office monitor). Sidebar width = 220px collapsed or 56px icon-only.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     5 · BUTTON SYSTEM
+══════════════════════════════════════════════════════════ -->
+<div class="bp-section">
+  <div class="bp-section-header">
+    <div class="bp-section-number">5</div>
+    <div class="bp-section-title">Button System</div>
+    <div class="bp-section-sub">Toolbar buttons · action buttons · all states</div>
+  </div>
+  <div class="bp-section-body">
+
+    <!-- Toolbar buttons -->
+    <div class="bp-label">Toolbar Buttons (VB-Style Native &lt;button&gt;)</div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:12px 16px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+      <!-- New PR -->
+      <button style="display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border:1px solid #185FA5;border-radius:6px;background:#185FA5;color:#fff;font-size:12px;font-weight:500;font-family:inherit;cursor:pointer">
+        ＋ New PR
+        <span style="font-size:10px;padding:1px 4px;border:1px solid rgba(255,255,255,0.4);border-radius:3px;color:rgba(255,255,255,0.8);background:rgba(0,0,0,0.15);font-family:monospace;margin-left:2px">Ctrl+A</span>
+      </button>
+      <!-- Modify -->
+      <button style="display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border:1px solid #D0D0D0;border-radius:6px;background:#fff;color:#1A1A1A;font-size:12px;font-weight:500;font-family:inherit;cursor:pointer">
+        ✎ Modify
+        <span style="font-size:10px;padding:1px 4px;border:1px solid #D0D0D0;border-radius:3px;color:#888;background:#F5F5F3;font-family:monospace;margin-left:2px">Ctrl+M</span>
+      </button>
+      <!-- Delete -->
+      <button style="display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border:1px solid #E24B4A;border-radius:6px;background:#fff;color:#A32D2D;font-size:12px;font-weight:500;font-family:inherit;cursor:pointer">
+        ✕ Delete
+        <span style="font-size:10px;padding:1px 4px;border:1px solid #D0D0D0;border-radius:3px;color:#888;background:#F5F5F3;font-family:monospace;margin-left:2px">Ctrl+D</span>
+      </button>
+      <div style="width:1px;height:22px;background:#E2E2E2;margin:0 3px"></div>
+      <button style="display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border:1px solid #D0D0D0;border-radius:6px;background:#fff;color:#1A1A1A;font-size:12px;font-weight:500;font-family:inherit;cursor:pointer">
+        🔍 Find
+        <span style="font-size:10px;padding:1px 4px;border:1px solid #D0D0D0;border-radius:3px;color:#888;background:#F5F5F3;font-family:monospace;margin-left:2px">Ctrl+F</span>
+      </button>
+      <button style="display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border:1px solid #D0D0D0;border-radius:6px;background:#fff;color:#1A1A1A;font-size:12px;font-weight:500;font-family:inherit;cursor:pointer">
+        ☰ List
+        <span style="font-size:10px;padding:1px 4px;border:1px solid #D0D0D0;border-radius:3px;color:#888;background:#F5F5F3;font-family:monospace;margin-left:2px">Ctrl+L</span>
+      </button>
+      <div style="width:1px;height:22px;background:#E2E2E2;margin:0 3px"></div>
+      <button style="display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border:1px solid #D0D0D0;border-radius:6px;background:#fff;color:#1A1A1A;font-size:12px;font-family:inherit;cursor:pointer;opacity:0.35" disabled>⇤</button>
+      <button style="display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border:1px solid #D0D0D0;border-radius:6px;background:#fff;color:#1A1A1A;font-size:12px;font-family:inherit;cursor:pointer;opacity:0.35" disabled>‹</button>
+      <button style="display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border:1px solid #D0D0D0;border-radius:6px;background:#fff;color:#1A1A1A;font-size:12px;font-family:inherit;cursor:pointer;opacity:0.35" disabled>›</button>
+      <button style="display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border:1px solid #D0D0D0;border-radius:6px;background:#fff;color:#1A1A1A;font-size:12px;font-family:inherit;cursor:pointer;opacity:0.35" disabled>⇥</button>
+      <div style="width:1px;height:22px;background:#E2E2E2;margin:0 3px"></div>
+      <button style="display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border:1px solid #3B6D11;border-radius:6px;background:#3B6D11;color:#fff;font-size:12px;font-weight:500;font-family:inherit;cursor:pointer">
+        ✓ Save
+        <span style="font-size:10px;padding:1px 4px;border:1px solid rgba(255,255,255,0.4);border-radius:3px;color:rgba(255,255,255,0.8);background:rgba(0,0,0,0.15);font-family:monospace;margin-left:2px">Ctrl+S</span>
+      </button>
+      <button style="display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border:1px solid #D0D0D0;border-radius:6px;background:#fff;color:#1A1A1A;font-size:12px;font-weight:500;font-family:inherit;cursor:pointer">
+        ✕ Cancel
+        <span style="font-size:10px;padding:1px 4px;border:1px solid #D0D0D0;border-radius:3px;color:#888;background:#F5F5F3;font-family:monospace;margin-left:2px">Ctrl+Bksp</span>
+      </button>
+      <div style="width:1px;height:22px;background:#E2E2E2;margin:0 3px"></div>
+      <button style="display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border:1px solid #D0D0D0;border-radius:6px;background:#fff;color:#1A1A1A;font-size:12px;font-weight:500;font-family:inherit;cursor:pointer;opacity:0.35" disabled>
+        🖨 Print
+        <span style="font-size:10px;padding:1px 4px;border:1px solid #D0D0D0;border-radius:3px;color:#888;background:#F5F5F3;font-family:monospace;margin-left:2px">Ctrl+Y</span>
+      </button>
+    </div>
+
+    <!-- Toolbar spec table -->
+    <table class="bp-spec-table" style="margin-bottom:24px">
+      <thead><tr><th>Button</th><th>Variant</th><th>Background</th><th>Text Color</th><th>Border</th><th>Height</th><th>Shortcut</th></tr></thead>
+      <tbody>
+        <tr><td><strong>New PR</strong></td><td>Primary</td><td><span class="bp-mono">#185FA5</span></td><td>#FFFFFF</td><td>#185FA5</td><td>28px</td><td>Ctrl+A</td></tr>
+        <tr><td><strong>Save</strong></td><td>Success</td><td><span class="bp-mono">#3B6D11</span></td><td>#FFFFFF</td><td>#3B6D11</td><td>28px</td><td>Ctrl+S</td></tr>
+        <tr><td><strong>Delete</strong></td><td>Danger</td><td>#FFFFFF</td><td><span class="bp-mono">#A32D2D</span></td><td>#E24B4A</td><td>28px</td><td>Ctrl+D</td></tr>
+        <tr><td><strong>Modify / Find / List / Cancel / Print</strong></td><td>Default</td><td>#FFFFFF</td><td>#1A1A1A</td><td>#D0D0D0</td><td>28px</td><td>See §9</td></tr>
+        <tr><td><strong>Nav (‹‹ ‹ › ››)</strong></td><td>Icon</td><td>#FFFFFF</td><td>#1A1A1A</td><td>#D0D0D0</td><td>28px · padding 5px 8px</td><td>—</td></tr>
+        <tr><td><strong>Disabled state (any)</strong></td><td>—</td><td>same</td><td>same</td><td>same</td><td>—</td><td>opacity: 0.35 · pointer-events: none</td></tr>
+      </tbody>
+    </table>
+
+    <!-- Button variants -->
+    <div class="bp-label">General Action Buttons (Ant Design integration)</div>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:16px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:16px">
+      <button style="padding:6px 16px;background:#185FA5;color:#fff;border:1px solid #185FA5;border-radius:6px;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer">Primary Action</button>
+      <button style="padding:6px 16px;background:#3B6D11;color:#fff;border:1px solid #3B6D11;border-radius:6px;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer">Submit / Confirm</button>
+      <button style="padding:6px 16px;background:#fff;color:#1A1A1A;border:1px solid #D0D0D0;border-radius:6px;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer">Secondary</button>
+      <button style="padding:6px 16px;background:#fff;color:#A32D2D;border:1px solid #E24B4A;border-radius:6px;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer">Destructive</button>
+      <button style="padding:6px 16px;background:#FAFAF8;color:#888;border:1px solid #E2E2E2;border-radius:6px;font-size:13px;font-weight:500;font-family:inherit;cursor:not-allowed;opacity:0.5" disabled>Disabled</button>
+      <button style="padding:6px 16px;background:transparent;color:#185FA5;border:none;border-radius:6px;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:2px">Link / Ghost</button>
+    </div>
+
+    <div class="bp-label">Icon Buttons (compact grid actions)</div>
+    <div style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:16px">
+      <button title="Edit" style="width:28px;height:28px;border:1px solid #D0D0D0;border-radius:6px;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px">✎</button>
+      <button title="Delete" style="width:28px;height:28px;border:1px solid #E24B4A;border-radius:6px;background:#fff;color:#A32D2D;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px">✕</button>
+      <button title="View" style="width:28px;height:28px;border:1px solid #D0D0D0;border-radius:6px;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px">👁</button>
+      <button title="Print" style="width:28px;height:28px;border:1px solid #D0D0D0;border-radius:6px;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px">🖨</button>
+      <button title="Download" style="width:28px;height:28px;border:1px solid #D0D0D0;border-radius:6px;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px">⬇</button>
+    </div>
+    <div class="bp-rule">Icon buttons: 28×28px · border-radius 6px · icon font-size 13px · tooltip via <span class="bp-mono">title</span> attribute always required</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     6 · FORM COMPONENTS & STATES
+══════════════════════════════════════════════════════════ -->
+<div class="bp-section">
+  <div class="bp-section-header">
+    <div class="bp-section-number">6</div>
+    <div class="bp-section-title">Form Components &amp; Validation States</div>
+    <div class="bp-section-sub">All input types · every state · required field rules · error display</div>
+  </div>
+  <div class="bp-section-body">
+
+    <!-- Text Input States -->
+    <div class="bp-label">Text Input — All States</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px">
+
+      <!-- Default -->
+      <div>
+        <div style="font-size:var(--fs-xs);font-weight:600;color:var(--text-400);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em">Default</div>
+        <div style="margin-bottom:4px;font-size:11px;font-weight:600;color:#475569">Department</div>
+        <input type="text" placeholder="e.g. Spinning" style="width:100%;height:28px;padding:0 8px;border:1px solid #E2E2E2;border-radius:6px;font-size:12px;font-family:inherit;color:#1A1A1A;background:#fff;outline:none">
+        <div style="font-size:10px;color:#888;margin-top:3px">border: 1px solid #E2E2E2 · bg: #FFFFFF</div>
+      </div>
+
+      <!-- Focused -->
+      <div>
+        <div style="font-size:var(--fs-xs);font-weight:600;color:var(--text-400);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em">Focused (active)</div>
+        <div style="margin-bottom:4px;font-size:11px;font-weight:600;color:#475569">Department</div>
+        <input type="text" value="SPN – Spinning" style="width:100%;height:28px;padding:0 8px;border:1px solid #185FA5;border-radius:6px;font-size:12px;font-family:inherit;color:#1A1A1A;background:#fff;outline:none;box-shadow:0 0 0 2px rgba(24,95,165,0.15)">
+        <div style="font-size:10px;color:#888;margin-top:3px">border: #185FA5 · box-shadow: 0 0 0 2px rgba(24,95,165,0.15)</div>
+      </div>
+
+      <!-- Filled / Completed -->
+      <div>
+        <div style="font-size:var(--fs-xs);font-weight:600;color:var(--text-400);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em">Filled</div>
+        <div style="margin-bottom:4px;font-size:11px;font-weight:600;color:#475569">Department</div>
+        <input type="text" value="920 – Spinning" style="width:100%;height:28px;padding:0 8px;border:1px solid #E2E2E2;border-radius:6px;font-size:12px;font-family:inherit;color:#1A1A1A;background:#fff;outline:none">
+        <div style="font-size:10px;color:#888;margin-top:3px">Same as default. No green border — don't over-validate.</div>
+      </div>
+
+      <!-- Error — empty required -->
+      <div>
+        <div style="font-size:var(--fs-xs);font-weight:600;color:var(--red-700);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em">Error — Required Empty</div>
+        <div style="margin-bottom:4px;font-size:11px;font-weight:600;color:#475569">Department <span style="color:#E24B4A">*</span></div>
+        <input type="text" placeholder="Select department…" style="width:100%;height:28px;padding:0 8px;border:1px solid #E24B4A;border-radius:6px;font-size:12px;font-family:inherit;color:#1A1A1A;background:#FFF5F5;outline:none">
+        <div style="display:flex;align-items:center;gap:4px;margin-top:3px">
+          <span style="color:#E24B4A;font-size:10px">⚠</span>
+          <span style="font-size:10px;color:#A32D2D;font-weight:500">This field is required</span>
+        </div>
+      </div>
+
+      <!-- Error — invalid value -->
+      <div>
+        <div style="font-size:var(--fs-xs);font-weight:600;color:var(--red-700);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em">Error — Invalid Value</div>
+        <div style="margin-bottom:4px;font-size:11px;font-weight:600;color:#475569">Quantity Required <span style="color:#E24B4A">*</span></div>
+        <input type="text" value="-5" style="width:100%;height:28px;padding:0 8px;border:1px solid #E24B4A;border-radius:6px;font-size:12px;font-family:inherit;color:#A32D2D;background:#FFF5F5;outline:none;text-align:right">
+        <div style="display:flex;align-items:center;gap:4px;margin-top:3px">
+          <span style="color:#E24B4A;font-size:10px">⚠</span>
+          <span style="font-size:10px;color:#A32D2D;font-weight:500">Quantity must be greater than 0</span>
+        </div>
+      </div>
+
+      <!-- Disabled -->
+      <div>
+        <div style="font-size:var(--fs-xs);font-weight:600;color:var(--text-400);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em">Disabled</div>
+        <div style="margin-bottom:4px;font-size:11px;font-weight:600;color:#C0C0C0">Department</div>
+        <input type="text" value="920 – Spinning" disabled style="width:100%;height:28px;padding:0 8px;border:1px solid #E2E2E2;border-radius:6px;font-size:12px;font-family:inherit;color:#C0C0C0;background:#FAFAF8;outline:none;cursor:not-allowed">
+        <div style="font-size:10px;color:#888;margin-top:3px">bg: #FAFAF8 · text: #C0C0C0 · cursor: not-allowed</div>
+      </div>
+
+      <!-- Read-only -->
+      <div>
+        <div style="font-size:var(--fs-xs);font-weight:600;color:var(--text-400);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em">Read-Only (Approved PR)</div>
+        <div style="margin-bottom:4px;font-size:11px;font-weight:600;color:#475569">Approximate Cost</div>
+        <div style="width:100%;height:28px;padding:0 8px;border:1px solid #E2E2E2;border-radius:6px;font-size:12px;font-family:inherit;color:#888;background:#FAFAF8;display:flex;align-items:center;justify-content:flex-end">₹ 24,500.00</div>
+        <div style="font-size:10px;color:#888;margin-top:3px">No border focus · text: #888 (grey) · value in grey per CEO directive</div>
+      </div>
+
+      <!-- Numeric right-aligned -->
+      <div>
+        <div style="font-size:var(--fs-xs);font-weight:600;color:var(--blue-600);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em">Numeric — Right Aligned ★</div>
+        <div style="margin-bottom:4px;font-size:11px;font-weight:600;color:#475569">Quantity Required <span style="color:#E24B4A">*</span></div>
+        <input type="text" value="12.000" style="width:100%;height:28px;padding:0 8px;border:1px solid #E2E2E2;border-radius:6px;font-size:12px;font-family:var(--font-mono);color:#1A1A1A;background:#fff;outline:none;text-align:right">
+        <div style="font-size:10px;color:#888;margin-top:3px">text-align: right · font-family: monospace · 3 decimal places</div>
+      </div>
+
+      <!-- Search/lookup input -->
+      <div>
+        <div style="font-size:var(--fs-xs);font-weight:600;color:var(--text-400);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em">Lookup Input (Item Code)</div>
+        <div style="margin-bottom:4px;font-size:11px;font-weight:600;color:#475569">Item Code <span style="color:#E24B4A">*</span></div>
+        <div style="position:relative">
+          <input type="text" placeholder="Search…" style="width:100%;height:28px;padding:0 28px 0 8px;border:1px solid #E2E2E2;border-radius:6px;font-size:12px;font-family:monospace;color:#1A1A1A;background:#fff;outline:none">
+          <span title="Open Item Lookup (Alt+Down)" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);color:#185FA5;font-size:13px;cursor:pointer">🔍</span>
+        </div>
+        <div style="font-size:10px;color:#888;margin-top:3px">🔍 icon suffix · click or Alt+Down → opens modal</div>
+      </div>
+    </div>
+
+    <!-- Required field indicator spec -->
+    <div style="background:var(--red-100);border:1px solid #F5AAAA;border-radius:var(--r-lg);padding:16px;margin-bottom:20px">
+      <div style="font-size:var(--fs-base);font-weight:var(--fw-bold);color:var(--red-700);margin-bottom:10px">Required Field Standard</div>
+      <div style="display:flex;gap:32px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:var(--fs-xs);color:var(--text-400);margin-bottom:6px;text-transform:uppercase;font-weight:600">Label format</div>
+          <div style="font-size:11px;font-weight:600;color:#475569">Department <span style="color:#E24B4A">*</span></div>
+          <div style="font-size:10px;color:#888;margin-top:3px">Red * inline after label text. Never bold the label.</div>
+        </div>
+        <div>
+          <div style="font-size:var(--fs-xs);color:var(--text-400);margin-bottom:6px;text-transform:uppercase;font-weight:600">Error state</div>
+          <div style="font-size:11px;color:#1A1A1A">Border: <span style="color:#E24B4A;font-weight:600">#E24B4A</span> · bg: <span style="color:#E24B4A;font-weight:600">#FFF5F5</span></div>
+          <div style="font-size:10px;color:#888;margin-top:3px">Apply on blur or on form submit attempt</div>
+        </div>
+        <div>
+          <div style="font-size:var(--fs-xs);color:var(--text-400);margin-bottom:6px;text-transform:uppercase;font-weight:600">Error message position</div>
+          <div style="font-size:11px;color:#1A1A1A">Below the field · 3px margin-top</div>
+          <div style="font-size:10px;color:#888;margin-top:3px">⚠ icon (10px) + message text (10px) · color #A32D2D</div>
+        </div>
+        <div>
+          <div style="font-size:var(--fs-xs);color:var(--text-400);margin-bottom:6px;text-transform:uppercase;font-weight:600">Tab trap rule</div>
+          <div style="font-size:11px;color:#1A1A1A">Tab must NOT advance from empty required field</div>
+          <div style="font-size:10px;color:#888;margin-top:3px">Enforced at UI layer · show error on Tab attempt · <span style="color:#A32D2D;font-weight:600">non-negotiable</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Select / Dropdown -->
+    <div class="bp-label">Select / Dropdown States</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px">
+      <div>
+        <div style="font-size:10px;color:var(--text-400);margin-bottom:6px;text-transform:uppercase;font-weight:600">Default</div>
+        <div style="font-size:11px;font-weight:600;color:#475569;margin-bottom:4px">Requisition Type <span style="color:#E24B4A">*</span></div>
+        <select style="width:100%;height:28px;padding:0 8px;border:1px solid #E2E2E2;border-radius:6px;font-size:12px;font-family:inherit;color:#888;background:#fff;outline:none">
+          <option value="">Select type…</option>
+          <option>Emergency</option>
+          <option>Ordinary</option>
+          <option>Urgent</option>
+        </select>
+      </div>
+      <div>
+        <div style="font-size:10px;color:var(--green-700);margin-bottom:6px;text-transform:uppercase;font-weight:600">Selected</div>
+        <div style="font-size:11px;font-weight:600;color:#475569;margin-bottom:4px">Requisition Type <span style="color:#E24B4A">*</span></div>
+        <select style="width:100%;height:28px;padding:0 8px;border:1px solid #E2E2E2;border-radius:6px;font-size:12px;font-family:inherit;color:#1A1A1A;background:#fff;outline:none">
+          <option>Emergency</option>
+        </select>
+      </div>
+      <div>
+        <div style="font-size:10px;color:var(--red-700);margin-bottom:6px;text-transform:uppercase;font-weight:600">Error — unselected required</div>
+        <div style="font-size:11px;font-weight:600;color:#475569;margin-bottom:4px">Requisition Type <span style="color:#E24B4A">*</span></div>
+        <select style="width:100%;height:28px;padding:0 8px;border:1px solid #E24B4A;border-radius:6px;font-size:12px;font-family:inherit;color:#888;background:#FFF5F5;outline:none">
+          <option value="">Select type…</option>
+        </select>
+        <div style="display:flex;align-items:center;gap:4px;margin-top:3px"><span style="color:#E24B4A;font-size:10px">⚠</span><span style="font-size:10px;color:#A32D2D;font-weight:500">This field is required</span></div>
+      </div>
+    </div>
+
+    <!-- Switch / Toggle -->
+    <div class="bp-label">Switch (Sample Field)</div>
+    <div style="display:flex;align-items:center;gap:24px;padding:12px 16px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:36px;height:20px;background:#E2E2E2;border-radius:10px;position:relative;cursor:pointer">
+          <div style="width:16px;height:16px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></div>
+        </div>
+        <span style="font-size:12px;font-weight:500;color:#1A1A1A">No (default)</span>
+        <span style="font-size:10px;color:#888;background:#F1EFE8;padding:1px 6px;border-radius:3px">★ CEO mandate: default = No</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:36px;height:20px;background:#185FA5;border-radius:10px;position:relative;cursor:pointer">
+          <div style="width:16px;height:16px;background:#fff;border-radius:50%;position:absolute;top:2px;right:2px;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></div>
+        </div>
+        <span style="font-size:12px;font-weight:500;color:#1A1A1A">Yes</span>
+        <span style="font-size:10px;color:#888">On state: bg #185FA5</span>
+      </div>
+    </div>
+
+    <!-- Date Picker -->
+    <div class="bp-label">Date Picker</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:#475569;margin-bottom:4px">PR Date</div>
+        <div style="height:28px;padding:0 8px;border:1px solid #E2E2E2;border-radius:6px;font-size:12px;color:#1A1A1A;background:#fff;display:flex;align-items:center;justify-content:space-between">
+          <span>06 May 2026</span>
+          <span style="color:#888;font-size:13px">📅</span>
+        </div>
+        <div style="font-size:10px;color:#888;margin-top:3px">Editable · default = login date · text-align: left</div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:#475569;margin-bottom:4px">Required Date <span style="color:#E24B4A">*</span></div>
+        <div style="height:28px;padding:0 8px;border:1px solid #E24B4A;border-radius:6px;font-size:12px;color:#888;background:#FFF5F5;display:flex;align-items:center;justify-content:space-between">
+          <span style="color:#888">Select date…</span>
+          <span style="color:#888;font-size:13px">📅</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px;margin-top:3px"><span style="color:#E24B4A;font-size:10px">⚠</span><span style="font-size:10px;color:#A32D2D;font-weight:500">This field is required</span></div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:#C0C0C0;margin-bottom:4px">PR Date (locked)</div>
+        <div style="height:28px;padding:0 8px;border:1px solid #E2E2E2;border-radius:6px;font-size:12px;color:#888;background:#FAFAF8;display:flex;align-items:center;justify-content:space-between;cursor:not-allowed">
+          <span>06 May 2026</span>
+          <span style="color:#C0C0C0;font-size:13px">📅</span>
+        </div>
+        <div style="font-size:10px;color:#888;margin-top:3px">Disabled / locked PR · not interactive</div>
+      </div>
+    </div>
+
+    <!-- Alert / Toast Messages -->
+    <div class="bp-label">Alert &amp; Toast Messages</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
+      <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:#FCEBEB;border:1px solid #F5AAAA;border-radius:6px">
+        <span style="color:#A32D2D;font-size:14px;margin-top:1px">⚠</span>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:#A32D2D">Please fill in all required fields before saving.</div>
+          <div style="font-size:11px;color:#C0574D;margin-top:2px">Department and Quantity Required are mandatory.</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:#EAF3DE;border:1px solid #A8D07A;border-radius:6px">
+        <span style="color:#3B6D11;font-size:14px;margin-top:1px">✓</span>
+        <div style="font-size:12px;font-weight:600;color:#3B6D11">PR-00042 saved as draft successfully.</div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:#FAEEDA;border:1px solid #F3C97E;border-radius:6px">
+        <span style="color:#BA7517;font-size:14px;margin-top:1px">⚡</span>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:#BA7517">Item YSPN-001 stock is below minimum level.</div>
+          <div style="font-size:11px;color:#9A6113;margin-top:2px">Current: 12 · Minimum: 50. Consider increasing quantity.</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:#E6F1FB;border:1px solid #9DC5E8;border-radius:6px">
+        <span style="color:#185FA5;font-size:14px;margin-top:1px">ℹ</span>
+        <div style="font-size:12px;color:#185FA5">Document number series is not configured for this division. Contact your administrator.</div>
+      </div>
+    </div>
+
+    <!-- Error message spec table -->
+    <table class="bp-spec-table">
+      <thead><tr><th>Type</th><th>Background</th><th>Border</th><th>Icon</th><th>Title Color</th><th>When to show</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Error</strong></td><td>#FCEBEB</td><td>#F5AAAA</td><td>⚠ #A32D2D</td><td>#A32D2D</td><td>Validation failure, API error</td></tr>
+        <tr><td><strong>Success</strong></td><td>#EAF3DE</td><td>#A8D07A</td><td>✓ #3B6D11</td><td>#3B6D11</td><td>Save confirmed, action complete</td></tr>
+        <tr><td><strong>Warning</strong></td><td>#FAEEDA</td><td>#F3C97E</td><td>⚡ #BA7517</td><td>#BA7517</td><td>Low stock, budget exceeded, advisory</td></tr>
+        <tr><td><strong>Info</strong></td><td>#E6F1FB</td><td>#9DC5E8</td><td>ℹ #185FA5</td><td>#185FA5</td><td>Pre-check notices, configuration info</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     7 · NUMERIC & DECIMAL STANDARDS
+══════════════════════════════════════════════════════════ -->
+<div class="bp-section">
+  <div class="bp-section-header">
+    <div class="bp-section-number">7</div>
+    <div class="bp-section-title">Numeric &amp; Decimal Standards</div>
+    <div class="bp-section-sub">Kalsofte standard for all SpinRise forms — CEO directive</div>
+  </div>
+  <div class="bp-section-body">
+    <table class="bp-spec-table" style="margin-bottom:20px">
+      <thead><tr><th>Field Type</th><th>Decimal Places</th><th>Example</th><th>Alignment</th><th>Font</th><th>Currency Prefix</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Quantity</strong></td>
+          <td style="font-weight:700;color:var(--blue-600)">3 dp</td>
+          <td style="font-family:var(--font-mono);text-align:right">12.000 &nbsp; 1,250.500</td>
+          <td>Right</td>
+          <td>Monospace</td>
+          <td>None</td>
+        </tr>
+        <tr>
+          <td><strong>Rate / Unit Price</strong></td>
+          <td style="font-weight:700;color:var(--blue-600)">4 dp</td>
+          <td style="font-family:var(--font-mono);text-align:right">₹ 245.5000 &nbsp; ₹ 12,450.0000</td>
+          <td>Right</td>
+          <td>Monospace</td>
+          <td>₹ (space before value)</td>
+        </tr>
+        <tr>
+          <td><strong>Value / Amount (Qty × Rate)</strong></td>
+          <td style="font-weight:700;color:var(--blue-600)">2 dp</td>
+          <td style="font-family:var(--font-mono);text-align:right">₹ 24,500.00 &nbsp; ₹ 1,50,000.00</td>
+          <td>Right</td>
+          <td>Monospace</td>
+          <td>₹ (space before value)</td>
+        </tr>
+        <tr>
+          <td><strong>Approximate Cost (Rate + Tax)</strong></td>
+          <td style="font-weight:700;color:var(--blue-600)">2 dp</td>
+          <td style="font-family:var(--font-mono);text-align:right">₹ 28,910.00</td>
+          <td>Right</td>
+          <td>Monospace</td>
+          <td>₹ (space before value)</td>
+        </tr>
+        <tr>
+          <td><strong>Percentage</strong></td>
+          <td style="font-weight:700;color:var(--blue-600)">2 dp</td>
+          <td style="font-family:var(--font-mono);text-align:right">18.00%</td>
+          <td>Right</td>
+          <td>Monospace</td>
+          <td>% suffix (no space)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="bp-label">Formulas</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px">
+      <div style="background:var(--blue-50);border:1px solid var(--blue-100);border-radius:var(--r-lg);padding:14px;text-align:center">
+        <div style="font-size:10px;color:var(--text-400);text-transform:uppercase;font-weight:600;letter-spacing:0.05em;margin-bottom:6px">Value</div>
+        <div style="font-size:15px;font-weight:700;color:var(--blue-600);font-family:var(--font-mono)">Quantity × Rate</div>
+        <div style="font-size:10px;color:var(--text-400);margin-top:4px">Displayed in grid Value column · 2 dp</div>
+      </div>
+      <div style="background:var(--amber-100);border:1px solid #F3C97E;border-radius:var(--r-lg);padding:14px;text-align:center">
+        <div style="font-size:10px;color:var(--text-400);text-transform:uppercase;font-weight:600;letter-spacing:0.05em;margin-bottom:6px">Approximate Cost</div>
+        <div style="font-size:15px;font-weight:700;color:var(--amber-700);font-family:var(--font-mono)">Rate + Tax</div>
+        <div style="font-size:10px;color:var(--text-400);margin-top:4px">Auto-computed · grey in read-only · 2 dp</div>
+      </div>
+      <div style="background:var(--green-100);border:1px solid #A8D07A;border-radius:var(--r-lg);padding:14px;text-align:center">
+        <div style="font-size:10px;color:var(--text-400);text-transform:uppercase;font-weight:600;letter-spacing:0.05em;margin-bottom:6px">Grand Total</div>
+        <div style="font-size:15px;font-weight:700;color:var(--green-700);font-family:var(--font-mono)">Σ (Value per line)</div>
+        <div style="font-size:10px;color:var(--text-400);margin-top:4px">Status bar + print footer · 2 dp</div>
+      </div>
+    </div>
+
+    <div class="bp-label">Indian Number Format (en-IN)</div>
+    <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px;display:flex;gap:32px;flex-wrap:wrap">
+      <div><div style="font-size:10px;color:var(--text-400);margin-bottom:4px">One lakh</div><div style="font-family:var(--font-mono);font-size:14px;font-weight:600">₹ 1,00,000.00</div></div>
+      <div><div style="font-size:10px;color:var(--text-400);margin-bottom:4px">Ten lakhs</div><div style="font-family:var(--font-mono);font-size:14px;font-weight:600">₹ 10,00,000.00</div></div>
+      <div><div style="font-size:10px;color:var(--text-400);margin-bottom:4px">One crore</div><div style="font-family:var(--font-mono);font-size:14px;font-weight:600">₹ 1,00,00,000.00</div></div>
+      <div><div style="font-size:10px;color:var(--text-400);margin-bottom:4px">JS format</div><div style="font-family:var(--font-mono);font-size:11px;color:var(--blue-600)">toLocaleString('en-IN', {minimumFractionDigits: 2})</div></div>
+    </div>
+    <div class="bp-note">Never show a duplicate currency symbol. One ₹ prefix per value only. The label column already says "Rate" — do not add ₹ in the column header AND the cell.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     8 · DATA GRID (ITEM LINES TABLE)
+══════════════════════════════════════════════════════════ -->
+<div class="bp-section">
+  <div class="bp-section-header">
+    <div class="bp-section-number">8</div>
+    <div class="bp-section-title">Data Grid — Item Lines Table</div>
+    <div class="bp-section-sub">Inline editable · trailing row · tab-trap validation · 13 columns</div>
+  </div>
+  <div class="bp-section-body">
+
+    <div class="bp-label">Column Specification</div>
+    <table class="bp-spec-table" style="margin-bottom:20px">
+      <thead><tr><th>#</th><th>Column Header</th><th>Width</th><th>Alignment</th><th>Editable</th><th>Type</th><th>Required</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>#</td><td>30px</td><td>Center</td><td>No</td><td>Row number (auto)</td><td>—</td></tr>
+        <tr><td>2</td><td>Item Code</td><td>88px fixed</td><td>Left</td><td>Yes — lookup icon</td><td>Monospace text</td><td>★ Yes</td></tr>
+        <tr><td>3</td><td>Description</td><td>minWidth 150px</td><td>Left</td><td>No — auto-filled</td><td>Text + subtext (item group)</td><td>—</td></tr>
+        <tr><td>4</td><td>UOM</td><td>46px</td><td>Center</td><td>No — auto-filled</td><td>Tag/badge</td><td>—</td></tr>
+        <tr><td>5</td><td>Quantity Required</td><td>82px</td><td>Right</td><td>Yes</td><td>Number · 3 dp · monospace</td><td>★ Yes</td></tr>
+        <tr><td>6</td><td>Rate</td><td>118px</td><td>Right</td><td>Yes (if allowed)</td><td>₹ · 4 dp · monospace</td><td>—</td></tr>
+        <tr><td>7</td><td>Approximate Cost</td><td>100px</td><td>Right</td><td>No — computed</td><td>₹ · 2 dp · grey in locked</td><td>—</td></tr>
+        <tr><td>8</td><td>Required Date</td><td>min 90px</td><td>Left</td><td>Yes</td><td>Date picker</td><td>—</td></tr>
+        <tr><td>9</td><td>Machine</td><td>120px</td><td>Left</td><td>Yes — select</td><td>Dropdown</td><td>—</td></tr>
+        <tr><td>10</td><td>Sub-Cost Centre</td><td>140px</td><td>Left</td><td>Yes — select</td><td>Dropdown</td><td>—</td></tr>
+        <tr><td>11</td><td>Remarks</td><td>minWidth 110px</td><td>Left</td><td>Yes</td><td>Text input</td><td>—</td></tr>
+        <tr><td>12</td><td>Sample</td><td>52px</td><td>Center</td><td>Yes — Switch</td><td>Switch · default No</td><td>—</td></tr>
+        <tr><td>13</td><td>(Delete)</td><td>60px</td><td>Center</td><td>—</td><td>Icon button</td><td>—</td></tr>
+      </tbody>
+    </table>
+
+    <!-- Live grid demo -->
+    <div class="bp-label">Grid Visual — Committed Rows + Trailing Row</div>
+    <div style="border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;font-size:11px">
+      <!-- Grid bar -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 14px;background:var(--bg-2);border-bottom:1px solid var(--border)">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:22px;height:22px;background:var(--blue-100);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px">📋</div>
+          <span style="font-size:11px;font-weight:700;color:var(--blue-600);letter-spacing:0.03em;text-transform:uppercase">Item Lines</span>
+        </div>
+        <span style="font-size:10px;color:var(--text-400)">Tab through cells · Enter confirms row · search icon opens lookup</span>
+      </div>
+      <!-- Table -->
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:11px">
+          <thead>
+            <tr style="background:#FAFAF8">
+              <th style="padding:6px 8px;text-align:center;border-bottom:2px solid #E2E2E2;font-size:10px;font-weight:700;color:#475569;white-space:nowrap;width:30px">#</th>
+              <th style="padding:6px 8px;text-align:left;border-bottom:2px solid #E2E2E2;font-size:10px;font-weight:700;color:#475569;width:88px">Item Code</th>
+              <th style="padding:6px 8px;text-align:left;border-bottom:2px solid #E2E2E2;font-size:10px;font-weight:700;color:#475569;min-width:150px">Description</th>
+              <th style="padding:6px 8px;text-align:center;border-bottom:2px solid #E2E2E2;font-size:10px;font-weight:700;color:#475569;width:46px">UOM</th>
+              <th style="padding:6px 8px;text-align:right;border-bottom:2px solid #E2E2E2;font-size:10px;font-weight:700;color:#475569;width:82px">Quantity Required <span style="color:#E24B4A">*</span></th>
+              <th style="padding:6px 8px;text-align:right;border-bottom:2px solid #E2E2E2;font-size:10px;font-weight:700;color:#475569;width:118px">Rate</th>
+              <th style="padding:6px 8px;text-align:right;border-bottom:2px solid #E2E2E2;font-size:10px;font-weight:700;color:#475569;width:100px">Approximate Cost</th>
+              <th style="padding:6px 8px;text-align:left;border-bottom:2px solid #E2E2E2;font-size:10px;font-weight:700;color:#475569;min-width:90px">Required Date</th>
+              <th style="padding:6px 8px;text-align:center;border-bottom:2px solid #E2E2E2;font-size:10px;font-weight:700;color:#475569">Sample</th>
+              <th style="padding:6px 8px;text-align:center;border-bottom:2px solid #E2E2E2;font-size:10px;font-weight:700;color:#475569;width:60px"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Committed row 1 -->
+            <tr style="border-bottom:1px solid #F0F0EE">
+              <td style="padding:6px 8px;text-align:center;color:#888;font-size:10px">1</td>
+              <td style="padding:6px 8px;font-family:monospace;font-weight:700;font-size:11px;color:#1e293b">YSPN-001</td>
+              <td style="padding:6px 8px">
+                <div style="font-size:11px;color:#1A1A1A;font-weight:500">Yarn Spindle Bearing Type A</div>
+                <div style="font-size:9px;color:#888;margin-top:1px">Bearings &amp; Bushes</div>
+              </td>
+              <td style="padding:6px 8px;text-align:center"><span style="font-size:9px;background:#E6F1FB;color:#185FA5;padding:1px 5px;border-radius:3px;font-weight:600">Nos</span></td>
+              <td style="padding:6px 8px;text-align:right;font-family:monospace;color:#1A1A1A">12.000</td>
+              <td style="padding:6px 8px;text-align:right;font-family:monospace;color:#1A1A1A">₹ 245.5000</td>
+              <td style="padding:6px 8px;text-align:right;font-family:monospace;color:#1A1A1A">₹ 2,946.00</td>
+              <td style="padding:6px 8px;color:#1A1A1A">15 May 2026</td>
+              <td style="padding:6px 8px;text-align:center"><span style="font-size:10px;color:#888;background:#F1EFE8;padding:1px 5px;border-radius:3px">No</span></td>
+              <td style="padding:6px 8px;text-align:center"><button style="width:22px;height:22px;border:1px solid #F5AAAA;border-radius:4px;background:#fff;color:#A32D2D;cursor:pointer;font-size:11px">✕</button></td>
+            </tr>
+            <!-- Committed row 2 — error on qty -->
+            <tr style="border-bottom:1px solid #F0F0EE;background:#FFF9F9">
+              <td style="padding:6px 8px;text-align:center;color:#888;font-size:10px">2</td>
+              <td style="padding:6px 8px;font-family:monospace;font-weight:700;font-size:11px;color:#1e293b">BELT-LK22</td>
+              <td style="padding:6px 8px">
+                <div style="font-size:11px;color:#1A1A1A;font-weight:500">Loom Drive Belt LK22</div>
+                <div style="font-size:9px;color:#888;margin-top:1px">Belts &amp; Drives</div>
+              </td>
+              <td style="padding:6px 8px;text-align:center"><span style="font-size:9px;background:#E6F1FB;color:#185FA5;padding:1px 5px;border-radius:3px;font-weight:600">Mtr</span></td>
+              <td style="padding:6px 8px;text-align:right;font-family:monospace;color:#E24B4A;border:1px solid #E24B4A;border-radius:4px;background:#FFF5F5">—</td>
+              <td style="padding:6px 8px;text-align:right;font-family:monospace;color:#888">—</td>
+              <td style="padding:6px 8px;text-align:right;font-family:monospace;color:#888">—</td>
+              <td style="padding:6px 8px;color:#888">—</td>
+              <td style="padding:6px 8px;text-align:center"><span style="font-size:10px;color:#888;background:#F1EFE8;padding:1px 5px;border-radius:3px">No</span></td>
+              <td style="padding:6px 8px;text-align:center"><button style="width:22px;height:22px;border:1px solid #F5AAAA;border-radius:4px;background:#fff;color:#A32D2D;cursor:pointer;font-size:11px">✕</button></td>
+            </tr>
+            <!-- Trailing (entry) row -->
+            <tr style="background:#F0F7FF;border-bottom:1px solid #BFDBFE">
+              <td style="padding:6px 8px;text-align:center;color:#888;font-size:10px">↓</td>
+              <td style="padding:4px 6px">
+                <div style="position:relative">
+                  <input placeholder="Search…" style="width:100%;height:22px;padding:0 22px 0 6px;border:1px solid #185FA5;border-radius:4px;font-size:11px;font-family:monospace;background:#fff;outline:none;box-shadow:0 0 0 2px rgba(24,95,165,0.15)">
+                  <span style="position:absolute;right:4px;top:50%;transform:translateY(-50%);color:#185FA5;font-size:11px;cursor:pointer">🔍</span>
+                </div>
+              </td>
+              <td style="padding:4px 6px;color:#888;font-size:10px;font-style:italic">Auto-filled after item selection</td>
+              <td style="padding:4px 6px;text-align:center;color:#888;font-size:10px">—</td>
+              <td style="padding:4px 6px"><input type="text" placeholder="0.000" style="width:100%;height:22px;padding:0 4px;border:1px solid #E2E2E2;border-radius:4px;font-size:11px;font-family:monospace;text-align:right;outline:none"></td>
+              <td style="padding:4px 6px"><input type="text" placeholder="₹ 0.0000" style="width:100%;height:22px;padding:0 4px;border:1px solid #E2E2E2;border-radius:4px;font-size:11px;font-family:monospace;text-align:right;outline:none"></td>
+              <td style="padding:4px 6px;text-align:right;color:#888;font-style:italic;font-size:10px">Auto</td>
+              <td style="padding:4px 6px"><input type="text" placeholder="DD Mon YYYY" style="width:100%;height:22px;padding:0 4px;border:1px solid #E2E2E2;border-radius:4px;font-size:11px;outline:none"></td>
+              <td style="padding:4px 6px;text-align:center;color:#888;font-size:10px">No</td>
+              <td style="padding:4px 6px;text-align:center;color:#C0C0C0;font-size:11px">—</td>
+            </tr>
+          </tbody>
+          <!-- Footer / totals -->
+          <tfoot>
+            <tr style="background:#FAFAF8;border-top:2px solid #E2E2E2">
+              <td colspan="4" style="padding:7px 8px;font-size:10px;font-weight:600;color:#4A4A4A;text-align:right">Total (1 valid line)</td>
+              <td style="padding:7px 8px;text-align:right;font-family:monospace;font-weight:700;color:#1A1A1A">12.000</td>
+              <td></td>
+              <td style="padding:7px 8px;text-align:right;font-family:monospace;font-weight:700;color:#1A1A1A">₹ 2,946.00</td>
+              <td colspan="3"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <!-- Status bar -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:5px 14px;border-top:1px solid #E2E2E2;background:#FAFAF8;font-size:10px;color:#888">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="padding:2px 8px;border-radius:3px;font-weight:600;font-size:9px;background:#E6F1FB;color:#185FA5">Add Mode</span>
+          <span>Total lines: <strong style="color:#1A1A1A">1</strong></span>
+        </div>
+        <div>Total approx. cost: <strong style="color:#1A1A1A;font-family:monospace">₹ 2,946.00</strong></div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px">
+      <div class="bp-label">Grid Row States</div>
+      <table class="bp-spec-table">
+        <thead><tr><th>Row State</th><th>Background</th><th>Border</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Default committed</td><td>#FFFFFF</td><td>bottom: 1px #F0F0EE</td><td>Normal filled row</td></tr>
+          <tr><td>Hover</td><td>#F5F5F3</td><td>same</td><td>CSS :hover</td></tr>
+          <tr><td>Error (qty missing)</td><td>#FFF9F9</td><td>bottom: 1px #F0F0EE · error cell: #E24B4A</td><td>Qty cell gets red border + bg #FFF5F5</td></tr>
+          <tr><td>Trailing / entry row</td><td>#F0F7FF</td><td>bottom: 1px solid #BFDBFE</td><td>Always visible at bottom · resets after item commit</td></tr>
+          <tr><td>Cancelled / muted</td><td>#FAFAF8</td><td>same</td><td>opacity: 0.5 on text · strikethrough on item code</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="bp-label" style="margin-top:20px">Grid Behaviour Rules</div>
+    <table class="bp-spec-table">
+      <thead><tr><th>#</th><th>Rule</th><th>Implementation</th></tr></thead>
+      <tbody>
+        <tr><td>G-1</td><td>Auto first row on New PR</td><td>Trailing row visible immediately when form loads. Cursor auto-focuses Item Code cell of row 1.</td></tr>
+        <tr><td>G-2</td><td>Auto new row on Tab/Enter from last field</td><td>Tab from Remarks (or last active field) of a committed row creates the next trailing row automatically.</td></tr>
+        <tr><td>G-3</td><td>Tab trap on required fields</td><td>Tab from empty Item Code or Quantity Required cell: preventDefault · show red border on cell · cursor stays.</td></tr>
+        <tr><td>G-4</td><td>Item Code lookup</td><td>Click 🔍 icon OR press Alt+Down or Ctrl+Space → opens Item Picker Modal. F1 is NOT supported (browser constraint).</td></tr>
+        <tr><td>G-5</td><td>Auto-fill on item select</td><td>Description, UOM, Rate (last PO rate), Approximate Cost auto-populate. User cannot override Description and UOM.</td></tr>
+        <tr><td>G-6</td><td>Duplicate item prevention</td><td>If same Item Code already in list: show warning toast, reject add, preserve trailing row.</td></tr>
+        <tr><td>G-7</td><td>Add Multiple</td><td>Button opens Item Picker Modal in multi-select mode. All selected items load as separate rows. User fills qty per row.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     9 · KEYBOARD SHORTCUTS
+══════════════════════════════════════════════════════════ -->
+<div class="bp-section">
+  <div class="bp-section-header">
+    <div class="bp-section-number">9</div>
+    <div class="bp-section-title">Keyboard Shortcuts</div>
+    <div class="bp-section-sub">SpinRise standard — all transaction forms</div>
+  </div>
+  <div class="bp-section-body">
+    <div class="bp-grid-2">
+      <div>
+        <div class="bp-label">Toolbar Actions</div>
+        <table class="bp-spec-table">
+          <thead><tr><th>Shortcut</th><th>Action</th><th>Condition</th></tr></thead>
+          <tbody>
+            <tr><td><span class="bp-mono">Ctrl+A</span></td><td>New document</td><td>Always available</td></tr>
+            <tr><td><span class="bp-mono">Ctrl+M</span></td><td>Modify mode</td><td>Record loaded, not locked</td></tr>
+            <tr><td><span class="bp-mono">Ctrl+D</span></td><td>Delete record</td><td>Record loaded, OPEN status only</td></tr>
+            <tr><td><span class="bp-mono">Ctrl+S</span></td><td>Save / Submit</td><td>Form valid, not busy</td></tr>
+            <tr><td><span class="bp-mono">Ctrl+Bksp</span></td><td>Cancel / Close</td><td>Always available</td></tr>
+            <tr><td><span class="bp-mono">Ctrl+F</span></td><td>Find / Search</td><td>Navigate to list</td></tr>
+            <tr><td><span class="bp-mono">Ctrl+L</span></td><td>List view</td><td>Navigate to list</td></tr>
+            <tr><td><span class="bp-mono">Ctrl+Y</span></td><td>Print</td><td>Record saved</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="bp-label">Grid &amp; Lookup</div>
+        <table class="bp-spec-table">
+          <thead><tr><th>Shortcut</th><th>Action</th><th>Context</th></tr></thead>
+          <tbody>
+            <tr><td><span class="bp-mono">Alt+Down</span></td><td>Open item lookup modal</td><td>Item Code cell focused</td></tr>
+            <tr><td><span class="bp-mono">Ctrl+Space</span></td><td>Open item lookup modal</td><td>Item Code cell focused</td></tr>
+            <tr><td><span class="bp-mono">Tab</span></td><td>Next field (with validation)</td><td>Grid cells</td></tr>
+            <tr><td><span class="bp-mono">Enter</span></td><td>Confirm row / next row</td><td>Last cell in trailing row</td></tr>
+            <tr><td><span class="bp-mono">Esc</span></td><td>Cancel modal</td><td>Any open modal</td></tr>
+            <tr><td><span class="bp-mono">Enter</span></td><td>Confirm modal selection</td><td>Item Picker Modal</td></tr>
+            <tr><td><span class="bp-mono">F1</span></td><td>❌ Not supported</td><td>Browser reserves F1 for Help. Do not implement or test.</td></tr>
+          </tbody>
+        </table>
+        <div class="bp-note" style="margin-top:10px">F1 is a browser constraint — never a SpinRise defect. The replacement is Alt+Down / Ctrl+Space + 🔍 icon. IST testers must not report F1 as a bug.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     10 · KPI STRIP & APPROVAL PIPELINE
+══════════════════════════════════════════════════════════ -->
+<div class="bp-section">
+  <div class="bp-section-header">
+    <div class="bp-section-number">10</div>
+    <div class="bp-section-title">KPI Strip &amp; Approval Pipeline</div>
+    <div class="bp-section-sub">Compact single-line strip · 5 cards · 5-step pipeline</div>
+  </div>
+  <div class="bp-section-body">
+    <div class="bp-label">KPI Strip (compact — single line, 68px total height)</div>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);padding:10px 16px;margin-bottom:20px">
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px">
+        <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 13px">
+          <div style="font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:3px">Total Lines</div>
+          <div style="font-size:18px;font-weight:700;color:#185FA5;line-height:1.2">2</div>
+          <div style="font-size:11px;color:#888;margin-top:2px">items in this PR</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 13px">
+          <div style="font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:3px">Total Quantity</div>
+          <div style="font-size:18px;font-weight:700;color:#1A1A1A;line-height:1.2;font-family:monospace;font-size:13px">Nos: 12<br>Mtr: 0</div>
+          <div style="font-size:11px;color:#888;margin-top:2px">By UOM</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 13px">
+          <div style="font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:3px">Approx. Budget</div>
+          <div style="font-size:16px;font-weight:700;color:#BA7517;line-height:1.2;font-family:monospace">₹ 2,946.00</div>
+          <div style="font-size:11px;color:#888;margin-top:2px">Indicative cost</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 13px">
+          <div style="font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:3px">Created By</div>
+          <div style="font-size:14px;font-weight:700;color:#1A1A1A;line-height:1.2">10042</div>
+          <div style="font-size:11px;color:#888;margin-top:2px">Not yet saved</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 13px">
+          <div style="font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:3px">Approval Status</div>
+          <div style="font-size:14px;font-weight:700;color:#5F5E5A;line-height:1.2">Draft</div>
+          <div style="font-size:11px;color:#888;margin-top:2px">No approvals yet</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bp-label">Approval Pipeline (5-step horizontal track)</div>
+    <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 14px;border-bottom:1px solid var(--border);background:var(--bg-2)">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:24px;height:24px;border-radius:5px;background:#E1F5EE;display:flex;align-items:center;justify-content:center;font-size:11px;color:#0F6E56">✓</div>
+          <span style="font-size:11px;font-weight:600;color:var(--text-900);text-transform:uppercase;letter-spacing:0.3px">Approval Pipeline</span>
+        </div>
+        <span style="font-size:10px;padding:2px 8px;border-radius:3px;background:var(--blue-100);color:var(--blue-600);font-weight:600">3-level workflow</span>
+      </div>
+      <div style="display:flex;align-items:center;padding:12px 20px;gap:0;background:#fff">
+        <!-- Step 1 — done -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;min-width:80px">
+          <div style="width:32px;height:32px;border-radius:50%;border:2px solid #3B6D11;background:#EAF3DE;color:#3B6D11;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">✓</div>
+          <div style="font-size:10px;font-weight:600;color:#4A4A4A;text-align:center;line-height:1.3">Requested</div>
+          <div style="font-size:9px;color:#888;text-align:center">PR raised</div>
+        </div>
+        <div style="flex:1;height:2px;background:#3B6D11;min-width:16px;margin-bottom:26px"></div>
+        <!-- Step 2 — current -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;min-width:80px">
+          <div style="width:32px;height:32px;border-radius:50%;border:2px solid #185FA5;background:#E6F1FB;color:#185FA5;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">2</div>
+          <div style="font-size:10px;font-weight:600;color:#185FA5;text-align:center;line-height:1.3">First Level</div>
+          <div style="font-size:9px;color:#888;text-align:center">Dept head</div>
+        </div>
+        <div style="flex:1;height:2px;background:#E2E2E2;min-width:16px;margin-bottom:26px"></div>
+        <!-- Step 3 — pending -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;min-width:80px">
+          <div style="width:32px;height:32px;border-radius:50%;border:2px solid #D0D0D0;background:#FAFAF8;color:#888;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">3</div>
+          <div style="font-size:10px;font-weight:500;color:#888;text-align:center;line-height:1.3">Before Final</div>
+          <div style="font-size:9px;color:#888;text-align:center">Store verify</div>
+        </div>
+        <div style="flex:1;height:2px;background:#E2E2E2;min-width:16px;margin-bottom:26px"></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;min-width:80px">
+          <div style="width:32px;height:32px;border-radius:50%;border:2px solid #D0D0D0;background:#FAFAF8;color:#888;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">4</div>
+          <div style="font-size:10px;font-weight:500;color:#888;text-align:center;line-height:1.3">Final Level</div>
+          <div style="font-size:9px;color:#888;text-align:center">GM / AGM</div>
+        </div>
+        <div style="flex:1;height:2px;background:#E2E2E2;min-width:16px;margin-bottom:26px"></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;min-width:80px">
+          <div style="width:32px;height:32px;border-radius:50%;border:2px solid #D0D0D0;background:#FAFAF8;color:#888;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">5</div>
+          <div style="font-size:10px;font-weight:500;color:#888;text-align:center;line-height:1.3">PO Created</div>
+          <div style="font-size:9px;color:#888;text-align:center">Procurement</div>
+        </div>
+      </div>
+    </div>
+    <table class="bp-spec-table">
+      <thead><tr><th>Node State</th><th>Circle Background</th><th>Circle Border</th><th>Text Color</th><th>Connector Color</th></tr></thead>
+      <tbody>
+        <tr><td>Done (completed)</td><td>#EAF3DE</td><td>#3B6D11</td><td>#3B6D11</td><td>#3B6D11</td></tr>
+        <tr><td>Current (active)</td><td>#E6F1FB</td><td>#185FA5</td><td>#185FA5</td><td>#E2E2E2 (connector after = grey)</td></tr>
+        <tr><td>Pending (future)</td><td>#FAFAF8</td><td>#D0D0D0</td><td>#888888</td><td>#E2E2E2</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     11 · MODAL & LOOKUP POPUP
+══════════════════════════════════════════════════════════ -->
+<div class="bp-section">
+  <div class="bp-section-header">
+    <div class="bp-section-number">11</div>
+    <div class="bp-section-title">Modal &amp; Lookup Popup Standards</div>
+    <div class="bp-section-sub">Item picker modal · confirmation modals · dimensions</div>
+  </div>
+  <div class="bp-section-body">
+    <div class="bp-label">Modal Anatomy</div>
+    <div style="position:relative;max-width:640px;margin:0 auto;border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--shadow-xl);background:#fff">
+      <!-- Modal header -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);background:var(--bg-2)">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:28px;height:28px;background:var(--blue-100);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:13px">🔍</div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--text-900)">Select Item</div>
+            <div style="font-size:10px;color:var(--text-400)">Double-click or select + confirm · Department: Spinning</div>
+          </div>
+        </div>
+        <button style="width:28px;height:28px;border:none;background:transparent;cursor:pointer;font-size:16px;color:#888;border-radius:4px">✕</button>
+      </div>
+      <!-- Modal search bar -->
+      <div style="padding:12px 20px;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center">
+        <div style="position:relative;flex:1">
+          <input type="text" placeholder="Search item code, name, category…" style="width:100%;height:32px;padding:0 10px 0 32px;border:1px solid #185FA5;border-radius:6px;font-size:12px;font-family:inherit;outline:none;box-shadow:0 0 0 2px rgba(24,95,165,0.12)">
+          <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#888;font-size:13px">🔍</span>
+        </div>
+        <button style="padding:0 12px;height:32px;border:1px solid #E2E2E2;border-radius:6px;background:#fff;font-size:11px;font-weight:500;color:#1A1A1A;cursor:pointer">All</button>
+        <button style="padding:0 12px;height:32px;border:1px solid #F3C97E;border-radius:6px;background:#FAEEDA;font-size:11px;font-weight:500;color:#BA7517;cursor:pointer">Low Stock (3)</button>
+        <button style="padding:0 12px;height:32px;border:1px solid #9DC5E8;border-radius:6px;background:#E6F1FB;font-size:11px;font-weight:500;color:#185FA5;cursor:pointer">Pending PO</button>
+      </div>
+      <!-- Modal table -->
+      <div style="max-height:220px;overflow-y:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:11px">
+          <thead><tr style="background:#FAFAF8;position:sticky;top:0">
+            <th style="padding:6px 10px;text-align:left;font-size:10px;font-weight:700;color:#475569;border-bottom:1px solid #E2E2E2">Item Code</th>
+            <th style="padding:6px 10px;text-align:left;font-size:10px;font-weight:700;color:#475569;border-bottom:1px solid #E2E2E2">Description</th>
+            <th style="padding:6px 10px;text-align:center;font-size:10px;font-weight:700;color:#475569;border-bottom:1px solid #E2E2E2">UOM</th>
+            <th style="padding:6px 10px;text-align:center;font-size:10px;font-weight:700;color:#475569;border-bottom:1px solid #E2E2E2">Stock</th>
+            <th style="padding:6px 10px;text-align:center;font-size:10px;font-weight:700;color:#475569;border-bottom:1px solid #E2E2E2">Pending PR</th>
+          </tr></thead>
+          <tbody>
+            <tr style="background:#EFF6FF;border-bottom:1px solid #DBEAFE">
+              <td style="padding:7px 10px;font-family:monospace;font-weight:700;color:#185FA5">YSPN-001</td>
+              <td style="padding:7px 10px">
+                <div style="font-weight:500;color:#1A1A1A">Yarn Spindle Bearing Type A</div>
+                <div style="font-size:9px;color:#888">Bearings &amp; Bushes</div>
+              </td>
+              <td style="padding:7px 10px;text-align:center"><span style="font-size:9px;background:#E6F1FB;color:#185FA5;padding:1px 5px;border-radius:3px;font-weight:600">Nos</span></td>
+              <td style="padding:7px 10px;text-align:center">
+                <div style="font-family:monospace;font-size:10px;color:#3B6D11;font-weight:600">124</div>
+                <div style="height:4px;background:#E2E2E2;border-radius:2px;margin-top:2px"><div style="height:4px;background:#3B6D11;border-radius:2px;width:70%"></div></div>
+              </td>
+              <td style="padding:7px 10px;text-align:center"><span style="font-size:10px;color:#BA7517;font-weight:600">5</span></td>
+            </tr>
+            <tr style="border-bottom:1px solid #F0F0EE">
+              <td style="padding:7px 10px;font-family:monospace;font-weight:500;color:#1e293b">BELT-LK22</td>
+              <td style="padding:7px 10px">
+                <div style="font-weight:500;color:#1A1A1A">Loom Drive Belt LK22</div>
+                <div style="font-size:9px;color:#888">Belts &amp; Drives</div>
+              </td>
+              <td style="padding:7px 10px;text-align:center"><span style="font-size:9px;background:#E6F1FB;color:#185FA5;padding:1px 5px;border-radius:3px;font-weight:600">Mtr</span></td>
+              <td style="padding:7px 10px;text-align:center">
+                <div style="font-family:monospace;font-size:10px;color:#BA7517;font-weight:600">8</div>
+                <div style="height:4px;background:#E2E2E2;border-radius:2px;margin-top:2px"><div style="height:4px;background:#BA7517;border-radius:2px;width:15%"></div></div>
+              </td>
+              <td style="padding:7px 10px;text-align:center"><span style="font-size:10px;color:#888">0</span></td>
+            </tr>
+            <tr style="border-bottom:1px solid #F0F0EE">
+              <td style="padding:7px 10px;font-family:monospace;font-weight:500;color:#1e293b">BRG-6204</td>
+              <td style="padding:7px 10px">
+                <div style="font-weight:500;color:#1A1A1A">Deep Groove Ball Bearing 6204</div>
+                <div style="font-size:9px;color:#888">Bearings &amp; Bushes</div>
+              </td>
+              <td style="padding:7px 10px;text-align:center"><span style="font-size:9px;background:#E6F1FB;color:#185FA5;padding:1px 5px;border-radius:3px;font-weight:600">Nos</span></td>
+              <td style="padding:7px 10px;text-align:center">
+                <div style="font-family:monospace;font-size:10px;color:#A32D2D;font-weight:600">0</div>
+                <div style="height:4px;background:#E2E2E2;border-radius:2px;margin-top:2px"><div style="height:4px;background:#A32D2D;border-radius:2px;width:0%"></div></div>
+              </td>
+              <td style="padding:7px 10px;text-align:center"><span style="font-size:10px;color:#185FA5;font-weight:600">12</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Modal footer -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid var(--border);background:var(--bg-2)">
+        <div style="font-size:11px;color:var(--text-600)">Selected: <strong style="color:var(--blue-600);font-family:monospace">YSPN-001</strong> — Yarn Spindle Bearing Type A</div>
+        <div style="display:flex;gap:8px">
+          <button style="padding:6px 16px;border:1px solid #D0D0D0;border-radius:6px;background:#fff;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit">Cancel</button>
+          <button style="padding:6px 16px;border:none;border-radius:6px;background:linear-gradient(135deg,#185FA5,#1a6bbf);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Select Item →</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:20px">
+      <div class="bp-label">Modal Dimensions &amp; Behaviour Spec</div>
+      <table class="bp-spec-table">
+        <thead><tr><th>Property</th><th>Item Picker Modal</th><th>Confirmation Modal</th><th>Small Alert Modal</th></tr></thead>
+        <tbody>
+          <tr><td>Width</td><td>720px max · 95vw on small screens</td><td>440px</td><td>360px</td></tr>
+          <tr><td>Max height</td><td>80vh · internal scroll</td><td>Auto</td><td>Auto</td></tr>
+          <tr><td>Border radius</td><td>12px</td><td>10px</td><td>8px</td></tr>
+          <tr><td>Backdrop</td><td>rgba(0,0,0,0.45)</td><td>rgba(0,0,0,0.45)</td><td>rgba(0,0,0,0.3)</td></tr>
+          <tr><td>Close on backdrop click</td><td>No (accidental close risk)</td><td>Yes</td><td>Yes</td></tr>
+          <tr><td>Close on Esc</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+          <tr><td>Confirm on Enter</td><td>Enter = double-click confirm</td><td>Enter = OK</td><td>—</td></tr>
+          <tr><td>destroyOnClose</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 12: COMPLETE PR FORM ANATOMY
+═══════════════════════════════════════════════════════════════ -->
+<div class="bp-section">
+  <div class="bp-section-label">12 — Complete PR Form Anatomy</div>
+  <p class="bp-desc">Every SpinRise transaction entry form follows this exact vertical stacking order. No element may be omitted or reordered. The entire form must be visible without vertical scroll on a 1366 × 768 viewport at 100% zoom.</p>
+
+  <!-- Full form mockup -->
+  <div style="border:2px solid var(--border-2);border-radius:12px;overflow:hidden;font-family:var(--font-sans);background:var(--bg);max-width:1200px;margin:0 auto">
+
+    <!-- Zone A: VB6 Toolbar -->
+    <div style="background:linear-gradient(180deg,#f0f0ee 0%,#e4e4e0 100%);border-bottom:2px solid #b8b8b0;padding:6px 12px;display:flex;align-items:center;gap:2px">
+      <div style="font-size:10px;font-weight:700;color:#185FA5;margin-right:10px;letter-spacing:.5px">TOOLBAR — ZONE A</div>
+      <div style="display:flex;gap:2px;flex:1">
+        <div style="background:linear-gradient(180deg,#fff 0%,#e8e8e4 100%);border:1px solid #a0a09a;border-radius:3px;padding:4px 10px;font-size:11px;font-weight:600;color:#1a1a1a;cursor:pointer">New <span style="font-size:9px;background:#ddd;border-radius:2px;padding:1px 3px;color:#555">F3</span></div>
+        <div style="background:linear-gradient(180deg,#fff 0%,#e8e8e4 100%);border:1px solid #a0a09a;border-radius:3px;padding:4px 10px;font-size:11px;font-weight:600;color:#1a1a1a;cursor:pointer">Save <span style="font-size:9px;background:#ddd;border-radius:2px;padding:1px 3px;color:#555">Ctrl+S</span></div>
+        <div style="background:linear-gradient(180deg,#fff 0%,#e8e8e4 100%);border:1px solid #a0a09a;border-radius:3px;padding:4px 10px;font-size:11px;font-weight:600;color:#1a1a1a;cursor:pointer">Modify <span style="font-size:9px;background:#ddd;border-radius:2px;padding:1px 3px;color:#555">F4</span></div>
+        <div style="background:linear-gradient(180deg,#fff 0%,#e8e8e4 100%);border:1px solid #a0a09a;border-radius:3px;padding:4px 10px;font-size:11px;font-weight:600;color:#1a1a1a;cursor:pointer">Cancel</div>
+        <div style="background:linear-gradient(180deg,#fff 0%,#e8e8e4 100%);border:1px solid #a0a09a;border-radius:3px;padding:4px 10px;font-size:11px;font-weight:600;color:#cc3333;cursor:pointer">Delete</div>
+        <div style="width:1px;background:#b8b8b0;margin:2px 6px"></div>
+        <div style="background:linear-gradient(180deg,#fff 0%,#e8e8e4 100%);border:1px solid #a0a09a;border-radius:3px;padding:4px 10px;font-size:11px;font-weight:600;color:#1a1a1a;cursor:pointer">Print <span style="font-size:9px;background:#ddd;border-radius:2px;padding:1px 3px;color:#555">Ctrl+P</span></div>
+        <div style="background:linear-gradient(180deg,#fff 0%,#e8e8e4 100%);border:1px solid #a0a09a;border-radius:3px;padding:4px 10px;font-size:11px;font-weight:600;color:#1a1a1a;cursor:pointer">List</div>
+        <div style="flex:1"></div>
+        <div style="display:flex;gap:2px">
+          <div style="background:linear-gradient(180deg,#fff 0%,#e8e8e4 100%);border:1px solid #a0a09a;border-radius:3px;padding:4px 8px;font-size:11px;color:#555">‹‹</div>
+          <div style="background:linear-gradient(180deg,#fff 0%,#e8e8e4 100%);border:1px solid #a0a09a;border-radius:3px;padding:4px 8px;font-size:11px;color:#555">‹</div>
+          <div style="background:linear-gradient(180deg,#fff 0%,#e8e8e4 100%);border:1px solid #a0a09a;border-radius:3px;padding:4px 8px;font-size:11px;color:#555">›</div>
+          <div style="background:linear-gradient(180deg,#fff 0%,#e8e8e4 100%);border:1px solid #a0a09a;border-radius:3px;padding:4px 8px;font-size:11px;color:#555">‹‹</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zone B: Document Header -->
+    <div style="background:linear-gradient(135deg,#0C447C 0%,#185FA5 100%);padding:14px 20px;display:flex;align-items:center;justify-content:space-between">
+      <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:.5px">DOCUMENT HEADER — ZONE B</div>
+      <div style="display:flex;align-items:center;gap:24px">
+        <div>
+          <div style="font-size:10px;color:rgba(255,255,255,.65);margin-bottom:2px">Company</div>
+          <div style="font-size:13px;font-weight:600;color:#fff">Kalpatharu Spinners Pvt Ltd</div>
+        </div>
+        <div>
+          <div style="font-size:10px;color:rgba(255,255,255,.65);margin-bottom:2px">PR Number</div>
+          <div style="font-size:13px;font-weight:700;color:#fff;font-family:monospace">PR-2526-00042</div>
+        </div>
+        <div>
+          <div style="font-size:10px;color:rgba(255,255,255,.65);margin-bottom:2px">PR Date</div>
+          <div style="font-size:13px;font-weight:600;color:#fff">06 May 2026</div>
+        </div>
+        <div style="background:rgba(255,255,255,.18);border-radius:20px;padding:5px 14px;font-size:11px;font-weight:700;color:#fff;letter-spacing:.5px">REQUESTED</div>
+      </div>
+    </div>
+
+    <!-- Zone C: Header Fields -->
+    <div style="background:#fff;padding:12px 20px;border-bottom:1px solid var(--border)">
+      <div style="font-size:10px;font-weight:700;color:#185FA5;margin-bottom:8px;letter-spacing:.5px">FORM HEADER FIELDS — ZONE C</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+        <div>
+          <div style="font-size:11px;font-weight:600;color:var(--text-600);margin-bottom:4px">Department <span style="color:#E24B4A">*</span></div>
+          <div style="border:1px solid #D0D0D0;border-radius:6px;padding:6px 10px;font-size:12px;color:var(--text-900);background:#fff">Production</div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:600;color:var(--text-600);margin-bottom:4px">Cost Centre <span style="color:#E24B4A">*</span></div>
+          <div style="border:1px solid #D0D0D0;border-radius:6px;padding:6px 10px;font-size:12px;color:var(--text-900);background:#fff">Ring Frame</div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:600;color:var(--text-600);margin-bottom:4px">Priority</div>
+          <div style="border:1px solid #D0D0D0;border-radius:6px;padding:6px 10px;font-size:12px;color:var(--text-900);background:#fff">Normal</div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:600;color:var(--text-600);margin-bottom:4px">Required By</div>
+          <div style="border:1px solid #D0D0D0;border-radius:6px;padding:6px 10px;font-size:12px;color:var(--text-900);background:#fff">15 May 2026</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zone D: KPI Strip -->
+    <div style="background:var(--bg-2);border-bottom:1px solid var(--border);padding:10px 20px">
+      <div style="font-size:10px;font-weight:700;color:#185FA5;margin-bottom:8px;letter-spacing:.5px">KPI STRIP — ZONE D</div>
+      <div style="display:flex;gap:10px">
+        <div style="flex:1;background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 12px">
+          <div style="font-size:10px;color:var(--text-400);margin-bottom:2px">Total Lines</div>
+          <div style="font-size:18px;font-weight:700;color:var(--blue-600);font-family:monospace">12</div>
+        </div>
+        <div style="flex:2;background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 12px">
+          <div style="font-size:10px;color:var(--text-400);margin-bottom:2px">Total Quantity</div>
+          <div style="font-size:13px;font-weight:700;color:var(--text-900);font-family:monospace">Nos: 241 | Mtr: 42 | Kg: 120</div>
+        </div>
+        <div style="flex:2;background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 12px">
+          <div style="font-size:10px;color:var(--text-400);margin-bottom:2px">Approx. Budget</div>
+          <div style="font-size:18px;font-weight:700;color:var(--amber-700);font-family:monospace">₹ 1,24,500.00</div>
+        </div>
+        <div style="flex:2;background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 12px">
+          <div style="font-size:10px;color:var(--text-400);margin-bottom:2px">Created By</div>
+          <div style="font-size:13px;font-weight:600;color:var(--text-900)">Abinandan N</div>
+          <div style="font-size:10px;color:var(--text-400)">06 May 2026</div>
+        </div>
+        <div style="flex:2;background:#fff;border:1px solid var(--border-2);border-left:3px solid #185FA5;border-radius:8px;padding:8px 12px">
+          <div style="font-size:10px;color:var(--text-400);margin-bottom:2px">Approval Status</div>
+          <div style="font-size:12px;font-weight:700;color:#185FA5">Requested</div>
+          <div style="font-size:10px;color:var(--text-400)">Awaiting review</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zone E: Approval Pipeline -->
+    <div style="background:var(--bg);border-bottom:1px solid var(--border);padding:8px 20px">
+      <div style="font-size:10px;font-weight:700;color:#185FA5;margin-bottom:6px;letter-spacing:.5px">APPROVAL PIPELINE — ZONE E (read-only compact band)</div>
+      <div style="display:flex;align-items:center;gap:0">
+        <div style="flex:1;text-align:center;padding:6px 8px;background:linear-gradient(135deg,#185FA5,#1a6bbf);border-radius:6px 0 0 6px">
+          <div style="font-size:10px;font-weight:700;color:#fff">Requested</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.75)">06 May 2026</div>
+        </div>
+        <div style="width:0;height:0;border-top:19px solid transparent;border-bottom:19px solid transparent;border-left:10px solid #1a6bbf;z-index:1"></div>
+        <div style="flex:1;text-align:center;padding:6px 8px;background:#F5F5F3;border:1px solid #E2E2E2">
+          <div style="font-size:10px;color:#888">First Level</div>
+          <div style="font-size:9px;color:#ccc">Pending</div>
+        </div>
+        <div style="width:0;height:0;border-top:19px solid transparent;border-bottom:19px solid transparent;border-left:10px solid #E2E2E2"></div>
+        <div style="flex:1;text-align:center;padding:6px 8px;background:#F5F5F3;border:1px solid #E2E2E2">
+          <div style="font-size:10px;color:#888">Before Final</div>
+          <div style="font-size:9px;color:#ccc">Pending</div>
+        </div>
+        <div style="width:0;height:0;border-top:19px solid transparent;border-bottom:19px solid transparent;border-left:10px solid #E2E2E2"></div>
+        <div style="flex:1;text-align:center;padding:6px 8px;background:#F5F5F3;border:1px solid #E2E2E2">
+          <div style="font-size:10px;color:#888">Final Level</div>
+          <div style="font-size:9px;color:#ccc">Pending</div>
+        </div>
+        <div style="width:0;height:0;border-top:19px solid transparent;border-bottom:19px solid transparent;border-left:10px solid #E2E2E2"></div>
+        <div style="flex:1;text-align:center;padding:6px 8px;background:#F5F5F3;border:1px solid #E2E2E2;border-radius:0 6px 6px 0">
+          <div style="font-size:10px;color:#888">PO Created</div>
+          <div style="font-size:9px;color:#ccc">Pending</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zone F: Item Grid -->
+    <div style="background:#fff;padding:10px 20px;flex:1">
+      <div style="font-size:10px;font-weight:700;color:#185FA5;margin-bottom:8px;letter-spacing:.5px">ITEM GRID — ZONE F (fills remaining vertical space)</div>
+      <table style="width:100%;border-collapse:collapse;font-size:11px">
+        <thead>
+          <tr style="background:linear-gradient(180deg,#f5f5f3 0%,#ebebea 100%)">
+            <th style="border:1px solid #d0d0d0;padding:5px 8px;text-align:center;width:36px">No.</th>
+            <th style="border:1px solid #d0d0d0;padding:5px 8px;text-align:left;width:90px">Item Code</th>
+            <th style="border:1px solid #d0d0d0;padding:5px 8px;text-align:left">Item Description</th>
+            <th style="border:1px solid #d0d0d0;padding:5px 8px;text-align:center;width:50px">Unit</th>
+            <th style="border:1px solid #d0d0d0;padding:5px 8px;text-align:right;width:72px">Quantity</th>
+            <th style="border:1px solid #d0d0d0;padding:5px 8px;text-align:right;width:86px">Unit Price</th>
+            <th style="border:1px solid #d0d0d0;padding:5px 8px;text-align:right;width:96px">Value</th>
+            <th style="border:1px solid #d0d0d0;padding:5px 8px;text-align:center;width:90px">Required Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="background:#E6F1FB;border:1.5px solid #185FA5">
+            <td style="border:1px solid #d0d0d0;padding:4px 8px;text-align:center">1</td>
+            <td style="border:1px solid #d0d0d0;padding:4px 8px">YSPN-001</td>
+            <td style="border:1px solid #d0d0d0;padding:4px 8px">Yarn Spindle Bearing Type A</td>
+            <td style="border:1px solid #d0d0d0;padding:4px 8px;text-align:center">Nos</td>
+            <td style="border:1px solid #d0d0d0;padding:4px 8px;text-align:right;font-family:monospace">100.000</td>
+            <td style="border:1px solid #d0d0d0;padding:4px 8px;text-align:right;font-family:monospace">₹ 245.0000</td>
+            <td style="border:1px solid #d0d0d0;padding:4px 8px;text-align:right;font-family:monospace;color:#888">₹ 24,500.00</td>
+            <td style="border:1px solid #d0d0d0;padding:4px 8px;text-align:center">15 May 2026</td>
+          </tr>
+          <tr style="background:#fff">
+            <td style="border:1px solid #d0d0d0;padding:4px 8px;text-align:center;color:#888">2</td>
+            <td style="border:1px solid #d0d0d0;padding:4px 8px;color:#888">RING-042</td>
+            <td style="border:1px solid #d0d0d0;padding:4px 8px;color:#888">Ring Frame Traveller 36/0</td>
+            <td style="border:1px solid #d0d0d0;padding:4px 8px;text-align:center;color:#888">Kg</td>
+            <td style="border:1px solid #d0d0d0;padding:4px 8px;text-align:right;font-family:monospace;color:#888">50.000</td>
+            <td style="border:1px solid #d0d0d0;padding:4px 8px;text-align:right;font-family:monospace;color:#888">₹ 1,200.0000</td>
+            <td style="border:1px solid #d0d0d0;padding:4px 8px;text-align:right;font-family:monospace;color:#aaa">₹ 60,000.00</td>
+            <td style="border:1px solid #d0d0d0;padding:4px 8px;text-align:center;color:#888">20 May 2026</td>
+          </tr>
+          <tr style="background:#fafafa;border:1.5px dashed #D0D0D0">
+            <td style="border:1px solid #e8e8e8;padding:4px 8px;text-align:center;color:#ccc">3</td>
+            <td style="border:1px solid #e8e8e8;padding:4px 8px;color:#bbb;font-style:italic" colspan="7">Tab into this row to add a new item — row auto-created on Tab/Enter from row 2</td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- Grid status bar -->
+      <div style="background:var(--bg-2);border:1px solid var(--border);border-top:none;border-radius:0 0 6px 6px;padding:4px 12px;display:flex;justify-content:space-between;font-size:10px;color:var(--text-400)">
+        <span>Rows: <strong style="color:var(--text-900)">2</strong> &nbsp;|&nbsp; Total Value: <strong style="color:var(--text-900);font-family:monospace">₹ 84,500.00</strong></span>
+        <span>Tab → next field &nbsp;|&nbsp; Enter → next row &nbsp;|&nbsp; Ctrl+Space → Item Lookup</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Zone layout rules -->
+  <div class="bp-callout" style="margin-top:20px">
+    <strong>Zone Layout Rules (non-negotiable)</strong><br>
+    A (Toolbar) is always 38px tall. B (Document Header) is always 52px. C (Header Fields) is always 66px. D (KPI Strip) is always 68px. E (Approval Pipeline) is always 52px. F (Item Grid) fills all remaining vertical space. Total A–E height = 276px, leaving 492px for the grid on a 1366×768 screen at 100% zoom. The form must fit with no scroll.
+  </div>
+
+  <table class="bp-spec-table" style="margin-top:16px">
+    <thead><tr><th>Zone</th><th>Label</th><th>Height</th><th>Background</th><th>Visibility</th></tr></thead>
+    <tbody>
+      <tr><td>A</td><td>Toolbar</td><td>38px fixed</td><td>Gradient #f0f0ee → #e4e4e0</td><td>Always</td></tr>
+      <tr><td>B</td><td>Document Header</td><td>52px fixed</td><td>Gradient #0C447C → #185FA5</td><td>Always</td></tr>
+      <tr><td>C</td><td>Header Fields</td><td>66px fixed</td><td>#FFFFFF</td><td>Always</td></tr>
+      <tr><td>D</td><td>KPI Strip</td><td>68px fixed</td><td>#FAFAF8</td><td>Always</td></tr>
+      <tr><td>E</td><td>Approval Pipeline</td><td>52px fixed</td><td>#F5F5F3</td><td>Always (read-only)</td></tr>
+      <tr><td>F</td><td>Item Grid</td><td>flex — fills remaining</td><td>#FFFFFF</td><td>Always</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 13: SQL SERVER 2019 FEATURE GUIDANCE
+═══════════════════════════════════════════════════════════════ -->
+<div class="bp-section">
+  <div class="bp-section-label">13 — SQL Server 2019 Feature Guidance for Developers</div>
+  <p class="bp-desc">SpinRise targets SQL Server 2019 (15.x). The following features are available and should be used instead of older workarounds. All data access must go through parameterized stored procedures — no raw string SQL, no Entity Framework, no ad-hoc queries.</p>
+
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px">
+
+    <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:10px;padding:18px">
+      <div style="font-size:13px;font-weight:700;color:var(--blue-600);margin-bottom:10px">JSON Support</div>
+      <p style="font-size:12px;color:var(--text-600);margin:0 0 10px">Use <code style="background:#eee;padding:2px 5px;border-radius:3px;font-size:11px">FOR JSON PATH</code> to return structured results from SPs without multi-round-trip joins. Use <code style="background:#eee;padding:2px 5px;border-radius:3px;font-size:11px">OPENJSON()</code> to accept JSON payloads for bulk inserts (e.g., multi-line PR insert).</p>
+      <pre style="background:#1a1a2e;color:#a8d8ea;font-size:10px;padding:10px;border-radius:6px;overflow-x:auto;margin:0">-- Bulk PR lines via JSON TVP
+SELECT @LineJson = (
+  SELECT LineNo, ItemCode, Qty
+  FROM @LineTable
+  FOR JSON PATH
+);
+INSERT INTO PR_Lines
+SELECT * FROM OPENJSON(@LineJson)
+WITH (LineNo INT, ItemCode NVARCHAR(30), Qty DECIMAL(18,3));</pre>
+    </div>
+
+    <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:10px;padding:18px">
+      <div style="font-size:13px;font-weight:700;color:var(--blue-600);margin-bottom:10px">STRING_AGG</div>
+      <p style="font-size:12px;color:var(--text-600);margin:0 0 10px">Replace <code style="background:#eee;padding:2px 5px;border-radius:3px;font-size:11px">FOR XML PATH('')</code> string concatenation with <code style="background:#eee;padding:2px 5px;border-radius:3px;font-size:11px">STRING_AGG()</code>. Cleaner, null-safe, and supports <code style="background:#eee;padding:2px 5px;border-radius:3px;font-size:11px">WITHIN GROUP (ORDER BY)</code>.</p>
+      <pre style="background:#1a1a2e;color:#a8d8ea;font-size:10px;padding:10px;border-radius:6px;overflow-x:auto;margin:0">-- UOM grouping for KPI strip
+SELECT STRING_AGG(
+  UOM + ': ' + CAST(SUM(Qty) AS NVARCHAR),
+  ' | '
+) WITHIN GROUP (ORDER BY UOM)
+AS TotalQuantityDisplay
+FROM PR_Lines
+WHERE PRId = @PRId;</pre>
+    </div>
+
+    <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:10px;padding:18px">
+      <div style="font-size:13px;font-weight:700;color:var(--blue-600);margin-bottom:10px">TRIM() — Leading &amp; Trailing</div>
+      <p style="font-size:12px;color:var(--text-600);margin:0 0 10px">SQL Server 2019 supports <code style="background:#eee;padding:2px 5px;border-radius:3px;font-size:11px">TRIM(chars FROM column)</code>. Use it to sanitize user input at the SP boundary. Do not rely on application layer trimming alone.</p>
+      <pre style="background:#1a1a2e;color:#a8d8ea;font-size:10px;padding:10px;border-radius:6px;overflow-x:auto;margin:0">-- Sanitize item code on insert
+SET @ItemCode = TRIM(UPPER(@ItemCode));
+SET @Remarks  = TRIM(@Remarks);</pre>
+    </div>
+
+    <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:10px;padding:18px">
+      <div style="font-size:13px;font-weight:700;color:var(--blue-600);margin-bottom:10px">Approximate Count &amp; Intelligent QP</div>
+      <p style="font-size:12px;color:var(--text-600);margin:0 0 10px">Use <code style="background:#eee;padding:2px 5px;border-radius:3px;font-size:11px">APPROX_COUNT_DISTINCT()</code> for large-table cardinality estimates (e.g., live item count in search). Intelligent Query Processing (IQP) in compat level 150 auto-tunes queries — always run <code style="background:#eee;padding:2px 5px;border-radius:3px;font-size:11px">ALTER DATABASE ... COMPATIBILITY_LEVEL = 150</code>.</p>
+      <pre style="background:#1a1a2e;color:#a8d8ea;font-size:10px;padding:10px;border-radius:6px;overflow-x:auto;margin:0">-- Fast distinct item count for search banner
+SELECT APPROX_COUNT_DISTINCT(ItemCode)
+FROM Item_Master
+WHERE IsActive = 1;</pre>
+    </div>
+
+    <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:10px;padding:18px">
+      <div style="font-size:13px;font-weight:700;color:var(--blue-600);margin-bottom:10px">Row-Level Security &amp; Always Encrypted</div>
+      <p style="font-size:12px;color:var(--text-600);margin:0 0 10px">Phase 2 consideration: RLS filters rows by company/unit automatically. Always Encrypted for PII fields (salary, contact data in HR module M04). Document column encryption strategy before M04 development starts.</p>
+    </div>
+
+    <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:10px;padding:18px">
+      <div style="font-size:13px;font-weight:700;color:var(--blue-600);margin-bottom:10px">Indexing Standards</div>
+      <p style="font-size:12px;color:var(--text-600);margin:0 0 10px">Every lookup SP that filters by <code>CompanyId + Status</code> must have a composite index. Use filtered indexes for active-only lookups. Columnstore indexes for reporting SPs that aggregate millions of transaction rows (future SPINNOVA layer).</p>
+      <pre style="background:#1a1a2e;color:#a8d8ea;font-size:10px;padding:10px;border-radius:6px;overflow-x:auto;margin:0">-- Filtered index — active items only
+CREATE INDEX IX_Item_Active
+ON Item_Master(ItemCode, ItemName)
+WHERE IsActive = 1;</pre>
+    </div>
+  </div>
+
+  <div class="bp-callout" style="margin-top:16px">
+    <strong>SP Naming Convention:</strong> All stored procedures follow <code>ksp_&lt;Module&gt;_&lt;Entity&gt;_&lt;Action&gt;</code> pattern (e.g., <code>ksp_RMI_PR_Insert</code>, <code>ksp_RMI_PR_GetById</code>). Use <code>CREATE OR ALTER PROCEDURE</code> — never <code>DROP + CREATE</code>. Every session must update <code>merged.sql</code> alongside the individual SP file.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 14: PRINT & WYSIWYG STANDARDS
+═══════════════════════════════════════════════════════════════ -->
+<div class="bp-section">
+  <div class="bp-section-label">14 — Print &amp; WYSIWYG Standards</div>
+  <p class="bp-desc">SpinRise uses <strong>QuestPDF</strong> for all PDF print output. Every printed form must be a precise WYSIWYG reproduction of the screen form. Print output is governed by these standards — no exceptions for individual modules.</p>
+
+  <!-- Print layout mockup -->
+  <div style="border:2px solid var(--border-2);border-radius:10px;overflow:hidden;max-width:780px;margin:0 auto;font-family:var(--font-sans)">
+    <!-- Print header -->
+    <div style="background:linear-gradient(135deg,#0C447C,#185FA5);padding:16px 24px;display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-size:16px;font-weight:700;color:#fff">Kalpatharu Spinners Pvt Ltd</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.75)">123, Industrial Area, Coimbatore — 641 001</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:13px;font-weight:700;color:#fff">Purchase Requisition</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.75)">PR-2526-00042 &nbsp;|&nbsp; 06 May 2026 &nbsp;10:34 AM</div>
+      </div>
+    </div>
+    <!-- Print body rows -->
+    <div style="padding:16px 24px;background:#fff">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;font-size:11px">
+        <div><span style="color:#888;display:block">Department</span><strong>Production</strong></div>
+        <div><span style="color:#888;display:block">Cost Centre</span><strong>Ring Frame</strong></div>
+        <div><span style="color:#888;display:block">Priority</span><strong>Normal</strong></div>
+        <div><span style="color:#888;display:block">Required By</span><strong>15 May 2026</strong></div>
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:11px">
+        <thead>
+          <tr style="background:#f0f0ee">
+            <th style="border:1px solid #ccc;padding:5px 8px;text-align:center">No.</th>
+            <th style="border:1px solid #ccc;padding:5px 8px;text-align:left">Item Code</th>
+            <th style="border:1px solid #ccc;padding:5px 8px;text-align:left">Description</th>
+            <th style="border:1px solid #ccc;padding:5px 8px;text-align:center">Unit</th>
+            <th style="border:1px solid #ccc;padding:5px 8px;text-align:right">Quantity</th>
+            <th style="border:1px solid #ccc;padding:5px 8px;text-align:right">Unit Price</th>
+            <th style="border:1px solid #ccc;padding:5px 8px;text-align:right">Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="border:1px solid #ddd;padding:4px 8px;text-align:center">1</td><td style="border:1px solid #ddd;padding:4px 8px">YSPN-001</td><td style="border:1px solid #ddd;padding:4px 8px">Yarn Spindle Bearing Type A</td><td style="border:1px solid #ddd;padding:4px 8px;text-align:center">Nos</td><td style="border:1px solid #ddd;padding:4px 8px;text-align:right;font-family:monospace">100.000</td><td style="border:1px solid #ddd;padding:4px 8px;text-align:right;font-family:monospace">245.0000</td><td style="border:1px solid #ddd;padding:4px 8px;text-align:right;font-family:monospace">24,500.00</td></tr>
+          <tr><td style="border:1px solid #ddd;padding:4px 8px;text-align:center">2</td><td style="border:1px solid #ddd;padding:4px 8px">RING-042</td><td style="border:1px solid #ddd;padding:4px 8px">Ring Frame Traveller 36/0</td><td style="border:1px solid #ddd;padding:4px 8px;text-align:center">Kg</td><td style="border:1px solid #ddd;padding:4px 8px;text-align:right;font-family:monospace">50.000</td><td style="border:1px solid #ddd;padding:4px 8px;text-align:right;font-family:monospace">1,200.0000</td><td style="border:1px solid #ddd;padding:4px 8px;text-align:right;font-family:monospace">60,000.00</td></tr>
+        </tbody>
+      </table>
+      <!-- Total row -->
+      <div style="display:flex;justify-content:flex-end;margin-top:10px">
+        <div style="border:1px solid #ccc;border-radius:6px;padding:8px 16px;text-align:right;font-size:12px">
+          <span style="color:#888">Total Value: </span><strong style="font-family:monospace;font-size:14px">₹ 84,500.00</strong>
+        </div>
+      </div>
+    </div>
+    <!-- Print footer -->
+    <div style="background:#f5f5f3;border-top:1px solid #e2e2e2;padding:10px 24px;display:flex;justify-content:space-between;font-size:10px;color:#888">
+      <div>Printed by: Abinandan N &nbsp;|&nbsp; Printed on: 06 May 2026 14:22:05</div>
+      <div>Purchase Requisition — PR-2526-00042 &nbsp;|&nbsp; Page 1 of 1</div>
+    </div>
+  </div>
+
+  <!-- Print spec table -->
+  <table class="bp-spec-table" style="margin-top:20px">
+    <thead><tr><th>Print Element</th><th>Specification</th><th>QuestPDF Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Form title in header</td><td>Mixed case — "Purchase Requisition" (NOT all-caps, NOT red)</td><td>Use <code>TextStyle.Default.Bold()</code>; color #185FA5 or white depending on bg</td></tr>
+      <tr><td>PR Date in header</td><td>Must appear next to PR Number — format "06 May 2026  10:34 AM"</td><td>Include time component from PR creation timestamp</td></tr>
+      <tr><td>Footer — Total Value</td><td>Must appear in footer AND as a totals row below the item grid</td><td>Two placements required: grid summary row + right-side footer panel</td></tr>
+      <tr><td>Footer — Timestamp</td><td>"Printed by: [UserName]  |  Printed on: [DD Mon YYYY HH:MM:SS]"</td><td>Populate from server-side DateTime.Now at SP call time</td></tr>
+      <tr><td>Footer — Page number</td><td>"Page X of Y" at bottom right</td><td>QuestPDF <code>Page.Current</code> / <code>Page.Total</code></td></tr>
+      <tr><td>Column alignment</td><td>Identical to screen: numeric right, text left, date left</td><td>Use <code>HorizontalAlignment</code> per column type</td></tr>
+      <tr><td>Currency symbol</td><td>₹ appears once before the number — never doubled</td><td>Format: <code>₹ {value:N2}</code> — do not add symbol in column header AND cell</td></tr>
+      <tr><td>Decimal precision</td><td>Quantity=3dp, Unit Price=4dp, Value=2dp (same as screen)</td><td>Apply <code>:N3</code>, <code>:N4</code>, <code>:N2</code> format strings respectively</td></tr>
+      <tr><td>Paper size</td><td>A4 portrait for PR; A4 landscape for PO and GRN (wider column sets)</td><td>QuestPDF <code>PageSize.A4</code></td></tr>
+      <tr><td>Margins</td><td>20mm all sides (print) / 12mm all sides (digital PDF)</td><td>Set via <code>Margin()</code> per output mode</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 15: LOGIN SCREEN STANDARDS
+═══════════════════════════════════════════════════════════════ -->
+<div class="bp-section">
+  <div class="bp-section-label">15 — Login Screen Standards</div>
+  <p class="bp-desc">The login screen is the first impression of SpinRise for every user. It must project professionalism and correctly identify the company, division, system date, and time at login. All fields below are mandatory.</p>
+
+  <div style="display:flex;gap:24px;align-items:flex-start">
+    <!-- Live login mockup -->
+    <div style="flex:1;max-width:420px;border:2px solid var(--border-2);border-radius:14px;overflow:hidden;font-family:var(--font-sans)">
+      <!-- Login header band -->
+      <div style="background:linear-gradient(135deg,#0C447C 0%,#185FA5 100%);padding:28px 32px 20px;text-align:center">
+        <div style="font-size:28px;font-weight:800;color:#fff;letter-spacing:-1px">SpinRise</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.75);margin-top:4px">Enterprise Resource Planning</div>
+        <div style="margin-top:14px;background:rgba(255,255,255,.12);border-radius:8px;padding:10px 16px;text-align:left">
+          <div style="font-size:11px;color:rgba(255,255,255,.65);margin-bottom:2px">Company</div>
+          <div style="font-size:14px;font-weight:700;color:#fff">Kalpatharu Spinners Pvt Ltd</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.65);margin-top:6px;margin-bottom:2px">Division</div>
+          <div style="font-size:13px;font-weight:600;color:#fff">Spinning Mill — Unit 1</div>
+        </div>
+      </div>
+      <!-- Login form -->
+      <div style="background:#fff;padding:24px 32px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:#888;margin-bottom:20px">
+          <span>06 May 2026</span>
+          <span id="demo-time" style="font-family:monospace">10:34:22 AM</span>
+        </div>
+        <div style="margin-bottom:14px">
+          <label style="font-size:11px;font-weight:600;color:#4a4a4a;display:block;margin-bottom:5px">Username <span style="color:#E24B4A">*</span></label>
+          <div style="border:1.5px solid #185FA5;border-radius:8px;padding:8px 12px;font-size:13px;color:#1a1a1a;background:#F0F7FF">abinandan.n</div>
+        </div>
+        <div style="margin-bottom:20px">
+          <label style="font-size:11px;font-weight:600;color:#4a4a4a;display:block;margin-bottom:5px">Password <span style="color:#E24B4A">*</span></label>
+          <div style="border:1.5px solid #D0D0D0;border-radius:8px;padding:8px 12px;font-size:13px;color:#888;display:flex;justify-content:space-between">
+            <span>••••••••••</span><span style="cursor:pointer">👁</span>
+          </div>
+        </div>
+        <button style="width:100%;background:linear-gradient(135deg,#185FA5,#1a6bbf);color:#fff;border:none;border-radius:8px;padding:11px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Sign In →</button>
+        <div style="text-align:center;font-size:10px;color:#aaa;margin-top:12px">Kalpatharu Software Ltd — v1.0</div>
+      </div>
+    </div>
+
+    <!-- Login spec table -->
+    <div style="flex:1">
+      <table class="bp-spec-table">
+        <thead><tr><th>Element</th><th>Content / Rule</th></tr></thead>
+        <tbody>
+          <tr><td>System name</td><td>"SpinRise" — 28px, weight 800, white on blue gradient</td></tr>
+          <tr><td>Tagline</td><td>"Enterprise Resource Planning" — 12px, 75% white opacity</td></tr>
+          <tr><td>Company name</td><td>Fetched from database — 14px, weight 700, white. Never hardcoded.</td></tr>
+          <tr><td>Division</td><td>Fetched from database — 13px, weight 600, white. Reflects logged-in unit.</td></tr>
+          <tr><td>System date</td><td>Server date — format "DD Mon YYYY" (06 May 2026). Left-aligned above form.</td></tr>
+          <tr><td>System time</td><td>Live — HH:MM:SS AM/PM. Right-aligned opposite date. Monospace font. JavaScript <code>setInterval</code>.</td></tr>
+          <tr><td>Username label</td><td>"Username" (full label — not "User ID", not "Login")</td></tr>
+          <tr><td>Password label</td><td>"Password" with show/hide toggle (eye icon)</td></tr>
+          <tr><td>Required indicator</td><td>Red * on both Username and Password</td></tr>
+          <tr><td>Focused field border</td><td>1.5px solid #185FA5 with #F0F7FF background tint</td></tr>
+          <tr><td>Sign In button</td><td>Full-width, gradient #185FA5 → #1a6bbf, weight 700, "Sign In →"</td></tr>
+          <tr><td>Enter key</td><td>Triggers Sign In from either field</td></tr>
+          <tr><td>Tab sequence</td><td>Username → Password → Sign In button</td></tr>
+          <tr><td>Error state</td><td>Red border on both fields + error message below button: "Invalid username or password."</td></tr>
+          <tr><td>Vendor line</td><td>"Kalpatharu Software Ltd — v{version}" — 10px, grey, centred at bottom</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 16: PERFORMANCE STANDARDS
+═══════════════════════════════════════════════════════════════ -->
+<div class="bp-section">
+  <div class="bp-section-label">16 — Performance Standards</div>
+  <p class="bp-desc">SpinRise must remain responsive under concurrent load across spinning mill networks. These standards apply to every module from M01 onwards — document compliance in each module's technical spec.</p>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px">
+    <div style="background:var(--bg-2);border:1px solid var(--border);border-left:4px solid var(--blue-600);border-radius:8px;padding:16px">
+      <div style="font-size:12px;font-weight:700;color:var(--blue-600);margin-bottom:8px">API Response Time</div>
+      <div style="font-size:32px;font-weight:800;color:var(--text-900);font-family:monospace">&lt; 500ms</div>
+      <div style="font-size:11px;color:var(--text-400);margin-top:4px">95th percentile under normal load. Measure at IIS level, not browser level.</div>
+    </div>
+    <div style="background:var(--bg-2);border:1px solid var(--border);border-left:4px solid var(--green-700);border-radius:8px;padding:16px">
+      <div style="font-size:12px;font-weight:700;color:var(--green-700);margin-bottom:8px">Search Debounce</div>
+      <div style="font-size:32px;font-weight:800;color:var(--text-900);font-family:monospace">300ms</div>
+      <div style="font-size:11px;color:var(--text-400);margin-top:4px">All live search / typeahead inputs. Prevents request flooding on fast typists.</div>
+    </div>
+    <div style="background:var(--bg-2);border:1px solid var(--border);border-left:4px solid var(--amber-700);border-radius:8px;padding:16px">
+      <div style="font-size:12px;font-weight:700;color:var(--amber-700);margin-bottom:8px">Lookup Page Size</div>
+      <div style="font-size:32px;font-weight:800;color:var(--text-900);font-family:monospace">50 rows</div>
+      <div style="font-size:11px;color:var(--text-400);margin-top:4px">Default page size for all modal pickers. Never load full item master (&gt;10 k rows) at once.</div>
+    </div>
+  </div>
+
+  <table class="bp-spec-table">
+    <thead><tr><th>Standard</th><th>Rule</th><th>Implementation Pattern</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Debounced Search</strong></td>
+        <td>300ms delay on all typeahead inputs before firing API call</td>
+        <td>Use <code>useDebouncedCallback(fn, 300)</code> from <code>use-debounce</code> library; or <code>setTimeout</code> + <code>clearTimeout</code> in a <code>useEffect</code></td>
+      </tr>
+      <tr>
+        <td><strong>Lazy Loading — Routes</strong></td>
+        <td>All route-level components must be code-split</td>
+        <td><code>const Page = React.lazy(() => import('./pages/MyPage'))</code> wrapped in <code>&lt;Suspense fallback={&lt;Spin /&gt;}&gt;</code></td>
+      </tr>
+      <tr>
+        <td><strong>Lazy Loading — Data</strong></td>
+        <td>List screens load first page on mount; subsequent pages on scroll or pagination action</td>
+        <td>SP accepts <code>@PageNumber</code> and <code>@PageSize</code> params; returns total row count for pagination control</td>
+      </tr>
+      <tr>
+        <td><strong>Memoization — Components</strong></td>
+        <td>Wrap pure display components in <code>React.memo()</code> when they receive stable props</td>
+        <td>Grid row components, KPI cards, pipeline steps — all should be memo'd. Verify with React DevTools Profiler.</td>
+      </tr>
+      <tr>
+        <td><strong>Memoization — Derived Values</strong></td>
+        <td>Computed totals (Total Value, Total Quantity by UOM) must use <code>useMemo()</code></td>
+        <td><code>const totalValue = useMemo(() => lines.reduce(...), [lines])</code> — never recompute in render body</td>
+      </tr>
+      <tr>
+        <td><strong>Stable Callbacks</strong></td>
+        <td>Event handlers passed as props must be wrapped in <code>useCallback()</code></td>
+        <td>Prevents unnecessary re-renders of child grid rows when parent state updates header fields</td>
+      </tr>
+      <tr>
+        <td><strong>Large Dataset Lookups</strong></td>
+        <td>Item Master has &gt;10 k rows — never load all at once</td>
+        <td>SP uses <code>OFFSET / FETCH NEXT</code> pagination + <code>WHERE ItemName LIKE @Search + '%'</code> prefix search (not <code>%@Search%</code> — no leading wildcard on large tables)</td>
+      </tr>
+      <tr>
+        <td><strong>Virtualized Grid</strong></td>
+        <td>If item lines exceed 50 rows in a single document, render only visible rows</td>
+        <td>Use <code>react-window</code> <code>FixedSizeList</code> or Ant Design Table virtual scroll for long grids</td>
+      </tr>
+      <tr>
+        <td><strong>Skeleton Loading</strong></td>
+        <td>Show skeleton placeholders (not spinner) while initial form data loads</td>
+        <td>Ant Design <code>&lt;Skeleton active /&gt;</code> with <code>paragraph={{ rows: 4 }}</code> while <code>isLoading</code> is true</td>
+      </tr>
+      <tr>
+        <td><strong>Optimistic Updates</strong></td>
+        <td>For status toggles and single-field saves, update UI immediately; revert on API error</td>
+        <td>Applicable Phase 2. Phase 1: standard async — await API → update state → show result.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="bp-callout" style="margin-top:16px">
+    <strong>Network environment note:</strong> SpinRise is deployed on a factory LAN (172.16.x.x). API roundtrip to IIS is typically &lt;5ms. The 500ms budget is generous — most SPs should complete in &lt;50ms on SQL Server 2019. If an SP exceeds 200ms, add an execution plan review to the code review checklist for that PR.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 17: BORDER RADIUS & SHADOW REFERENCE
+═══════════════════════════════════════════════════════════════ -->
+<div class="bp-section">
+  <div class="bp-section-label">17 — Border Radius &amp; Shadow Reference</div>
+  <p class="bp-desc">Consistent corner rounding and shadow depth signal hierarchy and interactivity. Use only the values defined here — never arbitrary radii or box-shadow values.</p>
+
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px">
+    <div style="text-align:center">
+      <div style="background:#fff;border:1px solid var(--border-2);border-radius:4px;height:64px;width:100%;display:flex;align-items:center;justify-content:center;margin-bottom:8px">
+        <span style="font-size:11px;color:var(--text-400)">r-sm</span>
+      </div>
+      <code style="font-size:11px;background:#eee;padding:2px 6px;border-radius:3px">border-radius: 4px</code>
+      <div style="font-size:10px;color:var(--text-400);margin-top:4px">Toolbar buttons, badges, status pills, table rows, small tags</div>
+    </div>
+    <div style="text-align:center">
+      <div style="background:#fff;border:1px solid var(--border-2);border-radius:6px;height:64px;width:100%;display:flex;align-items:center;justify-content:center;margin-bottom:8px">
+        <span style="font-size:11px;color:var(--text-400)">r-md</span>
+      </div>
+      <code style="font-size:11px;background:#eee;padding:2px 6px;border-radius:3px">border-radius: 6px</code>
+      <div style="font-size:10px;color:var(--text-400);margin-top:4px">Input fields, select dropdowns, action buttons, table cells</div>
+    </div>
+    <div style="text-align:center">
+      <div style="background:#fff;border:1px solid var(--border-2);border-radius:10px;height:64px;width:100%;display:flex;align-items:center;justify-content:center;margin-bottom:8px">
+        <span style="font-size:11px;color:var(--text-400)">r-lg</span>
+      </div>
+      <code style="font-size:11px;background:#eee;padding:2px 6px;border-radius:3px">border-radius: 10px</code>
+      <div style="font-size:10px;color:var(--text-400);margin-top:4px">KPI cards, form section cards, confirmation modals</div>
+    </div>
+    <div style="text-align:center">
+      <div style="background:#fff;border:1px solid var(--border-2);border-radius:12px;height:64px;width:100%;display:flex;align-items:center;justify-content:center;margin-bottom:8px">
+        <span style="font-size:11px;color:var(--text-400)">r-xl</span>
+      </div>
+      <code style="font-size:11px;background:#eee;padding:2px 6px;border-radius:3px">border-radius: 12px</code>
+      <div style="font-size:10px;color:var(--text-400);margin-top:4px">Large modals, item picker modal, page-level containers</div>
+    </div>
+  </div>
+
+  <table class="bp-spec-table">
+    <thead><tr><th>Shadow Token</th><th>CSS Value</th><th>Used On</th></tr></thead>
+    <tbody>
+      <tr><td><code>shadow-none</code></td><td>none</td><td>Flat cards inside the KPI strip; inline form elements</td></tr>
+      <tr><td><code>shadow-xs</code></td><td><code>0 1px 2px rgba(0,0,0,.06)</code></td><td>Toolbar buttons on hover; small badges</td></tr>
+      <tr><td><code>shadow-sm</code></td><td><code>0 2px 6px rgba(0,0,0,.08)</code></td><td>KPI cards, header field rows, section containers</td></tr>
+      <tr><td><code>shadow-md</code></td><td><code>0 4px 16px rgba(0,0,0,.12)</code></td><td>Dropdown panels, tooltip popups, floating menus</td></tr>
+      <tr><td><code>shadow-lg</code></td><td><code>0 8px 32px rgba(0,0,0,.18)</code></td><td>Modals (item picker, confirmation, alert)</td></tr>
+      <tr><td><code>shadow-focus</code></td><td><code>0 0 0 3px rgba(24,95,165,.25)</code></td><td>Focused input fields — replaces browser default outline</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 18: REVIEW GATE & DELIVERY CHAIN
+═══════════════════════════════════════════════════════════════ -->
+<div class="bp-section" style="margin-bottom:0">
+  <div class="bp-section-label">18 — Review Gate &amp; Delivery Chain</div>
+  <p class="bp-desc">No screen may be submitted to CEO review without passing the full gate sequence. Every build artifact must attach the sign-off from each gate before escalating to the next level.</p>
+
+  <!-- Gate visual -->
+  <div style="display:flex;gap:0;align-items:stretch;margin-bottom:24px;border:1px solid var(--border-2);border-radius:10px;overflow:hidden">
+    <div style="flex:1;padding:20px 16px;background:linear-gradient(135deg,#185FA5,#1a6bbf);color:#fff;text-align:center">
+      <div style="font-size:24px;margin-bottom:8px">💻</div>
+      <div style="font-size:12px;font-weight:700;margin-bottom:4px">Developer</div>
+      <div style="font-size:10px;opacity:.8">Build &amp; self-review<br>TypeScript 0 errors<br>All fields aligned</div>
+    </div>
+    <div style="display:flex;align-items:center;padding:0 2px;background:#e8e8e4;font-size:18px;color:#aaa">→</div>
+    <div style="flex:1;padding:20px 16px;background:#fff;text-align:center;border-left:1px solid var(--border)">
+      <div style="font-size:24px;margin-bottom:8px">🧪</div>
+      <div style="font-size:12px;font-weight:700;color:var(--text-900);margin-bottom:4px">IST Tester</div>
+      <div style="font-size:10px;color:var(--text-400)">Functional test<br>Field by field<br>Palanivel format</div>
+    </div>
+    <div style="display:flex;align-items:center;padding:0 2px;background:#e8e8e4;font-size:18px;color:#aaa">→</div>
+    <div style="flex:1;padding:20px 16px;background:#fff;text-align:center;border-left:1px solid var(--border)">
+      <div style="font-size:24px;margin-bottom:8px">🔍</div>
+      <div style="font-size:12px;font-weight:700;color:var(--text-900);margin-bottom:4px">TL-IST</div>
+      <div style="font-size:10px;color:var(--text-400)">UX review<br>Blueprint compliance<br>Sign-off</div>
+    </div>
+    <div style="display:flex;align-items:center;padding:0 2px;background:#e8e8e4;font-size:18px;color:#aaa">→</div>
+    <div style="flex:1;padding:20px 16px;background:#fff;text-align:center;border-left:1px solid var(--border)">
+      <div style="font-size:24px;margin-bottom:8px">📋</div>
+      <div style="font-size:12px;font-weight:700;color:var(--text-900);margin-bottom:4px">PM</div>
+      <div style="font-size:10px;color:var(--text-400)">Scope &amp; schedule<br>Stakeholder alignment<br>Approval</div>
+    </div>
+    <div style="display:flex;align-items:center;padding:0 2px;background:#e8e8e4;font-size:18px;color:#aaa">→</div>
+    <div style="flex:1;padding:20px 16px;background:linear-gradient(135deg,#3B6D11,#4a8a15);color:#fff;text-align:center">
+      <div style="font-size:24px;margin-bottom:8px">👑</div>
+      <div style="font-size:12px;font-weight:700;margin-bottom:4px">CEO</div>
+      <div style="font-size:10px;opacity:.8">Final acceptance<br>Demo review<br>GO/NO-GO</div>
+    </div>
+  </div>
+
+  <table class="bp-spec-table">
+    <thead><tr><th>Gate</th><th>Owner</th><th>Checklist</th><th>Max Versions</th></tr></thead>
+    <tbody>
+      <tr><td>Developer Self-Review</td><td>Abinandan</td><td>TypeScript 0 errors · Blueprint alignment (all 17 sections) · All labels mixed case · Numeric alignment · No scroll on 1366×768</td><td>—</td></tr>
+      <tr><td>IST Test</td><td>Muthuvel / Seenivasan</td><td>All functional flows · Field validation · Keyboard nav · Print output · Palanivel format report with severity + effort</td><td>—</td></tr>
+      <tr><td>TL-IST UX Review</td><td>Palanivel</td><td>Blueprint section compliance · Scored finding report · Sprint bucketing · Sign-off</td><td>—</td></tr>
+      <tr><td>PM Gate</td><td>Saravanan</td><td>Scope matches FSD · No gold-plating · Delivery on schedule</td><td>—</td></tr>
+      <tr><td>CEO Review</td><td>T Mani</td><td>Single-screen no scroll · WYSIWYG print · ERP 7.4 benchmark met · Visual quality · Business logic correct</td><td>2 versions max before escalation</td></tr>
+    </tbody>
+  </table>
+
+  <div class="bp-callout" style="margin-top:16px;border-left-color:var(--red-400);background:var(--red-100)">
+    <strong style="color:var(--red-700)">Max 2-Version Rule:</strong> CEO will review a maximum of 2 versions of any screen. If the screen fails CEO review twice, it is returned to PM-level triage for root cause analysis. Developers must pass TL-IST and PM gates before submitting to CEO — not bypass them.
+  </div>
+
+  <div style="margin-top:24px;padding:20px;background:linear-gradient(135deg,#0C447C,#185FA5);border-radius:10px;color:#fff;text-align:center">
+    <div style="font-size:16px;font-weight:700;margin-bottom:6px">SpinRise Design Benchmark</div>
+    <div style="font-size:13px;opacity:.9;max-width:560px;margin:0 auto">Does this screen solve the pain points of ERP 7.4 users in a spinning mill — with <strong>fewer keystrokes</strong>, <strong>less training time</strong>, and <strong>fewer errors</strong>? If yes, ship it. If not, redesign it.</div>
+    <div style="font-size:11px;opacity:.65;margin-top:8px">NOT Oracle Fusion · NOT Zoho Books · NOT any SaaS product</div>
+  </div>
+</div>
+
+<!-- Footer -->
+<div style="text-align:center;padding:40px 24px 20px;font-size:11px;color:var(--text-400)">
+  <div style="font-weight:700;color:var(--text-600);margin-bottom:4px">SpinRise ERP — Web Form Blueprint v1.0</div>
+  <div>Kalpatharu Software Ltd &nbsp;|&nbsp; Prepared by Abinandan N &nbsp;|&nbsp; 06 May 2026</div>
+  <div style="margin-top:4px">For review by Sasi (TL-Dev) → CEO by 09 May 2026 &nbsp;|&nbsp; All decisions subject to CEO final approval</div>
+</div>
+
+</div><!-- /bp-page -->
+</body>
+</html>

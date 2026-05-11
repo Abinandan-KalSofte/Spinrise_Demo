@@ -1,0 +1,446 @@
+================================================================================
+SPINRISE BLUEPRINT v1.0 → v1.1 — DETAILED EDIT INSTRUCTIONS FOR WORD
+================================================================================
+Date: 08 May 2026
+Prepared for: Abinandan (Developer)
+Instructions for: Word (Spinrise.sln UI Design Blueprint v1.0_08May2026.docx)
+
+CRITICAL: Make edits in this exact sequence. Save after every 2-3 items.
+================================================================================
+
+SECTION 1: COVER PAGE (Page 1)
+================================================================================
+
+EDIT 1: Cover Page "Reviewed By" Field
+────────────────────────────────────────
+Location: Cover page metadata table, "Reviewed By" row
+Current:  "Reviewed By | Sasikumar R — Technical Lead (Development)"
+New:      "Reviewed By | Review In Progress — Sasikumar R"
+
+Action:
+  1. Click on cover page metadata table (page 1)
+  2. Find cell with "Reviewed By"
+  3. Select the content: "Sasikumar R — Technical Lead (Development)"
+  4. Replace with: "Review In Progress — Sasikumar R"
+  5. Keep row alignment and styling identical
+
+STATUS: Save document after this edit.
+
+================================================================================
+
+SECTION 2: SECTION 4 — DASHBOARD BLUEPRINT (Page 6)
+================================================================================
+
+EDIT 2: Section 4.1 Add note about Add Mode Rule (preparatory; full rule in Section 5)
+────────────────────────────────────────────────────
+Location: Section 4.1 "KPI Strip (CEO Confirmed — 5 Cards)" header
+After the blue box with "CEO Decision (06 May 2026)..." text
+
+Add inline note (yellow highlight box):
+"Note: Add Mode Suppression Rule — See Section 5.1.1 below for mode-aware display requirements."
+
+Action:
+  1. Position cursor after the CEO Decision blue box in Section 4.1
+  2. Add a new paragraph with yellow background (or light orange callout)
+  3. Text: "Note: Add Mode Suppression Rule — See Section 5.1.1 below for mode-aware display requirements."
+  4. Do NOT modify the KPI cards table itself (that table is correct as-is)
+
+STATUS: This is a pointer. Full rule goes in Section 5.1.1.
+
+================================================================================
+
+SECTION 3: SECTION 5 — WEB FORM DESIGN STANDARDS (Pages 7-10)
+================================================================================
+
+EDIT 3: Add Section 5.1.1 — Add Mode Display Rule (New subsection after 5.1)
+────────────────────────────────────────────────────────────────────────────
+Location: After Section 5.1 "Single-Screen Architecture" (page 7), before Section 5.2
+
+Add new subsection with this exact structure:
+
+---
+5.1.1 Add Mode Display Rule
+
+CEO Decision (06 May 2026 — Finding #29): KPI cards must be mode-aware.
+
+In Add mode: KPI strip shows only Total Lines and Approx. Budget.
+Created By, Approval Status, and Approval Pipeline are hidden.
+
+After first save: All three fields activate with real data and remain visible
+in Edit/View modes.
+
+Rationale: These three fields have no meaningful value before initial document
+save. Hiding them in Add mode declutters the form and improves keystroke
+efficiency for new document creation.
+
+Implementation: Frontend renders KPI strip conditionally:
+  • Add mode: Show cards [Total Lines, Approx. Budget] only
+  • Edit/View mode: Show all 5 cards
+---
+
+Action:
+  1. Position cursor at the END of Section 5.1 table (after "Action Buttons" row)
+  2. Add page break or space as needed to keep formatting clean
+  3. Type heading: "5.1.1 Add Mode Display Rule"
+  4. Format as Bold, same style as other subsection headings (14 px)
+  5. Add the rule text with proper spacing
+
+STATUS: This addresses M1. Essential for implementation.
+
+================================================================================
+
+EDIT 4: Correct Section 5.4 — Value and Cost Formula (CRITICAL CHANGE)
+───────────────────────────────────────────────────────────────────────
+Location: Section 5.4 "Decimal Precision Standards" (page 8), table rows
+
+Current (WRONG):
+  Approximate Cost | 2 | ₹ 30,750.00 | Rate + Tax (displayed, not editable)
+
+REPLACE with TWO rows:
+
+  Value            | 2 | ₹ 30,368.25  | Quantity × Rate (editable when rate manually entered,
+               |   |              | otherwise auto-calculated)
+  ───────────────────────────────────────────────────────────────────────
+  Cost (Landed)    | 2 | ₹ 30,750.00  | Value + Tax + Insurance + Freight + Other charges
+               |   |              | (read-only display, auto-calculated, shown in grey)
+
+Action:
+  1. Locate the "Decimal Precision Standards" table on page 8
+  2. Find row: "Approximate Cost | 2 | ₹ 30,750.00 | Rate + Tax..."
+  3. DELETE this entire row
+  4. INSERT new row 1 (above): "Value | 2 | ₹ 30,368.25 | Quantity × Rate..."
+  5. INSERT new row 2 (below Value row): "Cost (Landed) | 2 | ₹ 30,750.00 | Value + Tax..."
+  6. Ensure row alignment and borders match table style
+  7. Make sure "Cost (Landed)" label is clear in grey shading in example
+
+Note: The Value formula must match Quantity × Rate (never Rate + Tax).
+
+STATUS: This addresses M2. Critical financial accuracy issue.
+
+================================================================================
+
+EDIT 5: Add new Section 5.4.1 — Multi-Vertical Field Configuration Standard
+──────────────────────────────────────────────────────────────────────────
+Location: After Section 5.4 table (page 8), before Section 5.5
+
+Add new subsection:
+
+---
+5.4.1 Multi-Vertical Field Configuration Standard
+
+CEO Decision (06 May 2026 — Finding #27): Budget Category is a conditional
+field for multi-vertical ERP operation. This section establishes the reference
+implementation pattern for all future vertical-specific fields.
+
+REFERENCE IMPLEMENTATION: Budget Category Field
+
+| Aspect | Specification |
+|--------|----------------|
+| Field Name | Budget Category |
+| Data Type | Dropdown (values from Budget Master) |
+| Visibility Condition | Display ONLY when: PR Type = Capital (C) AND Division Profile = Paper Mill |
+| Mandatory | Yes (when field is visible on Paper Mill screens) |
+| Visibility on other divisions | Hidden / Invisible (Spinning Mills, Trading, etc.) |
+| Backend Mapping | Division profile × Transaction Type × Field Name → Visibility rule table |
+| Frontend Logic | Render conditionally based on logged-in user's division profile |
+
+ARCHITECTURE PATTERN: All future vertical-specific fields must follow this structure:
+  1. Visibility rule documented in Blueprint with condition logic
+  2. Backend configuration table maps field to [Division + Transaction Type + Field]
+  3. Frontend renders conditionally on user's division profile (not hardcoded)
+  4. Mandatory flag applies only when field is visible
+
+This pattern ensures consistency across all 4 customer verticals and prevents
+field creep on irrelevant transaction types.
+
+NEXT STEP: Sasi to confirm backend configuration table design and review
+this pattern before Blueprint v1.1 final sign-off.
+
+---
+
+Action:
+  1. Position cursor after Section 5.4 table and explanatory text
+  2. Add page break or new heading level H3
+  3. Type exact heading: "5.4.1 Multi-Vertical Field Configuration Standard"
+  4. Format as same style as other H3 headings
+  5. Copy the table and explanation text exactly as above
+  6. Ensure spacing and table formatting match existing document style
+
+STATUS: This addresses M3. Critical for multi-vertical architecture.
+
+================================================================================
+
+EDIT 6: Update Section 5.5 Table — Add "Add Multiple" row
+─────────────────────────────────────────────────────────
+Location: Section 5.5 "Tab Sequence & Mandatory Field Enforcement" (page 8), table
+
+After row "Add Line button", ADD new row:
+
+  Add Multiple button | Opens combined interaction modal with two modes:
+                     | (1) Multi-select item lookup — for browse users,
+                     |     multiple items selected load as individual rows
+                     | (2) Quick row-count input — for experienced users,
+                     |     inserts N blank rows with cursor on Item Code of first row
+                     | Both modes must be available in single modal.
+                     | Named customer requirement: Pallvaa Mills, SKS
+                     | (raised by Sasi in FSD review)
+
+Action:
+  1. Locate the "Tab Sequence & Mandatory Field Enforcement" table (page 8)
+  2. Find the row with "Add Line button"
+  3. After that row, INSERT new row with above content
+  4. Ensure cells align and borders match table style
+  5. Keep text consistent with section 6 lookup modal specification
+
+STATUS: This addresses M5. Paired with Edit 7 below.
+
+================================================================================
+
+EDIT 7: Update Section 6 — Lookup Modal (Add "Multi-select" confirmation)
+──────────────────────────────────────────────────────────────────────────
+Location: Section 6 "Lookup Modal Design Standard" (page 10), table
+
+Find row: "Multi-select | Checkbox column; 'Add Selected' button; quick row-count input for experienced users"
+
+Confirm this text is present and emphasize it is paired with Add Multiple button in Section 5.5:
+
+Update row to read:
+  Multi-select | Checkbox column for multi-select; 'Add Selected' button loads selected
+             | items as individual rows. Quick row-count input (for experienced users)
+             | inserts N blank rows. Note: This is the interaction pattern for the
+             | Add Multiple button in Section 5.5.
+
+Action:
+  1. Locate table in Section 6 "Lookup Modal Design Standard"
+  2. Find "Multi-select" row
+  3. Update the "Specification" cell to include note about Add Multiple button
+  4. No other changes to Section 6
+
+STATUS: This cross-references M5. Clarifies the two-mode pattern.
+
+================================================================================
+
+SECTION 4: SECTION 7 — ENTERPRISE TABLE GRID STANDARDS (Page 11)
+================================================================================
+
+EDIT 8: Update Section 7.1 Header with Status Marker
+─────────────────────────────────────────────────────
+Location: Section 7.1 "Grid Component Comparison" header (page 11)
+
+Current:
+  "7.1 Grid Component Comparison
+   PROPOSED RECOMMENDATION — Pending CEO Decision. The table below presents..."
+
+NEW:
+  "7.1 Grid Component Comparison
+   STATUS: PROPOSED — Pending CEO Decision (Fri 8 May 2026)
+
+   Note: The comparison table and grid design standards in Section 7.3 that do not
+   depend on library selection (row height, column alignment, field types, etc.)
+   are CONFIRMED. The library selection itself (AG Grid Enterprise vs alternatives)
+   is PENDING CEO approval."
+
+Action:
+  1. Find the blue box at top of Section 7.1 with "PROPOSED RECOMMENDATION"
+  2. Change "PROPOSED RECOMMENDATION — Pending CEO Decision"
+     to "STATUS: PROPOSED — Pending CEO Decision (Fri 8 May 2026)"
+  3. Add the note paragraph immediately after
+  4. Ensure formatting (blue box, bold, standard text) matches existing style
+
+STATUS: This addresses C1. Clarifies what is decided vs proposed.
+
+================================================================================
+
+SECTION 5: SECTION 13 — RECOMMENDED TECHNOLOGY STACK (Page 17)
+================================================================================
+
+EDIT 9: Update Section 13.1 Row — Ant Design 5 (Remove "CEO-approved" claim)
+────────────────────────────────────────────────────────────────────────────
+Location: Section 13.1 "Full Stack Comparison" table (page 17)
+
+Find row:
+  Layer: UI Framework
+  Current Stack: Ant Design 5
+  Proposed: Ant Design 5
+  Action: RETAIN
+  Rationale: CEO-approved; comprehensive component set for ERP
+
+UPDATE Rationale to:
+  "Current stack — under review for grid component selection. Not explicitly
+   CEO-approved independent of component library decision (AG Grid vs Ant Design ProTable)."
+
+Action:
+  1. Locate table in Section 13.1 "Full Stack Comparison"
+  2. Find row with "UI Framework | Ant Design 5 | Ant Design 5 | RETAIN |"
+  3. Replace Rationale cell text (currently "CEO-approved; comprehensive...")
+  4. New text: "Current stack — under review for grid component selection.
+               Not explicitly CEO-approved independent of component library decision."
+  5. Do NOT change the layer name, current stack, proposed, or action columns
+
+STATUS: This addresses C3. Removes false CEO approval claim.
+
+================================================================================
+
+EDIT 10: Update Section 13.1 Row — Data Grid (Clarify PROPOSED status)
+───────────────────────────────────────────────────────────────────────
+Location: Section 13.1 "Full Stack Comparison" table (page 17)
+
+Find row:
+  Layer: Data Grid
+  Current Stack: Ant Design Table
+  Proposed: AG Grid Enterprise
+  Action: PROPOSED
+  Rationale: Full keyboard nav, inline editing, Excel copy-paste for large grids.
+             Pending CEO decision. See Section 7.
+
+This row is CORRECT as-is. No changes needed.
+
+Status: Confirm this row remains "PROPOSED" — it is correct.
+
+================================================================================
+
+EDIT 11: Update Section 14 — Smart Defaults (Add PR Type row)
+──────────────────────────────────────────────────────────────
+Location: Section 14 "UX Best Practices for ERP Power Users" (page 19)
+
+Find the "Practice | Implementation" table. Current entries:
+  - Minimise keystrokes
+  - Smart defaults (with Sample=No, Date=Today examples)
+  - Context-sensitive filters
+  - etc.
+
+In the "Smart defaults" row, ADD mention of PR Type default:
+
+Current:
+  "Smart defaults | Default values must be contextually meaningful —
+                | Sample=No, Date=Today, Currency=INR, UOM from Item Master."
+
+NEW:
+  "Smart defaults | Default values must be contextually meaningful —
+                | Sample=No, Date=Today, Currency=INR, UOM from Item Master.
+                | PR Type default is customer/division-configurable at
+                | implementation time (not hardcoded)."
+
+Action:
+  1. Locate the "UX Best Practices" table in Section 14
+  2. Find "Smart defaults" row
+  3. After the existing text ("Sample=No, Date=Today..."), add newline
+  4. Append: "PR Type default is customer/division-configurable at
+             implementation time (not hardcoded)."
+  5. Keep all other rows unchanged
+
+STATUS: This addresses M4. Configuration, not design change.
+
+================================================================================
+
+EDIT 12: Add Section 5.9 — PR List Screen Reference
+──────────────────────────────────────────────────
+Location: After Section 5.8 "Item Image — Item Master Integration" (page 9),
+         before Section 6 "Lookup Modal Design Standard"
+
+Add new section:
+
+---
+5.9 PR List Screen — Companion Document Register
+
+CEO Decision (06 May 2026 — Finding #18): A PR List Screen is a required
+companion to the PR entry form. This screen displays all Purchase Requisitions
+in a sortable, filterable document register with approval status badges.
+
+REQUIRED FEATURES (to be detailed in Blueprint v1.1):
+  • Document register grid (Item Code, Description, PR Date, Total Value, Status badge, etc.)
+  • Filter by Status (Requested, Pending, Approved, Rejected, PO Raised, Closed)
+  • Sort by PR Date, PR Number, Total Value, Approver
+  • Pagination (virtual scroll or paginated, performance tested)
+  • Status badge colour standard (see Section 10)
+  • Mobile-responsive where feasible
+
+TIMELINE:
+  • Seenivasan + Palanivel column requirements due Fri 8 May to Mariyaiya
+  • Formal specification and screen design added to Blueprint v1.1
+  • Standard to be applied to all future list screens (Sales Order List, PO List, etc.)
+
+NOTE: The list screen design pattern (once approved) becomes the master template
+for all transaction list screens across SpinRise modules.
+
+---
+
+Action:
+  1. Position cursor at the END of Section 5.8 content (page 9)
+  2. Add page break or section space
+  3. Type heading: "5.9 PR List Screen — Companion Document Register"
+  4. Format as same H3 style as other Section 5 subsections
+  5. Copy the content exactly as above
+  6. Ensure spacing before Section 6 remains clean
+
+STATUS: This addresses M7. Acknowledges new requirement without detailing it prematurely.
+
+================================================================================
+
+EDIT 13: Update Section 5.4 Rate row — Clarify DEFERRED status (CRITICAL)
+──────────────────────────────────────────────────────────────────────────
+Location: Section 5.4 "Decimal Precision Standards" table (page 8), Rate row
+
+Current:
+  "Rate (Unit Price) | 4 | ₹ 125.7500 | User input / Last PO Rate / Avg Rate"
+
+UPDATE to:
+  "Rate (Unit Price) | 4 | ₹ 125.7500 | [DEFERRED] Last PO Rate / Avg Rate / Manual Entry
+                   |   |            | (with Justification field). To be confirmed in Blueprint v1.1
+                   |   |            | after FSD amendment approved by CEO."
+
+Action:
+  1. Locate "Decimal Precision Standards" table on page 8
+  2. Find "Rate (Unit Price)" row
+  3. Replace Formula cell with above text
+  4. Add [DEFERRED] label in brackets to make status clear
+  5. Keep column alignment; cell may need to wrap text
+
+STATUS: This addresses C2 (alignment with Section 14). Prevents implementation of undecided feature.
+
+================================================================================
+
+FINAL STEPS
+================================================================================
+
+1. SAVE AS: Save document as "SPINRISE_UIDesign_Blueprint_v1.1_08May2026.docx"
+   (Do NOT overwrite v1.0; keep both versions in Docs/UI_Blueprint/)
+
+2. PROOF-READ: Review all 13 edits for accuracy against this instruction set
+
+3. CHANGE LOG: Attach the CHANGE_LOG_v1.0_to_v1.1.md file to the blueprint submission
+
+4. VERSION UPDATE: Change document header/footer:
+   - Find "Version 1.0" near top of document
+   - Change to "Version 1.1"
+   - Find "08 May 2026" date field (appears in header and footer)
+   - Keep as "08 May 2026" (same day, different version)
+
+5. UPDATED COVER PAGE:
+   - Version: 1.1
+   - Date: 08 May 2026
+   - Prepared By: Abinandan N — Fullstack Developer
+   - Reviewed By: Review In Progress — Sasikumar R ← (Changed per Edit 1)
+   - Company: Kalpatharu Software Ltd
+
+6. GENERATE PDF: Export v1.1 as PDF once Word edits complete
+
+7. SUBMIT TO SASI:
+   - Email: Sasi (Sasikumar R, Technical Lead)
+   - Files:
+     * SPINRISE_UIDesign_Blueprint_v1.1_08May2026.docx
+     * SPINRISE_UIDesign_Blueprint_v1.1_08May2026.pdf
+     * CHANGE_LOG_v1.0_to_v1.1.md
+   - Subject: "Blueprint v1.1 — CEO Feedback Incorporated — Awaiting TL Review"
+
+8. TIMELINE: Complete by EOD Fri 8 May so Sasi has time for review before
+   CEO final approval submission.
+
+================================================================================
+
+Total edits: 13 items
+Status: All 10 CEO feedback items + 3 alignment items addressed
+Complexity: Medium (2 new subsections, 2 table updates, multiple clarifications)
+
+Questions? Reference the CHANGE_LOG for rationale on each edit.
+

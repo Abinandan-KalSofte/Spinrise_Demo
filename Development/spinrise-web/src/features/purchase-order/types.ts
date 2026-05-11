@@ -122,28 +122,29 @@ export interface PODetailResponse {
 
 // ── Create / Update ───────────────────────────────────────────────────────
 export interface CreatePOLineRequest {
-  varCode:     string
-  ordQty:      number
-  ordKgs:      number
-  candyRate:   number
-  packType?:   string
-  bbFlag?:     string
-  cashDisPer:  number
-  tradeDisPer: number
-  cessPer:     number
-  insPer:      number
-  hsn?:        string
-  cgstPer:     number
-  sgstPer:     number
-  igstPer:     number
-  taxCode?:    string
-  iPrNo?:      number | null
-  prDate?:     string | null
-  prSno?:      number | null
-  msDocNo?:    string | null
-  msDocSno?:   string | null
-  noOfLoad:    number
-  rateKg:      number
+  varCode:      string
+  ordQty:       number
+  ordKgs:       number
+  candyRate:    number
+  packType?:    string
+  bbFlag?:      string
+  cashDisPer:   number
+  tradeDisPer:  number
+  cessPer:      number
+  insPer:       number
+  hsn?:         string
+  cgstPer:      number
+  sgstPer:      number
+  igstPer:      number
+  taxCode?:     string
+  iPrNo?:       number | null
+  prDate?:      string | null
+  prSno?:       number | null
+  msDocNo?:     string | null
+  msDocSno?:    string | null
+  noOfLoad:     number
+  rateKg:       number
+  millSampleNo?: string   // SNO — with-sample mode
 }
 
 export interface CreateDeliveryScheduleRequest {
@@ -152,6 +153,7 @@ export interface CreateDeliveryScheduleRequest {
   delAddress?:  string
   varCode?:     string
   instruction?: string
+  weighment?:   string
 }
 
 export interface CreateDiscountRateRequest {
@@ -187,6 +189,34 @@ export interface CreatePORequest {
   sampleFlg:      string
   lotFrom:        number
   lotTo:          number
+  // Header additions
+  agentCode?:        string
+  imInd?:            string          // 'I' | 'L' | 'U'
+  millRefNo?:        string
+  rateUnit?:         string
+  arrivalType?:      string          // 'P' | 'K'
+  finalWeighment?:   string          // 'M' | 'S'
+  // Payment & Terms
+  billingAddress?:   string
+  deliveryAddrCode?: string
+  contactPerson?:    string
+  terms1?:           string
+  terms1Days?:       number | null
+  terms2?:           string
+  terms2Days?:       number | null
+  creditDays?:       number | null
+  interestPer?:      number | null
+  deliveryTerms?:    string
+  remarks?:          string
+  // Tax Details
+  perBaleTruck?:     string          // 'T' | 'B' | ''
+  // Cotton Quality (all string — DB stores as varchar)
+  grade?:            string
+  staple?:           string
+  mic?:              string
+  strength?:         string
+  moisture?:         string
+  trash?:            string
   lines:            CreatePOLineRequest[]
   deliverySchedule: CreateDeliveryScheduleRequest[]
   discountRates:    CreateDiscountRateRequest[]
@@ -202,12 +232,14 @@ export interface POParamDto {
   approvalEnabled:       boolean
   additionalTaxRequired: boolean
   ftAmt:                 number
+  woSample:              boolean   // RM_PARAM.wosample — true=with-sample mode default
 }
 
 export interface PODefaultsDto {
   defaultCurrency: string
   prBased:         boolean
   centralizedOrder:boolean
+  param?:          POParamDto | null   // full config from RM_PARAM
 }
 
 export interface GSTConfigDto {
@@ -215,6 +247,7 @@ export interface GSTConfigDto {
   gstInNo:      string
   suppType:     string
   stateCode:    string
+  stateFlag:    string   // 'F' = foreign/no GST
 }
 
 // ── PR Lines ──────────────────────────────────────────────────────────────
@@ -225,6 +258,7 @@ export interface PRLineDto {
   varName:          string
   packType:         string
   balanceQty:       number
+  balanceKgs:       number   // ISNULL(qtyindKG,0) - ISNULL(qtyordKG,0)
   prSno:            number
   requisitionerName:string
   masterDocNo:      number

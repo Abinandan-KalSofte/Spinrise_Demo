@@ -69,6 +69,24 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
         finally { await _uow.CommitAsync(); }
     }
 
+    public async Task<PRNavigationResultDto?> GetLastRecordAsync(string divCode, DateTime yfDate, DateTime ylDate)
+    {
+        _log.LogInformation("PR GetLastRecord | DivCode={DivCode}", divCode);
+        await _uow.BeginAsync();
+        try { return await _repo.GetLastRecordAsync(divCode.Trim(), yfDate, ylDate); }
+        finally { await _uow.CommitAsync(); }
+    }
+
+    public async Task<PRNavigationResultDto?> NavigateAsync(
+        string divCode, string direction, long? currentPrNo, DateTime yfDate, DateTime ylDate)
+    {
+        _log.LogInformation("PR Navigate | DivCode={DivCode} Direction={Direction} CurrentPrNo={PrNo}",
+            divCode, direction, currentPrNo);
+        await _uow.BeginAsync();
+        try { return await _repo.NavigateAsync(divCode.Trim(), direction.ToUpperInvariant(), currentPrNo, yfDate, ylDate); }
+        finally { await _uow.CommitAsync(); }
+    }
+
     public async Task<PRHeaderResponseDto?> GetByIdAsync(string divCode, long prNo, DateTime? startDate = null, DateTime? endDate = null)
     {
         _log.LogInformation("PR GetById | DivCode={DivCode} PrNo={PrNo}", divCode, prNo);
@@ -111,6 +129,8 @@ public class PurchaseRequisitionService : IPurchaseRequisitionService
                 LastPoDate         = raw.LastPoDate,
                 LastPoSupplierCode = raw.LastPoSupplierCode,
                 LastPoSupplierName = raw.LastPoSupplierName,
+                DrawNo             = raw.DrawNo,
+                CatNo              = raw.CatNo,
             };
 
             // Pending indent check — gated by po_para.PendingOrderPara = 'Y' (V26)

@@ -52,6 +52,15 @@ export function PRLinePickerModal({ open, loading, lines, onSelect, onClose }: P
       render: (v: number) => <Tag color="blue">{v}</Tag>,
     },
     {
+      title: 'Bal.Kgs',
+      dataIndex: 'balanceKgs',
+      width: 90,
+      align: 'right' as const,
+      render: (v: number) => (
+        <span style={{ fontVariantNumeric: 'tabular-nums' }}>{v?.toFixed(3) ?? '—'}</span>
+      ),
+    },
+    {
       title: 'Rate/Candy',
       dataIndex: 'candyRate',
       width: 90,

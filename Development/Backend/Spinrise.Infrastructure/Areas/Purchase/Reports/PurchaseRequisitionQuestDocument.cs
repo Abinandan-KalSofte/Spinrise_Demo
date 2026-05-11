@@ -80,10 +80,18 @@ internal sealed class PurchaseRequisitionQuestDocument : IDocument
 
     public void Compose(IDocumentContainer container)
     {
+        decimal totalValue = _header.Lines.Sum(l => (l.LastPoRate ?? 0m) * l.QtyRequired);
+        decimal totalAppCost = _header.Lines.Sum(l =>
+        {
+            var lpoValue = (l.LastPoRate ?? 0m) * l.QtyRequired;
+            return (l.ApproxCost is null or <= 0m) ? lpoValue : l.ApproxCost.Value;
+        });
+
         var hdr  = BuildHeader();
         var info = BuildInfo();
-        var tbl  = BuildTable();
+        var tbl  = BuildTable(totalValue, totalAppCost);
         var sig  = BuildSignature();
+        var printStamp = $"Total Value: {(long)Math.Round(totalValue):N0}  |  Printed: {DateTime.Now:dd/MM/yyyy  HH:mm}";
 
         container.Page(page =>
         {
@@ -104,17 +112,19 @@ internal sealed class PurchaseRequisitionQuestDocument : IDocument
                 //   .Element(c => QuestPdfTemplateEngine.RenderTable(c, tbl));
                 col.Item()
                     .PaddingBottom(2)
-                    .BorderBottom(1) // how to shrink table to fit available space without cutting off rows? — add bottom border to fill gap
+                    .BorderBottom(1)
                     .BorderColor(Colors.Grey.Darken1)
                     .Element(c => QuestPdfTemplateEngine.RenderTable(c, tbl));
-                //col.Item()
-                //     .PaddingHorizontal(2.2f, Unit.Millimetre) // 👈 match table inset
-                //     .PaddingBottom(2)
-                //     .BorderBottom(1)
-                //     .BorderColor(Colors.Grey.Darken1)
-                //     .Element(c => QuestPdfTemplateEngine.RenderTable(c, tbl));
                 col.Item()
-                    .ExtendVertical() // takes remaining space
+                    .PaddingHorizontal(TableInset, Unit.Millimetre)
+                    .PaddingVertical(2)
+                    .Text(t =>
+                    {
+                        t.AlignRight();
+                        t.Span(printStamp).FontSize(FsAddress).FontColor(Black);
+                    });
+                col.Item()
+                    .ExtendVertical()
                     .AlignBottom()
                     .Element(c => QuestPdfTemplateEngine.RenderSignature(c, sig));
             });
@@ -153,7 +163,7 @@ internal sealed class PurchaseRequisitionQuestDocument : IDocument
             BorderPt:    BdBox,
             BorderColor: Black,
             Title:       "Purchase Requisition",
-            TitleFont:   new StyleFont(FontFamily, FsTitle, Bold: true, Color: Maroon),
+            TitleFont:   new StyleFont(FontFamily, FsTitle, Bold: true, Color: Navy),
             TitlePadVMm: 3f,
             LabelFont:   new StyleFont(FontFamily, FsInfo, Bold: true),
             ValueFont:   new StyleFont(FontFamily, FsInfo, Bold: false),
@@ -171,13 +181,13 @@ internal sealed class PurchaseRequisitionQuestDocument : IDocument
                 WidthMm: 0, IndentMm: RightIndent, PadVMm: 3f, RowSpacingMm: 3f,
                 Rows: new InfoRowConfig[]
                 {
-                    new("PR.No.",        _header.PrNo.ToString(),                RightLabelW, SepW),
-                    new("PR.Date",       _header.PrDate.ToString("dd/MM/yyyy"),  RightLabelW, SepW),
-                    new("Approved Date", app3,                                   RightLabelW, SepW),
+                    new("PR.No.",        _header.PrNo.ToString(),                        RightLabelW, SepW),
+                    new("PR.Date/Time",  _header.PrDate.ToString("dd/MM/yyyy  HH:mm"),  RightLabelW, SepW),
+                    new("Approved Date", app3,                                           RightLabelW, SepW),
                 }));
     }
 
-    private TableConfig BuildTable()
+    private TableConfig BuildTable(decimal totalValue, decimal totalAppCost)
     {
         var emptyMach = new MachCellConfig(MinHeightMm: MachRowH, BdSidePt: BdData, BdColor: Black);
 
@@ -227,12 +237,28 @@ internal sealed class PurchaseRequisitionQuestDocument : IDocument
             return new DataRowConfig(cells, childRows);
         }).ToList();
 
+        // Columns: 0=S.No 1=ItemCode 2=ItemName 3=Unit 4=ReqQty 5=ReqDate 6=CurrStk 7=Rate 8=Value 9=Date 10=AppCost 11=Remarks
+        var totalsRow = new TotalsRowConfig(
+            Cells: new TotalsCellConfig[]
+            {
+                new("Grand Total", DA.Right, ColumnSpan: 8u, Bold: true),
+                new(totalValue    == 0m ? "" : ((long)Math.Round(totalValue)).ToString("N0"),  DA.Right, Bold: true),
+                new("",  DA.Center),
+                new(totalAppCost  == 0m ? "" : totalAppCost.ToString("N2"),                    DA.Right, Bold: true),
+                new("",  DA.Left),
+            },
+            MinHeightMm: DataRowH,
+            FontSizePt:  FsData,
+            BdSidePt:    BdData,
+            BdColor:     Black);
+
         return new TableConfig(
             InsetMm:       TableInset,
             Columns:       Cols.Select(w => new ColDef(w)).ToArray(),
             Header:        BuildTableHeader(),
             EmptyMachCell: emptyMach,
-            Rows:          rows);
+            Rows:          rows,
+            TotalsRow:     totalsRow);
     }
 
     private TableHeaderConfig BuildTableHeader()

@@ -1,27 +1,31 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Alert,
   App,
-  Breadcrumb,
-  Button,
-  Divider,
   Form,
   Modal,
   Select,
   Skeleton,
   Space,
   Spin,
-  Steps,
-  Tag,
   Typography,
 } from "antd";
 import {
+  CheckOutlined,
   CloseOutlined,
   DeleteOutlined,
-  FormOutlined,
-  SendOutlined,
+  DoubleLeftOutlined,
+  DoubleRightOutlined,
+  EditOutlined,
+
+  LeftOutlined,
+  PlusOutlined,
+  PrinterOutlined,
+  RightOutlined,
+  SearchOutlined,
+  UnorderedListOutlined,
 } from "@ant-design/icons";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { useAuthStore } from "@/features/auth/store/useAuthStore";
 import { generateUUID } from "@/shared/lib/uuid";
@@ -40,29 +44,94 @@ import type {
   PreCheckResult,
 } from "../types";
 
-// ── Status → Steps mapping ────────────────────────────────────────────────────
+// ── CEO design tokens ─────────────────────────────────────────────────────────
 
-const PR_STEPS = [
-  { title: "Draft" },
-  { title: "Submitted" },
-  { title: "Approved" },
-  { title: "Converted" },
-];
+const C = {
+  blue:    '#185FA5',
+  blueLt:  '#E6F1FB',
+  green:   '#3B6D11',
+  greenLt: '#EAF3DE',
+  amber:   '#BA7517',
+  amberLt: '#FAEEDA',
+  red:     '#A32D2D',
+  redLt:   '#FCEBEB',
+  bg:      '#f5f5f3',
+  bg2:     '#fafaf8',
+  border:  '#e2e2e2',
+  border2: '#d0d0d0',
+  text:    '#1a1a1a',
+  text2:   '#4a4a4a',
+  text3:   '#888',
+} as const
 
-function statusToStep(status: string | null): number {
-  if (!status) return 0;
-  const map: Record<string, number> = {
-    OPEN:           1,
-    PENDING:        1,
-    L1_APPROVED:    2,
-    L2_APPROVED:    2,
-    FINAL_APPROVED: 2,
-    RECEIVED:       2,
-    CONVERTED:      3,
-    CANCELLED:      0,
-  };
-  return map[status] ?? 0;
+// ── Toolbar button ─────────────────────────────────────────────────────────────
+
+interface TbBtnProps {
+  icon:       React.ReactNode
+  label?:     string
+  kbd?:       string
+  onClick?:   () => void
+  disabled?:  boolean
+  variant?:   'default' | 'primary' | 'success' | 'danger' | 'icon'
+  title?:     string
 }
+function TbBtn({ icon, label, kbd, onClick, disabled = false, variant = 'default', title }: TbBtnProps) {
+  const base: React.CSSProperties = {
+    display: 'inline-flex', alignItems: 'center', gap: 5,
+    padding: variant === 'icon' ? '5px 8px' : '5px 11px',
+    border: `1px solid ${C.border2}`, borderRadius: 6,
+    background: '#fff', fontSize: 12, fontWeight: 500,
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    color: C.text, opacity: disabled ? 0.35 : 1,
+    fontFamily: 'inherit', whiteSpace: 'nowrap',
+    transition: 'background 0.12s, opacity 0.12s',
+  }
+  const variants: Partial<Record<string, React.CSSProperties>> = {
+    primary: { background: C.blue,   color: '#fff', borderColor: C.blue },
+    success: { background: '#3B6D11', color: '#fff', borderColor: '#3B6D11' },
+    danger:  { color: C.red, borderColor: '#E24B4A', background: '#fff' },
+  }
+  return (
+    <button
+      style={{ ...base, ...(variants[variant] ?? {}) }}
+      onClick={!disabled ? onClick : undefined}
+      disabled={disabled}
+      title={title}
+    >
+      {icon}
+      {label && <span>{label}</span>}
+      {kbd && (
+        <span style={{
+          fontSize: 10, padding: '1px 4px',
+          border: `1px solid ${C.border2}`, borderRadius: 3,
+          color: C.text3, background: C.bg, fontFamily: 'monospace', marginLeft: 2,
+        }}>{kbd}</span>
+      )}
+    </button>
+  )
+}
+function TbSep() {
+  return <div style={{ width: 1, height: 22, background: C.border, margin: '0 3px', flexShrink: 0 }} />
+}
+
+// ── Metric card ───────────────────────────────────────────────────────────────
+
+function MetricCard({ label, value, sub, valueColor }: {
+  label: string; value: React.ReactNode; sub?: string; valueColor?: string
+}) {
+  return (
+    <div style={{ background: '#fff', border: `1px solid ${C.border}`, borderRadius: 10, padding: '10px 13px' }}>
+      <div style={{ fontSize: 10, fontWeight: 600, color: C.text3, textTransform: 'uppercase', letterSpacing: '0.4px', marginBottom: 3 }}>
+        {label}
+      </div>
+      <div style={{ fontSize: 18, fontWeight: 700, color: valueColor ?? C.text, lineHeight: 1.2, fontVariantNumeric: 'tabular-nums' }}>
+        {value}
+      </div>
+      {sub && <div style={{ fontSize: 11, color: C.text3, marginTop: 2 }}>{sub}</div>}
+    </div>
+  )
+}
+
 
 // ── Page ─────────────────────────────────────────────────────────────────────
 
@@ -71,9 +140,9 @@ export default function PurchaseRequisitionNewPage() {
   const navigate = useNavigate();
   const [headerForm] = Form.useForm<PRHeaderFormValues>();
 
-  const divCode = useAuthStore((s) => s.user?.divCode ?? "");
-  const depCode =
-    (Form.useWatch("depCode", headerForm) as string | undefined) ?? "";
+  const authUser = useAuthStore((s) => s.user)
+  const divCode = authUser?.divCode ?? ""
+  const depCode = (Form.useWatch("depCode", headerForm) as string | undefined) ?? ""
 
   // ── State ─────────────────────────────────────────────────────────────────
   const [items, setItems] = useState<PRLineFormItem[]>([]);
@@ -224,12 +293,12 @@ export default function PurchaseRequisitionNewPage() {
     try {
       values = await headerForm.validateFields();
     } catch {
-      message.error("Please complete the required header fields.");
+      message.error("Please fill in all required fields in the Requisition Details section.");
       return;
     }
     const validLines = items.filter((l) => l.itemCode.trim() !== "");
     if (validLines.length === 0) {
-      message.error("At least one item is required.");
+      message.error("Please add at least one item to the requisition before saving.");
       return;
     }
     setSaving(true);
@@ -252,7 +321,7 @@ export default function PurchaseRequisitionNewPage() {
         navigate("/purchase/requisition");
       }
     } catch (err: unknown) {
-      message.error(err instanceof Error ? err.message : "Save failed.");
+      message.error(err instanceof Error ? err.message : "Failed to save the requisition. Please try again.");
     } finally {
       setSaving(false);
     }
@@ -266,7 +335,7 @@ export default function PurchaseRequisitionNewPage() {
   };
   const handleDeleteConfirm = async () => {
     if (!selectedDeleteReason || !savedPrNo) {
-      message.error("Select a reason first.");
+      message.error("Please select a cancellation reason before proceeding.");
       return;
     }
     setDeleteModalOpen(false);
@@ -276,7 +345,7 @@ export default function PurchaseRequisitionNewPage() {
       void message.success(`PR ${savedPrNo} deleted.`);
       navigate("/purchase/requisition");
     } catch (err: unknown) {
-      message.error(err instanceof Error ? err.message : "Delete failed.");
+      message.error(err instanceof Error ? err.message : "Failed to cancel the requisition. Please try again.");
     } finally {
       setDeleting(false);
     }
@@ -284,9 +353,31 @@ export default function PurchaseRequisitionNewPage() {
 
   // ── Print ─────────────────────────────────────────────────────────────────
   // ── Derived ───────────────────────────────────────────────────────────────
-  const pageBusy = saving || deleting;
-  const statusInfo = prStatus ? (PR_STATUS_LABELS[prStatus] ?? null) : null;
-  const stepIndex = statusToStep(prStatus);
+  const pageBusy    = saving || deleting
+  const validLines  = items.filter((l) => l.itemCode.trim() !== "")
+  const totalCost   = validLines.reduce((s, l) => s + (l.approxCost ?? 0), 0)
+  const totalQtyByUOM = validLines.reduce<Record<string, number>>((acc, l) => {
+    if (l.uom) acc[l.uom] = (acc[l.uom] ?? 0) + (l.qtyRequired ?? 0)
+    return acc
+  }, {})
+  const totalQtyDisplay = Object.entries(totalQtyByUOM)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([uom, qty]) => `${uom}: ${qty.toLocaleString('en-IN', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}`)
+    .join(' | ') || '—'
+
+  // Ctrl+S → save
+  const doSaveRef = useRef(doSave)
+  doSaveRef.current = doSave
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === 's') {
+        e.preventDefault()
+        if (!saving && !deleting) void doSaveRef.current('submit')
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [saving, deleting])
 
   // ── Loading state ─────────────────────────────────────────────────────────
   if (lookupsLoading) {
@@ -301,364 +392,161 @@ export default function PurchaseRequisitionNewPage() {
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="pr-page">
-      {/* ══ STICKY ACTION BAR ═══════════════════════════════════════════════ */}
-      <div
-        style={{
-          position: "sticky",
-          top: 56,
-          zIndex: 100,
-          background: "#ffffff",
-          borderBottom: "1px solid #e5e7eb",
-          boxShadow: "0 2px 8px rgba(15,23,42,0.07)",
-          padding: "0 24px",
-          height: 60,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 16,
-        }}
-      >
-        {/* Left — accent bar + breadcrumb + title + badge */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 14,
-            minWidth: 0,
-          }}
-        >
-          <div
-            style={{
-              width: 4,
-              height: 32,
-              borderRadius: 2,
-              background: "#1677ff",
-              flexShrink: 0,
-            }}
-          />
-          <div style={{ minWidth: 0 }}>
-            <Breadcrumb
-              style={{ fontSize: 11, lineHeight: 1 }}
-              items={[
-                {
-                  title: (
-                    <Link
-                      to="/purchase/requisition"
-                      style={{ color: "#9ca3af", fontSize: 11 }}
-                    >
-                      Purchase
-                    </Link>
-                  ),
-                },
-                {
-                  title: (
-                    <Link
-                      to="/purchase/requisition"
-                      style={{ color: "#9ca3af", fontSize: 11 }}
-                    >
-                      Requisitions
-                    </Link>
-                  ),
-                },
-                {
-                  title: (
-                    <span style={{ color: "#6b7280", fontSize: 11 }}>
-                      {savedPrNo
-                        ? `PR-${String(savedPrNo).padStart(5, "0")}`
-                        : "New"}
-                    </span>
-                  ),
-                },
-              ]}
-            />
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                marginTop: 3,
-              }}
-            >
-              <FormOutlined style={{ color: "#1677ff", fontSize: 13 }} />
-              <Typography.Text
-                strong
-                style={{ fontSize: 15, color: "#111827", lineHeight: 1 }}
-              >
-                {savedPrNo
-                  ? `Purchase Requisition — PR-${String(savedPrNo).padStart(5, "0")}`
-                  : "New Purchase Requisition"}
-              </Typography.Text>
-              {statusInfo ? (
-                <Tag
-                  color={statusInfo.color}
-                  style={{ fontWeight: 600, fontSize: 11 }}
-                >
-                  {statusInfo.label}
-                </Tag>
-              ) : (
-                <Tag color="orange" style={{ fontWeight: 600, fontSize: 11 }}>
-                  Draft
-                </Tag>
-              )}
-            </div>
-          </div>
-        </div>
+    <div className="pr-page" style={{ background: C.bg }}>
 
-        {/* Center — steps */}
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            justifyContent: "center",
-            minWidth: 0,
-          }}
-        >
-          <Steps
-            size="small"
-            current={stepIndex}
-            items={PR_STEPS}
-            style={{ maxWidth: 420, width: "100%" }}
-          />
-        </div>
-
-        {/* Right — actions */}
-        <Space size={6} style={{ flexShrink: 0 }}>
-          <Button
-            type="text"
-            icon={<CloseOutlined />}
-            disabled={pageBusy}
-            onClick={() => navigate("/purchase/requisition")}
-            style={{ color: "#6b7280" }}
-          >
-            Cancel
-          </Button>
-
-          {/* <Button
-            icon={<SaveOutlined />}
-            loading={saving}
-            disabled={pageBusy}
-            onClick={() => void doSave("draft")}
-          >
-            Save Draft
-          </Button> */}
-
-          <Divider
-            type="vertical"
-            style={{ height: 24, margin: "0 2px", borderColor: "#e5e7eb" }}
-          />
-
-          {(!prStatus || prStatus === 'OPEN') && (
-            <Button
-              type="primary"
-              icon={<SendOutlined />}
-              loading={saving}
-              disabled={pageBusy}
-              onClick={() => void doSave("submit")}
-              style={{ fontWeight: 600, paddingInline: 20 }}
-            >
-              Submit for Approval
-            </Button>
-          )}
-
-          {savedPrNo && (
-            <>
-              <Divider
-                type="vertical"
-                style={{ height: 24, margin: "0 2px", borderColor: "#e5e7eb" }}
-              />
-              {/* <Dropdown menu={printMenu} disabled={pageBusy}>
-                <Button icon={<PrinterOutlined />}>
-                  Print <DownOutlined />
-                </Button>
-              </Dropdown> */}
-              <Button
-                danger
-                icon={<DeleteOutlined />}
-                disabled={pageBusy}
-                onClick={handleDeleteClick}
-              >
-                Delete
-              </Button>
-            </>
-          )}
-        </Space>
+      {/* ══ CEO-style toolbar ════════════════════════════════════════════════ */}
+      <div style={{
+        background: '#fff', borderBottom: `1px solid ${C.border}`,
+        display: 'flex', alignItems: 'center', gap: 3,
+        padding: '0 12px', height: 44, flexShrink: 0,
+      }}>
+        <TbBtn variant="primary" icon={<PlusOutlined style={{ fontSize: 11 }} />} label="New PR" kbd="F3" disabled={!!savedPrNo} onClick={() => navigate('/purchase/requisition/v1/new')} />
+        <TbBtn variant="success" icon={<CheckOutlined style={{ fontSize: 11 }} />} label="Save" kbd="Ctrl+S" disabled={pageBusy} onClick={() => void doSave('submit')} />
+        <TbBtn icon={<EditOutlined style={{ fontSize: 11 }} />} label="Modify" kbd="F4" disabled />
+        <TbBtn icon={<CloseOutlined style={{ fontSize: 11 }} />} label="Cancel" kbd="Esc" disabled={pageBusy} onClick={() => navigate('/purchase/requisition')} />
+        <TbBtn variant="danger" icon={<DeleteOutlined style={{ fontSize: 11 }} />} label="Delete" kbd="Ctrl+D" disabled={!savedPrNo || pageBusy} onClick={handleDeleteClick} />
+        <TbSep />
+        <TbBtn icon={<PrinterOutlined style={{ fontSize: 11 }} />} label="Print" kbd="Ctrl+P" disabled={!savedPrNo} />
+        <TbBtn icon={<SearchOutlined style={{ fontSize: 11 }} />} label="Find" kbd="Ctrl+F" onClick={() => navigate('/purchase/requisition')} />
+        <TbBtn icon={<UnorderedListOutlined style={{ fontSize: 11 }} />} label="List" kbd="Ctrl+L" onClick={() => navigate('/purchase/requisition')} />
+        <TbSep />
+        <TbBtn variant="icon" icon={<DoubleLeftOutlined style={{ fontSize: 10 }} />} disabled title="First record" />
+        <TbBtn variant="icon" icon={<LeftOutlined style={{ fontSize: 10 }} />} disabled title="Previous record" />
+        <TbBtn variant="icon" icon={<RightOutlined style={{ fontSize: 10 }} />} disabled title="Next record" />
+        <TbBtn variant="icon" icon={<DoubleRightOutlined style={{ fontSize: 10 }} />} disabled title="Last record" />
       </div>
 
-      {/* ══ SCROLLABLE BODY ═════════════════════════════════════════════════ */}
+      {/* ══ BODY ════════════════════════════════════════════════════════════ */}
       <div className="pr-page__body">
+
         {/* Alerts */}
         {lookupsError && (
-          <Alert
-            type="error"
-            showIcon
-            message={lookupsError}
-            action={
-              <Typography.Link onClick={() => void loadAll()}>
-                Retry
-              </Typography.Link>
-            }
+          <Alert type="error" showIcon banner message={lookupsError}
+            action={<span style={{ fontSize: 12, color: C.blue, cursor: 'pointer' }} onClick={() => void loadAll()}>Retry</span>}
           />
         )}
-        {preCheckMsg && (
-          <Alert
-            type="warning"
-            showIcon
-            message="Setup Incomplete"
-            description={preCheckMsg}
-          />
-        )}
+        {preCheckMsg && <Alert type="warning" showIcon banner message={preCheckMsg} />}
         {preCheckLoading && (
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 16px', background: '#fff' }}>
             <Spin size="small" />
-            <Typography.Text type="secondary" style={{ fontSize: 12 }}>
-              Running pre-checks…
-            </Typography.Text>
+            <span style={{ fontSize: 12, color: C.text3 }}>Running pre-checks…</span>
           </div>
         )}
-
-        {/* G11: Item warnings */}
         {warnings.map((warn) => (
-          <Alert key={warn} type="warning" showIcon message={warn} closable />
+          <Alert key={warn} type="warning" showIcon banner message={warn} closable />
         ))}
 
-        {/* Header cards */}
-        <Skeleton active loading={!lookupsLoaded && !lookupsError}>
-          <PRHeaderCards
-            form={headerForm}
-            departments={departments}
-            employees={employees}
-            poTypes={poTypes}
-            savedPrNo={savedPrNo}
-            disabled={pageBusy}
-            requireRequesterName={true}
-            requireRefNo={preCheckResult?.requireRefNo ?? false}
-            pendingPoDetailsEnabled={
-              preCheckResult?.pendingPoDetailsEnabled ?? false
-            }
-            backDateAllowed={preCheckResult?.backDateAllowed ?? true}
-            budgetValidationEnabled={
-              preCheckResult?.budgetValidationEnabled ?? false
-            }
-            budgetBalance={savedPr?.budgetBalance ?? null}
-            approvalVisible={preCheckResult?.approvalStatusVisible ?? false}
-            level1ApproverName={savedPr?.level1ApproverName ?? null}
-            level1ApprovedAt={savedPr?.level1ApprovedAt ?? null}
-            level2ApproverName={savedPr?.level2ApproverName ?? null}
-            level2ApprovedAt={savedPr?.level2ApprovedAt ?? null}
-            finalApproverName={savedPr?.finalApproverName ?? null}
-            finalApprovedAt={savedPr?.finalApprovedAt ?? null}
-          />
-        </Skeleton>
-
-        {/* Items */}
-        <PRLineItemsTable
-          items={items}
-          machines={machines}
-          depCode={depCode}
-          prDate={headerForm.getFieldValue("prDate")?.format("YYYY-MM-DD")}
-          preCheckResult={preCheckResult}
-          disabled={pageBusy}
-          savedPrNo={savedPrNo ?? undefined}
-          deleteReasons={deleteReasons}
-          onAdd={(item) => {
-            setItems((prev) => {
-              if (prev.some((l) => l.itemCode === item.itemCode)) {
-                void message.warning(`Item "${item.itemName}" (${item.itemCode}) is already in the list.`)
-                return prev
-              }
-              return [...prev, item]
-            })
-          }}
-          onUpdate={(updated) =>
-            setItems((prev) =>
-              prev.map((l) => (l.key === updated.key ? updated : l)),
-            )
-          }
-          onDelete={(key) =>
-            setItems((prev) => prev.filter((l) => l.key !== key))
-          }
-          onWarning={(msg) => {
-            setWarnings((prev) => [...new Set([...prev, msg])]);
-            setTimeout(
-              () => setWarnings((prev) => prev.filter((m) => m !== msg)),
-              5000,
-            );
-          }}
-        />
-
-        {/* Order summary */}
-        {/* {validItems.length > 0 && (
-          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Card
-              bordered={false}
-              style={{
-                width:       340,
-                borderRadius: 12,
-                borderLeft:  '4px solid #16a34a',
-                border:      '1px solid #e5e7eb',
-                borderLeftWidth: 4,
-                borderLeftColor: '#16a34a',
-                boxShadow:   '0 1px 3px rgba(0,0,0,0.06), 0 6px 16px rgba(0,0,0,0.08)',
-              }}
-              styles={{ body: { padding: '20px 24px' } }}
-            >
-              <Typography.Text strong style={{ fontSize: 13, color: '#374151', display: 'block', marginBottom: 14, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                Order Summary
-              </Typography.Text>
-
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                <Typography.Text style={{ color: '#6b7280', fontSize: 13 }}>
-                  Items
-                </Typography.Text>
-                <Typography.Text style={{ fontSize: 13 }}>
-                  {validItems.length} line{validItems.length !== 1 ? 's' : ''}
-                </Typography.Text>
+        {/* ── Document Header — Zone B blue gradient ─────────────────────── */}
+        <div style={{ borderBottom: `1px solid ${C.border}`, flexShrink: 0 }}>
+          {/* Zone B: blue gradient band */}
+          <div style={{
+            background: 'linear-gradient(135deg, #0C447C 0%, #185FA5 100%)',
+            padding: '10px 18px',
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+              <div>
+                <div style={{ fontSize: 10, color: 'rgba(255,255,255,.6)', marginBottom: 2 }}>Document</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#fff', letterSpacing: '.3px' }}>Purchase Requisition</div>
               </div>
-
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 14 }}>
-                <Typography.Text style={{ color: '#6b7280', fontSize: 13 }}>Subtotal</Typography.Text>
-                <Typography.Text style={{ fontSize: 13, fontVariantNumeric: 'tabular-nums' }}>
-                  ₹ {subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                </Typography.Text>
+              <div>
+                <div style={{ fontSize: 10, color: 'rgba(255,255,255,.6)', marginBottom: 2 }}>PR Number</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', fontFamily: 'monospace' }}>
+                  {savedPrNo ? `PR-${String(savedPrNo).padStart(5, '0')}` : 'Auto-generated on save'}
+                </div>
               </div>
-
-              <div style={{
-                display:        'flex',
-                justifyContent: 'space-between',
-                alignItems:     'baseline',
-                padding:        '12px 0 14px',
-                borderTop:      '2px solid #e5e7eb',
-                marginBottom:   16,
-              }}>
-                <Typography.Text strong style={{ fontSize: 15, color: '#111827' }}>Grand Total</Typography.Text>
-                <Typography.Text strong style={{ fontSize: 20, color: '#16a34a', fontVariantNumeric: 'tabular-nums' }}>
-                  ₹ {subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                </Typography.Text>
-              </div>
-
-              <Typography.Text type="secondary" style={{ fontSize: 11, display: 'block', marginBottom: 16 }}>
-                Estimates only. Final pricing confirmed at PO stage.
-              </Typography.Text>
-
-              
-            </Card>
+            </div>
+            <span style={{
+              fontSize: 11, padding: '4px 14px', borderRadius: 20, fontWeight: 700,
+              background: 'rgba(255,255,255,.18)', color: '#fff', letterSpacing: '.4px',
+            }}>
+              {prStatus ? (PR_STATUS_LABELS[prStatus]?.label ?? prStatus) : 'Draft'}
+            </span>
           </div>
-        )} */}
-        {(!prStatus || prStatus === 'OPEN') && (
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button
-              type="primary"
-              icon={<SendOutlined />}
-              loading={saving}
+
+          <Skeleton active loading={!lookupsLoaded && !lookupsError}>
+            <PRHeaderCards
+              form={headerForm}
+              departments={departments}
+              employees={employees}
+              poTypes={poTypes}
+              savedPrNo={savedPrNo}
               disabled={pageBusy}
-              onClick={() => void doSave("submit")}
-              style={{ height: 40, fontWeight: 600 }}
-            >
-              Submit for Approval
-            </Button>
+              requireRequesterName={true}
+              requireRefNo={preCheckResult?.requireRefNo ?? false}
+              pendingPoDetailsEnabled={preCheckResult?.pendingPoDetailsEnabled ?? false}
+              backDateAllowed={preCheckResult?.backDateAllowed ?? true}
+              budgetValidationEnabled={preCheckResult?.budgetValidationEnabled ?? false}
+              budgetBalance={savedPr?.budgetBalance ?? null}
+              approvalVisible={false}
+            />
+          </Skeleton>
+        </div>
+
+      
+
+        {/* ── Item Lines ─────────────────────────────────────────────────── */}
+        <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+          <PRLineItemsTable
+            items={items}
+            machines={machines}
+            depCode={depCode}
+            prDate={headerForm.getFieldValue("prDate")?.format("YYYY-MM-DD")}
+            preCheckResult={preCheckResult}
+            disabled={pageBusy}
+            savedPrNo={savedPrNo ?? undefined}
+            deleteReasons={deleteReasons}
+            onAdd={(item) => {
+              setItems((prev) => {
+                if (prev.some((l) => l.itemCode === item.itemCode)) {
+                  void message.warning(`Item "${item.itemName}" (${item.itemCode}) is already in the list.`)
+                  return prev
+                }
+                return [...prev, item]
+              })
+            }}
+            onUpdate={(updated) => setItems((prev) => prev.map((l) => (l.key === updated.key ? updated : l)))}
+            onDelete={(key) => setItems((prev) => prev.filter((l) => l.key !== key))}
+            onWarning={(msg) => {
+              setWarnings((prev) => [...new Set([...prev, msg])])
+              setTimeout(() => setWarnings((prev) => prev.filter((m) => m !== msg)), 5000)
+            }}
+          />
+        </div>
+
+          {/* ── KPI Strip (5 cards — CEO closed decision) ──────────────────── */}
+        <div style={{ background: C.bg2, padding: '10px 16px 12px', flexShrink: 0, borderBottom: `1px solid ${C.border}` }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10 }}>
+            <MetricCard
+              label="Total Lines"
+              value={validLines.length}
+              sub={`${validLines.length === 1 ? 'item' : 'items'} in this PR`}
+              valueColor={C.blue}
+            />
+            <MetricCard
+              label="Total Quantity"
+              value={<span style={{ fontSize: 12, fontWeight: 700, fontFamily: 'monospace' }}>{totalQtyDisplay}</span>}
+              sub="By unit of measure"
+            />
+            <MetricCard
+              label="Approx. Budget"
+              value={`₹ ${totalCost.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+              sub="Indicative cost"
+              valueColor={C.amber}
+            />
+            <MetricCard
+              label="Created By"
+              value={savedPr?.createdBy ?? (authUser?.userId ?? '—')}
+              sub={savedPr ? 'Saved' : 'Not yet saved'}
+            />
+            <MetricCard
+              label="Approval Status"
+              value={prStatus ? (PR_STATUS_LABELS[prStatus]?.label ?? prStatus) : 'Draft'}
+              sub={savedPrNo ? 'Awaiting approval' : 'Not yet saved'}
+            />
           </div>
-        )}
+        </div>
+
       </div>
 
       {/* Delete modal */}

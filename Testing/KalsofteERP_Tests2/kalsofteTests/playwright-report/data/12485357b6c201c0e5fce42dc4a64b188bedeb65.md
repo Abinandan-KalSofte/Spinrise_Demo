@@ -1,0 +1,205 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: kalsofte.spec.ts >> Authentication >> TC-01 | Login with valid credentials should reach dashboard
+- Location: tests\kalsofte.spec.ts:11:7
+
+# Error details
+
+```
+Error: expect(received).toBeTruthy()
+
+Received: false
+```
+
+# Page snapshot
+
+```yaml
+- generic [ref=e4]:
+  - generic [ref=e5]:
+    - img [ref=e6]
+    - generic [ref=e11]:
+      - generic [ref=e12]: SpinRise
+      - generic [ref=e13]: ERP PLATFORM
+  - generic [ref=e14]: Enterprise Resource Planning
+  - generic [ref=e16]:
+    - img "calendar" [ref=e17]:
+      - img [ref=e18]
+    - generic [ref=e20]: 11 May 2026
+    - generic [ref=e21]: "|"
+    - generic [ref=e22]: 05:36:00 PM
+  - generic [ref=e23]:
+    - generic [ref=e29] [cursor=pointer]:
+      - generic [ref=e31]:
+        - combobox [ref=e33]
+        - generic "Kalpatharu Software Ltd" [ref=e34]
+      - img [ref=e35]:
+        - img [ref=e36]
+    - generic [ref=e40]:
+      - generic [ref=e43] [cursor=pointer]:
+        - generic [ref=e45]:
+          - combobox [ref=e47]
+          - generic: Select division
+        - img [ref=e48]:
+          - img [ref=e49]
+      - generic [ref=e53]: Please select your division
+    - generic [ref=e56]:
+      - generic [ref=e59]:
+        - img "user" [ref=e61]:
+          - img [ref=e62]
+        - textbox "Username" [ref=e64]
+      - generic [ref=e67]: Please enter your username
+    - generic [ref=e73]:
+      - img "lock" [ref=e75]:
+        - img [ref=e76]
+      - textbox "Password" [ref=e78]: ERPKSL
+      - img "eye-invisible" [ref=e80] [cursor=pointer]:
+        - img [ref=e81]
+    - generic [ref=e90]:
+      - textbox "Select date" [ref=e91]: 11-05-2026
+      - generic:
+        - img "calendar":
+          - img
+    - button "Login" [active] [ref=e97] [cursor=pointer]:
+      - generic [ref=e98]: Login
+  - generic [ref=e99]: © 2026 Kalpatharu Software Ltd
+```
+
+# Test source
+
+```ts
+  1   | import { test, expect } from '@playwright/test';
+  2   | import { config } from './config';
+  3   | import { loginToApp } from './helpers';
+  4   | 
+  5   | // ─────────────────────────────────────────────
+  6   | //  TEST SUITE 1 — Authentication
+  7   | // ─────────────────────────────────────────────
+  8   | 
+  9   | test.describe('Authentication', () => {
+  10  | 
+  11  |   test('TC-01 | Login with valid credentials should reach dashboard', async ({ page }) => {
+  12  |     await page.goto(config.baseUrl);
+  13  |     await page.waitForLoadState('networkidle');
+  14  |     await page.screenshot({ path: 'test-results/screenshots/tc01-login-page.png' });
+  15  | 
+  16  |     await loginToApp(page);
+  17  | 
+  18  |     // Verify we left the login page
+  19  |     const currentUrl = page.url();
+  20  |     expect(currentUrl).not.toContain('login');
+  21  | 
+  22  |     // Verify dashboard loaded (look for common dashboard indicators)
+  23  |     const dashboardVisible = await page.locator(
+  24  |       'h1, h2, .dashboard, .welcome, nav, .sidebar, .menu'
+  25  |     ).first().isVisible({ timeout: 10000 }).catch(() => false);
+  26  | 
+  27  |     await page.screenshot({ path: 'test-results/screenshots/tc01-dashboard.png' });
+> 28  |     expect(dashboardVisible).toBeTruthy();
+      |                              ^ Error: expect(received).toBeTruthy()
+  29  |     console.log('✅ TC-01 PASSED: Login with valid credentials successful');
+  30  |   });
+  31  | 
+  32  | 
+  33  |   test('TC-02 | Login with wrong password should show error', async ({ page }) => {
+  34  |     await page.goto(config.baseUrl);
+  35  |     await page.waitForLoadState('networkidle');
+  36  | 
+  37  |     // Company / Division selection
+  38  |     const companyEl = page.locator(config.selectors.companyDropdown).first();
+  39  |     if (await companyEl.isVisible({ timeout: 3000 }).catch(() => false)) {
+  40  |       const tag = await companyEl.evaluate(el => el.tagName.toLowerCase());
+  41  |       if (tag === 'select') {
+  42  |         await companyEl.selectOption({ label: config.login.company });
+  43  |       } else {
+  44  |         await companyEl.fill(config.login.company);
+  45  |       }
+  46  |     }
+  47  | 
+  48  |     const divisionEl = page.locator(config.selectors.divisionDropdown).first();
+  49  |     if (await divisionEl.isVisible({ timeout: 3000 }).catch(() => false)) {
+  50  |       const tag = await divisionEl.evaluate(el => el.tagName.toLowerCase());
+  51  |       if (tag === 'select') {
+  52  |         await divisionEl.selectOption({ label: config.login.division });
+  53  |       } else {
+  54  |         await divisionEl.fill(config.login.division);
+  55  |       }
+  56  |     }
+  57  | 
+  58  |     const userEl = page.locator(config.selectors.usernameInput).first();
+  59  |     if (await userEl.isVisible({ timeout: 3000 }).catch(() => false)) {
+  60  |       await userEl.fill(config.login.username);
+  61  |     }
+  62  | 
+  63  |     const passEl = page.locator(config.selectors.passwordInput).first();
+  64  |     if (await passEl.isVisible({ timeout: 3000 }).catch(() => false)) {
+  65  |       await passEl.fill('WRONG_PASSWORD_12345');
+  66  |     }
+  67  | 
+  68  |     await page.locator(config.selectors.loginButton).first().click();
+  69  |     await page.waitForLoadState('networkidle');
+  70  | 
+  71  |     await page.screenshot({ path: 'test-results/screenshots/tc02-wrong-password.png' });
+  72  | 
+  73  |     // Verify still on login page or error is shown
+  74  |     const errorVisible = await page.locator(
+  75  |       '.error, .alert, .alert-danger, [class*="error"], [class*="invalid"], ' +
+  76  |       'p:has-text("invalid"), p:has-text("incorrect"), p:has-text("wrong"), ' +
+  77  |       'span:has-text("Invalid"), div:has-text("Incorrect")'
+  78  |     ).first().isVisible({ timeout: 5000 }).catch(() => false);
+  79  | 
+  80  |     const stillOnLogin = page.url().includes('login') ||
+  81  |       await page.locator(config.selectors.passwordInput).isVisible({ timeout: 3000 }).catch(() => false);
+  82  | 
+  83  |     expect(errorVisible || stillOnLogin).toBeTruthy();
+  84  |     console.log('✅ TC-02 PASSED: Wrong password correctly rejected');
+  85  |   });
+  86  | 
+  87  | 
+  88  |   test('TC-03 | Logout should return to login page', async ({ page }) => {
+  89  |     await loginToApp(page);
+  90  |     await page.screenshot({ path: 'test-results/screenshots/tc03-before-logout.png' });
+  91  | 
+  92  |     const logoutBtn = page.locator(config.selectors.logoutButton).first();
+  93  |     await logoutBtn.waitFor({ timeout: 10000 });
+  94  |     await logoutBtn.click();
+  95  |     await page.waitForLoadState('networkidle');
+  96  | 
+  97  |     await page.screenshot({ path: 'test-results/screenshots/tc03-after-logout.png' });
+  98  | 
+  99  |     const onLoginPage =
+  100 |       page.url().includes('login') ||
+  101 |       await page.locator(config.selectors.passwordInput).isVisible({ timeout: 5000 }).catch(() => false) ||
+  102 |       await page.locator(config.selectors.loginButton).isVisible({ timeout: 5000 }).catch(() => false);
+  103 | 
+  104 |     expect(onLoginPage).toBeTruthy();
+  105 |     console.log('✅ TC-03 PASSED: Logout successful, returned to login page');
+  106 |   });
+  107 | 
+  108 | });
+  109 | 
+  110 | 
+  111 | // ─────────────────────────────────────────────
+  112 | //  TEST SUITE 2 — Transaction CRUD
+  113 | // ─────────────────────────────────────────────
+  114 | 
+  115 | test.describe('Sales Transactions - CRUD', () => {
+  116 | 
+  117 |   test.beforeEach(async ({ page }) => {
+  118 |     await loginToApp(page);
+  119 |     await page.waitForLoadState('networkidle');
+  120 |   });
+  121 | 
+  122 | 
+  123 |   test('TC-04 | Navigate to Sales > New Transaction and save', async ({ page }) => {
+  124 |     // Open Sales menu
+  125 |     const salesMenu = page.locator(config.selectors.salesMenu).first();
+  126 |     await salesMenu.waitFor({ timeout: 10000 });
+  127 |     await salesMenu.click();
+  128 |     await page.waitForLoadState('networkidle');
+```

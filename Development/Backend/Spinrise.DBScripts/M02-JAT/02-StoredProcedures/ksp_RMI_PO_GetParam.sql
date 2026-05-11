@@ -12,7 +12,9 @@ BEGIN
         ISNULL(PRBased,             'N') AS PRBased,
         ISNULL(PO_Approval,         'N') AS PO_Approval,
         ISNULL(addtaxrequired,      'N') AS AddTaxRequired,
-        ISNULL(ftamt,               0)   AS FtAmt
+        ISNULL(ftamt,               0)   AS FtAmt,
+        ISNULL(wosample,            'Y') AS wosample
     FROM   dbo.RM_PARAM
     WHERE  divcode = @DivCode;
 END;
+GO

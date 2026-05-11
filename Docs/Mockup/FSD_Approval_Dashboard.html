@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+body{background:#F5F5F3;padding:20px}
+.dash{max-width:1400px;margin:auto}
+h1{font-size:22px;font-weight:800;color:#1A1A1A;margin-bottom:4px}
+.subtitle{color:#888;font-size:13px;margin-bottom:20px}
+
+/* Stat Cards */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat{background:#fff;border-radius:10px;padding:18px;box-shadow:0 2px 6px rgba(0,0,0,.06);border-left:4px solid #185FA5}
+.stat.green{border-left-color:#3B6D11}
+.stat.amber{border-left-color:#BA7517}
+.stat.red{border-left-color:#A32D2D}
+.stat-label{font-size:11px;color:#888;text-transform:uppercase;font-weight:600;letter-spacing:.5px}
+.stat-value{font-size:32px;font-weight:800;margin:6px 0}
+.stat-sub{font-size:11px;color:#888}
+
+/* FSD Table */
+.section{background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:20px}
+.section-head{padding:14px 20px;border-bottom:1px solid #E2E2E2;background:#FAFAF8;display:flex;justify-content:space-between;align-items:center}
+.section-head h2{font-size:14px;font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:#FAFAF8;padding:10px 14px;text-align:left;font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #E2E2E2}
+td{padding:12px 14px;border-bottom:1px solid #F0F0EE}
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:10px;font-weight:600}
+.b-approved{background:#EAF3DE;color:#3B6D11}
+.b-progress{background:#FAEEDA;color:#BA7517}
+.b-pending{background:#E6F1FB;color:#185FA5}
+.b-overdue{background:#FCEBEB;color:#A32D2D}
+.module{font-family:monospace;font-weight:700;color:#185FA5}
+
+/* Stage tracker */
+.stages{display:flex;gap:4px}
+.stage-dot{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+.s-done{background:#EAF3DE;color:#3B6D11;border:2px solid #3B6D11}
+.s-active{background:#E6F1FB;color:#185FA5;border:2px solid #185FA5}
+.s-todo{background:#FAFAF8;color:#888;border:2px solid #D0D0D0}
+</style>
+</head>
+<body>
+
+<div class="dash">
+  <h1>SPINRISE ERP — FSD Approval Dashboard</h1>
+  <p class="subtitle">5-Stage Review Pipeline | Period: 25 Mar 2026 – 2 May 2026</p>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat green"><div class="stat-label">CEO Approved</div><div class="stat-value" style="color:#3B6D11">3</div><div class="stat-sub">M01 PR, M02 RMI PO, M02 Arrival Entry</div></div>
+    <div class="stat amber"><div class="stat-label">In Progress</div><div class="stat-value" style="color:#BA7517">5</div><div class="stat-sub">Lot Bale, RM Contract, Bale Opening, Sale Order, Shift</div></div>
+    <div class="stat"><div class="stat-label">Total Action Items</div><div class="stat-value" style="color:#185FA5">54</div><div class="stat-sub">Across all 4 modules</div></div>
+    <div class="stat red"><div class="stat-label">IST Pass Rate</div><div class="stat-value" style="color:#A32D2D">44%</div><div class="stat-sub">57 failures / 101 cases</div></div>
+  </div>
+
+  <!-- Module Status -->
+  <div class="section">
+    <div class="section-head">
+      <h2>Module FSD Pipeline Status</h2>
+      <span style="font-size:11px;color:#888">Last updated: 2 May 2026</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Module</th>
+          <th>FSD Document</th>
+          <th>Version</th>
+          <th>Owner</th>
+          <th>Stage Pipeline</th>
+          <th>Status</th>
+          <th>Due Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="module">M01</span></td>
+          <td>Indent to PO (PR Form)</td>
+          <td>v2.4</td>
+          <td>Mariyaiya</td>
+          <td><div class="stages"><div class="stage-dot s-done">✓</div><div class="stage-dot s-done">✓</div><div class="stage-dot s-done">✓</div><div class="stage-dot s-done">✓</div><div class="stage-dot s-done">✓</div></div></td>
+          <td><span class="badge b-approved">CEO APPROVED</span></td>
+          <td>17 Apr 2026</td>
+        </tr>
+        <tr>
+          <td><span class="module">M02</span></td>
+          <td>RMI Purchase Order</td>
+          <td>v8</td>
+          <td>Sasi</td>
+          <td><div class="stages"><div class="stage-dot s-done">✓</div><div class="stage-dot s-done">✓</div><div class="stage-dot s-done">✓</div><div class="stage-dot s-done">✓</div><div class="stage-dot s-done">✓</div></div></td>
+          <td><span class="badge b-approved">CEO APPROVED</span></td>
+          <td>17 Apr 2026</td>
+        </tr>
+        <tr>
+          <td><span class="module">M02</span></td>
+          <td>Arrival Entry</td>
+          <td>v1</td>
+          <td>Sasi</td>
+          <td><div class="stages"><div class="stage-dot s-done">✓</div><div class="stage-dot s-done">✓</div><div class="stage-dot s-done">✓</div><div class="stage-dot s-done">✓</div><div class="stage-dot s-done">✓</div></div></td>
+          <td><span class="badge b-approved">CEO APPROVED</span></td>
+          <td>1 May 2026</td>
+        </tr>
+        <tr>
+          <td><span class="module">M02</span></td>
+          <td>Lot Bale Entry</td>
+          <td>Draft</td>
+          <td>Sasi</td>
+          <td><div class="stages"><div class="stage-dot s-active">1</div><div class="stage-dot s-todo">2</div><div class="stage-dot s-todo">3</div><div class="stage-dot s-todo">4</div><div class="stage-dot s-todo">5</div></div></td>
+          <td><span class="badge b-progress">In Progress</span></td>
+          <td>9 May 2026</td>
+        </tr>
+        <tr>
+          <td><span class="module">M03</span></td>
+          <td>Sale Order</td>
+          <td>v3</td>
+          <td>Annamalai</td>
+          <td><div class="stages"><div class="stage-dot s-done">✓</div><div class="stage-dot s-done">✓</div><div class="stage-dot s-active">3</div><div class="stage-dot s-todo">4</div><div class="stage-dot s-todo">5</div></div></td>
+          <td><span class="badge b-overdue">Overdue</span></td>
+          <td>27 Apr 2026</td>
+        </tr>
+        <tr>
+          <td><span class="module">M03</span></td>
+          <td>Despatch Advice</td>
+          <td>—</td>
+          <td>Annamalai</td>
+          <td><div class="stages"><div class="stage-dot s-todo">1</div><div class="stage-dot s-todo">2</div><div class="stage-dot s-todo">3</div><div class="stage-dot s-todo">4</div><div class="stage-dot s-todo">5</div></div></td>
+          <td><span class="badge b-pending">Upcoming</span></td>
+          <td>28 Apr 2026</td>
+        </tr>
+        <tr>
+          <td><span class="module">M04</span></td>
+          <td>Daily Attendance</td>
+          <td>v2</td>
+          <td>Sathishkumar</td>
+          <td><div class="stages"><div class="stage-dot s-done">✓</div><div class="stage-dot s-done">✓</div><div class="stage-dot s-active">3</div><div class="stage-dot s-todo">4</div><div class="stage-dot s-todo">5</div></div></td>
+          <td><span class="badge b-progress">PM Review</span></td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><span class="module">M04</span></td>
+          <td>Shift Schedule</td>
+          <td>—</td>
+          <td>Sathishkumar</td>
+          <td><div class="stages"><div class="stage-dot s-active">0</div><div class="stage-dot s-todo">1</div><div class="stage-dot s-todo">2</div><div class="stage-dot s-todo">3</div><div class="stage-dot s-todo">4</div></div></td>
+          <td><span class="badge b-pending">Stage 0</span></td>
+          <td>28 Apr 2026</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</body>
+</html>

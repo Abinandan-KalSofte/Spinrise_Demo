@@ -1,4 +1,5 @@
 using Spinrise.Application.Areas.Common.Lookup.DTOs;
+using Spinrise.Application.DTOs;
 
 namespace Spinrise.Application.Areas.Common.Lookup.Interfaces;
 
@@ -16,4 +17,10 @@ public interface ILookupService
     Task<IEnumerable<AreaLookupDto>>         GetAreasAsync(string search);
     Task<IEnumerable<PaymentModeLookupDto>>  GetPaymentModesAsync();
     Task<IEnumerable<CurrencyLookupDto>>     GetCurrenciesAsync();
+    Task<IEnumerable<RateUnitLookupDto>>     GetRateUnitsAsync();
+    Task<IEnumerable<WeighmentLookupDto>>    GetWeighmentsAsync();
+    Task<IEnumerable<AgentLookupDto>>        SearchAgentsAsync(string term);
+    Task<IEnumerable<EmployeeRMILookupDto>>  SearchEmployeesAsync(string term);
+    Task<IEnumerable<TaxCodeLookupDto>>      GetActiveTaxCodesAsync();
+    Task<PagedResult<ItemLookupDto>>         GetItemsPaginatedAsync(string divCode, string? search, string? depCode, int page, int pageSize);
 }

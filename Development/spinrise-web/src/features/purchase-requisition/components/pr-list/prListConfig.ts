@@ -3,7 +3,7 @@ import type { CSSProperties } from 'react'
 
 // ── Pagination ─────────────────────────────────────────────────────────────────
 
-export const PAGE_SIZE = 20
+export const PAGE_SIZE = 10
 
 // ── Financial year ─────────────────────────────────────────────────────────────
 

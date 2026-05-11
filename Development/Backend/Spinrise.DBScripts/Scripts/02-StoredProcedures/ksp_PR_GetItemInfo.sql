@@ -7,10 +7,14 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    -- ── 1. Base rate from item master ────────────────────────────────────────
+    -- ── 1. Base rate + draw/cat from item master ─────────────────────────────
     DECLARE @BaseRate NUMERIC(15,5) = 0;
+    DECLARE @DrawNo   VARCHAR(25)   = '';
+    DECLARE @CatNo    VARCHAR(25)   = '';
 
-    SELECT @BaseRate = ISNULL(RATE, 0)
+    SELECT @BaseRate = ISNULL(RATE, 0),
+           @DrawNo   = ISNULL(DRAWNO, ''),
+           @CatNo    = ISNULL(CATLNO, '')
     FROM   dbo.in_item
     WHERE  ITEMCODE = @ItemCode;
 
@@ -67,7 +71,9 @@ BEGIN
         L.RATE               AS LastPoRate,
         H.PORDDT             AS LastPoDate,
         H.SLCODE             AS LastPoSupplierCode,
-        ISNULL(S.slname, '') AS LastPoSupplierName
+        ISNULL(S.slname, '') AS LastPoSupplierName,
+        @DrawNo              AS DrawNo,
+        @CatNo               AS CatNo
     FROM  dbo.po_ordh H
     JOIN  dbo.po_ordl L
         ON  H.DIVCODE = L.DIVCODE
@@ -88,5 +94,7 @@ BEGIN
             NULL           AS LastPoRate,
             NULL           AS LastPoDate,
             NULL           AS LastPoSupplierCode,
-            NULL           AS LastPoSupplierName;
+            NULL           AS LastPoSupplierName,
+            @DrawNo        AS DrawNo,
+            @CatNo         AS CatNo;
 END;

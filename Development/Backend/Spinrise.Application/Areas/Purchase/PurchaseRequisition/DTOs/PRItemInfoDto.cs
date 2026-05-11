@@ -20,6 +20,10 @@ public class PRItemInfoDto
     public string?   LastPoSupplierCode  { get; set; }
     public string?   LastPoSupplierName  { get; set; }
 
+    // ── Item master supplementary fields (in_item) ───────────────────────────
+    public string?   DrawNo              { get; set; }
+    public string?   CatNo               { get; set; }
+
     // ── Soft warnings (non-blocking) ─────────────────────────────────────────
     public bool     HasPendingIndent     { get; set; }
     public decimal  PendingIndentQty     { get; set; }
@@ -38,6 +42,8 @@ public class PRItemInfoRaw
     public DateTime? LastPoDate          { get; set; }
     public string?   LastPoSupplierCode  { get; set; }
     public string?   LastPoSupplierName  { get; set; }
+    public string?   DrawNo              { get; set; }
+    public string?   CatNo               { get; set; }
 }
 
 /// <summary>Raw SP result for usp_PR_PendingIndentCheck.</summary>

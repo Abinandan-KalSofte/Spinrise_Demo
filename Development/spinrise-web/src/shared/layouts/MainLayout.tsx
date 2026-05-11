@@ -57,7 +57,10 @@ const SIDEBAR_MENUS: Record<string, MenuProps['items']> = {
       label: 'Procurement',
       type: 'group',
       children: [
-        { key: 'purchase/requisition',   icon: <FileTextOutlined />,    label: 'Requisitions' },
+        // { key: 'purchase/requisition',    icon: <FileTextOutlined />,    label: 'Requisition' },
+        { key: 'purchase/requisition/v1/new', icon: <FileTextOutlined />,    label: 'Requisition v1' },
+        // { key: 'purchase/requisition/v2/new', icon: <FileTextOutlined />,    label: 'Requisition v2' },
+        // { key: 'purchase/requisition/v3/new', icon: <FileTextOutlined />,    label: 'Requisition v3' },
         // { key: 'purchase/goods-receipt', icon: <InboxOutlined />,       label: 'Goods Receipt',    disabled: true },
       ],
     },
@@ -171,14 +174,14 @@ export default function MainLayout() {
   const navigate    = useNavigate()
   const { user }    = useAuthStore()
 
-  const [collapsed,     setCollapsed]   = useState(false)
-  const [mobileOpen,    setMobileOpen]  = useState(false)
-  const [switcherOpen,  setSwitcherOpen] = useState(false)
-  const [pendingCount,  setPendingCount] = useState(0)
+  const [collapsed,    setCollapsed]   = useState(false)
+  const [mobileOpen,   setMobileOpen]  = useState(false)
+  const [switcherOpen, setSwitcherOpen] = useState(false)
+  const [prSummary,    setPrSummary]   = useState({ totalCount: 0, openCount: 0, approvedCount: 0, cancelledCount: 0 })
 
   useEffect(() => {
     void purchaseRequisitionApi.getSummary()
-      .then((s) => setPendingCount(s.openCount))
+      .then(setPrSummary)
       .catch(() => undefined)
   }, [])
 
@@ -308,7 +311,7 @@ export default function MainLayout() {
           activeModule={activeModule}
           switcherOpen={switcherOpen}
           onSwitcherOpenChange={setSwitcherOpen}
-          pendingCount={pendingCount}
+          prSummary={prSummary}
           switcherContent={
             <ModuleSwitcherContent
               activeModuleKey={activeModuleKey}

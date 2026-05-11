@@ -20,7 +20,7 @@ public class AuthController : BaseApiController
         var result = await _authService.Login(request);
         if (result is null)
         {
-            return Failure("Invalid email or password.", StatusCodes.Status401Unauthorized);
+            return Failure("Invalid User Name or Password.", StatusCodes.Status401Unauthorized);
         }
 
         return Success(result, "Login successful.");

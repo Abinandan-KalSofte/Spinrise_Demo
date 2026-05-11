@@ -9,12 +9,25 @@ import { Link, useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { usePurchaseOrderForm } from '../hooks/usePurchaseOrderForm'
 import type { POHeaderFormValues } from '../hooks/usePurchaseOrderForm'
+import type { POParamDto } from '../types'
 import { POHeaderForm }      from '../components/po-form/POHeaderForm'
 import { POLineItemsTable }  from '../components/po-form/POLineItemsTable'
 import { PODeliveryTable }   from '../components/po-form/PODeliveryTable'
 import { PRLinePickerModal } from '../components/po-form/PRLinePickerModal'
 
 const CARD_SHADOW = '0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05)'
+
+const defaultPOParam: POParamDto = {
+  requireSupplierLotNo:  true,
+  centralizedOrder:      false,
+  autoCalculateSeason:   false,
+  masterEntryRequired:   false,
+  prBased:               true,
+  approvalEnabled:       true,
+  additionalTaxRequired: false,
+  ftAmt:                 0,
+  woSample:              true,
+}
 
 export default function PurchaseOrderNewPage() {
   const navigate     = useNavigate()
@@ -27,20 +40,22 @@ export default function PurchaseOrderNewPage() {
     prLines, prLinesLoading, prPickerOpen,
     defaultsLoading, saving, warnings,
     paymentModes, currencies,
+    rateUnitValue, rateUnitSuggestion, rateUnits, weighments, activeTaxCodes,
     fetchGSTConfig, openPRPicker,
+    handleRateUnitChange,
     addPRLines, addBlankLine,
     updateLine, removeLine,
     addDeliveryRow, updateDelivery, removeDelivery,
     setPrPickerOpen, doCreate,
   } = usePurchaseOrderForm()
 
+  // Set base defaults on first load
   useEffect(() => {
     if (defaults && !initialized.current) {
       initialized.current = true
       headerForm.setFieldsValue({
         contDt:         dayjs(),
         currCode:       defaults.defaultCurrency || 'INR',
-        sampleFlg:      'N',
         ftFlg:          'N',
         lineNo:         1,
         commPer:        0,
@@ -55,6 +70,34 @@ export default function PurchaseOrderNewPage() {
     }
   }, [defaults, headerForm])
 
+  // Set param-driven defaults when param arrives
+  useEffect(() => {
+    if (defaults?.param) {
+      headerForm.setFieldsValue({
+        sampleFlg:  defaults.param.woSample ? 'Y' : 'N',
+        arrivalType: 'P',
+        taxChoice:  'SINGLE',
+        imInd:      'L',
+      })
+    }
+  }, [defaults]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Auto-set arrivalType when rate unit changes
+  useEffect(() => {
+    if (rateUnitSuggestion) {
+      headerForm.setFieldValue('arrivalType', rateUnitSuggestion)
+    }
+  }, [rateUnitSuggestion]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Reactive watches for derived values
+  const arrivalType = (Form.useWatch('arrivalType', headerForm) as string | undefined) ?? 'P'
+  const sampleFlgVal = Form.useWatch('sampleFlg', headerForm) as string | undefined
+  const sampleMode  = sampleFlgVal === 'Y'
+
+  const igstFlg = gstConfig
+    ? (gstConfig.stateFlag === 'F' ? 'F' : gstConfig.gstStateCode === gstConfig.stateCode ? 'Y' : 'N')
+    : 'Y'
+
   const handleSave = async () => {
     let values: POHeaderFormValues
     try {
@@ -63,12 +106,6 @@ export default function PurchaseOrderNewPage() {
       return
     }
     await doCreate(values)
-  }
-
-  const handlePickPR = () => {
-    const contDt = (headerForm.getFieldValue('contDt') as dayjs.Dayjs | undefined)?.format('YYYY-MM-DD')
-    const supCd  = (headerForm.getFieldValue('supCd') as string | undefined)?.trim().toUpperCase()
-    void openPRPicker(contDt, supCd)
   }
 
   if (defaultsLoading) {
@@ -144,8 +181,15 @@ export default function PurchaseOrderNewPage() {
           form={headerForm}
           disabled={saving}
           onSupplierBlur={(supCd) => void fetchGSTConfig(supCd)}
+          onRateUnitChange={handleRateUnitChange}
           paymentModes={paymentModes}
           currencies={currencies}
+          rateUnits={rateUnits}
+          activeTaxCodes={activeTaxCodes}
+          param={defaults?.param ?? defaultPOParam}
+          gstConfig={gstConfig}
+          initialSupplierName={null}
+          initialAreaName={null}
         />
 
         {/* Variety Lines */}
@@ -170,10 +214,19 @@ export default function PurchaseOrderNewPage() {
         >
           <POLineItemsTable
             lines={lines}
-            prBased={defaults?.prBased ?? false}
+            prBased={defaults?.prBased ?? true}
+            sampleMode={sampleMode}
+            arrivalType={arrivalType}
+            rateUnitValue={rateUnitValue}
+            igstFlg={igstFlg}
             disabled={saving}
             onAdd={addBlankLine}
-            onPickPR={handlePickPR}
+            onPickPR={() => void openPRPicker(
+              headerForm.getFieldValue('contDt') as dayjs.Dayjs | undefined
+                ? (headerForm.getFieldValue('contDt') as dayjs.Dayjs).format('YYYY-MM-DD')
+                : undefined,
+              (headerForm.getFieldValue('supCd') as string | undefined)?.trim().toUpperCase(),
+            )}
             onUpdate={updateLine}
             onRemove={removeLine}
           />
@@ -188,6 +241,14 @@ export default function PurchaseOrderNewPage() {
         >
           <PODeliveryTable
             rows={delivery}
+            orderedQty={lines.reduce((s, l) => s + l.ordQty, 0)}
+            orderDate={
+              headerForm.getFieldValue('contDt') != null
+                ? (headerForm.getFieldValue('contDt') as dayjs.Dayjs).format('YYYY-MM-DD')
+                : dayjs().format('YYYY-MM-DD')
+            }
+            varCodeOptions={[...new Set(lines.map((l) => l.varCode).filter(Boolean))]}
+            weighments={weighments}
             disabled={saving}
             onAdd={addDeliveryRow}
             onUpdate={updateDelivery}

@@ -24,6 +24,8 @@ public interface IPurchaseOrderRepository
     Task                                      InsertSlotNoAsync(decimal contNo, DateTime contDt, string divCode, decimal lotFrom, decimal lotTo);
     Task                                      InsertAuditLogAsync(decimal contNo, DateTime contDt, string divCode, string mode, string userId, string? deleteReasonCode = null);
     Task                                      DeleteAsync(decimal contNo, DateTime contDt, string divCode, string deleteReasonCode, string deletedBy);
+    Task                                      DeleteLinesForUpdateAsync(decimal contNo, DateTime contDt, string divCode);
+    Task                                      UndoPRBalanceAsync(string divCode, decimal prNo, DateTime prDate, int prSno, decimal qtyOrdKG);
     Task<POApprovalStatusDto?>                GetApprovalStatusAsync(decimal contNo, DateTime contDt, string divCode);
     Task                                      UpdateApprovalAsync(POApprovalActionDto dto, string approverId);
 }

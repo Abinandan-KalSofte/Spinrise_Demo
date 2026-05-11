@@ -166,7 +166,9 @@ BEGIN
 
     DECLARE @Term VARCHAR(101) = LTRIM(RTRIM(@SearchTerm));
 
-    IF LEN(@Term) < 2
+    -- Require at least 2 chars UNLESS a specific department is given.
+    -- When @DepCode is provided with an empty term, load all items (modal open with no filter).
+    IF LEN(@Term) < 2 AND @DepCode IS NULL
     BEGIN
         SELECT TOP 0
             CAST('' AS VARCHAR(10))      AS ItemCode,
@@ -182,9 +184,10 @@ BEGIN
         RETURN;
     END
 
-    SET @Term = @Term + '%';
+    -- Empty term with a dept context → match all (modal load-all on open)
+    SET @Term = CASE WHEN LEN(@Term) >= 1 THEN @Term + '%' ELSE '%' END;
 
-    -- Build temp aggregates for pending PR and PO qty — single pass instead of N subqueries
+    -- Pending PR qty — scoped to requesting dept when provided
     WITH PendingPr AS
     (
         SELECT
@@ -192,6 +195,7 @@ BEGIN
             SUM(ISNULL(prl.QTYREQD, 0)) AS TotalPendingPr
         FROM   dbo.PO_PRL prl
         WHERE  prl.DIVCODE = @DivCode
+          AND  (@DepCode IS NULL OR prl.DEPCODE = @DepCode)
           AND  ISNULL(prl.prstatus, ' ') NOT IN ('O', 'C')
           AND  ISNULL(prl.AmdFlg, '') <> 'Y'
         GROUP BY prl.ITEMCODE
@@ -212,7 +216,7 @@ BEGIN
           AND  (ISNULL(o.ORDQTY, 0) - ISNULL(o.RCVDQTY, 0)) > 0
         GROUP BY o.ITEMCODE
     )
-    SELECT  --TOP 20
+    SELECT
         i.ITEMCODE                                  AS ItemCode,
         i.ITEMNAME                                  AS ItemName,
         i.UOM                                       AS Uom,
@@ -221,13 +225,13 @@ BEGIN
         ISNULL(pp.TotalPendingPr, 0)                AS PendingPrQty,
         ISNULL(po.TotalPendingPo, 0)                AS PendingPoQty,
         ISNULL(i.DRAWNO, '')                        AS DrawNo,
-        ISNULL(i.CATLNO, '')                      AS CatNo
+        ISNULL(i.CATLNO, '')                        AS CatNo
     FROM   dbo.in_item i
     LEFT JOIN PendingPr pp ON pp.ITEMCODE = i.ITEMCODE
     LEFT JOIN PendingPo po ON po.ITEMCODE = i.ITEMCODE
-    INNER JOIN dbo.in_cat ic ON ic.CATCODE = i.CATCODE
     WHERE  i.IsItemActive = 1
       AND  (i.ITEMCODE LIKE @Term OR i.ITEMNAME LIKE @Term)
+      -- (@ItemGroup filter removed — ITEMGROUP column not in in_item)
     ORDER BY
         CASE WHEN i.ITEMCODE LIKE @Term THEN 0 ELSE 1 END,
         i.ITEMNAME;
@@ -1161,8 +1165,12 @@ BEGIN
     SET NOCOUNT ON;
 
     DECLARE @BaseRate NUMERIC(15,5) = 0;
+    DECLARE @DrawNo   VARCHAR(25)   = '';
+    DECLARE @CatNo    VARCHAR(25)   = '';
 
-    SELECT @BaseRate = ISNULL(RATE, 0)
+    SELECT @BaseRate = ISNULL(RATE, 0),
+           @DrawNo   = ISNULL(DRAWNO, ''),
+           @CatNo    = ISNULL(CATLNO, '')
     FROM   dbo.in_item
     WHERE  ITEMCODE = @ItemCode;
 
@@ -1216,7 +1224,9 @@ BEGIN
         L.RATE               AS LastPoRate,
         H.PORDDT             AS LastPoDate,
         H.SLCODE             AS LastPoSupplierCode,
-        ISNULL(S.slname, '') AS LastPoSupplierName
+        ISNULL(S.slname, '') AS LastPoSupplierName,
+        @DrawNo              AS DrawNo,
+        @CatNo               AS CatNo
     FROM  dbo.po_ordh H
     JOIN  dbo.po_ordl L
         ON  H.DIVCODE = L.DIVCODE
@@ -1237,7 +1247,9 @@ BEGIN
             NULL           AS LastPoRate,
             NULL           AS LastPoDate,
             NULL           AS LastPoSupplierCode,
-            NULL           AS LastPoSupplierName;
+            NULL           AS LastPoSupplierName,
+            @DrawNo        AS DrawNo,
+            @CatNo         AS CatNo;
 END;
 GO
 
@@ -1838,7 +1850,189 @@ BEGIN
 END
 GO
 
--- =============================================================
--- End of merged script — 34 stored procedures
--- =============================================================
 
+
+-- -----------------------------------------------------------------
+-- PR Navigation (added 2026-05-08)
+-- -----------------------------------------------------------------
+
+CREATE OR ALTER PROCEDURE dbo.ksp_PR_GetLastRecord
+    @DivCode  VARCHAR(2),
+    @YFDate   DATETIME,
+    @YLDate   DATETIME
+AS
+BEGIN
+    SET NOCOUNT ON;
+    -- Returns PrNo + PrDate of the highest-numbered non-cancelled PR in the FY.
+    -- Frontend then calls ksp_PR_GetById with the returned PrNo.
+    SELECT TOP 1
+        h.prno    AS PrNo,
+        h.prdate  AS PrDate
+    FROM dbo.po_prh h
+    WHERE h.divcode = @DivCode
+      AND h.prdate >= @YFDate
+      AND h.prdate <  DATEADD(DAY, 1, @YLDate)
+      AND ISNULL(h.cancelflag, '') <> 'Y'
+    ORDER BY h.prno DESC;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE dbo.ksp_PR_Navigate
+    @DivCode      VARCHAR(2),
+    @Direction    VARCHAR(5),           -- 'FIRST' | 'PREV' | 'NEXT' | 'LAST'
+    @CurrentPrNo  NUMERIC(6,0) = NULL,
+    @YFDate       DATETIME,
+    @YLDate       DATETIME
+AS
+BEGIN
+    SET NOCOUNT ON;
+    -- Returns PrNo + PrDate of the target record.
+    -- Returns 0 rows when already at boundary (frontend disables nav button).
+    -- Navigation is by PrNo sequence within the financial year.
+    -- Cancelled PRs are excluded from navigation.
+
+    IF @Direction = 'FIRST'
+        SELECT TOP 1 h.prno AS PrNo, h.prdate AS PrDate
+        FROM dbo.po_prh h
+        WHERE h.divcode = @DivCode
+          AND h.prdate >= @YFDate
+          AND h.prdate <  DATEADD(DAY, 1, @YLDate)
+          AND ISNULL(h.cancelflag, '') <> 'Y'
+        ORDER BY h.prno ASC;
+
+    ELSE IF @Direction = 'LAST'
+        SELECT TOP 1 h.prno AS PrNo, h.prdate AS PrDate
+        FROM dbo.po_prh h
+        WHERE h.divcode = @DivCode
+          AND h.prdate >= @YFDate
+          AND h.prdate <  DATEADD(DAY, 1, @YLDate)
+          AND ISNULL(h.cancelflag, '') <> 'Y'
+        ORDER BY h.prno DESC;
+
+    ELSE IF @Direction = 'NEXT'
+        SELECT TOP 1 h.prno AS PrNo, h.prdate AS PrDate
+        FROM dbo.po_prh h
+        WHERE h.divcode = @DivCode
+          AND h.prdate >= @YFDate
+          AND h.prdate <  DATEADD(DAY, 1, @YLDate)
+          AND ISNULL(h.cancelflag, '') <> 'Y'
+          AND h.prno > @CurrentPrNo
+        ORDER BY h.prno ASC;
+
+    ELSE IF @Direction = 'PREV'
+        SELECT TOP 1 h.prno AS PrNo, h.prdate AS PrDate
+        FROM dbo.po_prh h
+        WHERE h.divcode = @DivCode
+          AND h.prdate >= @YFDate
+          AND h.prdate <  DATEADD(DAY, 1, @YLDate)
+          AND ISNULL(h.cancelflag, '') <> 'Y'
+          AND h.prno < @CurrentPrNo
+        ORDER BY h.prno DESC;
+END;
+GO
+
+
+-- -----------------------------------------------------------------
+-- Item lookup — paginated (added 2026-05-08)
+-- -----------------------------------------------------------------
+
+CREATE OR ALTER PROCEDURE dbo.ksp_GetItemsPaginated
+    @DivCode    VARCHAR(2),
+    @SearchTerm VARCHAR(100) = NULL,
+    @DepCode    VARCHAR(5)   = NULL,
+    @Page       INT          = 1,
+    @PageSize   INT          = 50
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+
+    DECLARE @Offset INT = (@Page - 1) * @PageSize;
+
+    -- Normalise search: empty/null â†’ match all
+    DECLARE @Term VARCHAR(102) =
+        CASE
+            WHEN LEN(LTRIM(RTRIM(ISNULL(@SearchTerm, '')))) >= 1
+            THEN LTRIM(RTRIM(@SearchTerm)) + '%'
+            ELSE '%'
+        END;
+
+    -- Pending PR qty scoped to dept when provided
+    WITH PendingPr AS
+    (
+        SELECT prl.ITEMCODE, SUM(ISNULL(prl.QTYREQD, 0)) AS TotalPendingPr
+        FROM   dbo.PO_PRL prl
+        WHERE  prl.DIVCODE = @DivCode
+          AND  (@DepCode IS NULL OR prl.DEPCODE = @DepCode)
+          AND  ISNULL(prl.prstatus, ' ') NOT IN ('O', 'C')
+          AND  ISNULL(prl.AmdFlg, '') <> 'Y'
+        GROUP BY prl.ITEMCODE
+    ),
+    PendingPo AS
+    (
+        SELECT o.ITEMCODE, SUM(ISNULL(o.ORDQTY, 0) - ISNULL(o.RCVDQTY, 0)) AS TotalPendingPo
+        FROM   dbo.PO_ORDL o
+        INNER JOIN dbo.PO_ORDH h
+               ON  h.DIVCODE = o.DIVCODE
+               AND h.PORDNO  = o.PORDNO
+               AND h.PORDDT  = o.PORDDT
+               AND h.POGRP   = o.POGRP
+        WHERE  o.DIVCODE = @DivCode
+          AND  ISNULL(h.CANFLG, 'N') = 'N'
+          AND  (ISNULL(o.ORDQTY, 0) - ISNULL(o.RCVDQTY, 0)) > 0
+        GROUP BY o.ITEMCODE
+    )
+
+    -- Result 1: total count (matches ksp_PR_GetPaginated pattern)
+    SELECT COUNT(*) AS TotalCount
+    FROM   dbo.in_item i
+    WHERE  i.IsItemActive = 1
+      AND  (i.ITEMCODE LIKE @Term OR i.ITEMNAME LIKE @Term);
+
+    -- Result 2: paged rows
+    WITH PendingPr AS
+    (
+        SELECT prl.ITEMCODE, SUM(ISNULL(prl.QTYREQD, 0)) AS TotalPendingPr
+        FROM   dbo.PO_PRL prl
+        WHERE  prl.DIVCODE = @DivCode
+          AND  (@DepCode IS NULL OR prl.DEPCODE = @DepCode)
+          AND  ISNULL(prl.prstatus, ' ') NOT IN ('O', 'C')
+          AND  ISNULL(prl.AmdFlg, '') <> 'Y'
+        GROUP BY prl.ITEMCODE
+    ),
+    PendingPo AS
+    (
+        SELECT o.ITEMCODE, SUM(ISNULL(o.ORDQTY, 0) - ISNULL(o.RCVDQTY, 0)) AS TotalPendingPo
+        FROM   dbo.PO_ORDL o
+        INNER JOIN dbo.PO_ORDH h
+               ON  h.DIVCODE = o.DIVCODE
+               AND h.PORDNO  = o.PORDNO
+               AND h.PORDDT  = o.PORDDT
+               AND h.POGRP   = o.POGRP
+        WHERE  o.DIVCODE = @DivCode
+          AND  ISNULL(h.CANFLG, 'N') = 'N'
+          AND  (ISNULL(o.ORDQTY, 0) - ISNULL(o.RCVDQTY, 0)) > 0
+        GROUP BY o.ITEMCODE
+    )
+    SELECT
+        i.ITEMCODE                       AS ItemCode,
+        i.ITEMNAME                       AS ItemName,
+        i.UOM                            AS Uom,
+        i.CURSTK                         AS CurrentStock,
+        ISNULL(i.MINLEVEL, 0)            AS MinLevel,
+        ISNULL(pp.TotalPendingPr, 0)     AS PendingPrQty,
+        ISNULL(po.TotalPendingPo, 0)     AS PendingPoQty,
+        ISNULL(i.DRAWNO, '')             AS DrawNo,
+        ISNULL(i.CATLNO, '')             AS CatNo
+    FROM   dbo.in_item i
+    LEFT JOIN PendingPr pp ON pp.ITEMCODE = i.ITEMCODE
+    LEFT JOIN PendingPo po ON po.ITEMCODE = i.ITEMCODE
+    WHERE  i.IsItemActive = 1
+      AND  (i.ITEMCODE LIKE @Term OR i.ITEMNAME LIKE @Term)
+    ORDER BY
+        CASE WHEN i.ITEMCODE LIKE @Term THEN 0 ELSE 1 END,
+        i.ITEMNAME
+    OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;
+END;
+GO

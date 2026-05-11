@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Spinrise.Application.Areas.Common.Lookup.DTOs;
 using Spinrise.Application.Areas.Common.Lookup.Interfaces;
+using Spinrise.Application.DTOs;
 
 namespace Spinrise.Application.Areas.Common.Lookup.Services;
 
@@ -236,6 +237,109 @@ public class LookupService : ILookupService
         {
             _logger.LogError(ex, "Failed to get currencies lookup");
             await _jatUow.RollbackAsync();
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<RateUnitLookupDto>> GetRateUnitsAsync()
+    {
+        await _jatUow.BeginAsync();
+        try
+        {
+            var data = await _repo.GetRateUnitsAsync();
+            await _jatUow.CommitAsync();
+            return data;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to get rate units lookup");
+            await _jatUow.RollbackAsync();
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<WeighmentLookupDto>> GetWeighmentsAsync()
+    {
+        await _jatUow.BeginAsync();
+        try
+        {
+            var data = await _repo.GetWeighmentsAsync();
+            await _jatUow.CommitAsync();
+            return data;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to get weighments lookup");
+            await _jatUow.RollbackAsync();
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<AgentLookupDto>> SearchAgentsAsync(string term)
+    {
+        await _jatUow.BeginAsync();
+        try
+        {
+            var data = await _repo.SearchAgentsAsync(term);
+            await _jatUow.CommitAsync();
+            return data;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to search agents lookup for term '{Term}'", term);
+            await _jatUow.RollbackAsync();
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<EmployeeRMILookupDto>> SearchEmployeesAsync(string term)
+    {
+        await _jatUow.BeginAsync();
+        try
+        {
+            var data = await _repo.SearchEmployeesAsync(term);
+            await _jatUow.CommitAsync();
+            return data;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to search employees lookup for term '{Term}'", term);
+            await _jatUow.RollbackAsync();
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<TaxCodeLookupDto>> GetActiveTaxCodesAsync()
+    {
+        await _jatUow.BeginAsync();
+        try
+        {
+            var data = await _repo.GetActiveTaxCodesAsync();
+            await _jatUow.CommitAsync();
+            return data;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to get active tax codes lookup");
+            await _jatUow.RollbackAsync();
+            throw;
+        }
+    }
+
+    public async Task<PagedResult<ItemLookupDto>> GetItemsPaginatedAsync(
+        string divCode, string? search, string? depCode, int page, int pageSize)
+    {
+        await _uow.BeginAsync();
+        try
+        {
+            var result = await _repo.GetItemsPaginatedAsync(divCode, search, depCode, page, pageSize);
+            await _uow.CommitAsync();
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to get paginated items for division {DivCode}", divCode);
+            await _uow.RollbackAsync();
             throw;
         }
     }

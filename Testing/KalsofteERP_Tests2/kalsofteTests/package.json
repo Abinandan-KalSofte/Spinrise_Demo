@@ -1,0 +1,17 @@
+{
+  "name": "kalsofte-erp-tests",
+  "version": "1.0.0",
+  "description": "Automated test suite for Kalsofte ERPKSL — Playwright + Video Recording",
+  "scripts": {
+    "install:browsers": "npx playwright install chromium",
+    "test": "npx playwright test --config=playwright.config.ts",
+    "test:headed": "npx playwright test --headed --config=playwright.config.ts",
+    "test:auth": "npx playwright test --grep \"Authentication\" --headed",
+    "test:crud": "npx playwright test --grep \"CRUD\" --headed",
+    "test:validation": "npx playwright test --grep \"Validation\" --headed",
+    "report": "npx playwright show-report playwright-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.0"
+  }
+}

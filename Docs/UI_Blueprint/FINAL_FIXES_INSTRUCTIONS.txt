@@ -1,0 +1,248 @@
+================================================================================
+BLUEPRINT v1.1 FINAL FIXES — REMAINING 5 EDITS
+================================================================================
+Date: 08 May 2026
+Prepared for: Abinandan (Developer)
+Document: SPINRISE_UIDesign_Blueprint_v1.1_08May2026.docx
+Total fixes needed: 5 items (10 minutes work)
+
+================================================================================
+FIX #1: COVER PAGE "REVIEWED BY" FIELD
+================================================================================
+
+Location: PAGE 1 — Cover Page Metadata Table
+
+Current text:
+    Reviewed By | Sasikumar R — Technical Lead (Development)
+
+Required text:
+    Reviewed By | Review In Progress — Sasikumar R
+
+Steps:
+  1. Go to Page 1 (Cover Page)
+  2. Locate the metadata table with rows: Version, Date, Prepared By, Reviewed By, Company, Classification
+  3. Click on the cell containing: "Sasikumar R — Technical Lead (Development)"
+  4. Select ALL the text in that cell
+  5. Delete it
+  6. Type EXACTLY: Review In Progress — Sasikumar R
+  7. Press Escape to exit cell edit mode
+  8. Verify the change appears correctly
+
+Expected result: Reviewed By row shows only "Review In Progress — Sasikumar R"
+
+Time: 1 minute
+
+================================================================================
+FIX #2: ADD YELLOW CALLOUT BOX TO SECTION 4.1
+================================================================================
+
+Location: PAGE 6 — Section 4.1 "KPI Strip (CEO Confirmed — 5 Cards)"
+
+Current state:
+    Section 4.1 has blue CEO Decision box, then immediately shows table
+
+Required addition:
+    A yellow/light orange callout box AFTER the CEO Decision box with reference text
+
+Steps:
+  1. Go to Page 6, Section 4.1
+  2. Position cursor AFTER the blue "CEO Decision (06 May 2026)..." box
+  3. Press Enter to create a new line
+  4. Insert a text box or callout shape (Insert → Text Box OR Insert → Shapes → Callouts)
+  5. Format background color: Light yellow or light orange (#FAEEDA recommended)
+  6. Type this text inside:
+     "Note: Add Mode Suppression Rule — See Section 5.1.1 below for mode-aware display requirements."
+  7. Format text: 12 px, regular weight, same color as body text
+  8. Adjust box size to fit content neatly
+  9. Position above the KPI Strip table
+
+Expected result: Yellow box appears between CEO Decision box and KPI cards table
+
+Time: 2 minutes
+
+================================================================================
+FIX #3: ADD SECTION 5.1.1 — ADD MODE DISPLAY RULE (CRITICAL)
+================================================================================
+
+Location: PAGE 7-8 — After Section 5.1 table, BEFORE Section 5.2
+
+Current state:
+    Section 5.1 table ends
+    Section 5.2 "Label Standards" begins immediately
+    NO 5.1.1 section exists
+
+Required addition:
+    New subsection 5.1.1 with full Add Mode Display Rule specification
+
+Steps:
+
+1. Navigate to Page 7, end of Section 5.1 table
+2. Position cursor at the END of the 5.1 table (after "Action Buttons" row)
+3. Press Enter twice to create space
+4. Type the heading (format as Bold, 14px, semi-bold, colour #0C447C):
+   5.1.1 Add Mode Display Rule
+
+5. Press Enter, then add this complete text block (13px regular):
+
+---BEGIN TEXT BLOCK---
+
+CEO Decision (06 May 2026 — Finding #29): KPI cards must be mode-aware.
+
+In Add mode: KPI strip shows only Total Lines and Approx. Budget.
+Created By, Approval Status, and Approval Pipeline are hidden.
+
+After first save: All three fields activate with real data and remain visible
+in Edit/View modes.
+
+Rationale: These three fields have no meaningful value before initial document
+save. Hiding them in Add mode declutters the form and improves keystroke
+efficiency for new document creation.
+
+Implementation: Frontend renders KPI strip conditionally:
+  • Add mode: Show cards [Total Lines, Approx. Budget] only
+  • Edit/View mode: Show all 5 cards
+
+---END TEXT BLOCK---
+
+6. After pasting text, ensure:
+   - Heading is Bold, 14px
+   - Body text is 13px regular
+   - Bullet points use • symbol (Alt+0149)
+   - Line spacing is 1.5
+
+7. Add space before Section 5.2 (one page break or extra line if needed)
+
+Expected result:
+    - New subsection 5.1.1 appears on page 7-8
+    - Section 5.2 "Label Standards" now follows on next page
+    - All formatting matches existing subsections
+
+Time: 3 minutes
+
+================================================================================
+FIX #4: UPDATE SECTION 7.1 HEADER WITH STATUS MARKER
+================================================================================
+
+Location: PAGE 12 — Section 7.1 "Grid Component Comparison"
+
+Current text (in blue box):
+    PROPOSED RECOMMENDATION — Pending CEO Decision. The table below presents...
+
+Required text (in blue box):
+    STATUS: PROPOSED — Pending CEO Decision (Fri 8 May 2026)
+
+    Note: The comparison table and grid design standards in Section 7.3 that do not
+    depend on library selection (row height, column alignment, field types, etc.)
+    are CONFIRMED. The library selection itself (AG Grid Enterprise vs alternatives)
+    is PENDING CEO approval.
+
+Steps:
+
+1. Go to Page 12, Section 7.1
+2. Locate the blue callout box with "PROPOSED RECOMMENDATION — Pending CEO Decision..."
+3. Click inside the box to edit
+4. Select ALL the text in the box
+5. Replace with EXACTLY this text:
+
+---BEGIN REPLACEMENT TEXT---
+STATUS: PROPOSED — Pending CEO Decision (Fri 8 May 2026)
+
+Note: The comparison table and grid design standards in Section 7.3 that do not
+depend on library selection (row height, column alignment, field types, etc.)
+are CONFIRMED. The library selection itself (AG Grid Enterprise vs alternatives)
+is PENDING CEO approval.
+---END REPLACEMENT TEXT---
+
+6. Format the text:
+   - First line bold
+   - Body text regular 13px
+   - Keep blue box background colour unchanged
+
+7. Verify the box height adjusts to fit all text (may need to resize)
+
+Expected result:
+    Blue box shows updated status with date and clarification note
+    All text clearly distinguishes CONFIRMED vs PENDING
+
+Time: 2 minutes
+
+================================================================================
+FIX #5: UPDATE DOCUMENT VERSION NUMBER
+================================================================================
+
+Location: PAGE 1 & PAGE 22 FOOTER — Version field
+
+Current text:
+    Version 1.0
+    (appears in header/footer areas)
+
+Required text:
+    Version 1.1
+
+Steps:
+
+OPTION A — If version is in Cover Page Table:
+  1. Go to Page 1 Cover Page table
+  2. Find "Version" row
+  3. Current value: "1.0"
+  4. Change to: "1.1"
+  5. Save
+
+OPTION B — If version is in Document Footer:
+  1. Go to Insert → Header and Footer → Edit Footer
+  2. Look for text containing "Version 1.0"
+  3. Change "1.0" to "1.1"
+  4. Click "Close Header and Footer"
+  5. Verify footer updates on all pages
+
+OPTION C — If version is in both places:
+  1. Update BOTH locations (Cover Page table AND Footer)
+  2. Verify both show "Version 1.1"
+
+Expected result:
+    All instances of "Version 1.0" changed to "Version 1.1"
+    Applies to cover page, headers, and footers
+
+Time: 2 minutes
+
+================================================================================
+FINAL VERIFICATION CHECKLIST
+================================================================================
+
+After completing all 5 fixes, verify:
+
+☐ FIX #1: Cover page shows "Review In Progress — Sasikumar R"
+☐ FIX #2: Yellow callout box present after Section 4.1 CEO Decision box
+☐ FIX #3: Section 5.1.1 exists with complete Add Mode Display Rule text
+☐ FIX #4: Section 7.1 blue box shows "STATUS: PROPOSED — Pending CEO Decision (Fri 8 May 2026)" + clarification note
+☐ FIX #5: Document footer/header shows "Version 1.1"
+
+No other sections should be modified.
+
+================================================================================
+EXPORT & SUBMIT
+================================================================================
+
+After all fixes:
+
+1. Save document in Word as: SPINRISE_UIDesign_Blueprint_v1.1_08May2026.docx
+2. Export as PDF: File → Export as PDF → SPINRISE_UIDesign_Blueprint_v1.1_08May2026.pdf
+3. Verify PDF shows all changes
+4. Send both files to Sasi with CHANGE_LOG_v1.0_to_v1.1.md for sign-off
+
+Files to submit:
+  ✓ SPINRISE_UIDesign_Blueprint_v1.1_08May2026.docx (Word)
+  ✓ SPINRISE_UIDesign_Blueprint_v1.1_08May2026.pdf (PDF)
+  ✓ CHANGE_LOG_v1.0_to_v1.1.md (Change summary)
+
+Expected message to Sasi:
+  "Blueprint v1.1 complete with all CEO feedback incorporated.
+   Awaiting your technical review and sign-off before final CEO approval."
+
+================================================================================
+TOTAL TIME ESTIMATE: 10 minutes
+================================================================================
+
+If you get stuck on any fix, refer back to the original EDIT_INSTRUCTIONS_v1.0_to_v1.1.txt
+for more detailed context on each change.
+

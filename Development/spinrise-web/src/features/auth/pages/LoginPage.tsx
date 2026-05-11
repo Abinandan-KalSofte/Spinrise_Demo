@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react'
-import { App as AntApp, Button, Col, DatePicker, Form, Input, Row, Select, Typography } from 'antd'
+import { App as AntApp, Button, DatePicker, Form, Input, Select } from 'antd'
 import {
+  ApartmentOutlined,
   BankOutlined,
-  BarChartOutlined,
   CalendarOutlined,
   LockOutlined,
-  SafetyCertificateOutlined,
-  ThunderboltOutlined,
   UserOutlined,
 } from '@ant-design/icons'
 import dayjs from 'dayjs'
@@ -18,32 +16,73 @@ import { authService } from '../services/authService'
 import { useAuthStore } from '../store/useAuthStore'
 import type { ActiveDivisionDto, LoginDto } from '../types'
 
-const FEATURES = [
-  { icon: <SafetyCertificateOutlined />, text: 'Role-based access control' },
-  { icon: <ThunderboltOutlined />,       text: 'Real-time approval workflows' },
-  { icon: <BarChartOutlined />,          text: 'Live procurement analytics' },
-]
+const COMPANIES = [{ value: 'KAL', label: 'Kalpatharu Software Ltd' }]
 
 interface LoginFormValues extends LoginDto {
   processingDate: ReturnType<typeof dayjs>
+  compCode: string
 }
 
+// ── SpinRise SVG Logo ─────────────────────────────────────────────────────────
+// Icon: 270° clockwise spinning arc (3-o'clock → bottom → left → top) with
+// an upward arrow at the apex — combines "Spin" + "Rise" in one mark.
+function SpinRiseLogo() {
+  return (
+    <svg width="40" height="40" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="sr-grad" x1="0" y1="0" x2="42" y2="42" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#1e3a8a" />
+          <stop offset="100%" stopColor="#2563eb" />
+        </linearGradient>
+      </defs>
+      {/* Badge background */}
+      <rect width="42" height="42" rx="10" fill="url(#sr-grad)" />
+      {/* 270° clockwise arc: right (33,21) → bottom → left → top (21,9) */}
+      <path
+        d="M 33 21 A 12 12 0 1 1 21 9"
+        stroke="rgba(255,255,255,0.50)"
+        strokeWidth="2.8"
+        strokeLinecap="round"
+        fill="none"
+      />
+      {/* Upward arrowhead at 12-o'clock (21,9) */}
+      <path
+        d="M 17 14 L 21 9 L 25 14"
+        stroke="white"
+        strokeWidth="2.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      {/* Dot at arc origin (3-o'clock) */}
+      <circle cx="33" cy="21" r="2.4" fill="rgba(255,255,255,0.50)" />
+    </svg>
+  )
+}
+
+// ── Page ──────────────────────────────────────────────────────────────────────
 export default function LoginPage() {
   const { message } = AntApp.useApp()
-  const [form]      = Form.useForm<LoginFormValues>()
+  const [form] = Form.useForm<LoginFormValues>()
   const setAuthSession    = useAuthStore((s) => s.setAuthSession)
   const setProcessingDate = useAuthStore((s) => s.setProcessingDate)
   const navigate          = useNavigate()
   const { execute, loading } = useAsync(authService.login)
 
-  const [divisions,      setDivisions]      = useState<ActiveDivisionDto[]>([])
-  const [divsLoading,    setDivsLoading]    = useState(false)
-  const [divsFailed,     setDivsFailed]     = useState(false)
+  const [divisions,   setDivisions]   = useState<ActiveDivisionDto[]>([])
+  const [divsLoading, setDivsLoading] = useState(false)
+  const [divsFailed,  setDivsFailed]  = useState(false)
+  const [currentTime, setCurrentTime] = useState(dayjs())
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(dayjs()), 1000)
+    return () => clearInterval(timer)
+  }, [])
 
   useEffect(() => {
     setDivsLoading(true)
     authApi.getActiveDivisions()
-      .then((divisions) => { setDivisions(divisions ?? []) })
+      .then((divs) => { setDivisions(divs ?? []) })
       .catch(() => { setDivsFailed(true) })
       .finally(() => setDivsLoading(false))
   }, [])
@@ -51,12 +90,12 @@ export default function LoginPage() {
   const onFinish = async (values: LoginFormValues) => {
     try {
       const procDate = values.processingDate.format('YYYY-MM-DD')
-      const { processingDate: _pd, ...loginPayload } = values
+      const { processingDate: _pd, compCode: _cc, ...loginPayload } = values
       const session = await execute(loginPayload)
       setAuthSession(session)
       setProcessingDate(procDate)
       message.success('Login successful')
-      navigate('/purchase/requisition', { replace: true })
+      navigate('/purchase/requisition/v1/new', { replace: true })
     } catch (error) {
       message.error(getErrorMessage(error))
     }
@@ -64,217 +103,120 @@ export default function LoginPage() {
 
   return (
     <div className="login-root">
-      <Row style={{ width: '100%', minHeight: '100vh' }}>
+      <div className="login-card">
 
-        {/* ── Left panel — branding ─────────────────────────────────────── */}
-        <Col xs={0} md={12} className="login-left">
-
-          <div style={{
-            position: 'absolute', top: -80, right: -80,
-            width: 320, height: 320, borderRadius: '50%',
-            background: 'rgba(255,255,255,0.04)', pointerEvents: 'none',
-          }} />
-          <div style={{
-            position: 'absolute', bottom: -60, left: -60,
-            width: 240, height: 240, borderRadius: '50%',
-            background: 'rgba(255,255,255,0.04)', pointerEvents: 'none',
-          }} />
-          <div style={{
-            position: 'absolute', top: '40%', right: '10%',
-            width: 120, height: 120, borderRadius: '50%',
-            background: 'rgba(22,119,255,0.18)', pointerEvents: 'none',
-          }} />
-
-          <div style={{ position: 'relative', zIndex: 1, maxWidth: 420, textAlign: 'center' }}>
-            <div style={{
-              width: 72, height: 72, borderRadius: 20,
-              background: 'rgba(255,255,255,0.12)',
-              border: '1px solid rgba(255,255,255,0.18)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 32, fontWeight: 800, color: '#ffffff',
-              margin: '0 auto 24px',
-              backdropFilter: 'blur(8px)',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.24)',
-            }}>
-              S
-            </div>
-            <Typography.Title level={2} style={{ color: '#ffffff', margin: '0 0 8px', fontSize: 28, fontWeight: 700 }}>
-              Spinrise ERP
-            </Typography.Title>
-            <Typography.Text style={{ color: 'rgba(255,255,255,0.65)', fontSize: 15, display: 'block', marginBottom: 48 }}>
-              Enterprise Resource Planning Platform
-            </Typography.Text>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-              {FEATURES.map((f, i) => (
-                <div key={i} style={{
-                  display: 'flex', alignItems: 'center', gap: 14,
-                  background: 'rgba(255,255,255,0.07)',
-                  border: '1px solid rgba(255,255,255,0.10)',
-                  borderRadius: 12, padding: '12px 18px',
-                  backdropFilter: 'blur(8px)', textAlign: 'left',
-                }}>
-                  <div style={{
-                    width: 36, height: 36, borderRadius: 10, flexShrink: 0,
-                    background: 'rgba(22,119,255,0.25)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: '#60a5fa', fontSize: 16,
-                  }}>
-                    {f.icon}
-                  </div>
-                  <Typography.Text style={{ color: 'rgba(255,255,255,0.85)', fontSize: 14, fontWeight: 500 }}>
-                    {f.text}
-                  </Typography.Text>
-                </div>
-              ))}
-            </div>
-            <Typography.Text style={{ color: 'rgba(255,255,255,0.30)', fontSize: 12, display: 'block', marginTop: 48 }}>
-              © {new Date().getFullYear()} Spinrise · All rights reserved
-            </Typography.Text>
+        {/* ── Logo — grey pill, centered ─────────────────────────────────── */}
+        <div className="login-card__logo-wrap">
+          <SpinRiseLogo />
+          <div className="login-card__logo-text">
+            <span className="login-card__brand-name">SpinRise</span>
+            <span className="login-card__brand-sub">ERP PLATFORM</span>
           </div>
-        </Col>
+        </div>
 
-        {/* ── Right panel — form ────────────────────────────────────────── */}
-        <Col xs={24} md={12} className="login-right">
-          <div className="login-form-wrap">
+        {/* ── System title + blue divider ────────────────────────────────── */}
+        <div className="login-card__system-title">Enterprise Resource Planning</div>
+        <div className="login-card__divider" />
 
-            {/* Mobile-only logo */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 32, justifyContent: 'center' }}>
-              <div style={{
-                width: 40, height: 40, borderRadius: 10,
-                background: 'linear-gradient(135deg, #1d4ed8, #1677ff)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: '#fff', fontSize: 18, fontWeight: 800,
-                boxShadow: '0 4px 12px rgba(22,119,255,0.35)',
-              }}>
-                S
-              </div>
-              <Typography.Text style={{ fontSize: 18, fontWeight: 700 }}>
-                Spinrise ERP
-              </Typography.Text>
-            </div>
+        {/* ── Live date / time ───────────────────────────────────────────── */}
+        <div className="login-card__datetime">
+          <CalendarOutlined />
+          <span>{currentTime.format('DD MMM YYYY')}</span>
+          <span className="login-card__datetime-sep">|</span>
+          <span>{currentTime.format('hh:mm:ss A')}</span>
+        </div>
 
-            <div style={{ marginBottom: 32 }}>
-              <Typography.Title level={3} style={{ margin: '0 0 6px', fontSize: 24, fontWeight: 700 }}>
-                Welcome back
-              </Typography.Title>
-              <Typography.Text type="secondary" style={{ fontSize: 14 }}>
-                Sign in to your workspace to continue
-              </Typography.Text>
-            </div>
+        {/* ── Form ───────────────────────────────────────────────────────── */}
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
+          initialValues={{ processingDate: dayjs(), compCode: 'KAL' }}
+          requiredMark={false}
+          className="login-form"
+        >
+          {/* Company */}
+          <Form.Item name="compCode" rules={[{ required: true, message: 'Please select a company' }]}>
+            <Select
+              options={COMPANIES}
+              suffixIcon={<ApartmentOutlined style={{ color: '#9ca3af' }} />}
+              style={{ width: '100%' }}
+            />
+          </Form.Item>
 
-            <Form
-              form={form}
-              layout="vertical"
-              onFinish={onFinish}
-              initialValues={{ processingDate: dayjs() }}
-              requiredMark={false}
+          {/* Division */}
+          <Form.Item name="divCode" rules={[{ required: true, message: 'Please select your division' }]}>
+            {divsFailed ? (
+              <Input
+                prefix={<BankOutlined style={{ color: '#9ca3af' }} />}
+                placeholder="Enter division code"
+                maxLength={4}
+                style={{ textTransform: 'uppercase' }}
+              />
+            ) : (
+              <Select
+                showSearch
+                loading={divsLoading}
+                placeholder="Select division"
+                optionFilterProp="label"
+                suffixIcon={<BankOutlined style={{ color: '#9ca3af' }} />}
+                options={divisions.map((d) => ({
+                  value: d.divCode,
+                  label: `${d.divCode} – ${d.divName}`,
+                }))}
+                filterOption={(input, option) =>
+                  (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                }
+                style={{ width: '100%' }}
+              />
+            )}
+          </Form.Item>
+
+          {/* Username */}
+          <Form.Item name="userName" rules={[{ required: true, message: 'Please enter your username' }]}>
+            <Input
+              prefix={<UserOutlined style={{ color: '#9ca3af' }} />}
+              placeholder="Username"
+              maxLength={100}
+            />
+          </Form.Item>
+
+          {/* Password */}
+          <Form.Item name="password" rules={[{ required: true, message: 'Please enter your password' }]}>
+            <Input.Password
+              prefix={<LockOutlined style={{ color: '#9ca3af' }} />}
+              placeholder="Password"
+            />
+          </Form.Item>
+
+          {/* Processing Date */}
+          <Form.Item name="processingDate" rules={[{ required: true, message: 'Please select processing date' }]}>
+            <DatePicker
+              style={{ width: '100%' }}
+              format="DD-MM-YYYY"
+              suffixIcon={<CalendarOutlined style={{ color: '#9ca3af' }} />}
+              disabledDate={(d) => d.isAfter(dayjs(), 'day')}
+              allowClear={false}
+            />
+          </Form.Item>
+
+          <Form.Item style={{ marginBottom: 0, marginTop: 6 }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              block
+              className="login-submit-btn"
             >
-              {/* Division */}
-              <Form.Item
-                label={<span style={{ fontSize: 12, fontWeight: 500 }}>Division</span>}
-                name="divCode"
-                rules={[{ required: true, message: 'Please select your division' }]}
-                style={{ marginBottom: 16 }}
-              >
-                {divsFailed ? (
-                  <Input
-                    className="login-input"
-                    prefix={<BankOutlined style={{ color: '#9ca3af' }} />}
-                    placeholder="Enter division code"
-                    maxLength={4}
-                    size="large"
-                    style={{ textTransform: 'uppercase' }}
-                  />
-                ) : (
-                  <Select
-                    showSearch
-                    size="large"
-                    loading={divsLoading}
-                    placeholder="Select division"
-                    optionFilterProp="label"
-                    suffixIcon={<BankOutlined style={{ color: '#9ca3af' }} />}
-                    options={divisions.map((d) => ({
-                      value: d.divCode,
-                      label: `${d.divCode} – ${d.divName}`,
-                    }))}
-                    filterOption={(input, option) =>
-                      (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                    }
-                    style={{ width: '100%' }}
-                  />
-                )}
-              </Form.Item>
+              Login
+            </Button>
+          </Form.Item>
+        </Form>
 
-              {/* Processing Date */}
-              <Form.Item
-                label={<span style={{ fontSize: 12, fontWeight: 500 }}>Processing Date</span>}
-                name="processingDate"
-                rules={[{ required: true, message: 'Please select processing date' }]}
-                style={{ marginBottom: 16 }}
-              >
-                <DatePicker
-                  className="login-input"
-                  size="large"
-                  style={{ width: '100%' }}
-                  format="DD-MM-YYYY"
-                  suffixIcon={<CalendarOutlined style={{ color: '#9ca3af' }} />}
-                  disabledDate={(d) => d.isAfter(dayjs(), 'day')}
-                  allowClear={false}
-                />
-              </Form.Item>
-
-              {/* Username */}
-              <Form.Item
-                label={<span style={{ fontSize: 12, fontWeight: 500 }}>Username</span>}
-                name="userName"
-                rules={[{ required: true, message: 'Please enter your username' }]}
-                style={{ marginBottom: 16 }}
-              >
-                <Input
-                  className="login-input"
-                  prefix={<UserOutlined style={{ color: '#9ca3af' }} />}
-                  placeholder="Enter your username"
-                  maxLength={100}
-                  size="large"
-                />
-              </Form.Item>
-
-              {/* Password */}
-              <Form.Item
-                label={<span style={{ fontSize: 12, fontWeight: 500 }}>Password</span>}
-                name="password"
-                rules={[{ required: true, message: 'Please enter your password' }]}
-                style={{ marginBottom: 24 }}
-              >
-                <Input.Password
-                  className="login-input"
-                  prefix={<LockOutlined style={{ color: '#9ca3af' }} />}
-                  placeholder="••••••••"
-                  size="large"
-                />
-              </Form.Item>
-
-              <Form.Item style={{ marginBottom: 0 }}>
-                <Button
-                  className="login-btn"
-                  type="primary"
-                  htmlType="submit"
-                  loading={loading}
-                  block
-                  size="large"
-                >
-                  Sign in to Workspace
-                </Button>
-              </Form.Item>
-            </Form>
-
-            <Typography.Text type="secondary" style={{ display: 'block', textAlign: 'center', marginTop: 28, fontSize: 12 }}>
-              Having trouble? Contact your system administrator
-            </Typography.Text>
-          </div>
-        </Col>
-
-      </Row>
+        <div className="login-card__footer-note">
+          © {new Date().getFullYear()} Kalpatharu Software Ltd
+        </div>
+      </div>
     </div>
   )
 }

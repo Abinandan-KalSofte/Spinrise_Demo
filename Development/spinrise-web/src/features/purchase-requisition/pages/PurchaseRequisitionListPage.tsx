@@ -1,22 +1,95 @@
-import { Button, Card, Col, Flex, Modal, Row, Select, Space, Tag, Typography } from 'antd'
+import { Modal, Select, Space, Typography } from 'antd'
 import {
   CheckCircleOutlined,
   ClockCircleOutlined,
+  CloseOutlined,
   ExclamationCircleOutlined,
   FileTextOutlined,
-  PlusOutlined,
   StopOutlined,
 } from '@ant-design/icons'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import dayjs from 'dayjs'
 
 import { usePurchaseRequisitionList } from '../hooks/usePurchaseRequisitionList'
 import { PRFilterBar } from '../components/pr-list/PRFilterBar'
 import { PRDataTable } from '../components/pr-list/PRDataTable'
 import { PRViewModal } from '../components/pr-list/PRViewModal'
 
-const CARD_SHADOW = '0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05)'
+// ── Design tokens (mirrors V1 page) ──────────────────────────────────────────
+const C = {
+  blue:   '#185FA5',
+  border: '#e2e2e2',
+  bg:     '#f5f5f3',
+  text3:  '#64748b',
+} as const
 
+// ── Inline KPI card (same pattern as PRKPIStrip's KPICard) ───────────────────
+function KPICard({
+  label, value, icon, accent,
+}: {
+  label:  string
+  value:  number | string
+  icon:   React.ReactNode
+  accent: string
+}) {
+  return (
+    <div style={{
+      background:   '#fff',
+      border:       `1px solid ${C.border}`,
+      borderLeft:   `3px solid ${accent}`,
+      borderRadius: 8,
+      padding:      '8px 12px',
+      display:      'flex',
+      alignItems:   'center',
+      gap:          10,
+      flex:         1,
+      minWidth:     0,
+    }}>
+      <div style={{
+        width:          32,
+        height:         32,
+        borderRadius:   8,
+        background:     `${accent}14`,
+        display:        'flex',
+        alignItems:     'center',
+        justifyContent: 'center',
+        color:          accent,
+        fontSize:       15,
+        flexShrink:     0,
+      }}>
+        {icon}
+      </div>
+      <div>
+        <div style={{
+          fontSize: 10, fontWeight: 600, color: C.text3,
+          textTransform: 'uppercase', letterSpacing: '0.4px', marginBottom: 2,
+        }}>
+          {label}
+        </div>
+        <div style={{
+          fontSize: 18, fontWeight: 700, color: accent,
+          lineHeight: 1.1, fontVariantNumeric: 'tabular-nums',
+        }}>
+          {value}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+export function isBackDate(processingDate?: string | null, lastPRDate?: string | null) {
+  if (!processingDate || !lastPRDate) return false
+  const procDay = dayjs(processingDate)
+  const lastDay = dayjs(lastPRDate)
+  if (!procDay.isValid() || !lastDay.isValid()) return false
+  return procDay.startOf('day').isBefore(lastDay.startOf('day'))
+}
+
+// ── Page ──────────────────────────────────────────────────────────────────────
 export default function PurchaseRequisitionListPage() {
+  const navigate = useNavigate()
+
   const {
     rows, total, page, loading, summary,
     departments, employees,
@@ -30,157 +103,89 @@ export default function PurchaseRequisitionListPage() {
   } = usePurchaseRequisitionList()
 
   return (
-    <Flex vertical gap={20}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.bg }}>
 
-      {/* ── Page Header ──────────────────────────────────────────────────── */}
+      {/* ── Blue band header ──────────────────────────────────────────────── */}
       <div style={{
+        background:     'linear-gradient(135deg, #0C447C 0%, #185FA5 100%)',
+        padding:        '8px 18px',
         display:        'flex',
-        alignItems:     'flex-start',
+        alignItems:     'center',
         justifyContent: 'space-between',
-        paddingBottom:  16,
-        borderBottom:   '1px solid #f0f0f0',
+        flexShrink:     0,
       }}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-          <div style={{
-            width: 40, height: 40, borderRadius: 10,
-            background: 'linear-gradient(135deg, #1677ff22, #1677ff11)',
-            border: '1px solid #1677ff33',
-            display: 'grid', placeItems: 'center', flexShrink: 0,
-          }}>
-            <FileTextOutlined style={{ color: '#1677ff', fontSize: 18 }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+          <div>
+            <div style={{ fontSize: 10, color: 'rgba(255,255,255,.6)', marginBottom: 1 }}>Document</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: '#fff', letterSpacing: '.3px' }}>
+              Purchase Requisition
+            </div>
           </div>
           <div>
-            <Typography.Title level={4} style={{ margin: 0, lineHeight: 1.2 }}>
-              Purchase Requisitions
-            </Typography.Title>
-            <Typography.Text type="secondary" style={{ fontSize: 13 }}>
-              {!loading && total > 0 ? (
-                <>
-                  <Tag color="blue" style={{ fontWeight: 600, fontSize: 11, marginRight: 4 }}>
-                    {total.toLocaleString()}
-                  </Tag>
-                  record{total !== 1 ? 's' : ''} found
-                </>
-              ) : (
-                'Search and manage purchase requisitions'
-              )}
-            </Typography.Text>
+            <div style={{ fontSize: 10, color: 'rgba(255,255,255,.6)', marginBottom: 1 }}>View</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', fontFamily: 'monospace' }}>
+              List
+            </div>
           </div>
         </div>
-
-        <Link to="/purchase/requisition/new">
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            style={{
-              borderRadius:  8,
-              paddingInline: 18,
-              fontWeight:    600,
-              boxShadow:     '0 2px 8px rgba(22,119,255,0.30)',
-            }}
-          >
-            New PR
-          </Button>
-        </Link>
+        <button
+          onClick={() => navigate('/purchase/requisition/v1/new')}
+          style={{
+            display:      'flex',
+            alignItems:   'center',
+            gap:          6,
+            padding:      '5px 14px',
+            background:   'rgba(255,255,255,0.12)',
+            border:       '1px solid rgba(255,255,255,0.35)',
+            borderRadius: 6,
+            color:        '#fff',
+            fontSize:     12,
+            fontWeight:   600,
+            cursor:       'pointer',
+            letterSpacing: '.2px',
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,0.22)')}
+          onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,0.12)')}
+        >
+          <CloseOutlined style={{ fontSize: 10 }} />
+          Close
+        </button>
       </div>
 
-      {/* ── KPI Cards ─────────────────────────────────────────────────────── */}
-      <Row gutter={[16, 16]}>
-        {[
-          {
-            label:  'Total PRs',
-            value:  summary.totalCount,
-            icon:   <FileTextOutlined />,
-            accent: '#1677ff',
-            bg:     'rgba(22,119,255,0.08)',
-            border: 'rgba(22,119,255,0.18)',
-          },
-          {
-            label:  'Open',
-            value:  summary.openCount,
-            icon:   <ClockCircleOutlined />,
-            accent: '#d97706',
-            bg:     'rgba(217,119,6,0.08)',
-            border: 'rgba(217,119,6,0.18)',
-          },
-          {
-            label:  'Approved',
-            value:  summary.approvedCount,
-            icon:   <CheckCircleOutlined />,
-            accent: '#16a34a',
-            bg:     'rgba(22,163,74,0.08)',
-            border: 'rgba(22,163,74,0.18)',
-          },
-          {
-            label:  'Cancelled',
-            value:  summary.cancelledCount,
-            icon:   <StopOutlined />,
-            accent: '#dc2626',
-            bg:     'rgba(220,38,38,0.08)',
-            border: 'rgba(220,38,38,0.18)',
-          },
-        ].map((kpi) => (
-          <Col xs={12} sm={6} key={kpi.label}>
-            <div style={{
-              borderRadius: 12,
-              background:   '#ffffff',
-              border:       '1px solid #f0f0f0',
-              borderLeft:   `4px solid ${kpi.accent}`,
-              boxShadow:    '0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05)',
-              padding:      '16px 20px',
-              display:      'flex',
-              alignItems:   'center',
-              gap:          14,
-              transition:   'box-shadow 0.2s ease, transform 0.2s ease',
-            }}>
-              <div style={{
-                width:          40,
-                height:         40,
-                borderRadius:   10,
-                background:     kpi.bg,
-                border:         `1px solid ${kpi.border}`,
-                display:        'flex',
-                alignItems:     'center',
-                justifyContent: 'center',
-                color:          kpi.accent,
-                fontSize:       18,
-                flexShrink:     0,
-              }}>
-                {kpi.icon}
-              </div>
-              <div>
-                <div style={{ fontSize: 26, fontWeight: 700, lineHeight: 1.1, fontVariantNumeric: 'tabular-nums' }}>
-                  {loading ? '—' : kpi.value.toLocaleString()}
-                </div>
-                <Typography.Text type="secondary" style={{ fontSize: 12, marginTop: 2, fontWeight: 500 }}>
-                  {kpi.label}
-                </Typography.Text>
-              </div>
-            </div>
-          </Col>
-        ))}
-      </Row>
+     
 
-      {/* ── Filter Bar ────────────────────────────────────────────────────── */}
-      <Card
-        bordered={false}
-        style={{ boxShadow: CARD_SHADOW, borderRadius: 10 }}
-        styles={{ body: { padding: '12px 16px' } }}
-      >
+      {/* ── KPI strip ────────────────────────────────────────────────────── */}
+      <div style={{
+        background:   '#fafaf8',
+        borderBottom: `1px solid ${C.border}`,
+        padding:      '10px 16px',
+        flexShrink:   0,
+      }}>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <KPICard label="Total PRs"  value={loading ? '—' : summary.totalCount}     icon={<FileTextOutlined />}      accent="#185FA5" />
+          <KPICard label="Open"       value={loading ? '—' : summary.openCount}       icon={<ClockCircleOutlined />}   accent="#d97706" />
+          <KPICard label="Approved"   value={loading ? '—' : summary.approvedCount}   icon={<CheckCircleOutlined />}   accent="#16a34a" />
+          <KPICard label="Cancelled"  value={loading ? '—' : summary.cancelledCount}  icon={<StopOutlined />}          accent="#dc2626" />
+        </div>
+      </div>
+
+      {/* ── Filter bar ───────────────────────────────────────────────────── */}
+      <div style={{
+        background:    '#fff',
+        borderBottom:  `1px solid ${C.border}`,
+        padding:       '8px 16px',
+        flexShrink:    0,
+      }}>
         <PRFilterBar
           departments={departments}
           loading={loading}
           onSearch={handleSearch}
           onReset={handleReset}
         />
-      </Card>
+      </div>
 
-      {/* ── Data Table ────────────────────────────────────────────────────── */}
-      <Card
-        bordered={false}
-        style={{ boxShadow: CARD_SHADOW, borderRadius: 10 }}
-        styles={{ body: { padding: 0 } }}
-      >
+      {/* ── Data table (flex-fill) ────────────────────────────────────────── */}
+      <div style={{ flex: 1, minHeight: 0, background: '#fff', overflow: 'hidden' }}>
         <PRDataTable
           rows={rows}
           loading={loading}
@@ -195,8 +200,9 @@ export default function PurchaseRequisitionListPage() {
           onDownload={(record) => void handleDownload(record)}
           downloading={downloading}
         />
-      </Card>
+      </div>
 
+      {/* ── Modals ───────────────────────────────────────────────────────── */}
       <PRViewModal
         open={viewOpen}
         pr={viewPr}
@@ -238,6 +244,6 @@ export default function PurchaseRequisitionListPage() {
         />
       </Modal>
 
-    </Flex>
+    </div>
   )
 }

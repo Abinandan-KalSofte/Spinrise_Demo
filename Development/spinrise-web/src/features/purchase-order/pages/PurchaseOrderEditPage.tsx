@@ -106,6 +106,7 @@ export default function PurchaseOrderEditPage() {
   const h           = detail.header
   const isCancelled = h.cancelFlag === 'Y'
   const isApproved  = h.appFlg    === 'Y'
+  const locked      = h.firstAppFlg === 'Y'
   const canL1       = !isCancelled && !isApproved && approval?.firstAppFlg !== 'Y'
   const canL2       = !isCancelled && !isApproved && approval?.firstAppFlg === 'Y' && approval.fAppFlg !== 'Y'
   const canFinal    = !isCancelled && !isApproved && approval?.fAppFlg === 'Y' && approval.appFlg !== 'Y'
@@ -214,6 +215,16 @@ export default function PurchaseOrderEditPage() {
 
       {isCancelled && (
         <Alert type="error" showIcon icon={<StopOutlined />} message="This Purchase Order has been cancelled." />
+      )}
+
+      {locked && !isCancelled && (
+        <Alert
+          type="warning"
+          showIcon
+          banner
+          message="This PO has approval in progress. Editing is disabled."
+          style={{ marginBottom: 12 }}
+        />
       )}
 
       {/* ── PO Details ───────────────────────────────────────────────── */}

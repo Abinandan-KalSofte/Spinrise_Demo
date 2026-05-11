@@ -1,3 +1,6 @@
+using Spinrise.Application.Areas.Purchase.Arrival.Interfaces;
+using Spinrise.Application.Areas.Purchase.Arrival.Services;
+using Spinrise.Infrastructure.Areas.Purchase.Arrival;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Security.Claims;
@@ -171,6 +174,8 @@ builder.Services.AddScoped<IDatewisePrReportRepository, DatewisePrReportReposito
 builder.Services.AddScoped<IPurchaseReportService, QuestPdfPurchaseRequisitionService>();
 builder.Services.AddScoped<ILookupRepository, LookupRepository>();
 builder.Services.AddScoped<ILookupService, LookupService>();
+builder.Services.AddScoped<IArrivalRepository, ArrivalRepository>();
+builder.Services.AddScoped<IArrivalService, ArrivalService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddSingleton<IRefreshTokenStore, InMemoryRefreshTokenStore>();
 builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();

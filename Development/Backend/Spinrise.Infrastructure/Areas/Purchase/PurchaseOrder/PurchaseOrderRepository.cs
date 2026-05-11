@@ -111,6 +111,7 @@ public class PurchaseOrderRepository : IPurchaseOrderRepository
             ApprovalEnabled       = ((string?)raw.PO_Approval         ?? "N") == "Y",
             AdditionalTaxRequired = ((string?)raw.AddTaxRequired      ?? "N") == "Y",
             FtAmt                 = (decimal?)raw.FtAmt ?? 0,
+            WoSample              = ((string?)raw.wosample ?? "Y") == "Y",
         };
     }
 
@@ -233,8 +234,32 @@ public class PurchaseOrderRepository : IPurchaseOrderRepository
                     PrSno           = line.PrSno,
                     MsDocNo         = line.MsDocNo,
                     MsDocSno        = line.MsDocSno,
-                    NoOfLoad        = line.NoOfLoad,
-                    RateKg          = line.RateKg,
+                    NoOfLoad         = line.NoOfLoad,
+                    RateKg           = line.RateKg,
+                    AgentCode        = header.AgentCode,
+                    ImInd            = header.ImInd ?? "L",
+                    MillRefNo        = header.MillRefNo,
+                    RateUnit         = header.RateUnit,
+                    ArrivalType      = header.ArrivalType ?? "P",
+                    FinalWeighment   = header.FinalWeighment ?? "S",
+                    BillingAddress   = header.BillingAddress,
+                    DeliveryAddrCode = header.DeliveryAddrCode,
+                    ContactPerson    = header.ContactPerson,
+                    Terms1           = header.Terms1,
+                    Terms1Days       = header.Terms1Days,
+                    Terms2           = header.Terms2,
+                    Terms2Days       = header.Terms2Days,
+                    CreditDays       = header.CreditDays,
+                    InterestPer      = header.InterestPer,
+                    DeliveryTerms    = header.DeliveryTerms,
+                    PerBaleTruck     = header.PerBaleTruck,
+                    Grade            = header.Grade,
+                    Staple           = header.Staple,
+                    Mic              = header.Mic,
+                    Strength         = header.Strength,
+                    Moisture         = header.Moisture,
+                    Trash            = header.Trash,
+                    MillSampleNo     = line.MillSampleNo,
                 },
                 transaction: _uow.Transaction,
                 commandType: System.Data.CommandType.StoredProcedure);
@@ -262,7 +287,7 @@ public class PurchaseOrderRepository : IPurchaseOrderRepository
         await _uow.BeginAsync();
         await _uow.Connection!.ExecuteAsync(
             StoredProcedures.PurchaseOrder.InsertDeliverySchedule,
-            new { ContNo = contNo, ContDt = contDt, DivCode = divCode, DelDate = schedule.DelDate, DelQty = schedule.DelQty, DelAddress = schedule.DelAddress, VarCode = schedule.VarCode, Instruction = schedule.Instruction },
+            new { ContNo = contNo, ContDt = contDt, DivCode = divCode, DelDate = schedule.DelDate, DelQty = schedule.DelQty, DelAddress = schedule.DelAddress, VarCode = schedule.VarCode, Instruction = schedule.Instruction, Weighment = schedule.Weighment },
             commandType: System.Data.CommandType.StoredProcedure);
     }
 
@@ -290,6 +315,24 @@ public class PurchaseOrderRepository : IPurchaseOrderRepository
         await _uow.Connection!.ExecuteAsync(
             StoredProcedures.PurchaseOrder.Delete,
             new { ContNo = contNo, ContDt = contDt, DivCode = divCode, DeleteReasonCode = deleteReasonCode, DeletedBy = deletedBy },
+            commandType: System.Data.CommandType.StoredProcedure);
+    }
+
+    public async Task DeleteLinesForUpdateAsync(decimal contNo, DateTime contDt, string divCode)
+    {
+        await _uow.BeginAsync();
+        await _uow.Connection!.ExecuteAsync(
+            StoredProcedures.PurchaseOrder.DeleteLinesForUpdate,
+            new { ContNo = contNo, ContDt = contDt, DivCode = divCode },
+            commandType: System.Data.CommandType.StoredProcedure);
+    }
+
+    public async Task UndoPRBalanceAsync(string divCode, decimal prNo, DateTime prDate, int prSno, decimal qtyOrdKG)
+    {
+        await _uow.BeginAsync();
+        await _uow.Connection!.ExecuteAsync(
+            StoredProcedures.PurchaseOrder.UpdatePRBalance,
+            new { DivCode = divCode, PrNo = prNo, PrDate = prDate, PrSno = prSno, QtyOrd = 0m, QtyOrdKG = qtyOrdKG },
             commandType: System.Data.CommandType.StoredProcedure);
     }
 

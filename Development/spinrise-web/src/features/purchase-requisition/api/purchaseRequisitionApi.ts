@@ -41,6 +41,11 @@ export interface PRStatusSummary {
   cancelledCount: number
 }
 
+export interface PRNavigationResultDto {
+  prNo:   number
+  prDate: string
+}
+
 export const purchaseRequisitionApi = {
   getSummary: (filters: Omit<PRPaginatedFilters, 'page' | 'pageSize'> = {}) => {
     const params = new URLSearchParams()
@@ -100,5 +105,16 @@ export const purchaseRequisitionApi = {
     if (endDate)   params.set('endDate',   endDate)
     const qs = params.toString()
     return apiHelpers.delete(`${BASE}/${prNo}/lines/${lineNo}${qs ? `?${qs}` : ''}`)
+  },
+
+  getLastRecord: (yfDate: string, ylDate: string) => {
+    const params = new URLSearchParams({ yfDate, ylDate })
+    return apiHelpers.get<PRNavigationResultDto>(`${BASE}/last?${params.toString()}`)
+  },
+
+  navigate: (direction: string, currentPrNo: number | undefined, yfDate: string, ylDate: string) => {
+    const params = new URLSearchParams({ direction, yfDate, ylDate })
+    if (currentPrNo !== undefined) params.set('currentPrNo', String(currentPrNo))
+    return apiHelpers.get<PRNavigationResultDto>(`${BASE}/navigate?${params.toString()}`)
   },
 }

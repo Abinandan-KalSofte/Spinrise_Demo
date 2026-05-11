@@ -1,0 +1,291 @@
+================================================================================
+WORD DOCUMENT FIX PROMPT — Blueprint v1.1 Round 2
+================================================================================
+Document:  SPINRISE_UIDesign_Blueprint_v1.1_FINAL_08May2026.docx
+Prepared:  08 May 2026
+Authority: CEO Review Email (08 May 2026) + R2.0 Consolidated Decision Summary
+Fixes:     7 items — MUST be completed before sending to CEO
+================================================================================
+
+CONTEXT
+-------
+Blueprint v1.1 currently has 3 of 10 CEO-required items complete:
+  ✓ M1 — Add Mode Suppression Rule (Section 5.1.1 + yellow callout in 4.1)
+  ✓ M6 — Cover page "Review In Progress — Sasikumar R"
+  ✓ C1 — Section 7.1 "STATUS: PROPOSED — Pending CEO Decision"
+
+The following 7 items are MISSING or INCORRECT and must be fixed now.
+
+================================================================================
+FIX A — Section 5.4: Replace "Approximate Cost" row with TWO rows (M2)
+================================================================================
+
+Location: Section 5.4 table "Single-Screen Line Items Architecture" (approx Page 8)
+
+FIND this exact row in the table:
+  | Approximate Cost | 2 | ₹ 30,750.00 | Rate + Tax (displayed, not editable) |
+
+DELETE that row entirely.
+
+INSERT TWO new rows in its place:
+
+  ROW 1:
+  | Value | 2 | ₹ 30,368.25 | Quantity × Rate — editable when rate is manually entered, otherwise auto-calculated |
+
+  ROW 2:
+  | Cost (Landed) | 2 | ₹ 30,750.00 | Value + Tax + Insurance + Freight + Other charges — read-only, auto-calculated, shown in grey |
+
+Formatting:
+  - Row 1 "Value": same formatting as other editable rows
+  - Row 2 "Cost (Landed)": cell background light grey to indicate read-only
+
+CEO reason: Item Value and Item Cost are distinct Kalsofte ERP financial fields.
+  Conflating them causes wrong calculations in every SpinRise transaction screen.
+
+Time: 2 minutes
+
+================================================================================
+FIX B — Section 5.4: Update Rate row to DEFERRED status (C2)
+================================================================================
+
+Location: Section 5.4 table, "Rate (Unit Price)" row (same page as Fix A)
+
+FIND this text in the Rate row formula/notes column:
+  User input / Last PO Rate / Avg Rate
+
+REPLACE the content of that cell with:
+  [DEFERRED] Last PO Rate / Avg Rate / Manual Entry (with Justification field) —
+  to be confirmed in Blueprint v1.1 after FSD amendment approved by CEO.
+
+CEO reason: Section 14 already correctly marks rate selection as pending FSD
+  amendment. Section 5.4 must be consistent — implying it is decided creates
+  confusion during development.
+
+Time: 1 minute
+
+================================================================================
+FIX C — Add NEW Section 5.4.1 after Section 5.4 table (M3)
+================================================================================
+
+Location: After the Section 5.4 table, BEFORE Section 5.5
+
+STEP 1: Click at the end of the last row of the Section 5.4 table.
+STEP 2: Press Enter twice to create space after the table.
+STEP 3: Type this heading (format: Bold, 14px, colour #0C447C, same as other subsection headings):
+
+  5.4.1 Multi-Vertical Field Configuration Standard
+
+STEP 4: Press Enter, then type the following body text (13px regular, 1.5 line spacing):
+
+---BEGIN TEXT BLOCK---
+
+CEO Decision (07 May 2026 — Finding #27): Budget Category is the first
+field that differs between SpinRise verticals and establishes the
+multi-vertical configuration architecture pattern for all future modules.
+
+REFERENCE IMPLEMENTATION: Budget Category
+
+  Field Name:      Budget Category
+  Data Type:       Dropdown (values from master table)
+  Visibility Rule: Conditional — displays ONLY when:
+                     • PR Type = Capital (C)  AND
+                     • Division Profile = Paper Mill
+  Mandatory Flag:  Yes (when visible on Paper Mill screens)
+  Hidden:          All other divisions (spinning mills, trading, etc.)
+
+Architecture Pattern:
+This conditional display logic establishes the reference pattern for all
+future vertical-specific fields in SpinRise. All such fields must follow
+this structure:
+  • Visibility rule explicitly documented in Blueprint
+  • Backend configuration table maps field to division + transaction type
+  • Frontend renders conditionally based on logged-in user's division profile
+
+NOTE: Sasi to confirm backend configuration table design before this
+section is finalised and Blueprint is submitted for CEO sign-off.
+
+---END TEXT BLOCK---
+
+STEP 5: Verify formatting:
+  - Heading: Bold, 14px
+  - Body text: 13px regular
+  - Bullet points use • symbol (Alt+0149)
+  - Line spacing: 1.5
+
+Time: 3 minutes
+
+================================================================================
+FIX D — Section 5.5: Add "Add Multiple" row to the table (M5)
+================================================================================
+
+Location: Section 5.5 "Tab Sequence & Mandatory Field" table (approx Page 8)
+
+FIND: The row that mentions "Add Line button" in Section 5.5 table.
+
+INSERT a new row immediately AFTER the "Add Line" row:
+
+  Column 1 (Feature/Action):
+    Add Multiple
+
+  Column 2 (Behaviour/Specification):
+    Opens a combined interaction with two modes — both must be available:
+
+    Mode 1 — Multi-Select Item Lookup (browse users):
+    Opens item search modal. User selects multiple items using checkboxes.
+    Each selected item loads as a separate individual line row in the grid.
+
+    Mode 2 — Quick Row-Count Input (experienced/power users):
+    Prompts for a number (N). Inserts N blank rows. Cursor lands on Item
+    Code field of the first new row. User tabs through to fill each row.
+
+    Named Customer Requirement: Pallvaa Mills, SKS
+    (Requirement originated by Sasi in FSD review — Finding #15 and #16, R2.0)
+
+Formatting: Match existing rows in Section 5.5 table (13px, regular weight).
+
+Time: 2 minutes
+
+================================================================================
+FIX E — Add NEW Section 5.9 — PR List Screen Acknowledgment (M7)
+================================================================================
+
+Location: After Section 5.5 (and after Section 5.4.1 you added above),
+  BEFORE Section 6 begins.
+
+STEP 1: Navigate to the end of Section 5 content.
+STEP 2: Place cursor after the last content in Section 5.
+STEP 3: Press Enter twice to create space.
+STEP 4: Type this heading (format: Bold, 14px, colour #0C447C):
+
+  5.9 PR List Screen — Companion Screen Acknowledgment
+
+STEP 5: Press Enter, then type the following body text (13px regular, 1.5 line spacing):
+
+---BEGIN TEXT BLOCK---
+
+CEO Decision (07 May 2026 — Finding #18): The PR List Screen is a new FSD
+screen requirement accepted by CEO as part of the PR module scope.
+
+COMPANION SCREEN: PR List Screen
+
+A document register screen is required for the Purchase Requisition module.
+This screen displays all PR documents with the following confirmed features:
+  • Approval Status badge column (colour-coded per Section 11 badge standards)
+  • Filter by status
+  • Pagination
+
+Pending items (not yet included in this Blueprint version):
+  • Full column list — Seenivasan and Palanivel's input due Fri 8 May 2026
+    to Mariyaiya. Formal column specification to be added in Blueprint v1.2
+    after FSD amendment is approved and IST column requirements confirmed.
+
+Timeline: List screen specification will be formally included in Blueprint
+v1.2, post Sasi review and CEO final approval of this version.
+
+---END TEXT BLOCK---
+
+STEP 6: Verify formatting (13px body text, bullet points with •, 1.5 line spacing).
+
+Time: 3 minutes
+
+================================================================================
+FIX F — Section 14: Add PR Type Default row to Smart Defaults table (M4)
+================================================================================
+
+Location: Section 14 "Smart Defaults" table (approx Page 19)
+
+FIND the Smart Defaults table. It currently has rows like:
+  | Sample | No |
+  | Date   | Today |
+
+INSERT a new row in that table:
+
+  Column 1 (Parameter):
+    PR Type Default
+
+  Column 2 (Default Value / Rule):
+    Customer / division-configurable at implementation time.
+    Not hardcoded in the application. Set per customer profile during
+    implementation setup. Default value varies by customer and division.
+
+Formatting: Match existing Smart Defaults table rows.
+
+CEO reason: Finding #28 (R2.0) — PR Type default must be configurable per
+  customer and division profile, not hardcoded.
+
+Time: 1 minute
+
+================================================================================
+FIX G — Section 13.1: Remove false "CEO-approved" claim for Ant Design 5 (C3)
+================================================================================
+
+Location: Section 13.1 "Technology Stack Comparison" table (approx Page 17)
+  Row: UI Framework
+
+FIND this text in the Notes/Rationale column of the Ant Design 5 row:
+  CEO-approved; comprehensive component set for ERP
+
+REPLACE with:
+  Current stack — under review for grid component selection. Not explicitly
+  CEO-approved independent of component library decision (see Section 7.1).
+
+CEO reason: Ant Design 5 was not explicitly CEO-approved in the UX review
+  thread — it was the existing stack carried forward. CEO specifically directed
+  the component library comparison to be presented for decision. Claiming
+  CEO approval for an unapproved component is a document control error.
+
+Time: 1 minute
+
+================================================================================
+FINAL VERIFICATION CHECKLIST
+================================================================================
+
+After completing all 7 fixes, verify each section before exporting:
+
+☐ FIX A: Section 5.4 has TWO rows: "Value" (Qty×Rate) and "Cost Landed" (Value+Tax+etc.)
+☐ FIX B: Section 5.4 Rate row says "[DEFERRED] Last PO Rate / Avg Rate / Manual Entry"
+☐ FIX C: Section 5.4.1 exists with Budget Category conditional display rule + architecture pattern
+☐ FIX D: Section 5.5 table has "Add Multiple" row with both interaction modes + customer names
+☐ FIX E: Section 5.9 exists with PR List Screen acknowledgment and pending column note
+☐ FIX F: Section 14 Smart Defaults table has "PR Type Default — customer/division configurable"
+☐ FIX G: Section 13.1 Ant Design row says "Current stack — under review" (no CEO-approved claim)
+
+PLUS confirm existing completed fixes still intact:
+☐ M1: Section 5.1.1 "Add Mode Display Rule" exists with complete text block
+☐ M1: Yellow callout box present in Section 4.1 referencing Section 5.1.1
+☐ M6: Cover page shows "Review In Progress — Sasikumar R"
+☐ C1: Section 7.1 shows "STATUS: PROPOSED — Pending CEO Decision (Fri 8 May 2026)"
+☐ Version: All instances show "Version 1.1"
+
+Total checks: 12
+
+================================================================================
+EXPORT & SUBMIT INSTRUCTIONS
+================================================================================
+
+After all 7 fixes and verification:
+
+STEP 1: Save as Word
+  File → Save As → SPINRISE_UIDesign_Blueprint_v1.1_FINAL_08May2026.docx
+  (overwrite the existing file)
+
+STEP 2: Export as PDF
+  File → Export → Create PDF/XPS
+  Filename: SPINRISE_UIDesign_Blueprint_v1.1_FINAL_08May2026.pdf
+  (overwrite the existing PDF)
+
+STEP 3: Share with Abinandan for final PDF validation before CEO submission
+
+================================================================================
+TOTAL ESTIMATED TIME: 13 minutes
+================================================================================
+
+Priority order for completion:
+  Fix A + B (Section 5.4) — do together, same table — 3 min
+  Fix C (Section 5.4.1) — directly after — 3 min
+  Fix D (Section 5.5) — 2 min
+  Fix E (Section 5.9) — 3 min
+  Fix F (Section 14) — 1 min
+  Fix G (Section 13.1) — 1 min
+  Export — 1 min
+================================================================================

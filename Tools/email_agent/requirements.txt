@@ -1,0 +1,12 @@
+watchdog>=4.0.0
+
+# Pick ONE provider — install only what you need:
+
+# Google Gemini (free — recommended):
+google-genai>=1.0.0
+
+# Anthropic Claude (paid):
+# anthropic>=0.40.0
+
+# Ollama: no pip package needed — uses Python built-in urllib
+# Install Ollama from https://ollama.com, then: ollama pull llama3.2

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Spinrise.Application.Areas.Common.Lookup.DTOs;
 using Spinrise.Application.Areas.Common.Lookup.Interfaces;
 using Spinrise.Shared;
 
@@ -63,6 +64,22 @@ public class LookupController : BaseApiController
             "Items retrieved successfully.");
     }
 
+    [HttpGet("items/paginated")]
+    public async Task<IActionResult> GetItemsPaginated(
+        [FromQuery] string? search   = null,
+        [FromQuery] string? depCode  = null,
+        [FromQuery] int     page     = 1,
+        [FromQuery] int     pageSize = 50)
+    {
+        if (page < 1)     page     = 1;
+        if (pageSize < 1) pageSize = 50;
+        if (pageSize > 200) pageSize = 200;
+
+        var divCode = RequireDivCode();
+        var result  = await _service.GetItemsPaginatedAsync(divCode, search?.Trim(), depCode?.Trim(), page, pageSize);
+        return Success(result, "Items retrieved successfully.");
+    }
+
     [HttpGet("machines")]
     public async Task<IActionResult> GetMachines([FromQuery] string? depCode = null)
     {
@@ -114,5 +131,41 @@ public class LookupController : BaseApiController
     public async Task<IActionResult> GetCurrencies()
     {
         return Success(await _service.GetCurrenciesAsync(), "Currencies retrieved successfully.");
+    }
+
+    [HttpGet("rate-units")]
+    public async Task<IActionResult> GetRateUnits()
+    {
+        return Success(await _service.GetRateUnitsAsync(), "Rate units retrieved successfully.");
+    }
+
+    [HttpGet("weighments")]
+    public async Task<IActionResult> GetWeighments()
+    {
+        return Success(await _service.GetWeighmentsAsync(), "Weighments retrieved successfully.");
+    }
+
+    [HttpGet("agents")]
+    public async Task<IActionResult> SearchAgents([FromQuery] string term = "")
+    {
+        var t = term.Trim();
+        if (t.Length < 2)
+            return Success(Array.Empty<AgentLookupDto>(), "Agents retrieved successfully.");
+        return Success(await _service.SearchAgentsAsync(t), "Agents retrieved successfully.");
+    }
+
+    [HttpGet("employees/search")]
+    public async Task<IActionResult> SearchEmployees([FromQuery] string term = "")
+    {
+        var t = term.Trim();
+        if (t.Length < 2)
+            return Success(Array.Empty<EmployeeRMILookupDto>(), "Employees retrieved successfully.");
+        return Success(await _service.SearchEmployeesAsync(t), "Employees retrieved successfully.");
+    }
+
+    [HttpGet("tax-codes")]
+    public async Task<IActionResult> GetActiveTaxCodes()
+    {
+        return Success(await _service.GetActiveTaxCodesAsync(), "Tax codes retrieved successfully.");
     }
 }

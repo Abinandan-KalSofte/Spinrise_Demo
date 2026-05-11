@@ -59,6 +59,29 @@ public class LookupRepository : ILookupRepository
             commandTimeout: 15);  // 15s timeout for items lookup
     }
 
+    public async Task<PagedResult<ItemLookupDto>> GetItemsPaginatedAsync(
+        string divCode, string? search, string? depCode, int page, int pageSize)
+    {
+        var connection = _uow.Connection ?? throw new InvalidOperationException(ConnectionNotInitializedMessage);
+        using var multi = await connection.QueryMultipleAsync(
+            StoredProcedures.Lookup.GetItemsPaginated,
+            new { DivCode = divCode, SearchTerm = search?.Trim(), DepCode = depCode, Page = page, PageSize = pageSize },
+            transaction:    _uow.Transaction,
+            commandType:    CommandType.StoredProcedure,
+            commandTimeout: 15);
+
+        var totalCount = await multi.ReadFirstAsync<int>();
+        var items      = (await multi.ReadAsync<ItemLookupDto>()).ToList();
+
+        return new PagedResult<ItemLookupDto>
+        {
+            Items      = items,
+            TotalCount = totalCount,
+            Page       = page,
+            PageSize   = pageSize,
+        };
+    }
+
     public async Task<IEnumerable<MachineLookupDto>> GetMachinesAsync(string divCode, string? depCode = null)
     {
         var connection = _uow.Connection ?? throw new InvalidOperationException(ConnectionNotInitializedMessage);
@@ -142,6 +165,53 @@ public class LookupRepository : ILookupRepository
         var connection = _jatUow.Connection ?? throw new InvalidOperationException(ConnectionNotInitializedMessage);
         return await connection.QueryAsync<CurrencyLookupDto>(
             StoredProcedures.Lookup.GetCurrencies,
+            transaction: _jatUow.Transaction,
+            commandType: CommandType.StoredProcedure);
+    }
+
+    public async Task<IEnumerable<RateUnitLookupDto>> GetRateUnitsAsync()
+    {
+        var connection = _jatUow.Connection ?? throw new InvalidOperationException(ConnectionNotInitializedMessage);
+        return await connection.QueryAsync<RateUnitLookupDto>(
+            StoredProcedures.Lookup.GetRateUnits,
+            transaction: _jatUow.Transaction,
+            commandType: CommandType.StoredProcedure);
+    }
+
+    public async Task<IEnumerable<WeighmentLookupDto>> GetWeighmentsAsync()
+    {
+        var connection = _jatUow.Connection ?? throw new InvalidOperationException(ConnectionNotInitializedMessage);
+        return await connection.QueryAsync<WeighmentLookupDto>(
+            StoredProcedures.Lookup.GetWeighments,
+            transaction: _jatUow.Transaction,
+            commandType: CommandType.StoredProcedure);
+    }
+
+    public async Task<IEnumerable<AgentLookupDto>> SearchAgentsAsync(string term)
+    {
+        var connection = _jatUow.Connection ?? throw new InvalidOperationException(ConnectionNotInitializedMessage);
+        return await connection.QueryAsync<AgentLookupDto>(
+            StoredProcedures.Lookup.SearchAgents,
+            new { Term = term },
+            transaction: _jatUow.Transaction,
+            commandType: CommandType.StoredProcedure);
+    }
+
+    public async Task<IEnumerable<EmployeeRMILookupDto>> SearchEmployeesAsync(string term)
+    {
+        var connection = _jatUow.Connection ?? throw new InvalidOperationException(ConnectionNotInitializedMessage);
+        return await connection.QueryAsync<EmployeeRMILookupDto>(
+            StoredProcedures.Lookup.SearchEmployees,
+            new { Term = term },
+            transaction: _jatUow.Transaction,
+            commandType: CommandType.StoredProcedure);
+    }
+
+    public async Task<IEnumerable<TaxCodeLookupDto>> GetActiveTaxCodesAsync()
+    {
+        var connection = _jatUow.Connection ?? throw new InvalidOperationException(ConnectionNotInitializedMessage);
+        return await connection.QueryAsync<TaxCodeLookupDto>(
+            StoredProcedures.Lookup.GetActiveTaxCodes,
             transaction: _jatUow.Transaction,
             commandType: CommandType.StoredProcedure);
     }

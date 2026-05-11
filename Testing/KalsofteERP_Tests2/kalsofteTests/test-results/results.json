@@ -1,0 +1,423 @@
+{
+  "config": {
+    "configFile": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\playwright.config.ts",
+    "rootDir": "D:/Spinrise/Testing/KalsofteERP_Tests2/kalsofteTests/tests",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/Spinrise/Testing/KalsofteERP_Tests2/kalsofteTests/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "Chromium",
+        "name": "Chromium",
+        "testDir": "D:/Spinrise/Testing/KalsofteERP_Tests2/kalsofteTests/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "playwright-report",
+          "open": "never"
+        }
+      ],
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.59.1",
+    "workers": 8,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "kalsofte.spec.ts",
+      "file": "kalsofte.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Authentication",
+          "file": "kalsofte.spec.ts",
+          "line": 9,
+          "column": 6,
+          "specs": [
+            {
+              "title": "TC-01 | Login with valid credentials should reach dashboard",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Chromium",
+                  "projectName": "Chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 7431,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mfalse\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mfalse\u001b[39m\n    at D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\tests\\kalsofte.spec.ts:28:30",
+                        "location": {
+                          "file": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\tests\\kalsofte.spec.ts",
+                          "column": 30,
+                          "line": 28
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 26 |\u001b[39m\n \u001b[90m 27 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mscreenshot({ path\u001b[33m:\u001b[39m \u001b[32m'test-results/screenshots/tc01-dashboard.png'\u001b[39m })\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m     expect(dashboardVisible)\u001b[33m.\u001b[39mtoBeTruthy()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m'✅ TC-01 PASSED: Login with valid credentials successful'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 30 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\tests\\kalsofte.spec.ts",
+                            "column": 30,
+                            "line": 28
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mfalse\u001b[39m\n\n\u001b[0m \u001b[90m 26 |\u001b[39m\n \u001b[90m 27 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mscreenshot({ path\u001b[33m:\u001b[39m \u001b[32m'test-results/screenshots/tc01-dashboard.png'\u001b[39m })\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m     expect(dashboardVisible)\u001b[33m.\u001b[39mtoBeTruthy()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m'✅ TC-01 PASSED: Login with valid credentials successful'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 30 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m\u001b[0m\n\u001b[2m    at D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\tests\\kalsofte.spec.ts:28:30\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-11T12:05:24.819Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\test-results\\kalsofte-Authentication-TC-d0268-ials-should-reach-dashboard-Chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\test-results\\kalsofte-Authentication-TC-d0268-ials-should-reach-dashboard-Chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\test-results\\kalsofte-Authentication-TC-d0268-ials-should-reach-dashboard-Chromium\\error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\test-results\\kalsofte-Authentication-TC-d0268-ials-should-reach-dashboard-Chromium\\trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\tests\\kalsofte.spec.ts",
+                        "column": 30,
+                        "line": 28
+                      }
+                    },
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 3808,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mfalse\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mfalse\u001b[39m\n    at D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\tests\\kalsofte.spec.ts:28:30",
+                        "location": {
+                          "file": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\tests\\kalsofte.spec.ts",
+                          "column": 30,
+                          "line": 28
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 26 |\u001b[39m\n \u001b[90m 27 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mscreenshot({ path\u001b[33m:\u001b[39m \u001b[32m'test-results/screenshots/tc01-dashboard.png'\u001b[39m })\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m     expect(dashboardVisible)\u001b[33m.\u001b[39mtoBeTruthy()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m'✅ TC-01 PASSED: Login with valid credentials successful'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 30 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\tests\\kalsofte.spec.ts",
+                            "column": 30,
+                            "line": 28
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mfalse\u001b[39m\n\n\u001b[0m \u001b[90m 26 |\u001b[39m\n \u001b[90m 27 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mscreenshot({ path\u001b[33m:\u001b[39m \u001b[32m'test-results/screenshots/tc01-dashboard.png'\u001b[39m })\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m     expect(dashboardVisible)\u001b[33m.\u001b[39mtoBeTruthy()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m'✅ TC-01 PASSED: Login with valid credentials successful'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 30 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m\u001b[0m\n\u001b[2m    at D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\tests\\kalsofte.spec.ts:28:30\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 1,
+                      "startTime": "2026-05-11T12:06:02.477Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\test-results\\kalsofte-Authentication-TC-d0268-ials-should-reach-dashboard-Chromium-retry1\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\test-results\\kalsofte-Authentication-TC-d0268-ials-should-reach-dashboard-Chromium-retry1\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\test-results\\kalsofte-Authentication-TC-d0268-ials-should-reach-dashboard-Chromium-retry1\\error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\test-results\\kalsofte-Authentication-TC-d0268-ials-should-reach-dashboard-Chromium-retry1\\trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\tests\\kalsofte.spec.ts",
+                        "column": 30,
+                        "line": 28
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7948481dae3fcdafa322-13df63a066a9c3159a24",
+              "file": "kalsofte.spec.ts",
+              "line": 11,
+              "column": 7
+            },
+            {
+              "title": "TC-02 | Login with wrong password should show error",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Chromium",
+                  "projectName": "Chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1960,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ TC-02 PASSED: Wrong password correctly rejected\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-11T12:06:07.532Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\test-results\\kalsofte-Authentication-TC-90021--password-should-show-error-Chromium\\test-finished-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\test-results\\kalsofte-Authentication-TC-90021--password-should-show-error-Chromium\\video.webm"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\test-results\\kalsofte-Authentication-TC-90021--password-should-show-error-Chromium\\trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "7948481dae3fcdafa322-07f366f5478c87c7c0a8",
+              "file": "kalsofte.spec.ts",
+              "line": 33,
+              "column": 7
+            },
+            {
+              "title": "TC-03 | Logout should return to login page",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Chromium",
+                  "projectName": "Chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 12291,
+                      "error": {
+                        "message": "TimeoutError: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('a:has-text(\"Logout\"), button:has-text(\"Logout\"), a:has-text(\"Sign Out\")').first() to be visible\u001b[22m\n",
+                        "stack": "TimeoutError: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('a:has-text(\"Logout\"), button:has-text(\"Logout\"), a:has-text(\"Sign Out\")').first() to be visible\u001b[22m\n\n    at D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\tests\\kalsofte.spec.ts:93:21",
+                        "location": {
+                          "file": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\tests\\kalsofte.spec.ts",
+                          "column": 21,
+                          "line": 93
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 91 |\u001b[39m\n \u001b[90m 92 |\u001b[39m     \u001b[36mconst\u001b[39m logoutBtn \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(config\u001b[33m.\u001b[39mselectors\u001b[33m.\u001b[39mlogoutButton)\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 93 |\u001b[39m     \u001b[36mawait\u001b[39m logoutBtn\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                     \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 94 |\u001b[39m     \u001b[36mawait\u001b[39m logoutBtn\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m 95 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForLoadState(\u001b[32m'networkidle'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 96 |\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\tests\\kalsofte.spec.ts",
+                            "column": 21,
+                            "line": 93
+                          },
+                          "message": "TimeoutError: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('a:has-text(\"Logout\"), button:has-text(\"Logout\"), a:has-text(\"Sign Out\")').first() to be visible\u001b[22m\n\n\n\u001b[0m \u001b[90m 91 |\u001b[39m\n \u001b[90m 92 |\u001b[39m     \u001b[36mconst\u001b[39m logoutBtn \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(config\u001b[33m.\u001b[39mselectors\u001b[33m.\u001b[39mlogoutButton)\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 93 |\u001b[39m     \u001b[36mawait\u001b[39m logoutBtn\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                     \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 94 |\u001b[39m     \u001b[36mawait\u001b[39m logoutBtn\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m 95 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForLoadState(\u001b[32m'networkidle'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 96 |\u001b[39m\u001b[0m\n\u001b[2m    at D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\tests\\kalsofte.spec.ts:93:21\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-11T12:06:09.924Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\test-results\\kalsofte-Authentication-TC-9946f-should-return-to-login-page-Chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\test-results\\kalsofte-Authentication-TC-9946f-should-return-to-login-page-Chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\test-results\\kalsofte-Authentication-TC-9946f-should-return-to-login-page-Chromium\\error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\test-results\\kalsofte-Authentication-TC-9946f-should-return-to-login-page-Chromium\\trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\tests\\kalsofte.spec.ts",
+                        "column": 21,
+                        "line": 93
+                      }
+                    },
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 12066,
+                      "error": {
+                        "message": "TimeoutError: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('a:has-text(\"Logout\"), button:has-text(\"Logout\"), a:has-text(\"Sign Out\")').first() to be visible\u001b[22m\n",
+                        "stack": "TimeoutError: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('a:has-text(\"Logout\"), button:has-text(\"Logout\"), a:has-text(\"Sign Out\")').first() to be visible\u001b[22m\n\n    at D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\tests\\kalsofte.spec.ts:93:21",
+                        "location": {
+                          "file": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\tests\\kalsofte.spec.ts",
+                          "column": 21,
+                          "line": 93
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 91 |\u001b[39m\n \u001b[90m 92 |\u001b[39m     \u001b[36mconst\u001b[39m logoutBtn \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(config\u001b[33m.\u001b[39mselectors\u001b[33m.\u001b[39mlogoutButton)\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 93 |\u001b[39m     \u001b[36mawait\u001b[39m logoutBtn\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                     \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 94 |\u001b[39m     \u001b[36mawait\u001b[39m logoutBtn\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m 95 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForLoadState(\u001b[32m'networkidle'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 96 |\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\tests\\kalsofte.spec.ts",
+                            "column": 21,
+                            "line": 93
+                          },
+                          "message": "TimeoutError: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('a:has-text(\"Logout\"), button:has-text(\"Logout\"), a:has-text(\"Sign Out\")').first() to be visible\u001b[22m\n\n\n\u001b[0m \u001b[90m 91 |\u001b[39m\n \u001b[90m 92 |\u001b[39m     \u001b[36mconst\u001b[39m logoutBtn \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(config\u001b[33m.\u001b[39mselectors\u001b[33m.\u001b[39mlogoutButton)\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 93 |\u001b[39m     \u001b[36mawait\u001b[39m logoutBtn\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                     \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 94 |\u001b[39m     \u001b[36mawait\u001b[39m logoutBtn\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m 95 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForLoadState(\u001b[32m'networkidle'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 96 |\u001b[39m\u001b[0m\n\u001b[2m    at D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\tests\\kalsofte.spec.ts:93:21\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 1,
+                      "startTime": "2026-05-11T12:06:23.757Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\test-results\\kalsofte-Authentication-TC-9946f-should-return-to-login-page-Chromium-retry1\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\test-results\\kalsofte-Authentication-TC-9946f-should-return-to-login-page-Chromium-retry1\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\test-results\\kalsofte-Authentication-TC-9946f-should-return-to-login-page-Chromium-retry1\\error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\test-results\\kalsofte-Authentication-TC-9946f-should-return-to-login-page-Chromium-retry1\\trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "D:\\Spinrise\\Testing\\KalsofteERP_Tests2\\kalsofteTests\\tests\\kalsofte.spec.ts",
+                        "column": 21,
+                        "line": 93
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7948481dae3fcdafa322-cc3161b388888e2d8f54",
+              "file": "kalsofte.spec.ts",
+              "line": 88,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-05-11T12:05:24.310Z",
+    "duration": 72359.1,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  }
+}

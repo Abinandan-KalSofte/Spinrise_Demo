@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc *)",
+      "Bash(Get-ChildItem *)",
+      "Bash(npm run *)",
+      "PowerShell($lines = \\(Get-Content \"D:\\\\Spinrise\\\\Development\\\\Backend\\\\Spinrise.DBScripts\\\\merged.sql\"\\).Count; Write-Host \"Total lines: $lines\")",
+      "Bash(grep -n \"^GO$\" \"D:\\\\Spinrise\\\\Development\\\\Backend\\\\Spinrise.DBScripts\\\\merged.sql\")",
+      "Bash(awk -F: '$2 > 2950')"
+    ]
+  }
+}

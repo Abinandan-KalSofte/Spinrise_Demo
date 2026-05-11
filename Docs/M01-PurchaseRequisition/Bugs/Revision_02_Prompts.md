@@ -57,7 +57,7 @@ H2 → H1+H3 → E7 → E6 → E1 → E2+E3 → E4 → G1 → G2 → S1
     >
       {prNoText}
     </Tag>
-    <Typography.Text type="secondary" style={{ fontSize: 11 }}>Click to copy</Typography.Text>
+    {/*<Typography.Text type="secondary" style={{ fontSize: 11 }}>Click to copy</Typography.Text> */}
   </div>
 )}
 ```

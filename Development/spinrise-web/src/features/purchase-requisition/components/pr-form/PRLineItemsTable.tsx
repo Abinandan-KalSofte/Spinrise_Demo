@@ -1,364 +1,502 @@
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
-import { AgGridReact } from 'ag-grid-react'
-import type { ColDef, GridApi, GridReadyEvent, ICellRendererParams, CellStyle } from 'ag-grid-community'
-import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community'
-import { spinriseGridTheme } from '@/shared/lib/agGridTheme'
-import { generateUUID } from '@/shared/lib/uuid'
+/**
+ * PRLineItemsTable — REFACTORED
+ * Enterprise Grid Architecture:
+ * - View Mode: Text-only rows (read-only display)
+ * - Row Edit Mode: Only active row editable, others show text
+ * - New Row Mode: Trailing row for adding new items
+ * - Compact density, sticky headers/footers, optimized keyboard workflow
+ */
+
 import {
-  Alert, Button, Checkbox, Col, DatePicker, Drawer, Empty, Form, Input,
-  InputNumber, Modal, Popconfirm, Row, Select, Space, Spin,
-  Table, Tag, Tooltip, Typography,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+  memo,
+} from 'react'
+import {
+  Button, Checkbox, DatePicker, Drawer, Empty, Input, InputNumber,
+  type InputRef, Modal, Select, Space, Spin, Tag, Table, Tooltip, Typography,
 } from 'antd'
 import {
-  AppstoreOutlined, ClockCircleOutlined, DeleteOutlined, EditOutlined,
-  FileAddOutlined, HistoryOutlined, PlusOutlined,
+  DeleteOutlined, EyeOutlined, HistoryOutlined, SearchOutlined, ClockCircleOutlined,
 } from '@ant-design/icons'
+import { ItemPickerModal } from './ItemPickerModal'
 import dayjs from 'dayjs'
-import type { Dayjs } from 'dayjs'
-import { lookupApi } from '@/shared/lookup/api/lookupApi'
 import { purchaseRequisitionApi } from '../../api/purchaseRequisitionApi'
+import { getFYBounds } from '@/shared/lib/dateUtils'
 import { useLookupStore } from '../../store/useLookupStore'
-import type { ItemLookup, MachineLookup, PRItemHistoryDto, PRLineFormItem, PreCheckResult } from '../../types'
-
-ModuleRegistry.registerModules([AllCommunityModule])
+import { generateUUID } from '@/shared/lib/uuid'
+import type {
+  ItemLookup, MachineLookup, PRItemHistoryDto, PRLineFormItem, PreCheckResult,
+} from '../../types'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
-
-interface ItemSelectOption { value: string; label: string; _item: ItemLookup }
-
-interface EntryFormValues {
-  itemCode:     string
-  qtyRequired:  number
-  rate:         number | null
-  requiredDate: Dayjs | null
-  remarks:      string
-  machineNo:    string | null
-  subCostCode:  number | null
-  drawNo:       string
-  catNo:        string
-  place:        string
-  isSample:     boolean
-}
 
 export interface PRLineItemsTableHandle {
   flushEdit: () => Promise<void>
 }
 
 interface PRLineItemsTableProps {
-  items:          PRLineFormItem[]
-  machines:       MachineLookup[]
-  depCode:        string
-  prDate?:        string
+  items:           PRLineFormItem[]
+  machines:        MachineLookup[]
+  depCode:         string
+  prDate?:         string
   preCheckResult?: PreCheckResult | null
-  disabled:       boolean
-  savedPrNo?:     number
-  deleteReasons?: { reasonCode: string; reasonDesc: string }[]
-  onAdd:          (item: PRLineFormItem) => void
-  onUpdate:       (item: PRLineFormItem) => void
-  onDelete:       (key: string) => void
-  onWarning?:     (msg: string) => void
+  disabled:        boolean
+  savedPrNo?:      number
+  deleteReasons?:  { reasonCode: string; reasonDesc: string }[]
+  onAdd:           (item: PRLineFormItem) => void
+  onUpdate:        (item: PRLineFormItem) => void
+  onDelete:        (key: string) => void
+  onWarning?:      (msg: string) => void
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// ── Constants ──────────────────────────────────────────────────────────────────
 
-function emptyRow(): PRLineFormItem {
+const CELL_PADDING = '4px 6px'
+const ROW_HEIGHT = '28px'
+
+const TH: React.CSSProperties = {
+  padding: '6px 8px',
+  fontSize: 10,
+  fontWeight: 700,
+  textTransform: 'uppercase',
+  letterSpacing: '0.06em',
+  color: '#64748b',
+  background: '#f8fafc',
+  borderBottom: '2px solid #e2e8f0',
+  whiteSpace: 'nowrap',
+  position: 'sticky',
+  top: 0,
+  zIndex: 10,
+}
+
+const TD: React.CSSProperties = {
+  padding: CELL_PADDING,
+  verticalAlign: 'middle',
+  borderBottom: '1px solid #f0f0f0',
+  height: ROW_HEIGHT,
+}
+
+const TD_TEXT: React.CSSProperties = {
+  ...TD,
+  fontSize: 11,
+  color: '#1e293b',
+}
+
+
+// ── Helpers ────────────────────────────────────────────────────────────────────
+
+function makeEmptyRow(): PRLineFormItem {
   return {
     key: generateUUID(),
     itemCode: '', itemName: '', uom: '',
-    currentStock: null, minLevel: null, qtyRequired: 1, requiredDate: null,
+    currentStock: null, minLevel: null, qtyRequired: 0, requiredDate: null,
     place: '', approxCost: null, remarks: '', machineNo: '',
     costCentreCode: '', budgetGroupCode: '', subCostCode: null,
-    isSample: true, lastPoRate: null, lastPoDate: null,
+    isSample: false, lastPoRate: null, lastPoDate: null,
     lastPoSupplierCode: null, lastPoSupplierName: null,
     categoryCode: '', model: '', maxCost: null, rate: null,
     drawNo: '', catNo: '',
   }
 }
 
-const CELL: CellStyle = { display: 'flex', alignItems: 'center' }
-
-// ── Input style helpers ───────────────────────────────────────────────────────
-
-const LABEL_STYLE: React.CSSProperties = {
-  fontWeight:    700,
-  fontSize:      11,
-  textTransform: 'uppercase',
-  letterSpacing: '0.04em',
+function calcApproxCost(rate: number | null, qty: number): number {
+  if (!rate || rate <= 0) return 0
+  return parseFloat((rate * qty).toFixed(4))
 }
 
-// ── Component ─────────────────────────────────────────────────────────────────
+// ── Cell Renderers ────────────────────────────────────────────────────────────
 
-export const PRLineItemsTable = forwardRef<PRLineItemsTableHandle, PRLineItemsTableProps>(function PRLineItemsTable({
-  items, machines, depCode, prDate, preCheckResult, disabled,
+interface ReadOnlyCellProps {
+  value?: any
+  type?: 'text' | 'number' | 'currency' | 'date'
+  precision?: number
+  placeholder?: string
+}
+
+function ReadOnlyCell({ value, type = 'text', precision = 3, placeholder: _placeholder }: ReadOnlyCellProps) {
+  if (value === null || value === undefined || value === '') {
+    return <span style={{ color: '#d1d5db' }}>—</span>
+  }
+
+  switch (type) {
+    case 'number':
+      return <span style={{ fontVariantNumeric: 'tabular-nums' }}>{Number(value).toFixed(precision)}</span>
+    case 'currency':
+      return <span style={{ fontVariantNumeric: 'tabular-nums', textAlign: 'right', display: 'block' }}>
+        ₹ {Number(value).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      </span>
+    case 'date':
+      return <span>{value ? dayjs(value).format('DD/MM/YY') : '—'}</span>
+    default:
+      return <span style={{ color: '#1e293b' }}>{value}</span>
+  }
+}
+
+// ── Read-Only Row Renderer ─────────────────────────────────────────────────────
+
+interface ReadOnlyRowProps {
+  row: PRLineFormItem
+  idx: number
+  machines: MachineLookup[]
+  subCosts: { sccCode: number; sccName: string }[]
+  onView: (row: PRLineFormItem) => void
+}
+
+const ReadOnlyRow = memo(({ row, idx, machines, subCosts, onView }: ReadOnlyRowProps) => {
+  const approxCost = (() => {
+    const r = row.rate && row.rate > 0 ? row.rate : (row.lastPoRate ?? 0)
+    return r * row.qtyRequired
+  })()
+  const machineLabel = machines.find((m) => m.macNo === row.machineNo)?.description
+  const subCostLabel = row.subCostName || subCosts.find((s) => s.sccCode === row.subCostCode)?.sccName
+
+  return (
+    <>
+      <td style={{ ...TD_TEXT, width: 30, textAlign: 'center', color: '#94a3b8' }}>{idx + 1}</td>
+      <td style={{ ...TD_TEXT, width: 88, fontFamily: 'monospace', fontWeight: 700 }}>{row.itemCode}</td>
+      <td style={{ ...TD_TEXT, minWidth: 150 }}>
+        <div>{row.itemName}</div>
+        {row.itemGroup && <div style={{ fontSize: 9, color: '#888', marginTop: 1 }}>{row.itemGroup}</div>}
+      </td>
+      <td style={{ ...TD_TEXT, width: 46, textAlign: 'center' }}><ReadOnlyCell value={row.uom} /></td>
+      <td style={{ ...TD_TEXT, width: 82, textAlign: 'right' }}><ReadOnlyCell value={row.qtyRequired} type="number" precision={3} /></td>
+      <td style={{ ...TD_TEXT, width: 118, textAlign: 'right' }}><ReadOnlyCell value={row.rate} type="number" precision={4} /></td>
+      <td style={{ ...TD_TEXT, width: 130, textAlign: 'right' }}><ReadOnlyCell value={approxCost} type="currency" /></td>
+      <td style={{ ...TD_TEXT, width: 148 }}><ReadOnlyCell value={row.requiredDate} type="date" /></td>
+      <td style={{ ...TD_TEXT, width: 120, fontSize: 10 }}><ReadOnlyCell value={machineLabel} /></td>
+      <td style={{ ...TD_TEXT, width: 140, fontSize: 10 }}><ReadOnlyCell value={subCostLabel} /></td>
+      <td style={{ ...TD_TEXT, minWidth: 110, fontSize: 10, maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        <ReadOnlyCell value={row.remarks} />
+      </td>
+      <td style={{ ...TD_TEXT, width: 52, textAlign: 'center' }}>{row.isSample ? '✓' : ''}</td>
+      <td style={{ ...TD_TEXT, width: 60, textAlign: 'center' }}>
+        <Tooltip title="View Details">
+          <Button type="text" size="small" icon={<EyeOutlined style={{ color: '#7c3aed', fontSize: 12 }} />} onClick={() => onView(row)} />
+        </Tooltip>
+      </td>
+    </>
+  )
+}, (prev, next) => prev.row === next.row && prev.idx === next.idx)
+ReadOnlyRow.displayName = 'ReadOnlyRow'
+
+// ── Editable Row Renderer ──────────────────────────────────────────────────────
+
+interface EditableRowProps {
+  row: PRLineFormItem
+  idx: number
+  machines: MachineLookup[]
+  subCosts: { sccCode: number; sccName: string }[]
+  qtyError: boolean
+  isLast: boolean
+  onUpdate: (field: keyof PRLineFormItem, value: any) => void
+  onView: (row: PRLineFormItem) => void
+  onDelete: () => void
+  onHistory: () => void
+}
+
+const EditableRow = memo(({ row, idx, machines, subCosts, qtyError, isLast, onUpdate, onView, onDelete, onHistory }: EditableRowProps) => {
+  const approxCost = (() => {
+    const r = row.rate && row.rate > 0 ? row.rate : (row.lastPoRate ?? 0)
+    return r * row.qtyRequired
+  })()
+
+  const subCostOpts = useMemo(() => subCosts.map((s) => ({ value: s.sccCode, label: `${s.sccCode} – ${s.sccName}` })), [subCosts])
+  const machineOpts = useMemo(() => machines.map((m) => ({ value: m.macNo, label: `${m.macNo} – ${m.description}` })), [machines])
+  const deleteDisable = isLast
+  const deleteTip = isLast ? 'At least one line item is required' : 'Delete line'
+
+  const minL = row.minLevel ?? 0
+  const qtyTooltip = qtyError
+    ? minL > 0
+      ? `Qty must exceed min level (${Number(minL).toFixed(3)})`
+      : 'Qty must be greater than 0'
+    : ''
+
+  return (
+    <>
+      <td style={{ ...TD, width: 30, textAlign: 'center', color: '#94a3b8' }}>{idx + 1}</td>
+      <td style={{ ...TD, width: 88, fontFamily: 'monospace', fontWeight: 700, color: '#1e293b' }}>{row.itemCode}</td>
+      <td style={{ ...TD, minWidth: 150, fontSize: 11, color: '#1e293b' }}>
+        <div>{row.itemName}</div>
+        {row.itemGroup && <div style={{ fontSize: 9, color: '#888' }}>{row.itemGroup}</div>}
+      </td>
+      <td style={{ ...TD, width: 46, textAlign: 'center' }}>
+        {row.uom ? <Tag style={{ fontSize: 11, margin: 0, padding: '0 4px' }}>{row.uom}</Tag> : <span style={{ color: '#d1d5db' }}>—</span>}
+      </td>
+      <td style={{ ...TD, width: 82 }} data-qty-for={row.key}>
+        <Tooltip title={qtyTooltip} open={qtyError} color="#ff4d4f">
+          <InputNumber
+            size="small"
+            value={row.qtyRequired}
+            min={0}
+            precision={3}
+            style={{ width: '100%', height: '24px' }}
+            status={qtyError ? 'error' : undefined}
+            onChange={(v) => onUpdate('qtyRequired', v ?? 0)}
+            onBlur={(e) => {
+              if (!qtyError) return
+              const related = e.relatedTarget as HTMLElement | null
+              // Allow: any button, Ant Design dropdowns, modal content
+              if (
+                related?.tagName === 'BUTTON' ||
+                related?.closest('button') ||
+                related?.closest('.ant-modal-content') ||
+                related?.closest('.ant-select-dropdown') ||
+                related?.closest('.ant-picker-dropdown')
+              ) return
+              const input = e.target as HTMLInputElement
+              requestAnimationFrame(() => input.focus())
+            }}
+          />
+        </Tooltip>
+      </td>
+      <td style={{ ...TD, width: 118 }}>
+        <Space.Compact style={{ width: '100%' }}>
+          <InputNumber
+            size="small"
+            value={row.rate}
+            min={0}
+            precision={4}
+            style={{ width: '100%', height: '24px' }}
+            onChange={(v) => onUpdate('rate', v ?? null)}
+          />
+          <Tooltip title="Rate History">
+            <Button size="small" icon={<HistoryOutlined style={{ fontSize: 11 }} />} onClick={onHistory} />
+          </Tooltip>
+        </Space.Compact>
+      </td>
+      <td style={{ ...TD, width: 130, textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 600 }}>
+        {approxCost > 0 ? `₹ ${approxCost.toLocaleString('en-IN', { minimumFractionDigits: 2 })}` : <span style={{ color: '#d1d5db' }}>—</span>}
+      </td>
+      <td style={{ ...TD, width: 148 }}>
+        <DatePicker
+          size="small"
+          value={row.requiredDate ? dayjs(row.requiredDate) : null}
+          format="DD/MM/YYYY"
+          style={{ width: '100%', height: '24px' }}
+          onChange={(d) => onUpdate('requiredDate', d ? d.format('YYYY-MM-DD') : null)}
+        />
+      </td>
+      <td style={{ ...TD, width: 120 }}>
+        <Select
+          size="small"
+          value={row.machineNo || null}
+          options={machineOpts}
+          allowClear
+          showSearch
+          style={{ width: '100%', height: '24px' }}
+          placeholder="Machine…"
+          onChange={(v) => onUpdate('machineNo', v ?? '')}
+        />
+      </td>
+      <td style={{ ...TD, width: 140 }}>
+        <Select
+          size="small"
+          value={row.subCostCode ?? null}
+          options={subCostOpts}
+          allowClear
+          showSearch
+          style={{ width: '100%', height: '24px' }}
+          placeholder="Sub cost…"
+          onChange={(v) => onUpdate('subCostCode', v ?? null)}
+        />
+      </td>
+      <td style={{ ...TD, minWidth: 110 }}>
+        <Input
+          size="small"
+          value={row.remarks}
+          maxLength={500}
+          placeholder="Remarks…"
+          style={{ height: '24px' }}
+          onChange={(e) => onUpdate('remarks', e.target.value)}
+        />
+      </td>
+      <td style={{ ...TD, width: 52, textAlign: 'center' }}>
+        <Checkbox checked={row.isSample} onChange={(e) => onUpdate('isSample', e.target.checked)} />
+      </td>
+      <td style={{ ...TD, width: 60, textAlign: 'center' }}>
+        <Space size={2}>
+          <Tooltip title="View Details">
+            <Button type="text" size="small" icon={<EyeOutlined style={{ color: '#7c3aed', fontSize: 12 }} />} onClick={() => onView(row)} />
+          </Tooltip>
+          <Tooltip title={deleteTip}>
+            <Button
+              type="text" size="small" danger
+              icon={<DeleteOutlined style={{ fontSize: 12 }} />}
+              disabled={deleteDisable}
+              onClick={onDelete}
+            />
+          </Tooltip>
+        </Space>
+      </td>
+    </>
+  )
+})
+EditableRow.displayName = 'EditableRow'
+
+// ── Grid Summary Bar ───────────────────────────────────────────────────────────
+
+// interface GridSummaryBarProps {
+//   validCount: number
+//   totalQty: number
+//   subtotal: number
+// }
+
+// function GridSummaryBar({ validCount, totalQty, subtotal }: GridSummaryBarProps) {
+//   return (
+//     <div style={SUMMARY_BAR}>
+//       <span><strong style={{ color: '#1e293b' }}>Lines:</strong> {validCount}</span>
+//       <span>|</span>
+//       <span><strong style={{ color: '#1e293b' }}>Qty:</strong> {totalQty.toFixed(3)}</span>
+//       <span>|</span>
+//       <span><strong style={{ color: '#185FA5' }}>Amount:</strong> ₹ {subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+//     </div>
+//   )
+// }
+
+// ── Main Component ────────────────────────────────────────────────────────────────
+
+export const PRLineItemsTable = forwardRef<PRLineItemsTableHandle, PRLineItemsTableProps>(
+function PRLineItemsTable({
+  items, machines, depCode, prDate, preCheckResult: _preCheckResult, disabled,
   savedPrNo, deleteReasons: _deleteReasons = [],
-  onAdd, onUpdate, onDelete, onWarning,
+  onAdd, onUpdate, onDelete, onWarning: _onWarning,
 }, ref) {
-  const gridRef    = useRef<AgGridReact<PRLineFormItem>>(null)
-  const apiRef     = useRef<GridApi<PRLineFormItem> | null>(null)
-  const itemsRef   = useRef(items)
-  itemsRef.current = items
+  const { subCosts } = useLookupStore()
 
-  const [entryForm]  = Form.useForm<EntryFormValues>()
-  const [drawerForm] = Form.useForm()
+  // Always-current ref so async callbacks read live item state, not stale closures
+  const itemsRef = useRef<PRLineFormItem[]>(items)
+  useEffect(() => { itemsRef.current = items }, [items])
 
-  // ── Entry form state ──────────────────────────────────────────────────────
-  const [editingKey,    setEditingKey]    = useState<string | null>(null)
-  const [itemMeta,      setItemMeta]      = useState<{ itemName: string; uom: string; currentStock: number | null; minLevel: number | null } | null>(null)
-  const [lpoMeta,       setLpoMeta]       = useState<{ lastPoRate: number | null; lastPoDate: string | null; lastPoSupplierCode: string | null; lastPoSupplierName: string | null } | null>(null)
-  const [itemOptions,   setItemOptions]   = useState<ItemSelectOption[]>([])
-  const [itemSearching, setItemSearching] = useState(false)
+  // ── Row edit state ────────────────────────────────────────────────────────
+  const [editingRowKey, setEditingRowKey] = useState<string | null>(null)
+  const [qtyErrorKeys, setQtyErrorKeys] = useState<Set<string>>(new Set())
+  const [focusQtyKey, setFocusQtyKey] = useState<string | null>(null)
 
-  // ── Item master reference fields (auto-filled, display-only) ────────────
-  const [itemDrawNo, setItemDrawNo] = useState<string>('')
-  const [itemCatNo,  setItemCatNo]  = useState<string>('')
+  // ── Trailing row (new item) ───────────────────────────────────────────────
+  const [_trailing, setTrailing] = useState<PRLineFormItem>(makeEmptyRow)
+  const [_trailingDays, setTrailingDays] = useState<number | null>(null)
+  const [_trailingText, setTrailingText] = useState('')
+  const [_trailingItemError, setTrailingItemError] = useState(false)
+  const [pickerOpen, setPickerOpen] = useState(false)
 
-  // ── Rate history modal ────────────────────────────────────────────────────
-  const [historyOpen,    setHistoryOpen]    = useState(false)
-  const [historyItem,    setHistoryItem]    = useState<string>('')
-  const [historyData,    setHistoryData]    = useState<PRItemHistoryDto[]>([])
+  // ── Modal states ──────────────────────────────────────────────────────────
+  // Key-based: always reflects the current item state, not a stale snapshot
+  const [viewRowKey, setViewRowKey] = useState<string | null>(null)
+  const viewRow = viewRowKey ? (items.find((i) => i.key === viewRowKey) ?? null) : null
+  const [historyOpen, setHistoryOpen] = useState(false)
+  const [historyItem, setHistoryItem] = useState('')
+  const [historyStock, setHistoryStock] = useState<number | null>(null)
+  const [historyData, setHistoryData] = useState<PRItemHistoryDto[]>([])
   const [historyLoading, setHistoryLoading] = useState(false)
-  const [historyStock,   setHistoryStock]   = useState<number | null>(null)
+  const [_historyItemCode, setHistoryItemCode] = useState('')
 
-  // ── Advanced drawer ───────────────────────────────────────────────────────
-  const [drawerRow, setDrawerRow] = useState<PRLineFormItem | null>(null)
-
-  // ── Per-line delete (for saved PRs) ──────────────────────────────────────
   const [lineDeleteRow, setLineDeleteRow] = useState<PRLineFormItem | null>(null)
-  const [lineDeleting,  setLineDeleting]  = useState(false)
-
-  // ── Flash total on rate change ────────────────────────────────────────────
-  const [flashKey, setFlashKey] = useState<string | null>(null)
-
-  // ── Dept-filtered machines ────────────────────────────────────────────────
+  const [lineDeleting, setLineDeleting] = useState(false)
   const [deptMachines, setDeptMachines] = useState<MachineLookup[]>([])
 
-  const subCosts    = useLookupStore((s) => s.subCosts)
-  const machineOpts  = (depCode ? deptMachines : machines).map((m) => ({ value: m.macNo, label: `${m.macNo} – ${m.description}` }))
-  const subCostOpts  = subCosts.map((s) => ({ value: s.sccCode, label: `${s.sccCode} – ${s.sccName}` }))
+  const searchInputRef = useRef<InputRef>(null)
 
-
-  // R08: local state for days-from-today quick-fill
-  const [daysInput, setDaysInput] = useState<number | null>(null)
-
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const seqRef      = useRef(0)
-
-  // No auto-empty row — entry form below handles adding items
-
-  // ── Flash cleanup ─────────────────────────────────────────────────────────
+  // ── Effects ───────────────────────────────────────────────────────────────
   useEffect(() => {
-    if (flashKey) { const t = setTimeout(() => setFlashKey(null), 700); return () => clearTimeout(t) }
-  }, [flashKey])
+    void (async () => setDeptMachines(depCode ? machines.filter((m) => !m.macNo || m.macNo.startsWith(depCode)) : machines))()
+  }, [depCode, machines])
 
-  // ── Fetch machines filtered by department ─────────────────────────────────
+  // When drawer opens for an item missing drawNo/catNo, fetch from getItemInfo
   useEffect(() => {
-    if (!depCode) { setDeptMachines([]); return }
-    void lookupApi.getMachines(depCode).then(setDeptMachines).catch(() => setDeptMachines([]))
-  }, [depCode])
-
-  // ── Item search ───────────────────────────────────────────────────────────
-  const handleItemSearch = useCallback((q: string) => {
-    if (!depCode) { setItemOptions([]); return }
-    if (debounceRef.current) clearTimeout(debounceRef.current)
-    if (q.trim().length < 2) { setItemOptions([]); return }
-    const seq = ++seqRef.current
-    setItemSearching(true)
-    debounceRef.current = setTimeout(async () => {
+    if (!viewRowKey || !depCode) return
+    const item = itemsRef.current.find((i) => i.key === viewRowKey)
+    if (!item || (item.drawNo && item.catNo)) return
+    const { yfDate, ylDate } = getFYBounds()
+    void (async () => {
       try {
-        const results = await lookupApi.searchItems(q.trim(), depCode)
-        if (seq !== seqRef.current) return
-        setItemOptions(results.map((i) => ({
-          value: i.itemCode,
-          label: `${i.itemCode} – ${i.itemName}`,
-          _item: i,
-        })))
-      } catch { if (seq === seqRef.current) setItemOptions([]) }
-      finally  { if (seq === seqRef.current) setItemSearching(false) }
-    }, 280)
-  }, [depCode])
-
-  const handleItemSelect = useCallback((_: string, option: unknown) => {
-    const opt = option as ItemSelectOption
-    const meta = {
-      itemName:     opt._item.itemName,
-      uom:          opt._item.uom,
-      currentStock: opt._item.currentStock ?? null,
-      minLevel:     opt._item.minLevel     ?? null,
-    }
-    setItemMeta(meta)
-    setItemDrawNo(opt._item.drawNo ?? '')
-    setItemCatNo(opt._item.catNo   ?? '')
-    setLpoMeta(null)                          // clear stale PO data from previous item
-    entryForm.setFieldValue('rate', null)
-
-    // Call getItemInfo on every item selection — divCode is resolved server-side from auth token,
-    // so this works regardless of whether depCode has been filled in the header yet.
-    ;(async () => {
-      try {
-        const prDateObj = dayjs(prDate ?? undefined)
-        const month = prDateObj.month()
-        const year  = prDateObj.year()
-        const fy    = month >= 3 ? year : year - 1
-        const yfDate = `${fy}-04-01`
-        const ylDate = `${fy + 1}-03-31`
-
-        const info = await purchaseRequisitionApi.getItemInfo(
-          depCode,
-          opt._item.itemCode,
-          yfDate,
-          ylDate,
-          preCheckResult?.pendingIndentCheckEnabled ?? false,
-          preCheckResult?.pendingPRCheckEnabled ?? false
-        )
-
-        // Pre-fill Unit Price from last PO; fall back to 0 when no prior PO exists
-        entryForm.setFieldValue('rate', info.lastPoRate ?? 0)
-
-        // Store LPO data so grid row and badge row can show it
-        setLpoMeta({
-          lastPoRate:         info.lastPoRate ?? null,
-          lastPoDate:         info.lastPoDate ?? null,
-          lastPoSupplierCode: info.lastPoSupplierCode ?? null,
-          lastPoSupplierName: info.lastPoSupplierName ?? null,
-        })
-
-        // Show warnings for pending indents/PRs if checks are enabled
-        if (preCheckResult?.pendingIndentCheckEnabled && info.hasPendingIndent) {
-          onWarning?.(`Pending indent exists for this item — Qty: ${info.pendingIndentQty}`)
-        }
-        if (preCheckResult?.pendingPRCheckEnabled && info.hasPendingPR) {
-          onWarning?.(`Open PR (${info.pendingPrNo}) dated ${dayjs(info.pendingPrDate).format('DD/MM/YYYY')} already exists for this item`)
-        }
-      } catch {
-        // Silently fail — getItemInfo is supplementary; user can still enter price manually
-      }
+        const info = await purchaseRequisitionApi.getItemInfo(depCode, item.itemCode, yfDate, ylDate, false, false)
+        const current = itemsRef.current.find((i) => i.key === viewRowKey)
+        if (!current || (!info.drawNo && !info.catNo)) return
+        onUpdate({ ...current, drawNo: info.drawNo || current.drawNo, catNo: info.catNo || current.catNo })
+      } catch { /* non-critical */ }
     })()
-  }, [entryForm, depCode, prDate, preCheckResult, onWarning])
+  }, [viewRowKey]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Populate entry form for edit ──────────────────────────────────────────
-  const startEdit = useCallback((row: PRLineFormItem) => {
-    setEditingKey(row.key)
-    setItemMeta({ itemName: row.itemName, uom: row.uom, currentStock: row.currentStock, minLevel: row.minLevel })
-    setItemDrawNo(row.drawNo ?? '')
-    setItemCatNo(row.catNo  ?? '')
-    if (row.itemCode) {
-      setItemOptions([{
-        value: row.itemCode,
-        label: `${row.itemCode} – ${row.itemName}`,
-        _item: { itemCode: row.itemCode, itemName: row.itemName, uom: row.uom, currentStock: row.currentStock ?? undefined },
-      }])
-    }
-    setDaysInput(null)
-    setLpoMeta({
-      lastPoRate:         row.lastPoRate,
-      lastPoDate:         row.lastPoDate,
-      lastPoSupplierCode: row.lastPoSupplierCode,
-      lastPoSupplierName: row.lastPoSupplierName,
-    })
-    entryForm.setFieldsValue({
-      itemCode:     row.itemCode,
-      qtyRequired:  row.qtyRequired,
-      rate:         row.rate,
-      requiredDate: row.requiredDate ? dayjs(row.requiredDate) : null,
-      remarks:      row.remarks,
-      machineNo:    row.machineNo || null,
-      subCostCode:  row.subCostCode ?? null,
-      isSample:     row.isSample ?? false,
-    })
-  }, [entryForm])
+  useEffect(() => {
+    if (!focusQtyKey) return
+    const t = setTimeout(() => {
+      const td = document.querySelector<HTMLTableCellElement>(`td[data-qty-for="${focusQtyKey}"]`)
+      const input = td?.querySelector<HTMLInputElement>('input')
+      input?.focus()
+      input?.select()
+      setFocusQtyKey(null)
+    }, 80)
+    return () => clearTimeout(t)
+  }, [focusQtyKey])
 
-  const cancelEdit = useCallback(() => {
-    setEditingKey(null)
-    setItemMeta(null)
-    setLpoMeta(null)
-    setItemOptions([])
-    setDaysInput(null)
-    setItemDrawNo('')
-    setItemCatNo('')
-    entryForm.resetFields()
-  }, [entryForm])
-
-  // ── Add / Update row ──────────────────────────────────────────────────────
-  const handleAddOrUpdate = useCallback(async () => {
-    let values: EntryFormValues
-    try { values = await entryForm.validateFields() } catch { return }
-
-    if (editingKey) {
-      // Update existing row
-      const existing = itemsRef.current.find((r) => r.key === editingKey)
-      if (!existing) return
-      onUpdate({
-        ...existing,
-        ...(itemMeta ?? {}),
-        itemCode:    values.itemCode,
-        qtyRequired: values.qtyRequired,
-        rate:        values.rate,
-        requiredDate: values.requiredDate ? values.requiredDate.format('YYYY-MM-DD') : null,
-        remarks:     values.remarks ?? '',
-        machineNo:   values.machineNo ?? '',
-        subCostCode: values.subCostCode ?? null,
-        isSample:    values.isSample ?? false,
-        drawNo:      itemDrawNo || existing.drawNo,
-        catNo:       itemCatNo  || existing.catNo,
-        approxCost:  values.rate && values.qtyRequired
-          ? parseFloat((values.rate * values.qtyRequired).toFixed(2))
-          : null,
-      })
-      const minLvlUpd = itemMeta?.minLevel ?? existing.minLevel ?? null
-      if (minLvlUpd && minLvlUpd > 0 && values.qtyRequired < minLvlUpd) {
-        onWarning?.(`${itemMeta?.itemName ?? values.itemCode}: Required Quantity is below minimum stock level (${minLvlUpd}). Please confirm.`)
-      }
-      setFlashKey(editingKey)
-      cancelEdit()
-    } else {
-      // Add new row
-      const row: PRLineFormItem = {
-        ...emptyRow(),
-        ...(itemMeta ?? {}),
-        ...(lpoMeta  ?? {}),
-        itemCode:    values.itemCode,
-        qtyRequired: values.qtyRequired,
-        rate:        values.rate,
-        requiredDate: values.requiredDate ? values.requiredDate.format('YYYY-MM-DD') : null,
-        remarks:     values.remarks ?? '',
-        machineNo:   values.machineNo ?? '',
-        subCostCode: values.subCostCode ?? null,
-        isSample:    values.isSample ?? false,
-        drawNo:      itemDrawNo,
-        catNo:       itemCatNo,
-        approxCost:  values.rate && values.qtyRequired
-          ? parseFloat((values.rate * values.qtyRequired).toFixed(2))
-          : null,
-      }
-      onAdd(row)
-      if (row.minLevel && row.minLevel > 0 && values.qtyRequired < row.minLevel) {
-        onWarning?.(`${row.itemName}: Required Quantity is below minimum stock level (${row.minLevel}). Please confirm.`)
-      }
-      setFlashKey(row.key)
-      // Clear form and focus item code
-      setItemMeta(null)
-      setLpoMeta(null)
-      setItemOptions([])
-      setItemDrawNo('')
-      setItemCatNo('')
-      setDaysInput(null)
-      entryForm.resetFields()
-      setTimeout(() => {
-        const el = document.querySelector<HTMLElement>('.pr-entry-item-select input')
-        el?.focus()
-      }, 80)
-    }
-  }, [editingKey, entryForm, itemMeta, lpoMeta, onAdd, onUpdate, cancelEdit])
-
-  // Expose flushEdit so parent pages can commit a pending row edit before PR save
   useImperativeHandle(ref, () => ({
-    flushEdit: async () => {
-      if (editingKey) await handleAddOrUpdate()
-    },
-  }), [editingKey, handleAddOrUpdate])
+    flushEdit: async () => { /* inline edits commit on every change */ },
+  }), [])
 
-  // ── Rate history ──────────────────────────────────────────────────────────
+  // ── Row edit callbacks ────────────────────────────────────────────────────
+  const handleRowEdit = useCallback((rowKey: string) => {
+    setEditingRowKey(rowKey)
+  }, [])
+
+  const handleRowUpdate = useCallback((rowKey: string, field: keyof PRLineFormItem, value: any) => {
+    const row = items.find((r) => r.key === rowKey)
+    if (!row) return
+    const updated = { ...row, [field]: value }
+    if ((field === 'rate' || field === 'qtyRequired')) {
+      updated.approxCost = calcApproxCost(
+        field === 'rate' ? (value as number | null) : row.rate,
+        field === 'qtyRequired' ? (value as number) : row.qtyRequired,
+      )
+    }
+    if (field === 'subCostCode') {
+      updated.subCostName = value != null
+        ? (subCosts.find((s) => s.sccCode === value)?.sccName ?? null)
+        : null
+    }
+    onUpdate(updated)
+    if (field === 'qtyRequired') {
+      const minL = row.minLevel ?? 0
+      if ((value ?? 0) > minL) {
+        setQtyErrorKeys((prev) => { const s = new Set(prev); s.delete(rowKey); return s })
+      } else {
+        setQtyErrorKeys((prev) => new Set([...prev, rowKey]))
+      }
+    }
+  }, [items, onUpdate, subCosts])
+
+  const handleRowDelete = useCallback((rowKey: string) => {
+    const row = items.find((r) => r.key === rowKey)
+    if (!row) return
+    if (savedPrNo && row.prSNo) {
+      setLineDeleteRow(row)
+    } else {
+      onDelete(rowKey)
+    }
+  }, [items, onDelete, savedPrNo])
+
+  // ── History modal ─────────────────────────────────────────────────────────
+  const historyColumns = useMemo(() => [
+    { title: 'PO No',    dataIndex: 'poNo',         key: 'poNo',         width: 90 },
+    { title: 'Date',     dataIndex: 'poDate',       key: 'poDate',       width: 90,
+      render: (v: string) => v ? dayjs(v).format('DD/MM/YY') : '—' },
+    { title: 'Supplier', dataIndex: 'supplierName', key: 'supplierName', ellipsis: true },
+    { title: 'Rate', dataIndex: 'rate', key: 'rate', width: 90, align: 'right' as const,
+      render: (v: number) => v != null ? `₹ ${Number(v).toFixed(4)}` : '—' },
+    { title: 'Ordered',  dataIndex: 'orderQty',     key: 'orderQty',     width: 72, align: 'right' as const,
+      render: (v: number) => v != null ? Number(v).toFixed(3) : '—' },
+    { title: 'Received', dataIndex: 'receivedQty',  key: 'receivedQty',  width: 72, align: 'right' as const,
+      render: (v: number) => v != null ? Number(v).toFixed(3) : '—' },
+  ], [])
+
   const openHistory = useCallback(async (row: PRLineFormItem) => {
+    setHistoryItemCode(row.itemCode)
     setHistoryItem(row.itemCode)
     setHistoryStock(row.currentStock)
     setHistoryOpen(true)
@@ -366,644 +504,205 @@ export const PRLineItemsTable = forwardRef<PRLineItemsTableHandle, PRLineItemsTa
     try {
       const data = await purchaseRequisitionApi.getItemHistory(row.itemCode)
       setHistoryData(data)
-    } catch { setHistoryData([]) }
-    finally  { setHistoryLoading(false) }
+    } catch {
+      setHistoryData([])
+    } finally {
+      setHistoryLoading(false)
+    }
   }, [])
 
-  // R07: Open rate history from the entry form for the currently selected item
-  const openHistoryForEntryItem = useCallback(async () => {
-    const itemCode = entryForm.getFieldValue('itemCode') as string | undefined
-    if (!itemCode) return
-    const opt = itemOptions.find((o) => o.value === itemCode)
-    await openHistory({ ...emptyRow(), itemCode, currentStock: opt?._item.currentStock ?? null })
-  }, [entryForm, itemOptions, openHistory])
+  // ── Trailing row handlers ─────────────────────────────────────────────────
+  const handleItemsFromModal = useCallback(async (picked: ItemLookup[]) => {
+    const { yfDate, ylDate } = getFYBounds()
+    let lastKey: string | null = null
+    const newLines: PRLineFormItem[] = []
 
-  // ── Advanced drawer ───────────────────────────────────────────────────────
-  // const _openDrawer = useCallback((row: PRLineFormItem) => {
-  //   setDrawerRow(row)
-  //   drawerForm.setFieldsValue({
-  //     costCentreCode:  row.costCentreCode,
-  //     budgetGroupCode: row.budgetGroupCode,
-  //     subCostCode:     row.subCostCode ?? undefined,
-  //     categoryCode:    row.categoryCode,
-  //     remarks:         row.remarks,
-  //     model:           row.model,
-  //     maxCost:         row.maxCost,
-  //   })
-  // }, [drawerForm])
+    picked.forEach((item) => {
+      const newLine: PRLineFormItem = {
+        ...makeEmptyRow(),
+        itemCode:     item.itemCode,
+        itemName:     item.itemName,
+        uom:          item.uom,
+        currentStock: item.currentStock ?? null,
+        minLevel:     item.minLevel     ?? null,
+        itemGroup:    item.itemGroup,
+        drawNo:       item.drawNo       ?? '',
+        catNo:        item.catNo        ?? '',
+      }
+      onAdd(newLine)
+      newLines.push(newLine)
+      setEditingRowKey(newLine.key)
+      lastKey = newLine.key
+      // Default qty is 0 — always invalid, flag error immediately
+      setQtyErrorKeys((prev) => new Set([...prev, newLine.key]))
+    })
 
-  const saveDrawer = useCallback(() => {
-    if (!drawerRow) return
-    const vals = drawerForm.getFieldsValue()
-    onUpdate({ ...drawerRow, ...vals })
-    setDrawerRow(null)
-  }, [drawerRow, drawerForm, onUpdate])
+    if (lastKey) setFocusQtyKey(lastKey)
+    setTrailing(makeEmptyRow())
+    setTrailingDays(null)
+    setTrailingText('')
+    setTrailingItemError(false)
+    setPickerOpen(false)
 
-  // ── Column defs ───────────────────────────────────────────────────────────
-  // width === minWidth on every fixed column → header never shrinks or truncates
-  const colDefs = useMemo((): ColDef<PRLineFormItem>[] => [
-    {
-      headerName: 'Item ID',
-      field:      'itemCode',
-      width:      110,
-      minWidth:   110,
-      cellStyle:  { ...CELL, fontWeight: 700, fontFamily: 'monospace', fontSize: 12 },
-      cellRenderer: ({ value, node }: ICellRendererParams) =>
-        node?.rowPinned === 'bottom'
-          ? <Typography.Text strong style={{ fontSize: 12, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Total</Typography.Text>
-          : <span>{(value as string) || '—'}</span>,
-    },
-    {
-      headerName: 'Item Description',
-      field:      'itemName',
-      flex:       1,
-      minWidth:   160,
-      cellStyle:  CELL,
-      valueFormatter: ({ value }) => (value as string) || '—',
-    },
-    {
-      headerName: 'UOM',
-      field:      'uom',
-      width:      70,
-      minWidth:   70,
-      cellStyle:  { ...CELL, justifyContent: 'center' },
-      cellRenderer: ({ value, node }: ICellRendererParams) =>
-        node?.rowPinned === 'bottom' ? null :
-        value
-          ? <Tag style={{ fontSize: 11, margin: 0 }}>{value as string}</Tag>
-          : <Typography.Text type="secondary" style={{ fontSize: 11 }}>—</Typography.Text>,
-    },
-    {
-      headerName:  'QTY',
-      field:       'qtyRequired',
-      width:       70,
-      minWidth:    70,
-      cellStyle:   { ...CELL, justifyContent: 'flex-end', fontWeight: 600 },
-      headerClass: 'ag-right-aligned-header',
-    },
-    {
-      headerName:  'Unit Price',
-      field:       'rate',
-      width:       115,
-      minWidth:    115,
-      cellStyle:   { ...CELL, justifyContent: 'flex-end' },
-      headerClass: 'ag-right-aligned-header',
-      valueFormatter: ({ value }) =>
-        value != null ? `₹ ${Number(value).toFixed(2)}` : '—',
-    },
-    {
-      headerName:  'Approx Cost',
-      colId:       'approxCost',
-      width:       130,
-      minWidth:    130,
-      cellStyle:   { ...CELL, justifyContent: 'flex-end', fontWeight: 600 },
-      headerClass: 'ag-right-aligned-header',
-      valueGetter: ({ data, node }) => {
-        if (!data) return null
-        if (node?.rowPinned === 'bottom') {
-          const s = (data as unknown as { _subtotal?: number })._subtotal ?? 0
-          return s > 0 ? s : null
-        }
-        const r = data.rate && data.rate > 0 ? data.rate : (data.lastPoRate ?? 0)
-        const v = r * data.qtyRequired
-        return v > 0 ? v : null
-      },
-      valueFormatter: ({ value }) =>
-        value != null
-          ? `₹ ${Number(value).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
-          : '—',
-    },
-    {
-      headerName:  'Current Stock',
-      field:       'currentStock',
-      width:       130,
-      minWidth:    130,
-      cellStyle:   { ...CELL, justifyContent: 'flex-end' },
-      headerClass: 'ag-right-aligned-header',
-      valueFormatter: ({ value }) => value != null ? String(value) : '—',
-    },
-    {
-      headerName: 'Cat. No',
-      field:      'catNo',
-      width:      90,
-      minWidth:   90,
-      cellStyle:  CELL,
-      valueFormatter: ({ value }) => (value as string) || '—',
-    },
-    {
-      headerName: 'Draw No',
-      field:      'drawNo',
-      width:      90,
-      minWidth:   90,
-      cellStyle:  CELL,
-      valueFormatter: ({ value }) => (value as string) || '—',
-    },
-    {
-      headerName: 'Machine No',
-      field:      'machineNo',
-      width:      115,
-      minWidth:   115,
-      cellStyle:  CELL,
-      valueFormatter: ({ value }) => (value as string) || '—',
-    },
-    {
-      headerName: 'Sub Cost',
-      colId:      'subCost',
-      width:      160,
-      minWidth:   160,
-      cellStyle:  CELL,
-      valueGetter: ({ data }) => {
-        if (!data || data.subCostCode == null) return null
-        return data.subCostName
-          ? `${data.subCostCode} – ${data.subCostName}`
-          : String(data.subCostCode)
-      },
-      valueFormatter: ({ value }) => value ?? '—',
-    },
-    {
-      headerName: 'Req. Date',
-      field:      'requiredDate',
-      width:      105,
-      minWidth:   105,
-      cellStyle:  CELL,
-      valueFormatter: ({ value }) =>
-        value ? dayjs(value as string).format('DD/MM/YY') : '—',
-    },
-    {
-      headerName: 'Remarks',
-      field:      'remarks',
-      width:      130,
-      minWidth:   130,
-      cellStyle:  CELL,
-      valueFormatter: ({ value }) => (value as string) || '—',
-    },
-    {
-      headerName:  'Last PO Rate',
-      field:       'lastPoRate',
-      width:       125,
-      minWidth:    125,
-      cellStyle:   { ...CELL, justifyContent: 'flex-end' },
-      headerClass: 'ag-right-aligned-header',
-      valueFormatter: ({ value }) =>
-        value != null ? `₹ ${Number(value).toFixed(2)}` : '—',
-    },
-    {
-      headerName: 'Last PO Date',
-      field:      'lastPoDate',
-      width:      125,
-      minWidth:   125,
-      cellStyle:  CELL,
-      valueFormatter: ({ value }) =>
-        value ? dayjs(value as string).format('DD/MM/YY') : '—',
-    },
-    {
-      headerName: 'Supplier Code',
-      field:      'lastPoSupplierCode',
-      width:      130,
-      minWidth:   130,
-      cellStyle:  { ...CELL, fontFamily: 'monospace', fontSize: 12 },
-      valueFormatter: ({ value }) => (value as string) || '—',
-    },
-    {
-      headerName: 'Supplier Name',
-      field:      'lastPoSupplierName',
-      width:      145,
-      minWidth:   145,
-      cellStyle:  CELL,
-      valueFormatter: ({ value }) => (value as string) || '—',
-    },
-    {
-      headerName: '',
-      colId:      'actions',
-      width:      90,
-      minWidth:   90,
-      sortable:   false,
-      cellStyle:  { ...CELL, justifyContent: 'center', gap: 2 },
-      cellRenderer: ({ data, node }: ICellRendererParams<PRLineFormItem>) => {
-        if (!data || node?.rowPinned) return null
-        const isLast         = itemsRef.current.length <= 1
-        const deleteDisabled = disabled || isLast
-        const deleteTooltip  = isLast ? 'At least one line item is required' : 'Delete line'
-        return (
-          <div style={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-            <Tooltip title="Edit">
-              <Button
-                type="text" size="small"
-                icon={<EditOutlined style={{ color: '#1677ff' }} />}
-                disabled={disabled}
-                onClick={() => startEdit(data)}
-              />
-            </Tooltip>
-            {savedPrNo && data.prSNo ? (
-              <Tooltip title={deleteTooltip}>
-                <Button
-                  type="text" size="small" danger icon={<DeleteOutlined />}
-                  disabled={deleteDisabled}
-                  onClick={() => setLineDeleteRow(data)}
-                />
-              </Tooltip>
-            ) : (
-              <Popconfirm
-                title="Remove this item?"
-                okText="Remove"
-                okButtonProps={{ danger: true, size: 'small' }}
-                disabled={deleteDisabled}
-                onConfirm={() => {
-                  onDelete(data.key)
-                  if (editingKey === data.key) cancelEdit()
-                }}
-              >
-                <Tooltip title={deleteTooltip}>
-                  <Button type="text" size="small" danger icon={<DeleteOutlined />} disabled={deleteDisabled} />
-                </Tooltip>
-              </Popconfirm>
-            )}
-          </div>
+    // Fetch last PO rate for each picked item and populate rate + approxCost
+    for (const newLine of newLines) {
+      try {
+        const info = await purchaseRequisitionApi.getItemInfo(
+          depCode, newLine.itemCode, yfDate, ylDate, false, false,
         )
-      },
-    },
-  ], [disabled, startEdit, onDelete, editingKey, cancelEdit, savedPrNo, items])
+        // Read current item state — user may have already changed qty while the call was in-flight
+        const current = itemsRef.current.find((i) => i.key === newLine.key)
+        if (!current) continue
+        const rate = info.lastPoRate ?? null
+        onUpdate({
+          ...current,
+          rate,
+          approxCost:         calcApproxCost(rate, current.qtyRequired),
+          lastPoRate:         info.lastPoRate         ?? null,
+          lastPoDate:         info.lastPoDate         ?? null,
+          lastPoSupplierCode: info.lastPoSupplierCode ?? null,
+          lastPoSupplierName: info.lastPoSupplierName ?? null,
+          currentStock:       info.currentStock       ?? current.currentStock,
+          drawNo:             info.drawNo             || current.drawNo,
+          catNo:              info.catNo              || current.catNo,
+        })
+      } catch {
+        // Non-critical — rate remains null if lookup fails
+      }
+    }
+  }, [onAdd, onUpdate, depCode])
 
-  const defaultColDef = useMemo<ColDef>(() => ({ resizable: true, sortable: false, filter: false }), [])
-
-  const onGridReady = useCallback((e: GridReadyEvent) => {
-    apiRef.current = e.api
-  }, [])
-
-  const getRowId = useCallback(({ data }: { data: PRLineFormItem }) => data.key, [])
-
-  const getRowClass = useCallback(({ data }: { data?: PRLineFormItem }) =>
-    data?.key === editingKey ? 'pr-row--editing' : '', [editingKey])
-
+  // ── Computations ──────────────────────────────────────────────────────────
   const validCount = items.filter((l) => l.itemCode.trim() !== '').length
-  const subtotal   = useMemo(() => items.reduce((s, l) => {
-    const r = l.rate && l.rate > 0 ? l.rate : (l.lastPoRate ?? 0)
-    return s + r * l.qtyRequired
-  }, 0), [items])
-  const totalQty   = useMemo(() =>
-    items.filter((l) => l.itemCode.trim() !== '').reduce((s, l) => s + l.qtyRequired, 0)
-  , [items])
+  //const totalQty = useMemo(() => items.reduce((s, l) => s + (l.qtyRequired ?? 0), 0), [items])
+  // const subtotal = useMemo(() => items.reduce((s, l) => {
+  //   const r = l.rate && l.rate > 0 ? l.rate : (l.lastPoRate ?? 0)
+  //   return s + r * l.qtyRequired
+  // }, 0), [items])
 
-  // Pinned bottom row carries totals into the grid aligned under the Approx Cost column
-  const pinnedBottomRow = useMemo(() =>
-    validCount > 0
-      ? [{ key: '__total__', qtyRequired: totalQty, _subtotal: subtotal } as unknown as PRLineFormItem]
-      : []
-  , [validCount, totalQty, subtotal])
-
-  // ── Rate history columns ──────────────────────────────────────────────────
-  const historyColumns = useMemo(() => [
-    { title: 'PO No',        dataIndex: 'poNo',          key: 'poNo',          width: 90  },
-    { title: 'Date',         dataIndex: 'poDate',        key: 'poDate',        width: 90,
-      render: (v: string) => v ? dayjs(v).format('DD/MM/YY') : '—' },
-    { title: 'Supplier',     dataIndex: 'supplierName',  key: 'supplierName',  ellipsis: true },
-    { title: 'Rate (₹)',    dataIndex: 'rate',           key: 'rate',          width: 90, align: 'right' as const,
-      render: (v: number) => v != null ? `₹ ${Number(v).toFixed(2)}` : '—' },
-    { title: 'Ordered',      dataIndex: 'orderQty',      key: 'orderQty',      width: 72, align: 'right' as const,
-      render: (v: number) => v != null ? Number(v).toFixed(2) : '—' },
-    { title: 'Received',     dataIndex: 'receivedQty',   key: 'receivedQty',   width: 72, align: 'right' as const,
-      render: (v: number) => v != null ? Number(v).toFixed(2) : '—' },
-  ], [])
-
+  // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <>
-      {/* ── Item Entry Panel ──────────────────────────────────────────────── */}
-      <div className="pr-entry-form" style={{
-        background:   '#ffffff',
-        border:       '1px solid #f0f0f0',
-        borderLeft:   '3px solid #4f46e5',
-        borderRadius: 8,
-        padding:      0,
-        overflow:     'hidden',
-        boxShadow:    '0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05)',
-      }}>
-        {/* Card header */}
-        <div style={{ display: 'flex', alignItems: 'center', padding: '10px 20px', borderBottom: '1px solid #f0f0f0' }}>
-          <Space size={8}>
-            <AppstoreOutlined style={{ color: '#4f46e5', fontSize: 13 }} />
-            <Typography.Text style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-              {editingKey ? 'Edit Item' : 'Item Entry'}
-            </Typography.Text>
-          </Space>
-        </div>
-
-        {/* Form body */}
-        <div style={{ padding: '14px 20px 8px' }}>
-        {!depCode && (
-          <Alert
-            message="Please select a Department in the header before adding items."
-            type="warning"
-            showIcon
-            style={{ marginBottom: 12 }}
-          />
-        )}
-        <Form form={entryForm} layout="vertical" size="middle" disabled={disabled}>
-          {/* Row 1 — Item Code | Qty | Unit Price */}
-          <Row gutter={[12, 0]}>
-            <Col xs={24} sm={12} md={11}>
-              <Form.Item
-                name="itemCode"
-                label={<span style={LABEL_STYLE}>Item Code</span>}
-                rules={[{ required: true, message: 'Required' }]}
-                style={{ marginBottom: 8 }}
-              >
-                <Select
-                  className="pr-entry-item-select"
-                  showSearch
-                  placeholder="Type to search item…"
-                  options={itemOptions}
-                  onSearch={handleItemSearch}
-                  onSelect={handleItemSelect}
-                  loading={itemSearching}
-                  filterOption={false}
-                  notFoundContent={itemSearching ? <Spin size="small" /> : 'Type ≥ 2 chars to search'}
-                  allowClear
-                  disabled={!depCode}
-                  onClear={() => { setItemMeta(null); setLpoMeta(null); setItemOptions([]); setItemDrawNo(''); setItemCatNo('') }}
-                />
-              </Form.Item>
-            </Col>
-
-            <Col xs={12} sm={5} md={5}>
-              <Form.Item
-                name="qtyRequired"
-                label={<span style={LABEL_STYLE}>Qty</span>}
-                initialValue={0}
-                rules={[
-                  { required: true, message: 'Req.' },
-                  { type: 'number', min: 0.001, message: 'Must be > 0' },
-                ]}
-                style={{ marginBottom: 8 }}
-              >
-                <InputNumber
-                  style={{ width: '100%' }}
-                  min={0} precision={3}
-                  onPressEnter={() => void handleAddOrUpdate()}
-                />
-              </Form.Item>
-            </Col>
-
-            <Col xs={12} sm={7} md={8}>
-              <Form.Item
-                label={<span style={LABEL_STYLE}>Unit Price (₹)</span>}
-                style={{ marginBottom: 8 }}
-              >
-                <Space.Compact style={{ width: '100%' }}>
-                  <Form.Item
-                    name="rate"
-                    noStyle
-                    rules={[{ type: 'number', min: 0, message: 'Must be ≥ 0' }]}
-                  >
-                    <InputNumber
-                      style={{ width: '100%' }}
-                      min={0} precision={2} placeholder="0.00"
-                      prefix="₹"
-                    />
-                  </Form.Item>
-                  <Tooltip title="Rate History">
-                    <Button
-                      icon={<HistoryOutlined />}
-                      disabled={!entryForm.getFieldValue('itemCode')}
-                      onClick={() => void openHistoryForEntryItem()}
-                    />
-                  </Tooltip>
-                </Space.Compact>
-              </Form.Item>
-            </Col>
-          </Row>
-
-          {/* Context badges — all appear only after item is selected */}
-          {itemMeta && (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 10 }}>
-              <Tag style={{ fontSize: 12, padding: '2px 8px' }}>
-                UOM: {itemMeta.uom || '—'}
-              </Tag>
-              <Tag
-                color={itemMeta.currentStock != null && itemMeta.currentStock > 0 ? 'success' : 'error'}
-                style={{ fontSize: 12, padding: '2px 8px', fontWeight: 600 }}
-              >
-                Stock: {itemMeta.currentStock ?? 0}
-              </Tag>
-              {lpoMeta?.lastPoRate != null && (
-                <Tag color="green" style={{ fontSize: 12, padding: '2px 8px' }}>
-                  Last Rate: ₹{lpoMeta.lastPoRate.toFixed(2)}
-                </Tag>
-              )}
-              {lpoMeta !== null && lpoMeta.lastPoRate == null && (
-                <Tag color="warning" style={{ fontSize: 12, padding: '2px 8px' }}>
-                  No previous purchase data
-                </Tag>
-              )}
-              <Tag color="purple" style={{ fontSize: 12, padding: '2px 8px' }}>
-                Cat No: {itemCatNo || '—'}
-              </Tag>
-              <Tag color="geekblue" style={{ fontSize: 12, padding: '2px 8px' }}>
-                Draw No: {itemDrawNo || '—'}
-              </Tag>
-            </div>
-          )}
-
-          {/* Row 2 — Required Date | Machine | Sub Cost Centre | Remarks | Sample */}
-          <Row gutter={[12, 0]}>
-            <Col xs={24} sm={10} md={7}>
-              <Form.Item
-                label={<span style={LABEL_STYLE}>Required Date</span>}
-                style={{ marginBottom: 10 }}
-              >
-                <Space.Compact style={{ width: '100%' }}>
-                  <Tooltip title="Days from today">
-                    <InputNumber
-                      placeholder="Days"
-                      min={1} max={999} precision={0}
-                      style={{ width: 72 }}
-                      value={daysInput}
-                      onChange={(v) => {
-                        const days = v as number | null
-                        setDaysInput(days)
-                        if (days != null && days > 0) {
-                          entryForm.setFieldValue('requiredDate', dayjs().add(days, 'day'))
-                        }
-                      }}
-                    />
-                  </Tooltip>
-                  <Form.Item name="requiredDate" noStyle>
-                    <DatePicker
-                      style={{ width: '100%' }}
-                      format="DD/MM/YYYY"
-                      placeholder="dd/mm/yyyy"
-                      onChange={() => setDaysInput(null)}
-                    />
-                  </Form.Item>
-                </Space.Compact>
-              </Form.Item>
-            </Col>
-
-            <Col xs={12} sm={6} md={5}>
-              <Form.Item
-                name="machineNo"
-                label={<span style={LABEL_STYLE}>Machine</span>}
-                style={{ marginBottom: 10 }}
-              >
-                <Select
-                  options={machineOpts}
-                  allowClear showSearch
-                  filterOption={(input, opt) =>
-                    (opt?.label as string ?? '').toLowerCase().includes(input.toLowerCase())
-                  }
-                  placeholder="Select machine…"
-                  style={{ borderRadius: 6 }}
-                />
-              </Form.Item>
-            </Col>
-
-            <Col xs={12} sm={6} md={5}>
-              <Form.Item
-                name="subCostCode"
-                label={<span style={LABEL_STYLE}>Sub Cost Centre</span>}
-                style={{ marginBottom: 10 }}
-              >
-                <Select
-                  showSearch allowClear
-                  options={subCostOpts}
-                  placeholder="Select sub cost…"
-                  style={{ borderRadius: 6 }}
-                  filterOption={(input, opt) =>
-                    String(opt?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                  }
-                />
-              </Form.Item>
-            </Col>
-
-            <Col xs={24} sm={10} md={5}>
-              <Form.Item
-                name="remarks"
-                label={<span style={LABEL_STYLE}>Remarks</span>}
-                style={{ marginBottom: 10 }}
-              >
-                <Input style={{ borderRadius: 6 }} placeholder="Notes…" maxLength={500} />
-              </Form.Item>
-            </Col>
-
-            <Col xs={12} sm={2} md={2} style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: 10 }}>
-              <Form.Item name="isSample" valuePropName="checked" initialValue={true} style={{ marginBottom: 0 }}>
-                <Checkbox>Sample</Checkbox>
-              </Form.Item>
-            </Col>
-          </Row>
-
-          {/* Action row — separate last row */}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 12 }}>
-            {editingKey ? (
-              <>
-                <Button onClick={cancelEdit} disabled={disabled}>Cancel</Button>
-                <Button
-                  type="primary"
-                  icon={<PlusOutlined />}
-                  onClick={() => void handleAddOrUpdate()}
-                  disabled={disabled}
-                >
-                  Update Row
-                </Button>
-              </>
-            ) : (
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={() => void handleAddOrUpdate()}
-                disabled={disabled}
-              >
-                Add to List
-              </Button>
-            )}
-          </div>
-        </Form>
-        </div>{/* /form body inner */}
-      </div>
-
-      {/* ── Items Grid ─────────────────────────────────────────────────────── */}
+    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, background: '#fff', borderRadius: '4px', overflow: 'hidden', border: '1px solid #e2e2e2' }}>
+      {/* Grid header bar */}
       <div style={{
-        background:   '#ffffff',
-        border:       '1px solid #f0f0f0',
-        borderRadius: 8,
-        overflow:     'hidden',
-        marginTop:    12,
-        boxShadow:    '0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '8px 14px',
+        borderBottom: '1px solid #e2e2e2',
+        background: '#fafaf8',
+        flexShrink: 0,
       }}>
-        {/* Grid header */}
-        <div style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '10px 16px', borderBottom: '1px solid #f0f0f0',
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Typography.Text style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Added Items</Typography.Text>
-            {validCount > 0 && (
-              <Tag color="blue" style={{ fontSize: 11, borderRadius: 10 }}>
-                {validCount} {validCount === 1 ? 'item' : 'items'}
-              </Tag>
-            )}
-          </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <svg width="13" height="13" viewBox="0 0 16 16" style={{ stroke: '#185FA5', fill: 'none', strokeWidth: 1.8 }}>
+            <rect x="2" y="2" width="12" height="12" rx="1.5"/><line x1="5" y1="6" x2="11" y2="6"/><line x1="5" y1="9" x2="11" y2="9"/>
+          </svg>
+          <span style={{ fontSize: 11, fontWeight: 600, color: '#185FA5', textTransform: 'uppercase', letterSpacing: '0.3px' }}>
+            Item Lines
+          </span>
+          <span style={{ fontSize: 11, padding: '2px 8px', background: '#E6F1FB', color: '#185FA5', borderRadius: 20 }}>
+            {validCount} {validCount === 1 ? 'item' : 'items'}
+          </span>
         </div>
-
-        {/* AG Grid — autoHeight: grows with rows, page scroll handles overflow */}
-        <AgGridReact<PRLineFormItem>
-          ref={gridRef}
-          className="spinrise-ag-grid"
-          theme={spinriseGridTheme}
-          rowData={items}
-          columnDefs={colDefs}
-          defaultColDef={defaultColDef}
-          getRowId={getRowId}
-          getRowClass={getRowClass}
-          onGridReady={onGridReady}
-          domLayout="autoHeight"
-          suppressRowClickSelection
-          suppressScrollOnNewData
-          pinnedBottomRowData={pinnedBottomRow}
-          getRowStyle={({ node }) =>
-            node.rowPinned === 'bottom'
-              ? { background: '#f1f5f9', fontWeight: 700, borderTop: '2px solid #e2e8f0' }
-              : undefined
-          }
-          noRowsOverlayComponent={() => (
-            <div style={{ textAlign: 'center', padding: '24px 0' }}>
-              <FileAddOutlined style={{ fontSize: 28, color: '#d1d5db', display: 'block', marginBottom: 8 }} />
-              <Typography.Text type="secondary" style={{ fontSize: 13 }}>
-                Fill the form above and click "Add to List"
-              </Typography.Text>
-            </div>
-          )}
-        />
       </div>
 
-      {/* ── Per-line Delete Modal (saved PRs only) ─────────────────────────── */}
-      <Modal
-        title={`Delete Line — ${lineDeleteRow?.itemCode ?? ''}`}
-        open={!!lineDeleteRow}
-        onCancel={() => setLineDeleteRow(null)}
-        onOk={async () => {
-          if (!lineDeleteRow?.prSNo || !savedPrNo) return
-          setLineDeleting(true)
-          try {
-            await purchaseRequisitionApi.deleteLine(savedPrNo, lineDeleteRow.prSNo, undefined, prDate, prDate)
-            onDelete(lineDeleteRow.key)
-            if (editingKey === lineDeleteRow.key) cancelEdit()
-            setLineDeleteRow(null)
-          } catch { /* error handled by global interceptor */ }
-          finally { setLineDeleting(false) }
-        }}
-        okText="Delete Line"
-        okButtonProps={{ danger: true, loading: lineDeleting }}
-        destroyOnClose
-      >
-        <p>Are you sure you want to delete this line item? This action cannot be undone.</p>
-      </Modal>
+      {/* Scrollable table */}
+      <div style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
+            <tr>
+              <th style={{ ...TH, width: 30 }}>#</th>
+              <th style={{ ...TH, width: 88 }}>Item Code</th>
+              <th style={{ ...TH, minWidth: 150 }}>Description</th>
+              <th style={{ ...TH, width: 46, textAlign: 'center' }}>UOM</th>
+              <th style={{ ...TH, width: 82, textAlign: 'right' }}>Qty Req. <span style={{ color: '#E24B4A' }}>*</span></th>
+              <th style={{ ...TH, width: 118, textAlign: 'right' }}>Rate</th>
+              <th style={{ ...TH, width: 130, textAlign: 'right' }}>Approx Cost</th>
+              <th style={{ ...TH, width: 148 }}>Req. Date</th>
+              <th style={{ ...TH, width: 120 }}>Machine</th>
+              <th style={{ ...TH, width: 140 }}>Sub-Cost</th>
+              <th style={{ ...TH, minWidth: 110 }}>Remarks</th>
+              <th style={{ ...TH, width: 52, textAlign: 'center' }}>Sample</th>
+              <th style={{ ...TH, width: 60, textAlign: 'center' }} />
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((row, idx) =>
+              editingRowKey === row.key && !disabled ? (
+                <tr key={row.key} style={{ background: '#f0f7ff', border: '1px solid #bfdbfe' }}>
+                  <EditableRow
+                    row={row}
+                    idx={idx}
+                    machines={deptMachines}
+                    subCosts={subCosts}
+                    qtyError={qtyErrorKeys.has(row.key)}
+                    isLast={items.length <= 1}
+                    onUpdate={(field, value) => handleRowUpdate(row.key, field, value)}
+                    onView={(r) => setViewRowKey(r.key)}
+                    onDelete={() => handleRowDelete(row.key)}
+                    onHistory={() => openHistory(row)}
+                  />
+                </tr>
+              ) : (
+                <tr key={row.key} style={{ background: idx % 2 === 0 ? '#ffffff' : '#fafafa', cursor: !disabled ? 'pointer' : 'default' }} onClick={() => !disabled && handleRowEdit(row.key)}>
+                  <ReadOnlyRow
+                    row={row}
+                    idx={idx}
+                    machines={deptMachines}
+                    subCosts={subCosts}
+                    onView={(r) => setViewRowKey(r.key)}
+                  />
+                </tr>
+              )
+            )}
+            {!disabled && (
+              <tr style={{ background: '#f0f7ff', borderTop: '2px dashed #bfdbfe' }}>
+                <td style={{ ...TD, textAlign: 'center', color: '#94a3b8' }}>{items.length + 1}</td>
+                <td colSpan={12} style={{ ...TD, padding: '8px 14px' }}>
+                  {!depCode ? (
+                    <Typography.Text type="secondary" style={{ fontSize: 11 }}>Select department first</Typography.Text>
+                  ) : (
+                    <Input
+                      size="small"
+                      ref={searchInputRef}
+                      placeholder="Search item by code or name (Enter to open picker)"
+                      prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
+                      onPressEnter={() => setPickerOpen(true)}
+                      style={{ width: '300px', height: '24px' }}
+                    />
+                  )}
+                </td>
+              </tr>
+            )}
+            {items.length === 0 && disabled && (
+              <tr>
+                <td colSpan={13} style={{ textAlign: 'center', padding: '32px', color: '#888', fontSize: 12 }}>
+                  No items added to this requisition.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
 
-      {/* ── Rate History Modal ──────────────────────────────────────────────── */}
+      {/* {validCount > 0 && <GridSummaryBar validCount={validCount} totalQty={totalQty} subtotal={subtotal} />} */}
+
+      {/* Item Picker Modal */}
+      <ItemPickerModal
+        open={pickerOpen}
+        depCode={depCode}
+        onSelectMultiple={handleItemsFromModal}
+        onCancel={() => setPickerOpen(false)}
+      />
+
+      {/* Rate History Modal */}
       <Modal
         title={
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <ClockCircleOutlined style={{ color: '#7c3aed' }} />
-            <span>Rate History — <span style={{ fontFamily: 'monospace', color: '#1677ff' }}>{historyItem}</span></span>
+            <span>
+              Rate History — <span style={{ fontFamily: 'monospace', color: '#1677ff' }}>{historyItem}</span>
+            </span>
           </div>
         }
         open={historyOpen}
@@ -1034,39 +733,88 @@ export const PRLineItemsTable = forwardRef<PRLineItemsTableHandle, PRLineItemsTa
         )}
       </Modal>
 
-      {/* ── Advanced Fields Drawer ──────────────────────────────────────────── */}
-      <Drawer
-        title={`Advanced Fields — ${drawerRow?.itemCode || 'Row'}`}
-        placement="right"
-        width={400}
-        open={!!drawerRow}
-        onClose={() => setDrawerRow(null)}
-        extra={<Button type="primary" size="small" onClick={saveDrawer}>Save</Button>}
+      {/* Per-line Delete Modal (saved PRs only) */}
+      <Modal
+        title={`Delete Line — ${lineDeleteRow?.itemCode ?? ''}`}
+        open={!!lineDeleteRow}
+        onCancel={() => setLineDeleteRow(null)}
+        onOk={async () => {
+          if (!lineDeleteRow?.prSNo || !savedPrNo) return
+          setLineDeleting(true)
+          try {
+            await purchaseRequisitionApi.deleteLine(
+              savedPrNo, lineDeleteRow.prSNo, undefined, prDate, prDate,
+            )
+            onDelete(lineDeleteRow.key)
+            setLineDeleteRow(null)
+          } catch { /* handled by global interceptor */ }
+          finally { setLineDeleting(false) }
+        }}
+        okText="Delete Line"
+        okButtonProps={{ danger: true, loading: lineDeleting }}
+        destroyOnClose
       >
-        <Form form={drawerForm} layout="vertical" size="small">
-          <Form.Item name="costCentreCode" label="Cost Centre">
-            <Input placeholder="Cost centre…" maxLength={20} />
-          </Form.Item>
-          <Form.Item name="budgetGroupCode" label="GL Account">
-            <Input placeholder="GL account…" maxLength={20} />
-          </Form.Item>
-          <Form.Item name="subCostCode" label="Sub Cost Centre">
-            <InputNumber style={{ width: '100%' }} min={0} precision={0} placeholder="Sub cost code…" />
-          </Form.Item>
-          <Form.Item name="categoryCode" label="Category">
-            <Input placeholder="Category code…" maxLength={1} />
-          </Form.Item>
-          <Form.Item name="remarks" label="Remarks">
-            <Input.TextArea placeholder="Optional notes…" maxLength={500} rows={3} />
-          </Form.Item>
-          <Form.Item name="model" label="Model">
-            <Input placeholder="Model…" maxLength={100} />
-          </Form.Item>
-          <Form.Item name="maxCost" label="Max Cost">
-            <InputNumber style={{ width: '100%' }} min={0} precision={2} prefix="₹" />
-          </Form.Item>
-        </Form>
+        <p>Are you sure you want to delete this line item? This action cannot be undone.</p>
+      </Modal>
+
+      {/* Line Detail Drawer (read-only supplementary info) */}
+      <Drawer
+        title={
+          <span>
+            Line Details —{' '}
+            <span style={{ fontFamily: 'monospace', color: '#1677ff' }}>
+              {viewRow?.itemCode ?? ''}
+            </span>
+          </span>
+        }
+        placement="left"
+        width={360}
+        open={!!viewRow}
+        onClose={() => setViewRowKey(null)}
+        footer={null}
+        destroyOnClose
+      >
+        {viewRow && (
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {([
+              { label: 'Item Name',     value: viewRow.itemName || '—' },
+              { label: 'Current Stock', value: viewRow.currentStock != null ? String(viewRow.currentStock) : '—' },
+              { label: 'Min Level',     value: viewRow.minLevel  != null ? String(viewRow.minLevel)        : '—' },
+              { label: 'Cat. No',       value: viewRow.catNo  || '—' },
+              { label: 'Draw No',       value: viewRow.drawNo || '—' },
+              { label: 'Last PO Rate',  value: viewRow.lastPoRate != null ? `₹ ${Number(viewRow.lastPoRate).toFixed(2)}` : '—' },
+              { label: 'Last PO Date',  value: viewRow.lastPoDate ? dayjs(viewRow.lastPoDate).format('DD/MM/YYYY') : '—' },
+              { label: 'Supplier Code', value: viewRow.lastPoSupplierCode || '—' },
+              { label: 'Supplier Name', value: viewRow.lastPoSupplierName || '—' },
+            ] as { label: string; value: string }[]).map(({ label, value }, idx) => (
+              <div
+                key={label}
+                style={{
+                  display:        'flex',
+                  justifyContent: 'space-between',
+                  alignItems:     'flex-start',
+                  gap:            12,
+                  padding:        '10px 8px',
+                  borderBottom:   '1px solid #f0f0f0',
+                  background:     idx % 2 === 0 ? '#fafafa' : '#ffffff',
+                }}
+              >
+                <Typography.Text
+                  type="secondary"
+                  style={{ fontSize: 12, fontWeight: 500, whiteSpace: 'nowrap', flexShrink: 0 }}
+                >
+                  {label}
+                </Typography.Text>
+                <Typography.Text style={{ fontSize: 13, textAlign: 'right', wordBreak: 'break-word' }}>
+                  {value}
+                </Typography.Text>
+              </div>
+            ))}
+          </div>
+        )}
       </Drawer>
-    </>
+    </div>
   )
 })
+
+PRLineItemsTable.displayName = 'PRLineItemsTable'

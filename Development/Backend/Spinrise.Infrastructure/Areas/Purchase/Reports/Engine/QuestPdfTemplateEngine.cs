@@ -130,7 +130,36 @@ public static class QuestPdfTemplateEngine
                  foreach (var cr in dr.ChildRows)
                      RenderChildRow(table, cr, cfg.EmptyMachCell, cfg.Columns.Count);
              }
+
+             if (cfg.TotalsRow is not null)
+                 RenderTotalsRow(table, cfg.TotalsRow);
          });
+    }
+
+    private static void RenderTotalsRow(TableDescriptor table, TotalsRowConfig cfg)
+    {
+        foreach (var cell in cfg.Cells)
+        {
+            table.Cell()
+                 .ColumnSpan(cell.ColumnSpan)
+                 .BorderLeft(cfg.BdSidePt).BorderRight(cfg.BdSidePt)
+                 .BorderTop(cfg.BdSidePt).BorderBottom(cfg.BdSidePt)
+                 .BorderColor(cfg.BdColor)
+                 .Background(cfg.BgColor)
+                 .MinHeight(cfg.MinHeightMm, Unit.Millimetre)
+                 .PaddingVertical(cell.PadV).PaddingLeft(cell.PadH).PaddingRight(cell.PadR)
+                 .Text(t =>
+                 {
+                     switch (cell.Align)
+                     {
+                         case DA.Center: t.AlignCenter(); break;
+                         case DA.Right:  t.AlignRight();  break;
+                         default:        t.AlignLeft();   break;
+                     }
+                     var sp = t.Span(cell.Text).FontSize(cfg.FontSizePt);
+                     if (cell.Bold) sp.Bold();
+                 });
+        }
     }
 
     // RowSpan/ColumnSpan MUST be called before any border/padding (ITableCellContainer → IContainer).
