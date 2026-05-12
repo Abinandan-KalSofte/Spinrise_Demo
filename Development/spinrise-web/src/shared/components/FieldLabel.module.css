@@ -1,0 +1,11 @@
+.label {
+  font-size:     var(--font-label-size);
+  font-weight:   var(--font-label-weight);
+  color:         var(--color-text-900);
+  line-height:   1.35;
+  display:       inline-block;
+}
+.required {
+  color:        var(--color-error);
+  margin-right: 4px;
+}

@@ -1,33 +1,28 @@
 import { useState } from 'react'
-import { Avatar, Badge, Button, Dropdown, Input, Layout, Popover, Tooltip, Typography } from 'antd'
+import { Avatar, Badge, Button, Dropdown, Layout, Popover, Select, Tooltip, Typography } from 'antd'
 import {
-  AppstoreOutlined,
-  ArrowRightOutlined,
-  BellOutlined,
-  CalendarOutlined,
-  CheckCircleOutlined,
-  ClockCircleOutlined,
-  LogoutOutlined,
-  MenuFoldOutlined,
-  MenuOutlined,
-  MenuUnfoldOutlined,
-  SearchOutlined,
-  StopOutlined,
-  WarningOutlined,
-} from '@ant-design/icons'
+  ArrowRight,
+  Bell,
+  Calendar,
+  CheckCircle,
+  ChevronDown,
+  Clock,
+  LogOut,
+  Moon,
+  PanelLeft,
+  PanelLeftClose,
+  Sun,
+  TriangleAlert,
+  XCircle,
+} from 'lucide-react'
 import dayjs from 'dayjs'
 import type { MenuProps } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/features/auth/store/useAuthStore'
+import { useThemeStore } from '@/shared/store/useThemeStore'
+import styles from './AppHeader.module.css'
 
 const { Header } = Layout
-
-interface AppModule {
-  key:   string
-  label: string
-  icon:  React.ReactNode
-  color: string
-}
 
 interface PRSummary {
   totalCount:     number
@@ -37,22 +32,26 @@ interface PRSummary {
 }
 
 interface AppHeaderProps {
-  collapsed:              boolean
-  onToggle:               () => void
-  onMobileToggle:         () => void
-  activeModule:           AppModule
-  switcherOpen:           boolean
-  onSwitcherOpenChange:   (open: boolean) => void
-  switcherContent:        React.ReactNode
-  prSummary:              PRSummary
+  collapsed:      boolean
+  onToggle:       () => void
+  onMobileToggle: () => void
+  prSummary:      PRSummary
+}
+
+// ── Financial Year helper ─────────────────────────────────────────────────────
+
+function getFinancialYear(dateStr: string | null | undefined): string {
+  const d     = dateStr ? new Date(dateStr) : new Date()
+  const year  = d.getFullYear()
+  const month = d.getMonth() + 1
+  if (month >= 4) return `FY ${year}–${String(year + 1).slice(2)}`
+  return `FY ${year - 1}–${String(year).slice(2)}`
 }
 
 // ── Notification panel ────────────────────────────────────────────────────────
 
 interface NotifItem {
   priority:    'urgent' | 'action' | 'info'
-  label:       string
-  labelColor:  string
   accentColor: string
   bgColor:     string
   borderColor: string
@@ -61,187 +60,93 @@ interface NotifItem {
   title:       string
   description: string
   route:       string
+  priorityLabel: string
+  priorityColor: string
 }
 
 function buildNotifications(s: PRSummary): NotifItem[] {
   const items: NotifItem[] = []
-
   if (s.openCount > 0) {
     items.push({
-      priority:    'urgent',
-      label:       'Urgent — Action Required',
-      labelColor:  '#b91c1c',
-      accentColor: '#dc2626',
-      bgColor:     '#fff5f5',
-      borderColor: '#fecaca',
-      icon:        <WarningOutlined />,
-      count:       s.openCount,
-      title:       'PRs Pending Approval',
+      priority: 'urgent', priorityLabel: 'Urgent — Action Required', priorityColor: '#A32D2D',
+      accentColor: '#A32D2D', bgColor: '#FCEBEB', borderColor: '#fecaca',
+      icon: <TriangleAlert size={12} />, count: s.openCount,
+      title: 'PRs Pending Approval',
       description: `${s.openCount} purchase requisition${s.openCount > 1 ? 's are' : ' is'} awaiting approval`,
-      route:       '/purchase/requisition',
+      route: '/purchase/requisition',
     })
   }
-
   if (s.approvedCount > 0) {
     items.push({
-      priority:    'action',
-      label:       'Action Needed',
-      labelColor:  '#b45309',
-      accentColor: '#d97706',
-      bgColor:     '#fffbeb',
-      borderColor: '#fde68a',
-      icon:        <ClockCircleOutlined />,
-      count:       s.approvedCount,
-      title:       'Approved — Awaiting PO',
-      description: `${s.approvedCount} approved PR${s.approvedCount > 1 ? 's' : ''} ready for purchase order conversion`,
-      route:       '/purchase/requisition',
+      priority: 'action', priorityLabel: 'Action Needed', priorityColor: '#BA7517',
+      accentColor: '#BA7517', bgColor: '#FAEEDA', borderColor: '#fde68a',
+      icon: <Clock size={12} />, count: s.approvedCount,
+      title: 'Approved — Awaiting PO',
+      description: `${s.approvedCount} approved PR${s.approvedCount > 1 ? 's' : ''} ready for PO conversion`,
+      route: '/purchase/requisition',
     })
   }
-
   if (s.cancelledCount > 0) {
     items.push({
-      priority:    'info',
-      label:       'Informational',
-      labelColor:  '#475569',
-      accentColor: '#94a3b8',
-      bgColor:     '#f8fafc',
-      borderColor: '#e2e8f0',
-      icon:        <StopOutlined />,
-      count:       s.cancelledCount,
-      title:       'Cancelled PRs',
+      priority: 'info', priorityLabel: 'Informational', priorityColor: '#4A4A4A',
+      accentColor: '#888888', bgColor: '#F5F5F3', borderColor: '#E2E2E2',
+      icon: <XCircle size={12} />, count: s.cancelledCount,
+      title: 'Cancelled PRs',
       description: `${s.cancelledCount} PR${s.cancelledCount > 1 ? 's' : ''} cancelled this period`,
-      route:       '/purchase/requisition',
+      route: '/purchase/requisition',
     })
   }
-
   return items
 }
 
-function NotificationPanel({ summary, onNavigate }: { summary: PRSummary; onNavigate: (route: string) => void }) {
+function NotificationPanel({ summary, onNavigate }: { summary: PRSummary; onNavigate: (r: string) => void }) {
   const items = buildNotifications(summary)
-  const urgentCount = summary.openCount
-
   return (
-    <div style={{ width: 340 }}>
-
-      {/* Header */}
-      <div style={{
-        padding:      '12px 16px',
-        borderBottom: '1px solid #f1f5f9',
-        background:   'linear-gradient(135deg, #f8faff 0%, #ffffff 100%)',
-        display:      'flex',
-        alignItems:   'center',
-        justifyContent: 'space-between',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <BellOutlined style={{ color: '#1677ff', fontSize: 15 }} />
-          <Typography.Text style={{ fontWeight: 700, fontSize: 14, color: '#1e293b' }}>
-            Notifications
-          </Typography.Text>
+    <div className={styles.notifPanel}>
+      <div className={styles.notifHeader}>
+        <div className={styles.notifHeaderLeft}>
+          <Bell size={15} color="var(--color-primary)" />
+          <span className={styles.notifTitle}>Notifications</span>
         </div>
-        {urgentCount > 0 && (
-          <div style={{
-            background:   'linear-gradient(135deg, #dc2626, #b91c1c)',
-            borderRadius: 20,
-            padding:      '2px 10px',
-            fontSize:     11,
-            fontWeight:   700,
-            color:        '#ffffff',
-            boxShadow:    '0 2px 6px rgba(220,38,38,0.35)',
-            letterSpacing: '0.02em',
-          }}>
-            {urgentCount} urgent
-          </div>
+        {summary.openCount > 0 && (
+          <span className={styles.notifUrgentBadge}>{summary.openCount} urgent</span>
         )}
       </div>
 
-      {/* Items */}
-      <div style={{ padding: '8px 0', maxHeight: 360, overflowY: 'auto' }}>
+      <div className={styles.notifList}>
         {items.length === 0 ? (
-          <div style={{ padding: '28px 16px', textAlign: 'center' }}>
-            <CheckCircleOutlined style={{ fontSize: 28, color: '#86efac', display: 'block', marginBottom: 10 }} />
-            <Typography.Text style={{ fontSize: 13, color: '#64748b' }}>
-              All clear — no pending items
-            </Typography.Text>
+          <div className={styles.notifEmpty}>
+            <CheckCircle size={28} color="#86efac" style={{ display: 'block', margin: '0 auto 10px' }} />
+            <span className={styles.notifEmptyText}>All clear — no pending items</span>
           </div>
-        ) : (
-          items.map((n) => (
-            <div
-              key={n.title}
-              onClick={() => onNavigate(n.route)}
-              style={{
-                margin:       '4px 8px',
-                background:   n.bgColor,
-                border:       `1px solid ${n.borderColor}`,
-                borderLeft:   `4px solid ${n.accentColor}`,
-                borderRadius: '0 8px 8px 0',
-                padding:      '10px 12px',
-                cursor:       'pointer',
-                transition:   'box-shadow 0.15s',
-              }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.boxShadow = '0 2px 10px rgba(0,0,0,0.10)' }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.boxShadow = 'none' }}
-            >
-              {/* Priority label + count badge */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 5 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                  <span style={{ color: n.labelColor, fontSize: 12 }}>{n.icon}</span>
-                  <span style={{
-                    fontSize:      10,
-                    fontWeight:    700,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.08em',
-                    color:         n.labelColor,
-                  }}>
-                    {n.label}
-                  </span>
-                </div>
-                <div style={{
-                  background:   n.accentColor,
-                  borderRadius: 12,
-                  padding:      '1px 9px',
-                  fontSize:     12,
-                  fontWeight:   700,
-                  color:        '#ffffff',
-                  minWidth:     24,
-                  textAlign:    'center',
-                }}>
-                  {n.count}
-                </div>
+        ) : items.map((n) => (
+          <div
+            key={n.title}
+            className={styles.notifItem}
+            style={{ background: n.bgColor, border: `1px solid ${n.borderColor}`, borderLeft: `4px solid ${n.accentColor}` }}
+            onClick={() => onNavigate(n.route)}
+          >
+            <div className={styles.notifItemTop}>
+              <div className={styles.notifItemLabel}>
+                <span style={{ color: n.priorityColor }}>{n.icon}</span>
+                <span className={styles.notifPriorityText} style={{ color: n.priorityColor }}>{n.priorityLabel}</span>
               </div>
-
-              {/* Title */}
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1e293b', marginBottom: 2 }}>
-                {n.title}
-              </div>
-
-              {/* Description + action link */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-                <Typography.Text type="secondary" style={{ fontSize: 11, lineHeight: 1.4 }}>
-                  {n.description}
-                </Typography.Text>
-                <ArrowRightOutlined style={{ fontSize: 11, color: n.accentColor, flexShrink: 0 }} />
-              </div>
+              <span className={styles.notifCount} style={{ background: n.accentColor }}>{n.count}</span>
             </div>
-          ))
-        )}
+            <div className={styles.notifItemTitle}>{n.title}</div>
+            <div className={styles.notifItemDesc}>
+              <Typography.Text type="secondary" style={{ fontSize: 11, lineHeight: 1.4 }}>
+                {n.description}
+              </Typography.Text>
+              <ArrowRight size={11} color={n.accentColor} style={{ flexShrink: 0 }} />
+            </div>
+          </div>
+        ))}
       </div>
 
-      {/* Footer */}
-      <div style={{
-        padding:      '10px 16px',
-        borderTop:    '1px solid #f1f5f9',
-        display:      'flex',
-        alignItems:   'center',
-        justifyContent: 'space-between',
-      }}>
-        <Typography.Text type="secondary" style={{ fontSize: 11 }}>
-          {summary.totalCount} total PRs this period
-        </Typography.Text>
-        <Typography.Link
-          style={{ fontSize: 12, fontWeight: 600 }}
-          onClick={() => onNavigate('/purchase/requisition')}
-        >
+      <div className={styles.notifFooter}>
+        <span className={styles.notifFooterText}>{summary.totalCount} total PRs this period</span>
+        <Typography.Link style={{ fontSize: 12, fontWeight: 600 }} onClick={() => onNavigate('/purchase/requisition')}>
           View all →
         </Typography.Link>
       </div>
@@ -251,193 +156,138 @@ function NotificationPanel({ summary, onNavigate }: { summary: PRSummary; onNavi
 
 // ── AppHeader ─────────────────────────────────────────────────────────────────
 
-export function AppHeader({
-  collapsed,
-  onToggle,
-  onMobileToggle,
-  activeModule,
-  switcherOpen,
-  onSwitcherOpenChange,
-  switcherContent,
-  prSummary,
-}: AppHeaderProps) {
-  const navigate  = useNavigate()
+export function AppHeader({ collapsed, onToggle, onMobileToggle, prSummary }: AppHeaderProps) {
+  const navigate                        = useNavigate()
   const { user, processingDate, clearAuthSession } = useAuthStore()
+  const { isDark, toggle: toggleTheme } = useThemeStore()
+
   const displayName = user?.userName || user?.userId || 'User'
   const initials    = displayName.slice(0, 2).toUpperCase()
+  const divLabel    = user?.divCode ?? '—'
+  const fy          = getFinancialYear(processingDate)
 
   const [notifOpen, setNotifOpen] = useState(false)
 
   const profileMenu: MenuProps['items'] = [
     {
-      key: 'info',
+      key: 'info', disabled: true,
       label: (
         <div style={{ padding: '4px 0', minWidth: 160 }}>
-          <Typography.Text strong style={{ display: 'block', fontSize: 13 }}>
-            {displayName}
-          </Typography.Text>
+          <Typography.Text strong style={{ display: 'block', fontSize: 13 }}>{displayName}</Typography.Text>
           <Typography.Text type="secondary" style={{ fontSize: 12 }}>
-            {user?.email || `Div: ${user?.divCode}`}
+            {user?.email || `Division: ${divLabel}`}
           </Typography.Text>
         </div>
       ),
-      disabled: true,
-    },
-    {
-      key: 'role',
-      label: (
-        <Typography.Text type="secondary" style={{ fontSize: 11, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
-          {user?.role ?? 'User'}
-        </Typography.Text>
-      ),
-      disabled: true,
     },
     { type: 'divider' },
     {
-      key:     'logout',
-      label:   'Sign out',
-      icon:    <LogoutOutlined />,
-      danger:  true,
+      key: 'logout', danger: true,
+      label: 'Sign out',
+      icon: <LogOut size={14} />,
       onClick: () => { clearAuthSession(); navigate('/login') },
     },
   ]
 
-  const handleNotifNavigate = (route: string) => {
-    setNotifOpen(false)
-    navigate(route)
-  }
-
-  const urgentCount = prSummary.openCount
-
   return (
     <Header className="topbar">
-      {/* ── Left: Toggle + Module Switcher ────────────────────────────────── */}
-      <div className="topbar__left">
+      {/* ── Left ──────────────────────────────────────────────────────── */}
+      <div className={styles.left}>
         <Button
           type="text"
-          icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+          className={`${styles.iconBtn} ${styles.toggleDesktop}`}
+          icon={collapsed ? <PanelLeft size={18} /> : <PanelLeftClose size={18} />}
           onClick={onToggle}
-          className="topbar__icon-btn topbar__toggle--desktop"
         />
         <Button
           type="text"
-          icon={<MenuOutlined />}
+          className={`${styles.iconBtn} ${styles.toggleMobile}`}
+          icon={<PanelLeft size={18} />}
           onClick={onMobileToggle}
-          className="topbar__icon-btn topbar__toggle--mobile"
         />
-        <Popover
-          open={switcherOpen}
-          onOpenChange={onSwitcherOpenChange}
-          content={switcherContent}
-          trigger="click"
-          placement="bottomLeft"
-          arrow={false}
-          overlayClassName="module-switcher-popover"
-        >
-          <button className="topbar__module-btn" type="button">
-            <div
-              className="topbar__module-icon"
-              style={{ background: activeModule.color + '18', color: activeModule.color }}
-            >
-              {activeModule.icon}
-            </div>
-            <span className="topbar__module-label">{activeModule.label}</span>
-            <AppstoreOutlined className="topbar__module-chevron" />
-          </button>
-        </Popover>
+
+        <div className={styles.logoMark}>S</div>
+        <div className={styles.brandBlock}>
+          <span className={styles.brandName}>Kalpatharu Software Ltd</span>
+          <span className={styles.brandDiv}>{divLabel}</span>
+        </div>
       </div>
 
-      {/* ── Center: Global Search ─────────────────────────────────────────── */}
-      <div className="topbar__center">
-        <Input
-          prefix={<SearchOutlined />}
-          placeholder="Search items, PRs, orders…"
-          className="topbar__search"
-          variant="filled"
+      {/* ── Centre ────────────────────────────────────────────────────── */}
+      <div className={styles.centre}>
+        <Select
+          className={styles.branchSelect}
+          value={divLabel}
+          size="small"
+          disabled
+          options={[{ value: divLabel, label: `Branch: ${divLabel}` }]}
         />
+        <span className={styles.fyText}>{fy}</span>
       </div>
 
-      {/* ── Right: Processing Date + Notifications + Profile ─────────────── */}
-      <div className="topbar__right">
-
-        {/* Processing Date */}
+      {/* ── Right ─────────────────────────────────────────────────────── */}
+      <div className={styles.right}>
         {processingDate && (
           <Tooltip title="Processing Date">
-            <div style={{
-              display:      'flex',
-              alignItems:   'center',
-              gap:          6,
-              background:   '#fef3c7',
-              border:       '1px solid #f59e0b',
-              borderRadius: 8,
-              padding:      '3px 10px',
-              cursor:       'default',
-              flexShrink:   0,
-            }}>
-              <CalendarOutlined style={{ color: '#d97706', fontSize: 13 }} />
-              <Typography.Text style={{
-                fontSize:           12,
-                fontWeight:         700,
-                color:              '#92400e',
-                fontVariantNumeric: 'tabular-nums',
-              }}>
+            <div className={styles.procDateChip}>
+              <Calendar size={13} color="#d97706" />
+              <span className={styles.procDateText}>
                 {dayjs(processingDate).format('DD-MM-YYYY')}
-              </Typography.Text>
+              </span>
             </div>
           </Tooltip>
         )}
 
-        {/* Notification Bell */}
         <Popover
           open={notifOpen}
           onOpenChange={setNotifOpen}
           trigger="click"
           placement="bottomRight"
           arrow={false}
-          overlayInnerStyle={{ padding: 0, borderRadius: 10, overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.08)' }}
-          content={
-            <NotificationPanel
-              summary={prSummary}
-              onNavigate={handleNotifNavigate}
-            />
-          }
+          overlayInnerStyle={{ padding: 0, borderRadius: 8, overflow: 'hidden', boxShadow: '0 8px 24px rgba(0,0,0,0.12)' }}
+          content={<NotificationPanel summary={prSummary} onNavigate={(r) => { setNotifOpen(false); navigate(r) }} />}
         >
-          <Badge
-            count={urgentCount}
-            size="small"
-            offset={[-2, 2]}
-            overflowCount={99}
-            style={{
-              boxShadow:  '0 2px 6px rgba(220,38,38,0.40)',
-              background: urgentCount > 0 ? 'linear-gradient(135deg, #dc2626, #b91c1c)' : undefined,
-            }}
-          >
+          <Badge count={prSummary.openCount} size="small" offset={[-2, 2]} overflowCount={99}>
             <Button
               type="text"
-              shape="circle"
-              icon={<BellOutlined style={{ fontSize: urgentCount > 0 ? 17 : 16, color: urgentCount > 0 ? '#dc2626' : undefined }} />}
-              className="topbar__icon-btn"
-              style={urgentCount > 0 ? { background: '#fef2f2' } : undefined}
+              className={styles.iconBtn}
+              icon={<Bell size={18} color={prSummary.openCount > 0 ? '#A32D2D' : undefined} />}
+              style={prSummary.openCount > 0 ? { background: '#FCEBEB' } : undefined}
             />
           </Badge>
         </Popover>
 
-        {/* Profile */}
-        <Dropdown
-          menu={{ items: profileMenu }}
-          trigger={['click']}
-          placement="bottomRight"
-        >
-          <button className="topbar__profile" type="button">
-            <Avatar className="topbar__avatar" size={32}>
+        <Tooltip title={isDark ? 'Switch to Light' : 'Switch to Dark'}>
+          <Button
+            type="text"
+            className={styles.iconBtn}
+            icon={isDark ? <Sun size={16} /> : <Moon size={16} />}
+            onClick={toggleTheme}
+          />
+        </Tooltip>
+
+        <Dropdown menu={{ items: profileMenu }} trigger={['click']} placement="bottomRight">
+          <button className={styles.profile} type="button">
+            <Avatar size={28} style={{ background: 'var(--color-primary)', fontSize: 11, fontWeight: 700 }}>
               {initials}
             </Avatar>
-            <div className="topbar__profile-info">
-              <span className="topbar__profile-name">{displayName}</span>
-              <span className="topbar__profile-role">{user?.divCode}</span>
+            <div className={styles.profileInfo}>
+              <span className={styles.profileName}>{displayName}</span>
+              <span className={styles.profileRole}>{divLabel}</span>
             </div>
+            <ChevronDown size={12} color="var(--color-text-400)" />
           </button>
         </Dropdown>
+
+        <Tooltip title="Logout">
+          <Button
+            type="text"
+            className={styles.iconBtn}
+            icon={<LogOut size={16} />}
+            onClick={() => { clearAuthSession(); navigate('/login') }}
+            danger
+          />
+        </Tooltip>
       </div>
     </Header>
   )

@@ -1,0 +1,44 @@
+.card {
+  background:    #ffffff;
+  border:        1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow:    0 1px 4px rgba(0,0,0,0.06);
+  padding:       12px 16px;
+  display:       flex;
+  align-items:   center;
+  gap:           12px;
+  max-height:    72px;
+  flex:          1;
+  min-width:     0;
+  overflow:      hidden;
+}
+.iconBox {
+  width:           36px;
+  height:          36px;
+  border-radius:   6px;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  flex-shrink:     0;
+  font-size:       16px;
+}
+.body    { min-width: 0; overflow: hidden; }
+.value {
+  font-size:            20px;
+  font-weight:          700;
+  line-height:          1.1;
+  font-variant-numeric: tabular-nums;
+  white-space:          nowrap;
+  overflow:             hidden;
+  text-overflow:        ellipsis;
+}
+.label {
+  font-size:     11px;
+  font-weight:   500;
+  color:         var(--color-text-600);
+  margin-top:    2px;
+  white-space:   nowrap;
+  overflow:      hidden;
+  text-overflow: ellipsis;
+  display:       block;
+}

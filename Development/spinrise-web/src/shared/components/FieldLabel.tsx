@@ -1,23 +1,17 @@
-import type { CSSProperties } from 'react'
-import { LABEL_FONT_SIZE, LABEL_FONT_WEIGHT } from '../styles/tokens'
+import styles from './FieldLabel.module.css'
 
 interface FieldLabelProps {
-  text: string
+  text:      string
   required?: boolean
+  htmlFor?:  string
 }
 
-const BASE_STYLE: CSSProperties = {
-  fontSize:   LABEL_FONT_SIZE,
-  fontWeight: LABEL_FONT_WEIGHT,
-}
-
-export function FieldLabel({ text, required = false }: FieldLabelProps) {
+export function FieldLabel({ text, required = false, htmlFor }: FieldLabelProps) {
+  const Tag = htmlFor ? 'label' : 'span'
   return (
-    <span style={BASE_STYLE}>
-      {required && (
-        <span style={{ color: '#ff4d4f', marginRight: 4 }}>*</span>
-      )}
+    <Tag className={styles.label} {...(htmlFor ? { htmlFor } : {})}>
+      {required && <span className={styles.required} aria-hidden="true">*</span>}
       {text}
-    </span>
+    </Tag>
   )
 }

@@ -6,7 +6,10 @@
       "Bash(npm run *)",
       "PowerShell($lines = \\(Get-Content \"D:\\\\Spinrise\\\\Development\\\\Backend\\\\Spinrise.DBScripts\\\\merged.sql\"\\).Count; Write-Host \"Total lines: $lines\")",
       "Bash(grep -n \"^GO$\" \"D:\\\\Spinrise\\\\Development\\\\Backend\\\\Spinrise.DBScripts\\\\merged.sql\")",
-      "Bash(awk -F: '$2 > 2950')"
+      "Bash(awk -F: '$2 > 2950')",
+      "Bash(Select-Object Name, FullName)",
+      "Bash(sort -t: -k2 -rn)",
+      "Bash(npm install *)"
     ]
   }
 }

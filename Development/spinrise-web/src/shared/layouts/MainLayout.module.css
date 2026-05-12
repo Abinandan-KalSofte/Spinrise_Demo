@@ -1,0 +1,128 @@
+/* ── Sidebar brand ────────────────────────────────────────────────── */
+.brand {
+  display:       flex;
+  align-items:   center;
+  gap:           10px;
+  padding:       14px 16px 12px;
+  flex-shrink:   0;
+  border-bottom: 1px solid var(--color-border);
+  cursor:        pointer;
+  transition:    background 0.12s;
+}
+.brand:hover { background: var(--color-primary-light); }
+
+.brandMark {
+  width:          32px;
+  height:         32px;
+  border-radius:  8px;
+  background:     var(--color-primary);
+  display:        grid;
+  place-items:    center;
+  font-size:      15px;
+  font-weight:    800;
+  color:          #ffffff;
+  flex-shrink:    0;
+  letter-spacing: -0.5px;
+}
+.brandCopy     { display: flex; flex-direction: column; line-height: 1.25; overflow: hidden; }
+.brandName     { font-size: 13px; font-weight: 600; color: var(--color-text-900); white-space: nowrap; }
+.brandSub      { font-size: 11px; color: var(--color-text-600); white-space: nowrap; }
+
+/* ── Division chip ────────────────────────────────────────────────── */
+.divSection    { padding: 0 12px 10px; flex-shrink: 0; }
+.divChip {
+  background:    var(--color-primary-light);
+  border:        1px solid var(--color-border);
+  border-radius: 6px;
+  color:         var(--color-primary);
+  font-size:     11px;
+  font-weight:   700;
+  padding:       4px 6px;
+  text-align:    center;
+  display:       block;
+}
+
+/* ── Module label badge ───────────────────────────────────────────── */
+.moduleBadge    { padding: 4px 16px 2px; flex-shrink: 0; }
+.moduleLabel {
+  font-size:      10px;
+  font-weight:    700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color:          var(--color-text-400);
+}
+
+/* ── Sidebar footer ───────────────────────────────────────────────── */
+.footer {
+  flex-shrink:  0;
+  padding:      10px 16px;
+  border-top:   1px solid var(--color-border);
+  display:      flex;
+  align-items:  center;
+  gap:          8px;
+}
+.footerText { font-size: 11px; color: var(--color-text-400); }
+
+/* ── Module switcher popover ──────────────────────────────────────── */
+.switcher        { width: 360px; }
+.switcherSearch  { margin-bottom: 14px; border-radius: 8px !important; }
+.switcherGroup   { margin-bottom: 14px; }
+.switcherGroupLabel {
+  display:        block;
+  font-size:      10px;
+  font-weight:    700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color:          var(--color-text-400);
+  margin-bottom:  6px;
+}
+.switcherGrid {
+  display:               grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap:                   6px;
+}
+.switcherItem {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  gap:            5px;
+  padding:        10px 6px;
+  border-radius:  10px;
+  cursor:         pointer;
+  transition:     background 0.12s;
+  border:         1px solid transparent;
+  position:       relative;
+}
+.switcherItem:hover { background: var(--color-primary-light); }
+.switcherItemDisabled { cursor: not-allowed; opacity: 0.45; }
+.switcherItemIcon {
+  width:         32px;
+  height:        32px;
+  border-radius: 8px;
+  display:       grid;
+  place-items:   center;
+}
+.switcherItemLabel {
+  font-size:   11px;
+  font-weight: 600;
+  text-align:  center;
+  line-height: 1.2;
+  color:       var(--color-text-900);
+}
+.switcherItemSoon {
+  font-size:      9px;
+  font-weight:    700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  position:       absolute;
+  top:            4px;
+  right:          4px;
+  color:          var(--color-text-400);
+}
+
+/* ── Content wrapper ──────────────────────────────────────────────── */
+.contentInner {
+  width:     100%;
+  max-width: var(--page-max-width);
+  margin:    0 auto;
+}

@@ -1,63 +1,62 @@
-// ── Card ─────────────────────────────────────────────────────────────────────
-// Source: PRHeaderCards.tsx lines 83-89; PRListPage.tsx line 17; POListPage.tsx line 11
-export const CARD_SHADOW        = '0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05)'
-export const CARD_BORDER_RADIUS = 12
-export const CARD_BORDER        = '1px solid #f0f0f0'
-export const CARD_PADDING       = '20px 24px 8px'
+// ── Color Palette — Blueprint v1.1 §2.1 ──────────────────────────────────────
+export const COLOR_PRIMARY        = '#185FA5'   // Primary buttons, links, active menu
+export const COLOR_PRIMARY_DARK   = '#0C447C'   // Headings, hover state, active sidebar border
+export const COLOR_PRIMARY_LIGHT  = '#E6F1FB'   // Selected row highlight, active input border tint
+export const COLOR_BG             = '#F5F5F3'   // App/page background
+export const COLOR_SURFACE_ALT    = '#FAFAF8'   // Section header bands, alternate table rows
+export const COLOR_BORDER         = '#E2E2E2'   // Field borders, table separators, dividers
+export const COLOR_TEXT_900       = '#1A1A1A'   // Primary body text, labels, data
+export const COLOR_TEXT_600       = '#4A4A4A'   // Secondary labels, helper text
+export const COLOR_TEXT_400       = '#888888'   // Placeholder text, metadata
+export const COLOR_SUCCESS        = '#3B6D11'   // Approved status, positive values
+export const COLOR_SUCCESS_LIGHT  = '#EAF3DE'   // Success badge background
+export const COLOR_WARNING        = '#BA7517'   // Warning alerts, attention states
+export const COLOR_WARNING_LIGHT  = '#FAEEDA'   // Warning badge background, note boxes
+export const COLOR_ERROR          = '#A32D2D'   // Validation errors, rejected status
+export const COLOR_ERROR_LIGHT    = '#FCEBEB'   // Error badge background, error field tint
+export const COLOR_PURPLE         = '#722ED1'   // PO Raised status badge
+export const COLOR_PURPLE_LIGHT   = '#F0E6FB'   // PO Raised badge background
 
-// ── Title bar ─────────────────────────────────────────────────────────────────
-// Source: PurchaseRequisitionNewPage.tsx lines 307-318
-export const TITLE_BAR_HEIGHT  = 60
-export const TITLE_BAR_TOP     = 56      // AppHeader (.topbar) height
-export const TITLE_BAR_Z       = 100
-export const TITLE_BAR_BG      = '#ffffff'
-export const TITLE_BAR_BORDER  = '1px solid #e5e7eb'
-export const TITLE_BAR_SHADOW  = '0 2px 8px rgba(15,23,42,0.07)'
-export const TITLE_BAR_PADDING = '0 24px'
+// ── Spacing — Blueprint §2.3 (4px base unit) ─────────────────────────────────
+export const SP_1 = 4    // Icon padding, tight badge padding
+export const SP_2 = 8    // Field internal padding top/bottom, inline gap
+export const SP_3 = 12   // Label-to-field gap, small section gap
+export const SP_4 = 16   // Field horizontal padding, card padding
+export const SP_6 = 24   // Section body padding, major content gap
+export const SP_8 = 32   // Between form sections, card gap
 
-// ── Accent bar ────────────────────────────────────────────────────────────────
-// Source: PurchaseRequisitionNewPage.tsx lines 332-339
-export const ACCENT_BAR_COLOR  = '#1677ff'
-export const ACCENT_BAR_WIDTH  = 4
-export const ACCENT_BAR_HEIGHT = 32
-export const ACCENT_BAR_RADIUS = 2
+// ── Field & Layout Sizes — Blueprint §2.3 ────────────────────────────────────
+export const FIELD_HEIGHT       = 32    // Standard ERP input, date picker, select (compact)
+export const FIELD_HEIGHT_SMALL = 28    // Grid cell inputs, compact toolbar controls
+export const ROW_HEIGHT_GRID    = 32    // Transaction line item grid rows
+export const TOP_NAV_HEIGHT     = 48    // Fixed application header bar
+export const SIDEBAR_EXPANDED   = 220   // Default sidebar width
+export const SIDEBAR_COLLAPSED  = 60    // Collapsed icon-only width
+export const PAGE_MAX_WIDTH     = 1280  // Maximum layout width on wide screens
 
-// ── Field label (FL helper) ───────────────────────────────────────────────────
-// Source: PRHeaderCards.tsx line 33
-export const LABEL_FONT_SIZE   = 12
-export const LABEL_FONT_WEIGHT = 500
+// ── Typography — Blueprint §2.2 ──────────────────────────────────────────────
+export const FONT_PAGE_TITLE = { size: 22, weight: 800 }   // H1 — Page Title
+export const FONT_H2         = { size: 16, weight: 700 }   // Section Heading
+export const FONT_H3         = { size: 14, weight: 600 }   // Sub-heading
+export const FONT_BODY       = { size: 13, weight: 400 }   // Body text
+export const FONT_LABEL      = { size: 12, weight: 600 }   // Field labels
+export const FONT_CAPTION    = { size: 11, weight: 400 }   // Caption / metadata
+export const FONT_TABLE_HDR  = { size: 11, weight: 600 }   // Table header cells
+export const FONT_TABLE_DATA = { size: 12, weight: 400 }   // Table data cells
+export const FONT_MONO       = { size: 11, weight: 500 }   // Reference numbers (JetBrains Mono)
+export const FONT_BADGE      = { size: 11, weight: 600 }   // Status badges
 
-// ── Steps ─────────────────────────────────────────────────────────────────────
-// Source: PurchaseRequisitionNewPage.tsx line 421
-export const STEPS_MAX_WIDTH = 420
+// ── Card — Blueprint §2.3 ────────────────────────────────────────────────────
+export const CARD_SHADOW        = '0 1px 4px rgba(0,0,0,0.06)'
+export const CARD_BORDER_RADIUS = 8
+export const CARD_BORDER        = `1px solid ${COLOR_BORDER}`
 
-// ── Section card title row ────────────────────────────────────────────────────
-// Source: PRHeaderCards.tsx lines 92-95 (formalized into small-caps convention)
-export const SECTION_TITLE_FONT_SIZE   = 11
-export const SECTION_TITLE_FONT_WEIGHT = 600
-export const SECTION_TITLE_COLOR       = '#8c8c8c'
-export const SECTION_TITLE_LETTER_SPACING = '0.6px'
+// ── KPI Card — Blueprint §4.1 ────────────────────────────────────────────────
+export const KPI_CARD_MAX_HEIGHT = 72    // Cards must not exceed this height
+export const KPI_CARD_PADDING    = '12px 16px'
+export const KPI_ICON_BOX_SIZE   = 36
+export const KPI_ICON_BOX_RADIUS = 6
 
-// Doc-number badge (right side of section title row)
-export const DOC_NUMBER_FONT_SIZE   = 15
-export const DOC_NUMBER_FONT_WEIGHT = 700
-export const DOC_NUMBER_COLOR       = '#1677ff'
-
-// ── KPI card ─────────────────────────────────────────────────────────────────
-// Source: PurchaseRequisitionListPage.tsx lines 122-161; POListPage.tsx lines 57-72
-export const KPI_CARD_PADDING        = '16px 20px'
-export const KPI_CARD_BORDER_RADIUS  = 12     // same as CARD_BORDER_RADIUS
-export const KPI_ICON_BOX_SIZE       = 40
-export const KPI_ICON_BOX_RADIUS     = 10
-export const KPI_VALUE_FONT_SIZE     = 26
-export const KPI_VALUE_FONT_WEIGHT   = 700
-export const KPI_LABEL_FONT_SIZE     = 12
-export const KPI_LABEL_FONT_WEIGHT   = 500
-
-// ── Shared colours ────────────────────────────────────────────────────────────
-export const COLOR_BORDER_LIGHT    = '#e5e7eb'
-export const COLOR_TEXT_PRIMARY    = '#111827'
-export const COLOR_TEXT_SECONDARY  = '#6b7280'
-export const COLOR_TEXT_MUTED      = '#9ca3af'
-export const COLOR_BRAND           = '#1677ff'
-export const COLOR_DANGER          = '#dc2626'
+// ── Label (kept for any legacy imports) ──────────────────────────────────────
+export const LABEL_FONT_SIZE   = FONT_LABEL.size
+export const LABEL_FONT_WEIGHT = FONT_LABEL.weight

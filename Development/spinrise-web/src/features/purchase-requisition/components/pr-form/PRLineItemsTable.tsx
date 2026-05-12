@@ -129,7 +129,7 @@ function ReadOnlyCell({ value, type = 'text', precision = 3, placeholder: _place
       return <span style={{ fontVariantNumeric: 'tabular-nums' }}>{Number(value).toFixed(precision)}</span>
     case 'currency':
       return <span style={{ fontVariantNumeric: 'tabular-nums', textAlign: 'right', display: 'block' }}>
-        ₹ {Number(value).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        ₹ {Number(value).toLocaleString('en-IN', { minimumFractionDigits: precision, maximumFractionDigits: precision })}
       </span>
     case 'date':
       return <span>{value ? dayjs(value).format('DD/MM/YY') : '—'}</span>
@@ -167,7 +167,7 @@ const ReadOnlyRow = memo(({ row, idx, machines, subCosts, onView }: ReadOnlyRowP
       <td style={{ ...TD_TEXT, width: 46, textAlign: 'center' }}><ReadOnlyCell value={row.uom} /></td>
       <td style={{ ...TD_TEXT, width: 82, textAlign: 'right' }}><ReadOnlyCell value={row.qtyRequired} type="number" precision={3} /></td>
       <td style={{ ...TD_TEXT, width: 118, textAlign: 'right' }}><ReadOnlyCell value={row.rate} type="number" precision={4} /></td>
-      <td style={{ ...TD_TEXT, width: 130, textAlign: 'right' }}><ReadOnlyCell value={approxCost} type="currency" /></td>
+      <td style={{ ...TD_TEXT, width: 130, textAlign: 'right' }}><ReadOnlyCell value={approxCost} type="currency" precision={4} /></td>
       <td style={{ ...TD_TEXT, width: 148 }}><ReadOnlyCell value={row.requiredDate} type="date" /></td>
       <td style={{ ...TD_TEXT, width: 120, fontSize: 10 }}><ReadOnlyCell value={machineLabel} /></td>
       <td style={{ ...TD_TEXT, width: 140, fontSize: 10 }}><ReadOnlyCell value={subCostLabel} /></td>
@@ -272,7 +272,7 @@ const EditableRow = memo(({ row, idx, machines, subCosts, qtyError, isLast, onUp
         </Space.Compact>
       </td>
       <td style={{ ...TD, width: 130, textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 600 }}>
-        {approxCost > 0 ? `₹ ${approxCost.toLocaleString('en-IN', { minimumFractionDigits: 2 })}` : <span style={{ color: '#d1d5db' }}>—</span>}
+        {approxCost > 0 ? `₹ ${approxCost.toLocaleString('en-IN', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}` : <span style={{ color: '#d1d5db' }}>—</span>}
       </td>
       <td style={{ ...TD, width: 148 }}>
         <DatePicker
