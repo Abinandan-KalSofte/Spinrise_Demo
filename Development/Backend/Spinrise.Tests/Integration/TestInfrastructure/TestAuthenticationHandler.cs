@@ -20,7 +20,9 @@ public sealed class TestAuthenticationHandler : AuthenticationHandler<Authentica
         {
             new Claim(ClaimTypes.NameIdentifier, "test-user"),
             new Claim(ClaimTypes.Name, "Test User"),
-            new Claim(ClaimTypes.Email, "test.user@spinrise.local")
+            new Claim(ClaimTypes.Email, "test.user@spinrise.local"),
+            new Claim("div_code", "DIV1"),
+            new Claim("user_id", "TEST_USER"),
         };
 
         var identity = new ClaimsIdentity(claims, SchemeName);

@@ -1,0 +1,24 @@
+{
+  "_comment": "Test user credentials. Override with .env.test values in CI.",
+  "admin": {
+    "divCode": "SAR",
+    "userName": "admin",
+    "password": "admin123",
+    "role": "Admin",
+    "description": "Full access: CRUD, delete, approve"
+  },
+  "manager": {
+    "divCode": "SAR",
+    "userName": "manager",
+    "password": "mgr123",
+    "role": "Manager",
+    "description": "Approve-only: no delete, no create"
+  },
+  "viewer": {
+    "divCode": "SAR",
+    "userName": "viewer",
+    "password": "view123",
+    "role": "User",
+    "description": "Read-only: view list and form only"
+  }
+}

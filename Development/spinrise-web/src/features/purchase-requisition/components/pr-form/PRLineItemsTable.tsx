@@ -670,10 +670,10 @@ function PRLineItemsTable({
           <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
             <tr>
               <th style={{ ...TH, width: 30 }}>#</th>
-              <th style={{ ...TH, width: 88 }}>Item Code</th>
+              <th style={{ ...TH, width: 88 }}>Item Id</th>
               <th style={{ ...TH, minWidth: 150 }}>Description</th>
               <th style={{ ...TH, width: 46, textAlign: 'center' }}>Unit</th>
-              <th style={{ ...TH, width: 82, textAlign: 'right' }}>Required Qty <span style={{ color: '#E24B4A' }}>*</span></th>
+              <th style={{ ...TH, width: 82, textAlign: 'right' }}>Required Quantity <span style={{ color: '#E24B4A' }}>*</span></th>
               <th style={{ ...TH, width: 118, textAlign: 'right' }}>Rate</th>
               <th style={{ ...TH, width: 130, textAlign: 'right' }}>Approx. Cost</th>
               <th style={{ ...TH, width: 148 }}>Required Date</th>

@@ -6,6 +6,7 @@ public class PurchaseRequisitionServiceTests
 {
     private readonly Mock<IPurchaseRequisitionRepository> _repo = new();
     private readonly Mock<IUnitOfWork> _uow = new();
+    private readonly Mock<ILogger<PurchaseRequisitionService>> _log = new();
 
     [Fact]
     public async Task CreateAsync_PreChecksFail_ReturnsFailureMessage()
@@ -116,10 +117,198 @@ public class PurchaseRequisitionServiceTests
         _repo.Verify(x => x.UpdateHeaderAsync(It.IsAny<PurchaseRequisitionHeader>()), Times.Never);
     }
 
+    // ── GetById ───────────────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task GetByIdAsync_ExistingPR_ReturnsMappedDto()
+    {
+        var service = CreateService();
+        _uow.Setup(x => x.BeginAsync(It.IsAny<bool>())).Returns(Task.CompletedTask);
+        _uow.Setup(x => x.CommitAsync()).Returns(Task.CompletedTask);
+        _repo.Setup(x => x.GetByIdAsync("DIV1", 10L, null, null))
+            .ReturnsAsync(new PurchaseRequisitionHeader
+            {
+                DivCode   = "DIV1",
+                PrNo      = 10,
+                PrDate    = DateTime.Today,
+                PrStatus  = "OPEN",
+                Lines     = new List<PurchaseRequisitionLine>(),
+            });
+
+        var result = await service.GetByIdAsync("DIV1", 10);
+
+        result.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_NotFound_ReturnsNull()
+    {
+        var service = CreateService();
+        _uow.Setup(x => x.BeginAsync(It.IsAny<bool>())).Returns(Task.CompletedTask);
+        _uow.Setup(x => x.CommitAsync()).Returns(Task.CompletedTask);
+        _repo.Setup(x => x.GetByIdAsync("DIV1", 99L, null, null))
+            .ReturnsAsync((PurchaseRequisitionHeader?)null);
+
+        var result = await service.GetByIdAsync("DIV1", 99);
+
+        result.Should().BeNull();
+    }
+
+    // ── Delete ────────────────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task DeleteAsync_EmptyDeleteReason_ReturnsValidationFailure()
+    {
+        var service = CreateService();
+
+        var result = await service.DeleteAsync("DIV1", 1, "", CreateTestAuditContext());
+
+        result.Success.Should().BeFalse();
+        result.Message.Should().Be("A delete reason is required.");
+        _repo.Verify(x => x.GetByIdAsync(It.IsAny<string>(), It.IsAny<long>(), null, null), Times.Never);
+    }
+
+    [Fact]
+    public async Task DeleteAsync_L1ApprovedPR_ReturnsLockFailure()
+    {
+        var service = CreateService();
+        _uow.Setup(x => x.BeginAsync(It.IsAny<bool>())).Returns(Task.CompletedTask);
+        _uow.Setup(x => x.CommitAsync()).Returns(Task.CompletedTask);
+        _repo.Setup(x => x.GetByIdAsync("DIV1", 5L, null, null))
+            .ReturnsAsync(new PurchaseRequisitionHeader
+            {
+                DivCode  = "DIV1",
+                PrNo     = 5,
+                PrDate   = DateTime.Today,
+                PrStatus = "L1_APPROVED",
+                Lines    = new List<PurchaseRequisitionLine>(),
+            });
+
+        var result = await service.DeleteAsync("DIV1", 5, "REASON1", CreateTestAuditContext());
+
+        result.Success.Should().BeFalse();
+        result.Message.Should().Be("This PR cannot be modified — it has been approved, converted, or cancelled.");
+        _repo.Verify(x => x.DeleteAsync(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<string>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task DeleteAsync_OpenPR_ValidReason_ReturnsSuccess()
+    {
+        var service  = CreateService();
+        const string divCode   = "DIV1";
+        const long   prNo      = 7;
+        const string reason    = "DAMAGE";
+
+        _uow.Setup(x => x.BeginAsync(It.IsAny<bool>())).Returns(Task.CompletedTask);
+        _uow.Setup(x => x.CommitAsync()).Returns(Task.CompletedTask);
+        _repo.Setup(x => x.GetByIdAsync(divCode, prNo, null, null))
+            .ReturnsAsync(new PurchaseRequisitionHeader
+            {
+                DivCode  = divCode,
+                PrNo     = prNo,
+                PrDate   = DateTime.Today,
+                PrStatus = "OPEN",
+                Lines    = new List<PurchaseRequisitionLine>(),
+            });
+        _repo.Setup(x => x.IsLinkedToEnquiryAsync(divCode, prNo)).ReturnsAsync(false);
+        _repo.Setup(x => x.DeleteReasonExistsAsync(reason)).ReturnsAsync(true);
+        _repo.Setup(x => x.DeleteAsync(divCode, prNo, It.IsAny<DateTime>(), reason)).ReturnsAsync(1);
+
+        var result = await service.DeleteAsync(divCode, prNo, reason, CreateTestAuditContext());
+
+        result.Success.Should().BeTrue();
+        result.Message.Should().Be("Purchase Requisition deleted successfully.");
+        _repo.Verify(x => x.DeleteAsync(divCode, prNo, It.IsAny<DateTime>(), reason), Times.Once);
+    }
+
+    // ── Update ────────────────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task UpdateAsync_OpenPR_ValidRequest_ReturnsSuccess()
+    {
+        const string divCode = "DIV1";
+        var dto = new UpdatePRHeaderDto
+        {
+            PrNo    = 2,
+            PrDate  = DateTime.Today,
+            DepCode = "DEP1",
+            ReqName = "Requester",
+            Lines   =
+            [
+                new UpdatePRLineDto
+                {
+                    ItemCode     = "ITEM1",
+                    QtyRequired  = 3,
+                    RequiredDate = DateTime.Today,
+                }
+            ]
+        };
+
+        var service = CreateService();
+        _uow.Setup(x => x.BeginAsync(It.IsAny<bool>())).Returns(Task.CompletedTask);
+        _uow.Setup(x => x.CommitAsync()).Returns(Task.CompletedTask);
+
+        _repo.Setup(x => x.GetByIdAsync(divCode, dto.PrNo, dto.PrDate.Date, dto.PrDate.Date))
+            .ReturnsAsync(new PurchaseRequisitionHeader
+            {
+                DivCode  = divCode,
+                PrNo     = dto.PrNo,
+                PrDate   = dto.PrDate,
+                PrStatus = "OPEN",
+                DepName  = "Test Department",
+                Lines    = new List<PurchaseRequisitionLine>(),
+            });
+        _repo.Setup(x => x.RunPreChecksAsync(divCode))
+            .ReturnsAsync(new PreCheckResult
+            {
+                ItemMasterExists    = true,
+                DepartmentExists    = true,
+                DocNumberConfigured = true,
+            });
+        _repo.Setup(x => x.DepartmentExistsAsync(divCode, dto.DepCode)).ReturnsAsync(true);
+        _repo.Setup(x => x.ItemExistsAsync(divCode, "ITEM1")).ReturnsAsync(true);
+        _repo.Setup(x => x.GetItemMinLevelAsync(divCode, "ITEM1")).ReturnsAsync(0m);
+        _repo.Setup(x => x.SoftDeleteLinesAsync(divCode, dto.PrNo, dto.PrDate)).Returns(Task.CompletedTask);
+        _repo.Setup(x => x.UpdateHeaderAsync(It.IsAny<PurchaseRequisitionHeader>())).ReturnsAsync(1);
+        _repo.Setup(x => x.InsertLineAsync(It.IsAny<PurchaseRequisitionLine>())).ReturnsAsync(1);
+        _repo.Setup(x => x.InsertAuditLogAsync(
+            It.IsAny<PurchaseRequisitionHeader>(),
+            It.IsAny<PurchaseRequisitionLine>(),
+            It.IsAny<string>(),
+            It.IsAny<AuditContext>())).Returns(Task.CompletedTask);
+
+        var result = await service.UpdateAsync(dto, divCode, CreateTestAuditContext());
+
+        result.Success.Should().BeTrue();
+        result.Message.Should().Be("Purchase Requisition updated successfully.");
+        _repo.Verify(x => x.UpdateHeaderAsync(It.IsAny<PurchaseRequisitionHeader>()), Times.Once);
+        _repo.Verify(x => x.InsertLineAsync(It.IsAny<PurchaseRequisitionLine>()), Times.Once);
+    }
+
+    // ── GetItemHistory ────────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task GetItemHistoryAsync_ReceivedExceedsOrdered_ClampsPendingQtyToZero()
+    {
+        var service = CreateService();
+        _uow.Setup(x => x.BeginAsync(It.IsAny<bool>())).Returns(Task.CompletedTask);
+        _uow.Setup(x => x.CommitAsync()).Returns(Task.CompletedTask);
+        _repo.Setup(x => x.GetItemHistoryAsync("DIV1", "ITEM1"))
+            .ReturnsAsync(new List<PRItemHistoryDto>
+            {
+                new() { OrderQty = 10, ReceivedQty = 15, Rate = 50 },
+            });
+
+        var result = (await service.GetItemHistoryAsync("DIV1", "ITEM1")).ToList();
+
+        result.Should().HaveCount(1);
+        result[0].PendingQty.Should().Be(0, "pending qty must never be negative");
+    }
+
     private PurchaseRequisitionService CreateService()
     {
         _uow.Setup(x => x.RollbackAsync()).Returns(Task.CompletedTask);
-        return new PurchaseRequisitionService(_repo.Object, _uow.Object);
+        return new PurchaseRequisitionService(_repo.Object, _uow.Object, _log.Object);
     }
 
     private void SetupHappyPathPreChecks(string divCode, string depCode, params string[] itemCodes)

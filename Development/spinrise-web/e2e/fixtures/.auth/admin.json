@@ -1,0 +1,14 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://172.16.16.40:3000",
+      "localStorage": [
+        {
+          "name": "spinrise-auth-v2",
+          "value": "{\"state\":{\"user\":{\"id\":0,\"userId\":\"KSL\",\"userName\":\"KALSOFTE\",\"email\":\"KSL\",\"role\":\"Admin\",\"divCode\":\"01\"},\"tokens\":{\"accessToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwIiwiZW1haWwiOiJLU0wiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImRpdl9jb2RlIjoiMDEiLCJ1c2VyX2lkIjoiS1NMIiwidXNlcl9uYW1lIjoiS0FMU09GVEUiLCJqdGkiOiI3MDkxNTlkOWNkMGM0ZTY2YmZjNGY0NTJlMjEwZTUwMiIsInRva2VuX3R5cGUiOiJhY2Nlc3MiLCJleHAiOjE3Nzg3NTUxODUsImlzcyI6IlNwaW5yaXNlLkFQSSIsImF1ZCI6IlNwaW5yaXNlLkZyb250ZW5kIn0.WHVN3FJav3uSd4SYuD_DVYlAjDGPMqdRL08GdxXJ0vI\",\"refreshToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwIiwiZW1haWwiOiJLU0wiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImRpdl9jb2RlIjoiMDEiLCJ1c2VyX2lkIjoiS1NMIiwidXNlcl9uYW1lIjoiS0FMU09GVEUiLCJqdGkiOiJhNzNhYWE5MTYzMzA0ODQwYjhlMDkyYWE0Njc0MGU4YyIsInRva2VuX3R5cGUiOiJyZWZyZXNoIiwiZXhwIjoxNzc5MzU4MTg1LCJpc3MiOiJTcGlucmlzZS5BUEkiLCJhdWQiOiJTcGlucmlzZS5Gcm9udGVuZCJ9.v2FrF7Sl0M6Z0h5nhioSBuZT8BsADfDc3NkVdZpCuJI\"},\"isAuthenticated\":true,\"processingDate\":\"2026-05-14\"},\"version\":0}"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "_comment": "PR test data. depCode/itemCode must match records in SpinRiseSaranya.",
+  "valid": {
+    "depCode": "SPIN",
+    "depName": "Spinning",
+    "section": "Ring Frame",
+    "iType": "Ordinary",
+    "iTypeCode": "O",
+    "reqName": "101",
+    "lines": [
+      {
+        "itemCode": "ITEM001",
+        "qty": 10,
+        "uom": "NOS",
+        "place": "Store",
+        "remarks": "Auto test item"
+      }
+    ]
+  },
+  "withRefNo": {
+    "depCode": "SPIN",
+    "section": "Blow Room",
+    "iType": "Urgent",
+    "iTypeCode": "U",
+    "refNo": "REF-AUTO-001",
+    "lines": [
+      {
+        "itemCode": "ITEM002",
+        "qty": 5,
+        "uom": "KGS",
+        "place": "Stores",
+        "remarks": "Urgent test"
+      }
+    ]
+  },
+  "edgeCase": {
+    "depCode": "SPIN",
+    "section": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "iType": "Ordinary",
+    "iTypeCode": "O",
+    "lines": [
+      {
+        "itemCode": "ITEM001",
+        "qty": 9999.999,
+        "uom": "NOS",
+        "place": "Store",
+        "remarks": "Edge case qty"
+      }
+    ]
+  },
+  "statuses": {
+    "open":           { "label": "Requested",             "value": "OPEN"           },
+    "l1Approved":     { "label": "First Level Approved",  "value": "L1_APPROVED"    },
+    "l2Approved":     { "label": "Second Level Approved", "value": "L2_APPROVED"    },
+    "finalApproved":  { "label": "Final Approved",        "value": "FINAL_APPROVED" },
+    "cancelled":      { "label": "Cancelled",             "value": "CANCELLED"      }
+  },
+  "blockedStatuses": ["L1_APPROVED", "L2_APPROVED", "FINAL_APPROVED", "CANCELLED", "CONVERTED", "RECEIVED"]
+}

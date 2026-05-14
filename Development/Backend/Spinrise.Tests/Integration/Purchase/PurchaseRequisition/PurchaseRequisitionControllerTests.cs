@@ -86,47 +86,119 @@ public class PurchaseRequisitionControllerTests
     }
 
     [Fact]
-    //public async Task Create_ValidRequest_ReturnsCreatedSuccess()
-    //{
-    //    var serviceMock = new Mock<IPurchaseRequisitionService>();
-    //    serviceMock
-    //        .Setup(x => x.CreateAsync(It.IsAny<CreatePRHeaderDto>(), It.IsAny<string>(), It.IsAny<AuditContext>()))
-    //        .ReturnsAsync((true, "Purchase Requisition created successfully.", "PR/2026-27/00001"));
+    public async Task Create_ValidRequest_ReturnsCreated()
+    {
+        var serviceMock = new Mock<IPurchaseRequisitionService>();
+        serviceMock
+            .Setup(x => x.CreateAsync(
+                It.IsAny<CreatePRHeaderDto>(),
+                It.IsAny<string>(),
+                It.IsAny<AuditContext>()))
+            .ReturnsAsync((true, "Purchase Requisition created successfully.", (long?)42, (IReadOnlyList<string>)[]));
 
-    //    using var factory = CreateFactory(services =>
-    //    {
-    //        services.RemoveAll<IPurchaseRequisitionService>();
-    //        services.AddSingleton(serviceMock.Object);
-    //    });
-    //    using var client = factory.CreateClient();
+        using var factory = CreateFactory(services =>
+        {
+            services.RemoveAll<IPurchaseRequisitionService>();
+            services.AddSingleton(serviceMock.Object);
+        });
+        using var client = factory.CreateClient();
 
-    //    var request = new CreatePRHeaderDto
-    //    {
-    //        PrDate = DateTime.Today,
-    //        DepCode = "DEP1",
-    //        Lines =
-    //        [
-    //            new CreatePRLineDto
-    //            {
-    //                ItemCode = "ITEM1",
-    //                QtyRequired = 1,
-    //                RequiredDate = DateTime.Today.AddDays(1),
-    //                SubCostCode = 3
-    //            }
-    //        ]
-    //    };
+        var request = new CreatePRHeaderDto
+        {
+            PrDate  = DateTime.Today,
+            DepCode = "DEP1",
+            ReqName = "Requester",
+            Lines   =
+            [
+                new CreatePRLineDto
+                {
+                    ItemCode     = "ITEM1",
+                    QtyRequired  = 1,
+                    RequiredDate = DateTime.Today.AddDays(1),
+                }
+            ]
+        };
 
-    //    var response = await client.PostAsJsonAsync("/api/v1/purchase-requisitions", request);
-    //    var payload = await response.Content.ReadFromJsonAsync<ApiResponse<Dictionary<string, long>>>();
+        var response = await client.PostAsJsonAsync("/api/v1/purchase-requisitions", request);
+        var payload  = await response.Content.ReadFromJsonAsync<ApiResponse<Dictionary<string, long>>>();
 
-    //    response.StatusCode.Should().Be(HttpStatusCode.Created);
-    //    payload.Should().NotBeNull();
-    //    payload!.Success.Should().BeTrue();
-    //    payload.Message.Should().Be("Purchase Requisition created successfully.");
-    //    payload.Data.Should().NotBeNull();
-    //    payload.Data!.Should().ContainKey("prNo");
-    //    payload.Data["prNo"].Should().BeGreaterThan(0);
-    //}
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        payload.Should().NotBeNull();
+        payload!.Success.Should().BeTrue();
+        payload.Message.Should().Be("Purchase Requisition created successfully.");
+    }
+
+    [Fact]
+    public async Task Update_ValidRequest_ReturnsOk()
+    {
+        var serviceMock = new Mock<IPurchaseRequisitionService>();
+        serviceMock
+            .Setup(x => x.UpdateAsync(
+                It.IsAny<UpdatePRHeaderDto>(),
+                It.IsAny<string>(),
+                It.IsAny<AuditContext>()))
+            .ReturnsAsync((true, "Purchase Requisition updated successfully.", (IReadOnlyList<string>)[]));
+
+        using var factory = CreateFactory(services =>
+        {
+            services.RemoveAll<IPurchaseRequisitionService>();
+            services.AddSingleton(serviceMock.Object);
+        });
+        using var client = factory.CreateClient();
+
+        var request = new UpdatePRHeaderDto
+        {
+            PrNo    = 1,
+            PrDate  = DateTime.Today,
+            DepCode = "DEP1",
+            ReqName = "Requester",
+            Lines   =
+            [
+                new UpdatePRLineDto
+                {
+                    ItemCode     = "ITEM1",
+                    QtyRequired  = 2,
+                    RequiredDate = DateTime.Today.AddDays(1),
+                }
+            ]
+        };
+
+        var response = await client.PutAsJsonAsync("/api/v1/purchase-requisitions/1", request);
+        var payload  = await response.Content.ReadFromJsonAsync<ApiResponse>();
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        payload!.Success.Should().BeTrue();
+        payload.Message.Should().Be("Purchase Requisition updated successfully.");
+    }
+
+    [Fact]
+    public async Task Delete_ValidRequest_ReturnsOk()
+    {
+        var serviceMock = new Mock<IPurchaseRequisitionService>();
+        serviceMock
+            .Setup(x => x.DeleteAsync(
+                It.IsAny<string>(),
+                It.IsAny<long>(),
+                It.IsAny<string>(),
+                It.IsAny<AuditContext>(),
+                It.IsAny<DateTime?>(),
+                It.IsAny<DateTime?>()))
+            .ReturnsAsync((true, "Purchase Requisition deleted successfully."));
+
+        using var factory = CreateFactory(services =>
+        {
+            services.RemoveAll<IPurchaseRequisitionService>();
+            services.AddSingleton(serviceMock.Object);
+        });
+        using var client = factory.CreateClient();
+
+        var response = await client.DeleteAsync("/api/v1/purchase-requisitions/1?deleteReasonCode=DAMAGE");
+        var payload  = await response.Content.ReadFromJsonAsync<ApiResponse>();
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        payload!.Success.Should().BeTrue();
+        payload.Message.Should().Be("Purchase Requisition deleted successfully.");
+    }
 
     private static WebApplicationFactory<Program> CreateFactory(Action<IServiceCollection>? configureServices = null)
     {
