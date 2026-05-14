@@ -594,7 +594,7 @@ export const PRLineItemsTableV2 = forwardRef<PRLineItemsTableV2Handle, PRLineIte
             <Row gutter={[8, 0]}>
               <Col xs={24} sm={24} md={8}>
                 <Form.Item
-                  name="itemCode"
+                  name="item Id"
                   label={<span style={LABEL_STYLE}>Item Code</span>}
                   rules={[{ required: true, message: 'Required' }]}
                   style={{ marginBottom: 6 }}

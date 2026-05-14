@@ -22,7 +22,7 @@ import {
   type InputRef, Modal, Select, Space, Spin, Tag, Table, Tooltip, Typography,
 } from 'antd'
 import {
-  DeleteOutlined, EyeOutlined, HistoryOutlined, SearchOutlined, ClockCircleOutlined,
+  DeleteOutlined, EyeOutlined, FileImageOutlined, HistoryOutlined, SearchOutlined, ClockCircleOutlined,
 } from '@ant-design/icons'
 import { ItemPickerModal } from './ItemPickerModal'
 import dayjs from 'dayjs'
@@ -670,10 +670,10 @@ function PRLineItemsTable({
           <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
             <tr>
               <th style={{ ...TH, width: 30 }}>#</th>
-              <th style={{ ...TH, width: 88 }}>Item Id</th>
+              <th style={{ ...TH, width: 88 }}>Item Code</th>
               <th style={{ ...TH, minWidth: 150 }}>Description</th>
               <th style={{ ...TH, width: 46, textAlign: 'center' }}>Unit</th>
-              <th style={{ ...TH, width: 82, textAlign: 'right' }}>Required Quantity <span style={{ color: '#E24B4A' }}>*</span></th>
+              <th style={{ ...TH, width: 82, textAlign: 'right' }}>Required Qty <span style={{ color: '#E24B4A' }}>*</span></th>
               <th style={{ ...TH, width: 118, textAlign: 'right' }}>Rate</th>
               <th style={{ ...TH, width: 130, textAlign: 'right' }}>Approx. Cost</th>
               <th style={{ ...TH, width: 148 }}>Required Date</th>
@@ -872,6 +872,26 @@ function PRLineItemsTable({
                 </Typography.Text>
               </div>
             ))}
+
+            {/* Item image placeholder */}
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '20px 8px',
+                height: 200,
+                border: '2px dashed #d9d9d9',
+                borderRadius: 8,
+                background: '#fafafa',
+              }}
+            >
+              <FileImageOutlined style={{ fontSize: 40, color: '#bfbfbf' }} />
+              <Typography.Text type="secondary" style={{ fontSize: 12, marginTop: 8 }}>
+                Item Image
+              </Typography.Text>
+            </div>
           </div>
         )}
       </Drawer>
