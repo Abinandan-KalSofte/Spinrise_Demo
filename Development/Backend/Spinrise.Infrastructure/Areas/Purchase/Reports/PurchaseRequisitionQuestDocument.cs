@@ -115,14 +115,14 @@ internal sealed class PurchaseRequisitionQuestDocument : IDocument
                     .BorderBottom(1)
                     .BorderColor(Colors.Grey.Darken1)
                     .Element(c => QuestPdfTemplateEngine.RenderTable(c, tbl));
-                col.Item()
-                    .PaddingHorizontal(TableInset, Unit.Millimetre)
-                    .PaddingVertical(2)
-                    .Text(t =>
-                    {
-                        t.AlignRight();
-                        t.Span(printStamp).FontSize(FsAddress).FontColor(Black);
-                    });
+                //col.Item()
+                //    .PaddingHorizontal(TableInset, Unit.Millimetre)
+                //    .PaddingVertical(2)
+                //    .Text(t =>
+                //    {
+                //        t.AlignRight();
+                //        t.Span(printStamp).FontSize(FsAddress).FontColor(Black);
+                //    });
                 col.Item()
                     .ExtendVertical()
                     .AlignBottom()

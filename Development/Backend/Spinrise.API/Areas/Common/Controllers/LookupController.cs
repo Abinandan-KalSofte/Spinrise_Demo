@@ -168,4 +168,10 @@ public class LookupController : BaseApiController
     {
         return Success(await _service.GetActiveTaxCodesAsync(), "Tax codes retrieved successfully.");
     }
+
+    [HttpGet("indent-types")]
+    public async Task<IActionResult> GetIndentTypes()
+    {
+        return Success(await _service.GetIndentTypesAsync(), "Indent types retrieved successfully.");
+    }
 }

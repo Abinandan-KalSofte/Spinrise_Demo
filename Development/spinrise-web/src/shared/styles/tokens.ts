@@ -60,3 +60,38 @@ export const KPI_ICON_BOX_RADIUS = 6
 // ── Label (kept for any legacy imports) ──────────────────────────────────────
 export const LABEL_FONT_SIZE   = FONT_LABEL.size
 export const LABEL_FONT_WEIGHT = FONT_LABEL.weight
+
+// ── Color aliases (semantic names used in components) ────────────────────────
+export const COLOR_TEXT_PRIMARY   = COLOR_TEXT_900   // '#1A1A1A'
+export const COLOR_TEXT_SECONDARY = COLOR_TEXT_600   // '#4A4A4A'
+
+// ── Card padding (generic, distinct from KPI card) ───────────────────────────
+export const CARD_PADDING = '16px 20px'
+
+// ── Section card title typography ────────────────────────────────────────────
+export const SECTION_TITLE_COLOR          = '#475569'
+export const SECTION_TITLE_FONT_SIZE      = 11
+export const SECTION_TITLE_FONT_WEIGHT    = 700
+export const SECTION_TITLE_LETTER_SPACING = '0.06em'
+
+// ── Document number display ───────────────────────────────────────────────────
+export const DOC_NUMBER_COLOR       = COLOR_PRIMARY   // '#185FA5'
+export const DOC_NUMBER_FONT_SIZE   = 13
+export const DOC_NUMBER_FONT_WEIGHT = 700
+
+// ── Page title bar ────────────────────────────────────────────────────────────
+export const TITLE_BAR_TOP     = 0
+export const TITLE_BAR_Z       = 100
+export const TITLE_BAR_HEIGHT  = 52
+export const TITLE_BAR_PADDING = '0 20px'
+export const TITLE_BAR_BORDER  = `1px solid ${COLOR_BORDER}`
+export const TITLE_BAR_SHADOW  = '0 1px 4px rgba(0,0,0,0.06)'
+
+// ── Accent bar (left decorative strip in title bar) ───────────────────────────
+export const ACCENT_BAR_COLOR  = COLOR_PRIMARY   // '#185FA5'
+export const ACCENT_BAR_WIDTH  = 4
+export const ACCENT_BAR_HEIGHT = 24
+export const ACCENT_BAR_RADIUS = 2
+
+// ── Workflow steps ────────────────────────────────────────────────────────────
+export const STEPS_MAX_WIDTH = 480

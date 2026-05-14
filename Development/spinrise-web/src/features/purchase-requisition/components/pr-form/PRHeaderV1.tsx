@@ -10,7 +10,7 @@ import dayjs from 'dayjs'
 import { prefixFilterOption, priorityFilterSort } from '@/shared/utils/selectUtils'
 import { useAuthStore } from '@/features/auth/store/useAuthStore'
 import type {
-  DepartmentLookup, EmployeeLookup, PRHeaderFormValues, PreCheckResult,
+  DepartmentLookup, EmployeeLookup, IndentTypeLookup, PRHeaderFormValues, PreCheckResult,
 } from '../../types'
 
 // ── Design tokens ─────────────────────────────────────────────────────────────
@@ -49,6 +49,7 @@ interface PRHeaderV1Props {
   form:               FormInstance<PRHeaderFormValues>
   departments:        DepartmentLookup[]
   employees:          EmployeeLookup[]
+  indentTypes:        IndentTypeLookup[]
   savedPrNo?:         number | null
   disabled?:          boolean
   requireRequesterName?: boolean
@@ -65,6 +66,7 @@ export function PRHeaderV1({
   form,
   departments,
   employees,
+  indentTypes,
   savedPrNo          = null,
   disabled           = false,
   requireRequesterName = false,
@@ -86,9 +88,9 @@ export function PRHeaderV1({
   const refNo = form.getFieldValue('refNo')
 
   // Lookup display mappings
-  const deptName = departments.find((d) => d.depCode === depCode)?.depName
-  const empName = employees.find((e) => e.empNo === reqName)?.eName
-  const typeLabel = iType === 'E' ? 'Emergency' : iType === 'O' ? 'Ordinary' : iType === 'U' ? 'Urgent' : iType
+  const deptName  = departments.find((d) => d.depCode === depCode)?.depName
+  const empName   = employees.find((e) => e.empNo === reqName)?.eName
+  const typeLabel = indentTypes.find((t) => t.iType === iType)?.iDesc ?? iType
 
   const deptOptions = departments.map((d) => ({
     value: d.depCode,
@@ -98,11 +100,10 @@ export function PRHeaderV1({
     value: e.empNo,
     label: `${e.empNo} – ${e.eName}`,
   }))
-  const typeOptions = [
-    { value: 'E', label: 'Emergency' },
-    { value: 'O', label: 'Ordinary'  },
-    { value: 'U', label: 'Urgent'    },
-  ]
+  const typeOptions = indentTypes.map((t) => ({
+    value: t.iType,
+    label: t.iDesc,
+  }))
 
   return (
     <div style={{
@@ -118,7 +119,7 @@ export function PRHeaderV1({
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{
             fontSize: 10, fontWeight: 700, color: ACCENT,
-            letterSpacing: '0.06em', textTransform: 'uppercase',
+            letterSpacing: '0.06em',
           }}>
             Requisition Details
           </span>
@@ -175,7 +176,7 @@ export function PRHeaderV1({
               />
             </Col>
             <Col xs={24} sm={12} md={4}>
-              <ViewField label="Section" value={section} />
+              <ViewField label="Section (optional)" value={section} />
             </Col>
             <Col xs={24} sm={12} md={5}>
               <ViewField
@@ -185,7 +186,18 @@ export function PRHeaderV1({
               />
             </Col>
             <Col xs={24} sm={12} md={4}>
-              <ViewField label="Requisition Type" value={typeLabel} required />
+              <div style={{ marginBottom: 6 }}>
+                <Lbl text="Requisition Type" required />
+                <div style={VIEW_VALUE}>
+                  {iType === 'E' ? (
+                    <Tag color="error" style={{ margin: 0, fontWeight: 700, fontSize: 11 }}>{typeLabel}</Tag>
+                  ) : iType === 'U' ? (
+                    <Tag color="warning" style={{ margin: 0, fontWeight: 700, fontSize: 11 }}>{typeLabel}</Tag>
+                  ) : (
+                    typeLabel || '—'
+                  )}
+                </div>
+              </div>
             </Col>
             {requireRefNo && (
               <Col xs={24} sm={12} md={3}>

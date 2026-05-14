@@ -344,4 +344,21 @@ public class LookupService : ILookupService
         }
     }
 
+    public async Task<IEnumerable<IndentTypeLookupDto>> GetIndentTypesAsync()
+    {
+        await _uow.BeginAsync();
+        try
+        {
+            var data = await _repo.GetIndentTypesAsync();
+            await _uow.CommitAsync();
+            return data;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to get indent types lookup");
+            await _uow.RollbackAsync();
+            throw;
+        }
+    }
+
 }

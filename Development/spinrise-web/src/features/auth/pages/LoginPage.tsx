@@ -7,6 +7,7 @@ import {
   LockOutlined,
   UserOutlined,
 } from '@ant-design/icons'
+import kalsofteLogo from '/kalsofte-logo.png'
 import dayjs from 'dayjs'
 import { useAsync } from '@/shared/hooks/useAsync'
 import { getErrorMessage } from '@/shared/lib/errorHandler'
@@ -23,44 +24,7 @@ interface LoginFormValues extends LoginDto {
   compCode: string
 }
 
-// ── SpinRise SVG Logo ─────────────────────────────────────────────────────────
-// Icon: 270° clockwise spinning arc (3-o'clock → bottom → left → top) with
-// an upward arrow at the apex — combines "Spin" + "Rise" in one mark.
-function SpinRiseLogo() {
-  return (
-    <svg width="40" height="40" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="sr-grad" x1="0" y1="0" x2="42" y2="42" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#1e3a8a" />
-          <stop offset="100%" stopColor="#2563eb" />
-        </linearGradient>
-      </defs>
-      {/* Badge background */}
-      <rect width="42" height="42" rx="10" fill="url(#sr-grad)" />
-      {/* 270° clockwise arc: right (33,21) → bottom → left → top (21,9) */}
-      <path
-        d="M 33 21 A 12 12 0 1 1 21 9"
-        stroke="rgba(255,255,255,0.50)"
-        strokeWidth="2.8"
-        strokeLinecap="round"
-        fill="none"
-      />
-      {/* Upward arrowhead at 12-o'clock (21,9) */}
-      <path
-        d="M 17 14 L 21 9 L 25 14"
-        stroke="white"
-        strokeWidth="2.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill="none"
-      />
-      {/* Dot at arc origin (3-o'clock) */}
-      <circle cx="33" cy="21" r="2.4" fill="rgba(255,255,255,0.50)" />
-    </svg>
-  )
-}
 
-// ── Page ──────────────────────────────────────────────────────────────────────
 export default function LoginPage() {
   const { message } = AntApp.useApp()
   const [form] = Form.useForm<LoginFormValues>()
@@ -103,119 +67,190 @@ export default function LoginPage() {
 
   return (
     <div className="login-root">
-      <div className="login-card">
+      <div className="login-canvas">
 
-        {/* ── Logo — grey pill, centered ─────────────────────────────────── */}
-        <div className="login-card__logo-wrap">
-          <SpinRiseLogo />
-          <div className="login-card__logo-text">
-            <span className="login-card__brand-name">SpinRise</span>
-            <span className="login-card__brand-sub">ERP PLATFORM</span>
+        {/* Header */}
+        <header className="login-header">
+          <div className="login-header__brand">
+            <img src={kalsofteLogo} alt="Kalsofte" className="login-header__logo" />
+            <div className="login-header__brand-text">
+              <span className="login-header__brand-name">SpinRise</span>
+              <span className="login-header__brand-sub">ERP Platform</span>
+            </div>
           </div>
-        </div>
+          <div className="login-header__datetime">
+            {currentTime.format('DD MMM YYYY  |  hh:mm:ss A')}
+          </div>
+        </header>
 
-        {/* ── System title + blue divider ────────────────────────────────── */}
-        <div className="login-card__system-title">Enterprise Resource Planning</div>
-        <div className="login-card__divider" />
+        {/* Stage */}
+        <main className="login-stage">
+          <div className="login-card">
 
-        {/* ── Live date / time ───────────────────────────────────────────── */}
-        <div className="login-card__datetime">
-          <CalendarOutlined />
-          <span>{currentTime.format('DD MMM YYYY')}</span>
-          <span className="login-card__datetime-sep">|</span>
-          <span>{currentTime.format('hh:mm:ss A')}</span>
-        </div>
+            {/* Left panel — branding */}
+            <div className="login-card__left">
+              <div className="login-card__left-deco" aria-hidden="true" />
+              <div className="login-card__left-content">
+                <img src={kalsofteLogo} alt="Kalpatharu Software Ltd" className="login-card__left-logo" />
+                <div className="login-card__left-divider" />
+                <h2 className="login-card__left-company">Kalpatharu Software Ltd</h2>
+                <p className="login-card__left-tagline">Enterprise Resource Planning</p>
+                <div className="login-card__left-status">
+                  <span className="login-card__left-status-dot" />
+                  <span className="login-card__left-status-text">Licensed Portal</span>
+                </div>
+              </div>
+              <div className="login-card__left-foot">
+                <span className="login-card__left-ver">SpinRise ERP v1.0</span>
+              </div>
+            </div>
 
-        {/* ── Form ───────────────────────────────────────────────────────── */}
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={onFinish}
-          initialValues={{ processingDate: dayjs(), compCode: 'KAL' }}
-          requiredMark={false}
-          className="login-form"
-        >
-          {/* Company */}
-          <Form.Item name="compCode" rules={[{ required: true, message: 'Please select a company' }]}>
-            <Select
-              options={COMPANIES}
-              suffixIcon={<ApartmentOutlined style={{ color: '#9ca3af' }} />}
-              style={{ width: '100%' }}
-            />
-          </Form.Item>
+            {/* Right panel — form */}
+            <div className="login-card__right">
+              <div className="login-card__body">
 
-          {/* Division */}
-          <Form.Item name="divCode" rules={[{ required: true, message: 'Please select your division' }]}>
-            {divsFailed ? (
-              <Input
-                prefix={<BankOutlined style={{ color: '#9ca3af' }} />}
-                placeholder="Enter division code"
-                maxLength={4}
-                style={{ textTransform: 'uppercase' }}
-              />
-            ) : (
-              <Select
-                showSearch
-                loading={divsLoading}
-                placeholder="Select division"
-                optionFilterProp="label"
-                suffixIcon={<BankOutlined style={{ color: '#9ca3af' }} />}
-                options={divisions.map((d) => ({
-                  value: d.divCode,
-                  label: `${d.divCode} – ${d.divName}`,
-                }))}
-                filterOption={(input, option) =>
-                  (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                }
-                style={{ width: '100%' }}
-              />
-            )}
-          </Form.Item>
+                <div className="login-card__form-header">
+                  <div className="login-card__form-title">Sign In</div>
+                  <div className="login-card__form-sub">Purchase Requisition System</div>
+                </div>
 
-          {/* Username */}
-          <Form.Item name="userName" rules={[{ required: true, message: 'Please enter your username' }]}>
-            <Input
-              prefix={<UserOutlined style={{ color: '#9ca3af' }} />}
-              placeholder="Username"
-              maxLength={100}
-            />
-          </Form.Item>
+                <Form
+                  form={form}
+                  layout="vertical"
+                  onFinish={onFinish}
+                  initialValues={{ processingDate: dayjs(), compCode: 'KAL' }}
+                  requiredMark={false}
+                  className="login-form"
+                >
+                  {/* Company */}
+                  <Form.Item
+                    label="Company"
+                    name="compCode"
+                    rules={[{ required: true, message: 'Please select a company' }]}
+                  >
+                    <Select
+                      options={COMPANIES}
+                      suffixIcon={<ApartmentOutlined style={{ color: '#9ca3af' }} />}
+                      style={{ width: '100%' }}
+                    />
+                  </Form.Item>
 
-          {/* Password */}
-          <Form.Item name="password" rules={[{ required: true, message: 'Please enter your password' }]}>
-            <Input.Password
-              prefix={<LockOutlined style={{ color: '#9ca3af' }} />}
-              placeholder="Password"
-            />
-          </Form.Item>
+                  {/* Division */}
+                  <Form.Item
+                    label="Division"
+                    name="divCode"
+                    rules={[{ required: true, message: 'Please select your division' }]}
+                  >
+                    {divsFailed ? (
+                      <Input
+                        prefix={<BankOutlined style={{ color: '#9ca3af' }} />}
+                        placeholder="Enter division code"
+                        maxLength={4}
+                        style={{ textTransform: 'uppercase' }}
+                      />
+                    ) : (
+                      <Select
+                        showSearch
+                        loading={divsLoading}
+                        placeholder="Select division"
+                        optionFilterProp="label"
+                        suffixIcon={<BankOutlined style={{ color: '#9ca3af' }} />}
+                        options={divisions.map((d) => ({
+                          value: d.divCode,
+                          label: `${d.divCode} – ${d.divName}`,
+                        }))}
+                        filterOption={(input, option) =>
+                          (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                        }
+                        style={{ width: '100%' }}
+                      />
+                    )}
+                  </Form.Item>
 
-          {/* Processing Date */}
-          <Form.Item name="processingDate" rules={[{ required: true, message: 'Please select processing date' }]}>
-            <DatePicker
-              style={{ width: '100%' }}
-              format="DD-MM-YYYY"
-              suffixIcon={<CalendarOutlined style={{ color: '#9ca3af' }} />}
-              disabledDate={(d) => d.isAfter(dayjs(), 'day')}
-              allowClear={false}
-            />
-          </Form.Item>
+                  {/* Credentials divider */}
+                  <div className="login-form-divider"><span>Credentials</span></div>
 
-          <Form.Item style={{ marginBottom: 0, marginTop: 6 }}>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={loading}
-              block
-              className="login-submit-btn"
-            >
-              Login
-            </Button>
-          </Form.Item>
-        </Form>
+                  {/* User ID */}
+                  <Form.Item
+                    label="User ID"
+                    name="userName"
+                    rules={[{ required: true, message: 'Please enter your User ID' }]}
+                  >
+                    <Input
+                      prefix={<UserOutlined style={{ color: '#9ca3af' }} />}
+                      placeholder="Enter your User ID"
+                      maxLength={100}
+                      autoComplete="username"
+                    />
+                  </Form.Item>
 
-        <div className="login-card__footer-note">
-          © {new Date().getFullYear()} Kalpatharu Software Ltd
-        </div>
+                  {/* Password */}
+                  <Form.Item
+                    label="Password"
+                    name="password"
+                    rules={[{ required: true, message: 'Please enter your password' }]}
+                  >
+                    <Input.Password
+                      prefix={<LockOutlined style={{ color: '#9ca3af' }} />}
+                      placeholder="Enter your password"
+                      autoComplete="current-password"
+                    />
+                  </Form.Item>
+
+                  {/* Transaction Date + Live clock */}
+                  <div className="login-form__date-time-row">
+                    <Form.Item
+                      label="Transaction Date"
+                      name="processingDate"
+                      rules={[{ required: true, message: 'Please select a date' }]}
+                      className="login-form__date-item"
+                    >
+                      <DatePicker
+                        style={{ width: '100%' }}
+                        format="DD-MMM-YYYY"
+                        suffixIcon={<CalendarOutlined style={{ color: '#9ca3af' }} />}
+                        disabledDate={(d) => d.isAfter(dayjs(), 'day')}
+                        allowClear={false}
+                      />
+                    </Form.Item>
+
+                    <div
+                      className="login-form__time-chip"
+                      aria-label={`Current time ${currentTime.format('hh:mm:ss A')}`}
+                    >
+                      <span className="login-form__time-dot" />
+                      <div className="login-form__time-copy">
+                        <span className="login-form__time-label">Live Time</span>
+                        <span className="login-form__time-value">
+                          {currentTime.format('hh:mm:ss A')}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <Form.Item style={{ marginBottom: 0, marginTop: 8 }}>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      loading={loading}
+                      block
+                      className="login-submit-btn"
+                    >
+                      Log In
+                    </Button>
+                  </Form.Item>
+                </Form>
+
+              </div>
+
+              <div className="login-card__footer-note">
+                © {new Date().getFullYear()} Kalpatharu Software Ltd. All rights reserved.
+              </div>
+            </div>
+
+          </div>
+        </main>
+
       </div>
     </div>
   )

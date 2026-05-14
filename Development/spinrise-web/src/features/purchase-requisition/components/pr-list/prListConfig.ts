@@ -16,7 +16,7 @@ export function getFYBounds(date?: dayjs.Dayjs): [dayjs.Dayjs, dayjs.Dayjs] {
 // ── Status ─────────────────────────────────────────────────────────────────────
 
 export const STATUS_OPTIONS = [
-  { value: 'OPEN',           label: 'Open'                  },
+  { value: 'OPEN',           label: 'Requested'             },
   { value: 'L1_APPROVED',    label: 'First Level Approved'  },
   { value: 'L2_APPROVED',    label: 'Second Level Approved' },
   { value: 'FINAL_APPROVED', label: 'Final Approved'        },
@@ -24,7 +24,7 @@ export const STATUS_OPTIONS = [
 ]
 
 export const STATUS_TAG: Record<string, { color: string; label: string }> = {
-  OPEN:           { color: '#1d4ed8', label: 'Open'                  },
+  OPEN:           { color: '#1d4ed8', label: 'Requested'             },
   L1_APPROVED:    { color: '#d97706', label: 'First Level Approved'  },
   L2_APPROVED:    { color: '#7c3aed', label: 'Second Level Approved' },
   FINAL_APPROVED: { color: '#16a34a', label: 'Final Approved'        },

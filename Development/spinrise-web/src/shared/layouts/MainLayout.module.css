@@ -5,11 +5,11 @@
   gap:           10px;
   padding:       14px 16px 12px;
   flex-shrink:   0;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
   cursor:        pointer;
   transition:    background 0.12s;
 }
-.brand:hover { background: var(--color-primary-light); }
+.brand:hover { background: rgba(255,255,255,0.06); }
 
 .brandMark {
   width:          32px;
@@ -25,16 +25,16 @@
   letter-spacing: -0.5px;
 }
 .brandCopy     { display: flex; flex-direction: column; line-height: 1.25; overflow: hidden; }
-.brandName     { font-size: 13px; font-weight: 600; color: var(--color-text-900); white-space: nowrap; }
-.brandSub      { font-size: 11px; color: var(--color-text-600); white-space: nowrap; }
+.brandName     { font-size: 13px; font-weight: 600; color: #f1f5f9; white-space: nowrap; }
+.brandSub      { font-size: 11px; color: rgba(255,255,255,0.45); white-space: nowrap; }
 
 /* ── Division chip ────────────────────────────────────────────────── */
 .divSection    { padding: 0 12px 10px; flex-shrink: 0; }
 .divChip {
-  background:    var(--color-primary-light);
-  border:        1px solid var(--color-border);
+  background:    rgba(255,255,255,0.08);
+  border:        1px solid rgba(255,255,255,0.12);
   border-radius: 6px;
-  color:         var(--color-primary);
+  color:         #93c5fd;
   font-size:     11px;
   font-weight:   700;
   padding:       4px 6px;
@@ -49,19 +49,19 @@
   font-weight:    700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color:          var(--color-text-400);
+  color:          rgba(255,255,255,0.35);
 }
 
 /* ── Sidebar footer ───────────────────────────────────────────────── */
 .footer {
   flex-shrink:  0;
   padding:      10px 16px;
-  border-top:   1px solid var(--color-border);
+  border-top:   1px solid rgba(255,255,255,0.08);
   display:      flex;
   align-items:  center;
   gap:          8px;
 }
-.footerText { font-size: 11px; color: var(--color-text-400); }
+.footerText { font-size: 11px; color: rgba(255,255,255,0.4); }
 
 /* ── Module switcher popover ──────────────────────────────────────── */
 .switcher        { width: 360px; }

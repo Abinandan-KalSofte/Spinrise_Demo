@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import { App, Alert, Modal, Select, Skeleton, Spin, Typography, Space } from 'antd'
+import { App, Alert, Dropdown, Modal, Select, Skeleton, Spin, Typography, Space } from 'antd'
+import type { MenuProps } from 'antd'
 import {
-  CheckOutlined, CloseOutlined, DeleteOutlined, DoubleLeftOutlined,
-  DoubleRightOutlined, EditOutlined, LeftOutlined, PlusOutlined, PrinterOutlined,
-  RightOutlined, SearchOutlined, UnorderedListOutlined,
+  CheckOutlined, CloseOutlined, DeleteOutlined, DoubleLeftOutlined, DoubleRightOutlined, EditOutlined,
+  LeftOutlined,
+  MoreOutlined, PlusOutlined, PrinterOutlined, RightOutlined, UnorderedListOutlined,
 } from '@ant-design/icons'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { usePRFormCore } from '../hooks/usePRFormCore'
@@ -31,7 +32,7 @@ export default function RequisitionV1NewPage() {
     deleteReasons, selectedDeleteReason, setSelectedDeleteReason,
     deleteModalOpen, setDeleteModalOpen,
     warnings, setWarnings,
-    departments, employees, machines,
+    departments, employees, machines, indentTypes,
     lookupsLoaded, lookupsLoading, lookupsError, loadAll,
     validLines, totalCost, totalQtyDisplay,
     mode, setMode,
@@ -174,13 +175,10 @@ export default function RequisitionV1NewPage() {
       {/* ── Toolbar ──────────────────────────────────────────────────────── */}
       <div style={{
         background: '#fff', borderBottom: '1px solid #e2e2e2',
-        display: 'flex', alignItems: 'center', gap: 3,
+        display: 'flex', alignItems: 'center', gap: 4,
         padding: '0 12px', height: 44, flexShrink: 0,
       }}>
-        {/* <PRVariantBadge label="Variant A" sub="Compact Power User" /> */}
-        <TbSep />
-
-        {/* ── Document actions ── */}
+        {/* ── Primary actions ── */}
         <TbBtn
           variant="primary"
           icon={<PlusOutlined style={{ fontSize: 11 }} />}
@@ -196,37 +194,10 @@ export default function RequisitionV1NewPage() {
           onClick={() => void doSave('submit')}
         />
         <TbBtn
-          icon={<EditOutlined style={{ fontSize: 11 }} />}
-          label="Modify"
-          disabled={!canModify || pageBusy}
-          onClick={() => setMode('edit')}
-        />
-        <TbBtn
-          icon={<CloseOutlined style={{ fontSize: 11 }} />}
-          label="Cancel" kbd="Alt+X"
-          disabled={pageBusy}
-          onClick={handleCancel}
-        />
-        <TbBtn
-          variant="danger"
-          icon={<DeleteOutlined style={{ fontSize: 11 }} />}
-          label="Delete" kbd="Ctrl+D"
-          disabled={mode !== 'view' || !savedPrNo || pageBusy}
-          onClick={handleDeleteClick}
-        />
-        <TbSep />
-
-        {/* ── Utility actions ── */}
-        <TbBtn
           icon={<PrinterOutlined style={{ fontSize: 11 }} />}
           label="Print" kbd="Ctrl+P"
           disabled={!savedPrNo}
           onClick={() => navigate(`/purchase/requisition/v1/print-preview/${savedPrNo}`)}
-        />
-        <TbBtn
-          icon={<SearchOutlined style={{ fontSize: 11 }} />}
-          label="Find" kbd="Ctrl+F"
-          onClick={() => navigate('/purchase/requisition')}
         />
         <TbBtn
           icon={<UnorderedListOutlined style={{ fontSize: 11 }} />}
@@ -235,7 +206,50 @@ export default function RequisitionV1NewPage() {
         />
         <TbSep />
 
-        {/* ── Navigation ── */}
+        {/* ── Secondary actions (overflow) ── */}
+        <Dropdown
+          trigger={['click']}
+          disabled={pageBusy}
+          menu={{
+            items: [
+              {
+                key: 'modify',
+                icon: <EditOutlined />,
+                label: 'Modify',
+                disabled: !canModify,
+                onClick: () => setMode('edit'),
+              },
+              {
+                key: 'cancel',
+                icon: <CloseOutlined />,
+                label: 'Cancel  (Alt+X)',
+                onClick: handleCancel,
+              },
+              { type: 'divider' },
+              {
+                key: 'delete',
+                icon: <DeleteOutlined />,
+                label: 'Delete  (Ctrl+D)',
+                danger: true,
+                disabled: mode !== 'view' || !savedPrNo,
+                onClick: handleDeleteClick,
+              },
+            ] satisfies MenuProps['items'],
+          }}
+        >
+          <button
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 4,
+              padding: '5px 10px', border: '1px solid #d0d0d0', borderRadius: 6,
+              background: '#fff', fontSize: 12, fontWeight: 500, cursor: 'pointer',
+              color: '#1a1a1a', fontFamily: 'inherit',
+            }}
+          >
+            <MoreOutlined style={{ fontSize: 13 }} />
+            <span>More</span>
+          </button>
+        </Dropdown>
+         {/* ── Navigation ── */}
         <TbBtn variant="icon" icon={<DoubleLeftOutlined  style={{ fontSize: 10 }} />}
           disabled={pageBusy}
           title="First record (Ctrl+Home)"
@@ -287,6 +301,7 @@ export default function RequisitionV1NewPage() {
           form={headerForm}
           departments={departments}
           employees={employees}
+          indentTypes={indentTypes}
           savedPrNo={savedPrNo}
           disabled={formDisabled}
           requireRequesterName
@@ -298,6 +313,8 @@ export default function RequisitionV1NewPage() {
           onValuesChange={markDirty}
         />
       </Skeleton>
+
+     
 
       {/* ── Item grid (flex-fill) ─────────────────────────────────────────── */}
       <div style={{ flex: 1, minHeight: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
@@ -334,13 +351,12 @@ export default function RequisitionV1NewPage() {
           }}
         />
       </div>
-
-      {/* ── KPI strip ────────────────────────────────────────────────────── */}
+       {/* ── KPI strip (below header, above grid) ─────────────────────────── */}
       <PRKPIStrip
         validLinesCount={validLines.length}
         totalQtyDisplay={totalQtyDisplay}
         totalCost={totalCost}
-        createdBy={savedPr?.createdBy ?? authUser?.userId ?? '—'}
+        prDate={savedPr?.prDate ?? null}
         prStatus={prStatus}
         savedPrNo={savedPrNo}
       />

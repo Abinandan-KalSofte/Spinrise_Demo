@@ -34,7 +34,7 @@ const COLUMNS: ColumnsType<RecentPO> = [
     dataIndex: 'date',
     key:       'date',
     width:     110,
-    render: (v: string) => dayjs(v).format('DD/MM/YYYY'),
+    render: (v: string) => dayjs(v).format('DD-MMM-YYYY'),
   },
   {
     title:     'Vendor',

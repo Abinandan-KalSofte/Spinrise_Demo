@@ -149,7 +149,6 @@ export default function RequisitionV3NewPage() {
             validLinesCount={validLines.length}
             totalQtyDisplay={totalQtyDisplay}
             totalCost={totalCost}
-            createdBy={savedPr?.createdBy ?? authUser?.userId ?? '—'}
             prStatus={prStatus}
             savedPrNo={savedPrNo}
           />

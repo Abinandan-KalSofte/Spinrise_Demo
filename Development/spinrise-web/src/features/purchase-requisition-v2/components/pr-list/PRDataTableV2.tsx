@@ -70,7 +70,7 @@ export function PRDataTableV2({
       sort:       'desc',
       cellStyle:  CELL_BASE,
       valueFormatter: ({ value }: { value: string }) =>
-        value ? dayjs(value).format('DD/MM/YYYY') : '—',
+        value ? dayjs(value).format('DD-MMM-YYYY') : '—',
     },
     {
       headerName: 'Department',

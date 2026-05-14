@@ -33,6 +33,8 @@ export function usePRFormCore() {
   const [savedPrNo,             setSavedPrNo]             = useState<number | null>(null)
   const [savedPr,               setSavedPr]               = useState<PRHeaderResponse | null>(null)
   const [prStatus,              setPrStatus]              = useState<string | null>(null)
+  // Tracks the last-created PR's date; persists through initNewMode() for date-order validation
+  const [lastPrDate,            setLastPrDate]            = useState<string | null>(null)
   const [saving,                setSaving]                = useState(false)
   const [deleting,              setDeleting]              = useState(false)
   const [preCheckResult,        setPreCheckResult]        = useState<PreCheckResult | null>(null)
@@ -53,7 +55,7 @@ export function usePRFormCore() {
 
   // ── Lookups ───────────────────────────────────────────────────────────────
   const {
-    departments, employees, poTypes, machines,
+    departments, employees, poTypes, machines, indentTypes,
     loaded: lookupsLoaded, loading: lookupsLoading, error: lookupsError,
     loadAll,
   } = useLookupStore()
@@ -161,6 +163,9 @@ export function usePRFormCore() {
     setNavLoading(true)
     try {
       const result = await purchaseRequisitionApi.getLastRecord(yfDate, ylDate)
+      // Capture the last PR's date here — this is the floor for new PR date selection.
+      // Stored separately so it survives initNewMode() which clears savedPr.
+      setLastPrDate(result.prDate)
       await loadRecord(result.prNo)
     } catch {
       setNavLoading(false)
@@ -245,6 +250,19 @@ export function usePRFormCore() {
       return
     }
 
+    // Processing-date order validation: only for new PRs, not edits.
+    // Uses day-level granularity to strip time-part differences safely.
+    if (mode === 'new' && lastPrDate) {
+      if (dayjs(values.prDate).isBefore(dayjs(lastPrDate), 'day')) {
+        const formatted = dayjs(lastPrDate).format('DD-MMM-YYYY')
+        void message.error(
+          `Processing Date cannot be earlier than the latest Purchase Requisition date (${formatted}).`,
+        )
+        headerForm.scrollToField('prDate')
+        return
+      }
+    }
+
     setSaving(true)
     try {
       const payload = buildPayload(values)
@@ -258,6 +276,8 @@ export function usePRFormCore() {
       } else {
         const result = await purchaseRequisitionApi.create(payload)
         prNo = result.prNo
+        // Advance the floor: subsequent PRs in this session must be >= this date
+        setLastPrDate(payload.prDate)
       }
 
       setSavedPrNo(prNo)
@@ -334,6 +354,7 @@ export function usePRFormCore() {
     // state
     items, setItems,
     savedPrNo, savedPr, prStatus,
+    lastPrDate,
     saving, deleting, pageBusy,
     preCheckResult, preCheckMsg, preCheckLoading,
     deleteReasons, selectedDeleteReason, setSelectedDeleteReason,
@@ -344,7 +365,7 @@ export function usePRFormCore() {
     navLoading,
     isDirty, markDirty, clearDirty,
     // lookups
-    departments, employees, poTypes, machines,
+    departments, employees, poTypes, machines, indentTypes,
     lookupsLoaded, lookupsLoading, lookupsError, loadAll,
     // KPI
     validLines, totalCost, totalQtyByUOM, totalQtyDisplay,

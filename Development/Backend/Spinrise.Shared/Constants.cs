@@ -145,6 +145,7 @@ public static class StoredProcedures
         public const string SearchEmployees    = "ksp_RMI_SearchEmployees";
         public const string GetActiveTaxCodes  = "ksp_RMI_GetActiveTaxCodes";
         public const string GetItemsPaginated  = "ksp_GetItemsPaginated";
+        public const string GetIndentTypes     = "ksp_GetIndentTypes";
     }
 
     public static class Stock

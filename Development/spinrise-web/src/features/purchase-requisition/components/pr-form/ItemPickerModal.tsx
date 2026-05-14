@@ -67,13 +67,14 @@ const TD: React.CSSProperties = {
 export function ItemPickerModal({
   open, depCode, initialSearch = '', onSelectMultiple, onCancel,
 }: ItemPickerModalProps) {
-  const [items,        setItems]        = useState<ItemLookup[]>([])
-  const [page,         setPage]         = useState(1)
-  const [totalCount,   setTotalCount]   = useState(0)
-  const [loading,      setLoading]      = useState(false)
-  const [loadingMore,  setLoadingMore]  = useState(false)
-  const [search,       setSearch]       = useState('')
-  const [selectedItem, setSelectedItem] = useState<ItemLookup | null>(null)
+  const [items,         setItems]         = useState<ItemLookup[]>([])
+  const [page,          setPage]          = useState(1)
+  const [totalCount,    setTotalCount]    = useState(0)
+  const [loading,       setLoading]       = useState(false)
+  const [loadingMore,   setLoadingMore]   = useState(false)
+  const [search,        setSearch]        = useState('')
+  // Map keyed by itemCode preserves the full ItemLookup object across search changes
+  const [selectedItems, setSelectedItems] = useState<Map<string, ItemLookup>>(new Map())
 
   const searchInputRef = useRef<InputRef>(null)
   const searchTimerRef = useRef<ReturnType<typeof setTimeout>>()
@@ -111,7 +112,7 @@ export function ItemPickerModal({
     setItems([])
     setPage(1)
     setTotalCount(0)
-    setSelectedItem(null)
+    setSelectedItems(new Map())
     setSearch(initialSearch)
     void loadPage(1, initialSearch, true)
     setTimeout(() => searchInputRef.current?.focus(), 120)
@@ -146,19 +147,31 @@ export function ItemPickerModal({
 
   // ── Selection ─────────────────────────────────────────────────────────────
   const handleRowClick = useCallback((item: ItemLookup) => {
-    setSelectedItem((prev) => prev?.itemCode === item.itemCode ? null : item)
+    setSelectedItems((prev) => {
+      const next = new Map(prev)
+      if (next.has(item.itemCode)) {
+        next.delete(item.itemCode)
+      } else {
+        next.set(item.itemCode, item)
+      }
+      return next
+    })
   }, [])
 
   const handleConfirm = useCallback(() => {
-    if (!selectedItem) return
-    onSelectMultiple([selectedItem])
-    setSelectedItem(null)
-  }, [selectedItem, onSelectMultiple])
+    if (selectedItems.size === 0) return
+    onSelectMultiple(Array.from(selectedItems.values()))
+    setSelectedItems(new Map())
+  }, [selectedItems, onSelectMultiple])
 
+  // Double-click adds that one item immediately, ignoring any pending multi-selection
   const handleRowDblClick = useCallback((item: ItemLookup) => {
     onSelectMultiple([item])
-    setSelectedItem(null)
+    setSelectedItems(new Map())
   }, [onSelectMultiple])
+
+  const selCount      = selectedItems.size
+  const selEntries    = selCount > 0 ? Array.from(selectedItems.values()) : []
 
   return (
     <Modal
@@ -241,7 +254,7 @@ export function ItemPickerModal({
             ) : (
               <>
                 {items.map((item, idx) => {
-                  const isSel = selectedItem?.itemCode === item.itemCode
+                  const isSel = selectedItems.has(item.itemCode)
                   const isLow = (item.currentStock ?? 0) < (item.minLevel ?? 0) && item.minLevel != null
 
                   return (
@@ -327,33 +340,40 @@ export function ItemPickerModal({
         display: 'flex', alignItems: 'center', gap: 12,
         background: '#fafafa', borderRadius: '0 0 8px 8px',
       }}>
-        <div style={{ flex: 1 }}>
-          {selectedItem ? (
-            <span style={{ fontSize: 12, color: '#1677ff', fontWeight: 600 }}>
-              <span style={{ fontFamily: 'monospace' }}>{selectedItem.itemCode}</span>
-              {' — '}
-              <span style={{ color: '#475569', fontWeight: 400 }}>{selectedItem.itemName}</span>
-            </span>
-          ) : (
+        <div style={{ flex: 1, overflow: 'hidden' }}>
+          {selCount === 0 ? (
             <Typography.Text type="secondary" style={{ fontSize: 12 }}>
               Click a row to select · Double-click to add instantly
             </Typography.Text>
+          ) : selCount === 1 ? (
+            <span style={{ fontSize: 12, color: '#1677ff', fontWeight: 600 }}>
+              <span style={{ fontFamily: 'monospace' }}>{selEntries[0].itemCode}</span>
+              {' — '}
+              <span style={{ color: '#475569', fontWeight: 400 }}>{selEntries[0].itemName}</span>
+            </span>
+          ) : (
+            <span style={{ fontSize: 12, color: '#1677ff', fontWeight: 600 }}>
+              {selCount} items selected
+              <span style={{ color: '#94a3b8', fontWeight: 400, marginLeft: 6 }}>
+                · {selEntries.map((i) => i.itemCode).join(', ')}
+              </span>
+            </span>
           )}
         </div>
 
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
           <Button onClick={onCancel}>Cancel</Button>
           <Button
             type="primary"
-            disabled={!selectedItem}
+            disabled={selCount === 0}
             onClick={handleConfirm}
-            style={selectedItem ? {
+            style={selCount > 0 ? {
               background: 'linear-gradient(135deg, #1677ff, #0950a8)',
               border: 'none', fontWeight: 600, paddingInline: 24,
               boxShadow: '0 3px 10px rgba(22,119,255,0.4)',
             } : { paddingInline: 24 }}
           >
-            {selectedItem ? 'Add Item →' : 'Add Item'}
+            {selCount > 1 ? `Add ${selCount} Items →` : selCount === 1 ? 'Add Item →' : 'Add Item'}
           </Button>
         </div>
       </div>

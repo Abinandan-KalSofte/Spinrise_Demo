@@ -54,7 +54,7 @@ export function TbBtn({
   }
   const variants: Partial<Record<string, React.CSSProperties>> = {
     primary: { background: C.blue,   color: '#fff', borderColor: C.blue   },
-    success: { background: '#3B6D11',color: '#fff', borderColor: '#3B6D11' },
+    success: { background: '#185FA5',color: '#fff', borderColor: '#185FA5' },
     danger:  { color: C.red, borderColor: '#E24B4A', background: '#fff'   },
   }
   return (
@@ -90,7 +90,6 @@ export function TbSep() {
 
 // ── Document header band (blue gradient) ──────────────────────────────────────
 
-import { PR_STATUS_LABELS } from '../../types'
 
 interface PRDocBandProps {
   savedPrNo: number | null
@@ -98,7 +97,7 @@ interface PRDocBandProps {
   variant:   string
 }
 
-export function PRDocBand({ savedPrNo, prStatus, variant }: PRDocBandProps) {
+export function PRDocBand({ savedPrNo, prStatus: _prStatus, variant }: PRDocBandProps) {
   return (
     <div style={{
       background: 'linear-gradient(135deg, #0C447C 0%, #185FA5 100%)',
@@ -123,20 +122,16 @@ export function PRDocBand({ savedPrNo, prStatus, variant }: PRDocBandProps) {
           </div>
         </div>
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        <span style={{
-          fontSize: 10, padding: '2px 8px', borderRadius: 20, fontWeight: 600,
-          background: 'rgba(255,255,255,.15)', color: 'rgba(255,255,255,.8)',
-          letterSpacing: '.3px',
-        }}>
-          {variant}
-        </span>
-        <span style={{
-          fontSize: 11, padding: '4px 14px', borderRadius: 20, fontWeight: 700,
-          background: 'rgba(255,255,255,.18)', color: '#fff', letterSpacing: '.4px',
-        }}>
-          {prStatus ? (PR_STATUS_LABELS[prStatus]?.label ?? prStatus) : 'Draft'}
-        </span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        {variant && (
+          <span style={{
+            fontSize: 10, padding: '2px 8px', borderRadius: 20, fontWeight: 600,
+            background: 'rgba(255,255,255,.15)', color: 'rgba(255,255,255,.8)',
+            letterSpacing: '.3px',
+          }}>
+            {variant}
+          </span>
+        )}
       </div>
     </div>
   )

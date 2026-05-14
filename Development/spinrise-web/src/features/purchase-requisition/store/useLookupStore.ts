@@ -6,6 +6,7 @@ import type {
   POTypeLookup,
   MachineLookup,
   SubCostLookup,
+  IndentTypeLookup,
 } from '../types'
 
 interface LookupState {
@@ -14,6 +15,7 @@ interface LookupState {
   poTypes:     POTypeLookup[]
   machines:    MachineLookup[]
   subCosts:    SubCostLookup[]
+  indentTypes: IndentTypeLookup[]
   loaded:  boolean
   loading: boolean
   error:   string | null
@@ -27,6 +29,7 @@ export const useLookupStore = create<LookupState>()((set, get) => ({
   poTypes:     [],
   machines:    [],
   subCosts:    [],
+  indentTypes: [],
   loaded:  false,
   loading: false,
   error:   null,
@@ -35,15 +38,16 @@ export const useLookupStore = create<LookupState>()((set, get) => ({
     if (get().loaded || get().loading) return
     set({ loading: true, error: null })
     try {
-      const [departments, employees, poTypes, machines, subCosts] =
+      const [departments, employees, poTypes, machines, subCosts, indentTypes] =
         await Promise.all([
           lookupApi.getDepartments(),
           lookupApi.getEmployees(),
           lookupApi.getPOTypes(),
           lookupApi.getMachines(),
           lookupApi.getSubCosts(),
+          lookupApi.getIndentTypes(),
         ])
-      set({ departments, employees, poTypes, machines, subCosts, loaded: true })
+      set({ departments, employees, poTypes, machines, subCosts, indentTypes, loaded: true })
     } catch {
       set({ error: 'Failed to load reference data. Please refresh the page.' })
     } finally {
@@ -54,7 +58,7 @@ export const useLookupStore = create<LookupState>()((set, get) => ({
   reset: () =>
     set({
       departments: [], employees: [], poTypes: [],
-      machines: [], subCosts: [],
+      machines: [], subCosts: [], indentTypes: [],
       loaded: false, loading: false, error: null,
     }),
 }))

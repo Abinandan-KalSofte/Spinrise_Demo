@@ -4,7 +4,6 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    -- ── Setup existence flags ────────────────────────────────────────────────
     DECLARE
         @ItemMasterExists    BIT = 0,
         @DeptExists          BIT = 0,
@@ -22,42 +21,40 @@ BEGIN
     )
         SET @DocNumberConfigured = 1;
 
-    -- ── po_para configuration flags ──────────────────────────────────────────
     DECLARE
-        @BackDate            VARCHAR(5) = 'Y',
-        @BudgetQty           CHAR(1)    = 'N',
-        @PendingOrderPara    VARCHAR(5) = 'N',
-        @PendPRCheck         CHAR(1)    = 'N',
-        @IndItemGrp          CHAR(1)    = 'N',
-        @PRApprovalStatus    VARCHAR(5) = 'N',
-        @ManualIndNo         CHAR(1)    = 'N',
-        @PenPoDetails        VARCHAR(10)= 'N',
-        @PurTypeFlg          VARCHAR(5) = 'N',
-        @RequireReqName      CHAR(1)    = 'N',
-        @RequireRefNo        CHAR(1)    = 'N';
+        @BackDate         VARCHAR(5) = 'Y',
+        @BudgetQty        CHAR(1)    = 'N',
+        @PendingOrderPara VARCHAR(5) = 'N',
+        @IndItemGrp       CHAR(1)    = 'N',
+        @PRApprovalStatus VARCHAR(5) = 'N',
+        @ManualIndNo      CHAR(1)    = 'N',
+        @PenPoDetails     VARCHAR(10)= 'N',
+        @PurTypeFlg       int(5) = 0,
+        @RequireReqName   CHAR(1)    = 'N',
+        @RequireRefNo     CHAR(1)    = 'N',
+        @PendPRCheck      CHAR(1)    = 'N';
 
     SELECT
         @BudgetQty        = ISNULL(BudgetQty,        'N'),
         @PendingOrderPara = ISNULL(pendingorderpara,  'N'),
-        @PendPRCheck      = ISNULL(PendPRCheck,       'N'),
         @IndItemGrp       = ISNULL(InditemGrp,        'N'),
         @PRApprovalStatus = ISNULL(PRapprovalstatus,  'N'),
         @ManualIndNo      = ISNULL(Manual_IndNo,      'N'),
         @PenPoDetails     = ISNULL(Penpodetails,      'N'),
         @PurTypeFlg       = ISNULL(purtypeflg,        'N'),
-        @RequireReqName   = ISNULL(RequireReqName,    'N'),
-        @RequireRefNo     = ISNULL(RequireRefNo,      'N')
+        @RequireReqName   = ISNULL(purtypeflg,    'N')
+       -- ,@RequireRefNo     = ISNULL(RequireRefNo,      'N'),
+        --@PendPRCheck      = ISNULL(PendPRCheck,       'N')
     FROM dbo.po_para
     WHERE divcode = @DivCode;
 
     SELECT @BackDate = ISNULL(backdate, 'Y')
     FROM   dbo.in_para;
 
-    -- ── Result set ───────────────────────────────────────────────────────────
     SELECT
-        @ItemMasterExists                                                               AS ItemMasterExists,
-        @DeptExists                                                                     AS DepartmentExists,
-        @DocNumberConfigured                                                            AS DocNumberConfigured,
+        @ItemMasterExists                                                          AS ItemMasterExists,
+        @DeptExists                                                                AS DepartmentExists,
+        @DocNumberConfigured                                                       AS DocNumberConfigured,
         CASE WHEN @BackDate         = 'Y' THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS BackDateAllowed,
         CASE WHEN @BudgetQty        = 'Y' THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS BudgetValidationEnabled,
         CASE WHEN @PendingOrderPara = 'Y' THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS PendingIndentCheckEnabled,
@@ -66,7 +63,7 @@ BEGIN
         CASE WHEN @PRApprovalStatus = 'Y' THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS ApprovalStatusVisible,
         CASE WHEN @ManualIndNo      = 'Y' THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS ManualPrNumberEnabled,
         CASE WHEN @PenPoDetails     = 'Y' THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS PendingPoDetailsEnabled,
-        CASE WHEN @PurTypeFlg      <> 'N' AND @PurTypeFlg <> '' THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS PurTypeFlgEnabled,
+        CASE WHEN @PurTypeFlg       <> 0 AND @PurTypeFlg <> '' THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS PurTypeFlgEnabled,
         CASE WHEN @RequireReqName   = 'Y' THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS RequireRequesterName,
         CASE WHEN @RequireRefNo     = 'Y' THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS RequireRefNo;
 END;

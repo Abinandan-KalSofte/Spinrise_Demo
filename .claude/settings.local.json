@@ -89,7 +89,8 @@
       "Bash(cmd *)",
       "PowerShell(Get-WebSite *)",
       "Bash(python3 -c ' *)",
-      "Bash(python3 -c \"import sys; [print\\(l\\) for l in sys.stdin.read\\(\\).splitlines\\(\\)]\")"
+      "Bash(python3 -c \"import sys; [print\\(l\\) for l in sys.stdin.read\\(\\).splitlines\\(\\)]\")",
+      "Bash(Get-ChildItem -Path \"D:\\\\Spinrise\\\\Development\\\\Backend\\\\Spinrise.Application\\\\Areas\\\\Common\\\\Lookup\\\\DTOs\")"
     ]
   }
 }

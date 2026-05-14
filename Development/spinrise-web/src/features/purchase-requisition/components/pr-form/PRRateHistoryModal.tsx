@@ -29,7 +29,7 @@ export function PRRateHistoryModal({ open, onClose, itemCode, itemName }: PRRate
       dataIndex: 'poDate',
       key:       'poDate',
       width:     100,
-      render:    (v: string) => dayjs(v).format('DD-MM-YYYY'),
+      render:    (v: string) => dayjs(v).format('DD-MMM-YYYY'),
     },
     {
       title:     'Supplier',
@@ -46,7 +46,7 @@ export function PRRateHistoryModal({ open, onClose, itemCode, itemName }: PRRate
       align:     'right',
       render:    (v: number) => (
         <Tag color="blue" style={{ fontVariantNumeric: 'tabular-nums' }}>
-          ₹ {Number(v ?? 0).toFixed(2)}
+          ₹ {Number(v ?? 0).toFixed(4)}
         </Tag>
       ),
     },

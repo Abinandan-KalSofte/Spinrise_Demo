@@ -29,11 +29,10 @@ const TH: React.CSSProperties = {
   padding:       '6px 10px',
   fontSize:      10,
   fontWeight:    700,
-  textTransform: 'uppercase',
-  letterSpacing: '0.06em',
-  color:         '#64748b',
-  background:    '#f8fafc',
-  borderBottom:  '2px solid #e2e8f0',
+  letterSpacing: '0.04em',
+  color:         '#f1f5f9',
+  background:    '#1e293b',
+  borderBottom:  '2px solid #0f172a',
   whiteSpace:    'nowrap',
   position:      'sticky',
   top:           0,
@@ -54,7 +53,7 @@ const TD: React.CSSProperties = {
 export function PRDataTable({
   rows, loading, deletingPrNo, departments, employees,
   page, total, onPageChange,
-  onView, onDelete, onDownload, downloading = null,
+  onDelete, onDownload, downloading = null,
 }: PRDataTableProps) {
   const navigate = useNavigate()
 
@@ -109,7 +108,7 @@ export function PRDataTable({
                 const deletable = canDelete(row)
                 const statusInfo = STATUS_TAG[row.prStatus ?? ''] ?? { label: row.prStatus ?? '—' }
                 const muted = row.isDeleted || row.prStatus === 'CANCELLED'
-                const rowBg = muted ? '#fafafa' : idx % 2 === 0 ? '#ffffff' : '#fafafa'
+                const rowBg = muted ? '#fafafa' : idx % 2 === 0 ? '#ffffff' : '#F0F5FF'
 
                 return (
                   <tr
@@ -125,7 +124,7 @@ export function PRDataTable({
                       #{row.prNo}
                     </td>
                     <td style={{ ...TD, width: 110 }}>
-                      {row.prDate ? dayjs(row.prDate).format('DD/MM/YYYY') : '—'}
+                      {row.prDate ? dayjs(row.prDate).format('DD-MMM-YYYY') : '—'}
                     </td>
                     <td style={{ ...TD, minWidth: 140 }}>
                       {row.depCode ? deptName(row.depCode) : '—'}
@@ -158,7 +157,7 @@ export function PRDataTable({
                       <Space size={2}>
                         <Tooltip title="View">
                           <Button type="text" size="small" icon={<EyeOutlined />}
-                            onClick={() => onView(row.prNo)} />
+                            onClick={() => navigate(`/purchase/requisition/v1/new?prNo=${row.prNo}&mode=view`) }/>
                         </Tooltip>
                         <Tooltip title="Edit">
                           <Button type="text" size="small" icon={<EditOutlined />}

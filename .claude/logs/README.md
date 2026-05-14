@@ -2,6 +2,8 @@
 
 | Date | File | Summary |
 |---|---|---|
+| 2026-05-12 | [2026-05-12_session_CEO_Pilot_Plan_Status.md](2026-05-12_session_CEO_Pilot_Plan_Status.md) | CEO pilot roadmap, dual-DB SP inventory (36 M01 SpinRiseSaranya + 42 M02 JAT), PR Form UX overhaul summary, Login redesign Blueprint v1.1, TS fixes, next steps |
+| 2026-05-12 | [2026-05-12_session_PR_UX_Audit_Fixes.md](2026-05-12_session_PR_UX_Audit_Fixes.md) | Phase 1–3 UX audit fixes: status "Requested", Save button blue, column Title Case, DD-MMM-YYYY universal, Approx Cost 2dp, Blueprint zebra #F0F5FF, toolbar simplified (overflow menu), KPI strip above grid, Days Open threshold, row hover CSS + 29 TS errors fixed (tokens.ts additions, AppHeader cleanup, V2/V3 prop mismatch) |
 | 2026-04-25 | [2026-04-25_session_Theme_LightDark_Toggle.md](2026-04-25_session_Theme_LightDark_Toggle.md) | CSS custom properties (dark/light vars), Zustand theme store, ConfigProvider dynamic algorithm, topbar toggle button, fixed white KPI cards + modal labels + login text |
 | 2026-04-21 | [2026-04-21_session_Delete_Action.md](2026-04-21_session_Delete_Action.md) | PR List delete action: IsDeleted SP column, confirmation modal with reason select, toast, refresh |
 | 2026-04-21 | [2026-04-21_session_GlobalSearch.md](2026-04-21_session_GlobalSearch.md) | Global search: @SearchText SP param (LIKE on prno/refno/reqname), Input.Search field, Enter-key trigger, IsDeleted DTO fix |

@@ -64,11 +64,10 @@ const TH: React.CSSProperties = {
   padding: '6px 8px',
   fontSize: 10,
   fontWeight: 700,
-  textTransform: 'uppercase',
   letterSpacing: '0.06em',
-  color: '#64748b',
-  background: '#f8fafc',
-  borderBottom: '2px solid #e2e8f0',
+  color: '#f1f5f9',
+  background: '#1e293b',
+  borderBottom: '2px solid #0f172a',
   whiteSpace: 'nowrap',
   position: 'sticky',
   top: 0,
@@ -107,7 +106,7 @@ function makeEmptyRow(): PRLineFormItem {
 
 function calcApproxCost(rate: number | null, qty: number): number {
   if (!rate || rate <= 0) return 0
-  return parseFloat((rate * qty).toFixed(4))
+  return parseFloat((rate * qty).toFixed(2))
 }
 
 // ── Cell Renderers ────────────────────────────────────────────────────────────
@@ -132,7 +131,7 @@ function ReadOnlyCell({ value, type = 'text', precision = 3, placeholder: _place
         ₹ {Number(value).toLocaleString('en-IN', { minimumFractionDigits: precision, maximumFractionDigits: precision })}
       </span>
     case 'date':
-      return <span>{value ? dayjs(value).format('DD/MM/YY') : '—'}</span>
+      return <span>{value ? dayjs(value).format('DD-MMM-YYYY') : '—'}</span>
     default:
       return <span style={{ color: '#1e293b' }}>{value}</span>
   }
@@ -167,7 +166,7 @@ const ReadOnlyRow = memo(({ row, idx, machines, subCosts, onView }: ReadOnlyRowP
       <td style={{ ...TD_TEXT, width: 46, textAlign: 'center' }}><ReadOnlyCell value={row.uom} /></td>
       <td style={{ ...TD_TEXT, width: 82, textAlign: 'right' }}><ReadOnlyCell value={row.qtyRequired} type="number" precision={3} /></td>
       <td style={{ ...TD_TEXT, width: 118, textAlign: 'right' }}><ReadOnlyCell value={row.rate} type="number" precision={4} /></td>
-      <td style={{ ...TD_TEXT, width: 130, textAlign: 'right' }}><ReadOnlyCell value={approxCost} type="currency" precision={4} /></td>
+      <td style={{ ...TD_TEXT, width: 130, textAlign: 'right' }}><ReadOnlyCell value={approxCost} type="currency" precision={2} /></td>
       <td style={{ ...TD_TEXT, width: 148 }}><ReadOnlyCell value={row.requiredDate} type="date" /></td>
       <td style={{ ...TD_TEXT, width: 120, fontSize: 10 }}><ReadOnlyCell value={machineLabel} /></td>
       <td style={{ ...TD_TEXT, width: 140, fontSize: 10 }}><ReadOnlyCell value={subCostLabel} /></td>
@@ -177,7 +176,7 @@ const ReadOnlyRow = memo(({ row, idx, machines, subCosts, onView }: ReadOnlyRowP
       <td style={{ ...TD_TEXT, width: 52, textAlign: 'center' }}>{row.isSample ? '✓' : ''}</td>
       <td style={{ ...TD_TEXT, width: 60, textAlign: 'center' }}>
         <Tooltip title="View Details">
-          <Button type="text" size="small" icon={<EyeOutlined style={{ color: '#7c3aed', fontSize: 12 }} />} onClick={() => onView(row)} />
+          <Button tabIndex={-1} type="text" size="small" icon={<EyeOutlined style={{ color: '#7c3aed', fontSize: 12 }} />} onClick={() => onView(row)} />
         </Tooltip>
       </td>
     </>
@@ -194,13 +193,17 @@ interface EditableRowProps {
   subCosts: { sccCode: number; sccName: string }[]
   qtyError: boolean
   isLast: boolean
+  isFirstRow: boolean
+  isLastRow:  boolean
   onUpdate: (field: keyof PRLineFormItem, value: any) => void
   onView: (row: PRLineFormItem) => void
   onDelete: () => void
   onHistory: () => void
+  onTabToNext: () => void
+  onTabToPrev: () => void
 }
 
-const EditableRow = memo(({ row, idx, machines, subCosts, qtyError, isLast, onUpdate, onView, onDelete, onHistory }: EditableRowProps) => {
+const EditableRow = memo(({ row, idx, machines, subCosts, qtyError, isLast, isFirstRow, isLastRow, onUpdate, onView, onDelete, onHistory, onTabToNext, onTabToPrev }: EditableRowProps) => {
   const approxCost = (() => {
     const r = row.rate && row.rate > 0 ? row.rate : (row.lastPoRate ?? 0)
     return r * row.qtyRequired
@@ -239,6 +242,15 @@ const EditableRow = memo(({ row, idx, machines, subCosts, qtyError, isLast, onUp
             style={{ width: '100%', height: '24px' }}
             status={qtyError ? 'error' : undefined}
             onChange={(v) => onUpdate('qtyRequired', v ?? 0)}
+            onKeyDown={(e) => {
+              // Shift+Tab on the first editable field: navigate to previous row's Remarks.
+              // Only intercept when a previous row exists; otherwise let Tab bubble naturally
+              // to the form header (first row edge case).
+              if (e.key === 'Tab' && e.shiftKey && !isFirstRow) {
+                e.preventDefault()
+                onTabToPrev()
+              }
+            }}
             onBlur={(e) => {
               if (!qtyError) return
               const related = e.relatedTarget as HTMLElement | null
@@ -260,6 +272,7 @@ const EditableRow = memo(({ row, idx, machines, subCosts, qtyError, isLast, onUp
         <Space.Compact style={{ width: '100%' }}>
           <InputNumber
             size="small"
+            tabIndex={-1}
             value={row.rate}
             min={0}
             precision={4}
@@ -267,18 +280,18 @@ const EditableRow = memo(({ row, idx, machines, subCosts, qtyError, isLast, onUp
             onChange={(v) => onUpdate('rate', v ?? null)}
           />
           <Tooltip title="Rate History">
-            <Button size="small" icon={<HistoryOutlined style={{ fontSize: 11 }} />} onClick={onHistory} />
+            <Button tabIndex={-1} size="small" icon={<HistoryOutlined style={{ fontSize: 11 }} />} onClick={onHistory} />
           </Tooltip>
         </Space.Compact>
       </td>
       <td style={{ ...TD, width: 130, textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 600 }}>
-        {approxCost > 0 ? `₹ ${approxCost.toLocaleString('en-IN', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}` : <span style={{ color: '#d1d5db' }}>—</span>}
+        {approxCost > 0 ? `₹ ${approxCost.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : <span style={{ color: '#d1d5db' }}>—</span>}
       </td>
       <td style={{ ...TD, width: 148 }}>
         <DatePicker
           size="small"
           value={row.requiredDate ? dayjs(row.requiredDate) : null}
-          format="DD/MM/YYYY"
+          format="DD-MMM-YYYY"
           style={{ width: '100%', height: '24px' }}
           onChange={(d) => onUpdate('requiredDate', d ? d.format('YYYY-MM-DD') : null)}
         />
@@ -307,7 +320,7 @@ const EditableRow = memo(({ row, idx, machines, subCosts, qtyError, isLast, onUp
           onChange={(v) => onUpdate('subCostCode', v ?? null)}
         />
       </td>
-      <td style={{ ...TD, minWidth: 110 }}>
+      <td style={{ ...TD, minWidth: 110 }} data-remarks-for={row.key}>
         <Input
           size="small"
           value={row.remarks}
@@ -315,18 +328,28 @@ const EditableRow = memo(({ row, idx, machines, subCosts, qtyError, isLast, onUp
           placeholder="Remarks…"
           style={{ height: '24px' }}
           onChange={(e) => onUpdate('remarks', e.target.value)}
+          onKeyDown={(e) => {
+            // Tab on the last editable field: activate next row and focus its Qty.
+            // Only intercept when a next row exists; otherwise Tab bubbles naturally
+            // to the trailing search input (last row edge case).
+            if (e.key === 'Tab' && !e.shiftKey && !isLastRow) {
+              e.preventDefault()
+              onTabToNext()
+            }
+          }}
         />
       </td>
       <td style={{ ...TD, width: 52, textAlign: 'center' }}>
-        <Checkbox checked={row.isSample} onChange={(e) => onUpdate('isSample', e.target.checked)} />
+        <Checkbox tabIndex={-1} checked={row.isSample} onChange={(e) => onUpdate('isSample', e.target.checked)} />
       </td>
       <td style={{ ...TD, width: 60, textAlign: 'center' }}>
         <Space size={2}>
           <Tooltip title="View Details">
-            <Button type="text" size="small" icon={<EyeOutlined style={{ color: '#7c3aed', fontSize: 12 }} />} onClick={() => onView(row)} />
+            <Button tabIndex={-1} type="text" size="small" icon={<EyeOutlined style={{ color: '#7c3aed', fontSize: 12 }} />} onClick={() => onView(row)} />
           </Tooltip>
           <Tooltip title={deleteTip}>
             <Button
+              tabIndex={-1}
               type="text" size="small" danger
               icon={<DeleteOutlined style={{ fontSize: 12 }} />}
               disabled={deleteDisable}
@@ -378,6 +401,7 @@ function PRLineItemsTable({
   const [editingRowKey, setEditingRowKey] = useState<string | null>(null)
   const [qtyErrorKeys, setQtyErrorKeys] = useState<Set<string>>(new Set())
   const [focusQtyKey, setFocusQtyKey] = useState<string | null>(null)
+  const [focusRemarksKey, setFocusRemarksKey] = useState<string | null>(null)
 
   // ── Trailing row (new item) ───────────────────────────────────────────────
   const [_trailing, setTrailing] = useState<PRLineFormItem>(makeEmptyRow)
@@ -436,6 +460,19 @@ function PRLineItemsTable({
     return () => clearTimeout(t)
   }, [focusQtyKey])
 
+  // Mirrors focusQtyKey but targets the Remarks field — used when Shift+Tab navigates
+  // backward from a row's Qty to the previous row's last editable field.
+  useEffect(() => {
+    if (!focusRemarksKey) return
+    const t = setTimeout(() => {
+      const td = document.querySelector<HTMLTableCellElement>(`td[data-remarks-for="${focusRemarksKey}"]`)
+      const input = td?.querySelector<HTMLInputElement>('input')
+      input?.focus()
+      setFocusRemarksKey(null)
+    }, 80)
+    return () => clearTimeout(t)
+  }, [focusRemarksKey])
+
   useImperativeHandle(ref, () => ({
     flushEdit: async () => { /* inline edits commit on every change */ },
   }), [])
@@ -485,7 +522,7 @@ function PRLineItemsTable({
   const historyColumns = useMemo(() => [
     { title: 'PO No',    dataIndex: 'poNo',         key: 'poNo',         width: 90 },
     { title: 'Date',     dataIndex: 'poDate',       key: 'poDate',       width: 90,
-      render: (v: string) => v ? dayjs(v).format('DD/MM/YY') : '—' },
+      render: (v: string) => v ? dayjs(v).format('DD-MMM-YYYY') : '—' },
     { title: 'Supplier', dataIndex: 'supplierName', key: 'supplierName', ellipsis: true },
     { title: 'Rate', dataIndex: 'rate', key: 'rate', width: 90, align: 'right' as const,
       render: (v: number) => v != null ? `₹ ${Number(v).toFixed(4)}` : '—' },
@@ -514,7 +551,7 @@ function PRLineItemsTable({
   // ── Trailing row handlers ─────────────────────────────────────────────────
   const handleItemsFromModal = useCallback(async (picked: ItemLookup[]) => {
     const { yfDate, ylDate } = getFYBounds()
-    let lastKey: string | null = null
+    let firstKey: string | null = null
     const newLines: PRLineFormItem[] = []
 
     picked.forEach((item) => {
@@ -531,13 +568,15 @@ function PRLineItemsTable({
       }
       onAdd(newLine)
       newLines.push(newLine)
-      setEditingRowKey(newLine.key)
-      lastKey = newLine.key
+      if (firstKey === null) firstKey = newLine.key
       // Default qty is 0 — always invalid, flag error immediately
       setQtyErrorKeys((prev) => new Set([...prev, newLine.key]))
     })
 
-    if (lastKey) setFocusQtyKey(lastKey)
+    if (firstKey !== null) {
+      setEditingRowKey(firstKey)
+      setFocusQtyKey(firstKey)
+    }
     setTrailing(makeEmptyRow())
     setTrailingDays(null)
     setTrailingText('')
@@ -572,6 +611,25 @@ function PRLineItemsTable({
     }
   }, [onAdd, onUpdate, depCode])
 
+  // ── Cross-row keyboard navigation ────────────────────────────────────────
+  // Called by Tab on the last editable field (Remarks) of a non-last row.
+  const handleTabToNextRow = useCallback((rowKey: string) => {
+    const idx = items.findIndex((r) => r.key === rowKey)
+    const next = items[idx + 1]
+    if (!next) return
+    setEditingRowKey(next.key)
+    setFocusQtyKey(next.key)
+  }, [items])
+
+  // Called by Shift+Tab on the first editable field (Qty) of a non-first row.
+  const handleTabToPrevRow = useCallback((rowKey: string) => {
+    const idx = items.findIndex((r) => r.key === rowKey)
+    const prev = items[idx - 1]
+    if (!prev) return
+    setEditingRowKey(prev.key)
+    setFocusRemarksKey(prev.key)
+  }, [items])
+
   // ── Computations ──────────────────────────────────────────────────────────
   const validCount = items.filter((l) => l.itemCode.trim() !== '').length
   //const totalQty = useMemo(() => items.reduce((s, l) => s + (l.qtyRequired ?? 0), 0), [items])
@@ -597,7 +655,7 @@ function PRLineItemsTable({
           <svg width="13" height="13" viewBox="0 0 16 16" style={{ stroke: '#185FA5', fill: 'none', strokeWidth: 1.8 }}>
             <rect x="2" y="2" width="12" height="12" rx="1.5"/><line x1="5" y1="6" x2="11" y2="6"/><line x1="5" y1="9" x2="11" y2="9"/>
           </svg>
-          <span style={{ fontSize: 11, fontWeight: 600, color: '#185FA5', textTransform: 'uppercase', letterSpacing: '0.3px' }}>
+          <span style={{ fontSize: 11, fontWeight: 600, color: '#185FA5', letterSpacing: '0.3px' }}>
             Item Lines
           </span>
           <span style={{ fontSize: 11, padding: '2px 8px', background: '#E6F1FB', color: '#185FA5', borderRadius: 20 }}>
@@ -608,19 +666,19 @@ function PRLineItemsTable({
 
       {/* Scrollable table */}
       <div style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <table className="pr-items-grid" style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
             <tr>
               <th style={{ ...TH, width: 30 }}>#</th>
               <th style={{ ...TH, width: 88 }}>Item Code</th>
               <th style={{ ...TH, minWidth: 150 }}>Description</th>
-              <th style={{ ...TH, width: 46, textAlign: 'center' }}>UOM</th>
-              <th style={{ ...TH, width: 82, textAlign: 'right' }}>Qty Req. <span style={{ color: '#E24B4A' }}>*</span></th>
+              <th style={{ ...TH, width: 46, textAlign: 'center' }}>Unit</th>
+              <th style={{ ...TH, width: 82, textAlign: 'right' }}>Required Qty <span style={{ color: '#E24B4A' }}>*</span></th>
               <th style={{ ...TH, width: 118, textAlign: 'right' }}>Rate</th>
-              <th style={{ ...TH, width: 130, textAlign: 'right' }}>Approx Cost</th>
-              <th style={{ ...TH, width: 148 }}>Req. Date</th>
+              <th style={{ ...TH, width: 130, textAlign: 'right' }}>Approx. Cost</th>
+              <th style={{ ...TH, width: 148 }}>Required Date</th>
               <th style={{ ...TH, width: 120 }}>Machine</th>
-              <th style={{ ...TH, width: 140 }}>Sub-Cost</th>
+              <th style={{ ...TH, width: 140 }}>Cost Centre</th>
               <th style={{ ...TH, minWidth: 110 }}>Remarks</th>
               <th style={{ ...TH, width: 52, textAlign: 'center' }}>Sample</th>
               <th style={{ ...TH, width: 60, textAlign: 'center' }} />
@@ -629,7 +687,7 @@ function PRLineItemsTable({
           <tbody>
             {items.map((row, idx) =>
               editingRowKey === row.key && !disabled ? (
-                <tr key={row.key} style={{ background: '#f0f7ff', border: '1px solid #bfdbfe' }}>
+                <tr key={row.key} className="pr-items-grid__editing" style={{ background: '#f0f7ff', border: '1px solid #bfdbfe' }}>
                   <EditableRow
                     row={row}
                     idx={idx}
@@ -637,14 +695,18 @@ function PRLineItemsTable({
                     subCosts={subCosts}
                     qtyError={qtyErrorKeys.has(row.key)}
                     isLast={items.length <= 1}
+                    isFirstRow={idx === 0}
+                    isLastRow={idx === items.length - 1}
                     onUpdate={(field, value) => handleRowUpdate(row.key, field, value)}
                     onView={(r) => setViewRowKey(r.key)}
                     onDelete={() => handleRowDelete(row.key)}
                     onHistory={() => openHistory(row)}
+                    onTabToNext={() => handleTabToNextRow(row.key)}
+                    onTabToPrev={() => handleTabToPrevRow(row.key)}
                   />
                 </tr>
               ) : (
-                <tr key={row.key} style={{ background: idx % 2 === 0 ? '#ffffff' : '#fafafa', cursor: !disabled ? 'pointer' : 'default' }} onClick={() => !disabled && handleRowEdit(row.key)}>
+                <tr key={row.key} style={{ background: idx % 2 === 0 ? '#ffffff' : '#F0F5FF', cursor: !disabled ? 'pointer' : 'default' }} onClick={() => !disabled && handleRowEdit(row.key)}>
                   <ReadOnlyRow
                     row={row}
                     idx={idx}
@@ -783,7 +845,7 @@ function PRLineItemsTable({
               { label: 'Cat. No',       value: viewRow.catNo  || '—' },
               { label: 'Draw No',       value: viewRow.drawNo || '—' },
               { label: 'Last PO Rate',  value: viewRow.lastPoRate != null ? `₹ ${Number(viewRow.lastPoRate).toFixed(2)}` : '—' },
-              { label: 'Last PO Date',  value: viewRow.lastPoDate ? dayjs(viewRow.lastPoDate).format('DD/MM/YYYY') : '—' },
+              { label: 'Last PO Date',  value: viewRow.lastPoDate ? dayjs(viewRow.lastPoDate).format('DD-MMM-YYYY') : '—' },
               { label: 'Supplier Code', value: viewRow.lastPoSupplierCode || '—' },
               { label: 'Supplier Name', value: viewRow.lastPoSupplierName || '—' },
             ] as { label: string; value: string }[]).map(({ label, value }, idx) => (

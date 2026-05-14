@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Avatar, Badge, Button, Dropdown, Layout, Popover, Select, Tooltip, Typography } from 'antd'
+import { Avatar, Badge, Button, Dropdown, Layout, Popover, Tooltip, Typography } from 'antd'
 import {
   ArrowRight,
   Bell,
@@ -8,10 +8,8 @@ import {
   ChevronDown,
   Clock,
   LogOut,
-  Moon,
   PanelLeft,
   PanelLeftClose,
-  Sun,
   TriangleAlert,
   XCircle,
 } from 'lucide-react'
@@ -19,7 +17,6 @@ import dayjs from 'dayjs'
 import type { MenuProps } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/features/auth/store/useAuthStore'
-import { useThemeStore } from '@/shared/store/useThemeStore'
 import styles from './AppHeader.module.css'
 
 const { Header } = Layout
@@ -40,13 +37,13 @@ interface AppHeaderProps {
 
 // ── Financial Year helper ─────────────────────────────────────────────────────
 
-function getFinancialYear(dateStr: string | null | undefined): string {
-  const d     = dateStr ? new Date(dateStr) : new Date()
-  const year  = d.getFullYear()
-  const month = d.getMonth() + 1
-  if (month >= 4) return `FY ${year}–${String(year + 1).slice(2)}`
-  return `FY ${year - 1}–${String(year).slice(2)}`
-}
+// function getFinancialYear(dateStr: string | null | undefined): string {
+//   const d     = dateStr ? new Date(dateStr) : new Date()
+//   const year  = d.getFullYear()
+//   const month = d.getMonth() + 1
+//   if (month >= 4) return `FY ${year}–${String(year + 1).slice(2)}`
+//   return `FY ${year - 1}–${String(year).slice(2)}`
+// }
 
 // ── Notification panel ────────────────────────────────────────────────────────
 
@@ -159,12 +156,9 @@ function NotificationPanel({ summary, onNavigate }: { summary: PRSummary; onNavi
 export function AppHeader({ collapsed, onToggle, onMobileToggle, prSummary }: AppHeaderProps) {
   const navigate                        = useNavigate()
   const { user, processingDate, clearAuthSession } = useAuthStore()
-  const { isDark, toggle: toggleTheme } = useThemeStore()
-
   const displayName = user?.userName || user?.userId || 'User'
   const initials    = displayName.slice(0, 2).toUpperCase()
   const divLabel    = user?.divCode ?? '—'
-  const fy          = getFinancialYear(processingDate)
 
   const [notifOpen, setNotifOpen] = useState(false)
 
@@ -206,23 +200,18 @@ export function AppHeader({ collapsed, onToggle, onMobileToggle, prSummary }: Ap
           onClick={onMobileToggle}
         />
 
-        <div className={styles.logoMark}>S</div>
-        <div className={styles.brandBlock}>
-          <span className={styles.brandName}>Kalpatharu Software Ltd</span>
-          <span className={styles.brandDiv}>{divLabel}</span>
-        </div>
+        
       </div>
 
       {/* ── Centre ────────────────────────────────────────────────────── */}
       <div className={styles.centre}>
-        <Select
-          className={styles.branchSelect}
-          value={divLabel}
-          size="small"
-          disabled
-          options={[{ value: divLabel, label: `Branch: ${divLabel}` }]}
-        />
-        <span className={styles.fyText}>{fy}</span>
+        <div className={styles.logoMark}>S</div>
+        <div className={styles.brandBlock}>
+          <span className={styles.brandName}>Kalpatharu Software Ltd</span>
+           {/* <span className={styles.fyText}>{fy}</span> */}
+          {/* <span className={styles.brandDiv}>{divLabel}</span> */}
+        </div>
+       
       </div>
 
       {/* ── Right ─────────────────────────────────────────────────────── */}
@@ -257,14 +246,14 @@ export function AppHeader({ collapsed, onToggle, onMobileToggle, prSummary }: Ap
           </Badge>
         </Popover>
 
-        <Tooltip title={isDark ? 'Switch to Light' : 'Switch to Dark'}>
+        {/* <Tooltip title={isDark ? 'Switch to Light' : 'Switch to Dark'}>
           <Button
             type="text"
             className={styles.iconBtn}
             icon={isDark ? <Sun size={16} /> : <Moon size={16} />}
             onClick={toggleTheme}
           />
-        </Tooltip>
+        </Tooltip> */}
 
         <Dropdown menu={{ items: profileMenu }} trigger={['click']} placement="bottomRight">
           <button className={styles.profile} type="button">

@@ -24,4 +24,5 @@ public interface ILookupRepository
     Task<IEnumerable<EmployeeRMILookupDto>>  SearchEmployeesAsync(string term);
     Task<IEnumerable<TaxCodeLookupDto>>      GetActiveTaxCodesAsync();
     Task<PagedResult<ItemLookupDto>>         GetItemsPaginatedAsync(string divCode, string? search, string? depCode, int page, int pageSize);
+    Task<IEnumerable<IndentTypeLookupDto>>   GetIndentTypesAsync();
 }

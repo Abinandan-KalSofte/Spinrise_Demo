@@ -285,7 +285,7 @@ export default function MainLayout() {
           prSummary={prSummary}
         />
         <Content className="main-content">
-          <div className={styles.contentInner}>
+          <div className={`${styles.contentInner} main-content__inner`}>
             <Outlet />
           </div>
         </Content>

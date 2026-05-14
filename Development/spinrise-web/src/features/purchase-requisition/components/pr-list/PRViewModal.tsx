@@ -224,7 +224,7 @@ function PRViewContent({ pr, accentColor, accentBg, onClose }: {
             <Field icon={<FileTextOutlined />} label="PR No"
               value={<span style={{ fontWeight: 700, color: accentColor, fontSize: 14 }}>#{pr.prNo}</span>} />
             <Field icon={<CalendarOutlined />} label="PR Date"
-              value={pr.prDate ? dayjs(pr.prDate).format('DD/MM/YYYY') : '—'} />
+              value={pr.prDate ? dayjs(pr.prDate).format('DD-MMM-YYYY') : '—'} />
             <Field icon={<BankOutlined />}     label="Department"
               value={pr.depName ? `${pr.depCode} – ${pr.depName}` : v(pr.depCode)} />
             <Field icon={<TagOutlined />}      label="Request Type"  value={v(pr.iType)}   />
@@ -276,7 +276,7 @@ function PRViewContent({ pr, accentColor, accentBg, onClose }: {
                 icon={<CalendarOutlined />}
                 label="Level 1 Approved On"
                 value={pr.level1ApprovedAt
-                  ? dayjs(pr.level1ApprovedAt).format('DD/MM/YYYY')
+                  ? dayjs(pr.level1ApprovedAt).format('DD-MMM-YYYY')
                   : '—'}
               />
               <div />
@@ -292,7 +292,7 @@ function PRViewContent({ pr, accentColor, accentBg, onClose }: {
                 icon={<CalendarOutlined />}
                 label="Level 2 Approved On"
                 value={pr.level2ApprovedAt
-                  ? dayjs(pr.level2ApprovedAt).format('DD/MM/YYYY')
+                  ? dayjs(pr.level2ApprovedAt).format('DD-MMM-YYYY')
                   : '—'}
               />
               <div />
@@ -308,7 +308,7 @@ function PRViewContent({ pr, accentColor, accentBg, onClose }: {
                 icon={<CalendarOutlined />}
                 label="Final Approved On"
                 value={pr.finalApprovedAt
-                  ? dayjs(pr.finalApprovedAt).format('DD/MM/YYYY')
+                  ? dayjs(pr.finalApprovedAt).format('DD-MMM-YYYY')
                   : '—'}
               />
               <div />
@@ -449,7 +449,7 @@ function PRViewContent({ pr, accentColor, accentBg, onClose }: {
                 {
                   title: 'Req. Date', dataIndex: 'requiredDate', key: 'requiredDate', width: 105,
                   render: (val: string | undefined) =>
-                    val ? dayjs(val).format('DD/MM/YYYY') : <Typography.Text type="secondary">—</Typography.Text>,
+                    val ? dayjs(val).format('DD-MMM-YYYY') : <Typography.Text type="secondary">—</Typography.Text>,
                 },
                 {
                   title: 'Remarks', dataIndex: 'remarks', key: 'remarks', width: 130,
@@ -465,7 +465,7 @@ function PRViewContent({ pr, accentColor, accentBg, onClose }: {
                 {
                   title: 'Last PO Date', dataIndex: 'lastPoDate', key: 'lastPoDate', width: 125,
                   render: (val: string | undefined) =>
-                    val ? dayjs(val).format('DD/MM/YYYY') : <Typography.Text type="secondary">—</Typography.Text>,
+                    val ? dayjs(val).format('DD-MMM-YYYY') : <Typography.Text type="secondary">—</Typography.Text>,
                 },
                 {
                   title: 'Supplier Code', dataIndex: 'lastPoSupplierCode', key: 'lastPoSupplierCode', width: 130,

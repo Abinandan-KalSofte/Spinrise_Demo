@@ -11,29 +11,28 @@
 -- ─────────────────────────────────────────────────────────────
 
 -- ksp_Auth_ValidateUser
--- CREATE OR ALTER PROCEDURE dbo.ksp_Auth_ValidateUser
--- (
---     @DivCode  VARCHAR(2),
---     @UserId   VARCHAR(5),
---     @Password VARCHAR(10)
--- )
--- AS
--- BEGIN
---     SET NOCOUNT ON;
-
---     SELECT
---         p.divcode   AS DivCode,
---         p.user_id   AS UserId,
---         p.user_name AS UserName,
---         p.alevel    AS ALevel
---     FROM dbo.PP_PASSWD p
---     WHERE p.divcode  = @DivCode
---       AND p.user_id  = @UserId
---       AND p.password = @Password
---       AND UPPER(ISNULL(p.activeflg, 'N')) = 'Y';
--- END;
--- GO
-
+CREATE OR ALTER PROCEDURE dbo.ksp_Auth_ValidateUser  
+(  
+    @DivCode  VARCHAR(2),  
+    @UserName   VARCHAR(100),  
+    @Password VARCHAR(10)  
+)  
+AS  
+BEGIN  
+    SET NOCOUNT ON;  
+  
+    SELECT  
+        p.divcode   AS DivCode,  
+        p.user_id   AS UserId,  
+        p.user_name AS UserName,
+        p.alevel    AS ALevel  
+    FROM dbo.PP_PASSWD p  
+    WHERE p.divcode  = @DivCode  
+      AND p.user_name  = @UserName  
+      AND dbo.DecryptString(p.password) = @Password  
+      AND UPPER(ISNULL(p.activeflg, 'N')) = 'Y';  
+END;  
+Go
 -- ─────────────────────────────────────────────────────────────
 -- Lookups / Shared
 -- ─────────────────────────────────────────────────────────────
@@ -371,7 +370,7 @@ BEGIN
         @PRApprovalStatus VARCHAR(5) = 'N',
         @ManualIndNo      CHAR(1)    = 'N',
         @PenPoDetails     VARCHAR(10)= 'N',
-        @PurTypeFlg       VARCHAR(5) = 'N',
+        @PurTypeFlg       int = 0,
         @RequireReqName   CHAR(1)    = 'N',
         @RequireRefNo     CHAR(1)    = 'N',
         @PendPRCheck      CHAR(1)    = 'N';
@@ -405,7 +404,7 @@ BEGIN
         CASE WHEN @PRApprovalStatus = 'Y' THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS ApprovalStatusVisible,
         CASE WHEN @ManualIndNo      = 'Y' THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS ManualPrNumberEnabled,
         CASE WHEN @PenPoDetails     = 'Y' THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS PendingPoDetailsEnabled,
-        CASE WHEN @PurTypeFlg       <> 'N' AND @PurTypeFlg <> '' THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS PurTypeFlgEnabled,
+        CASE WHEN @PurTypeFlg       <> 0 AND @PurTypeFlg <> '' THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS PurTypeFlgEnabled,
         CASE WHEN @RequireReqName   = 'Y' THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS RequireRequesterName,
         CASE WHEN @RequireRefNo     = 'Y' THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS RequireRefNo;
 END;
@@ -1005,8 +1004,8 @@ BEGIN
         h.PO_GRP                            AS PoGroupCode,  
         h.scopecode                         AS ScopeCode,  
         NULL                                AS RequisitionType,  
-        h.saleorderno                       AS SaleOrderNo,  
-        h.Saleorderdt                       AS SaleOrderDate,  
+        --h.saleorderno                       AS SaleOrderNo,  
+        --h.Saleorderdt                       AS SaleOrderDate,  
 
         /* STATUS — APP1/APP2/APP3 track each approval level; APPFLG is unreliable for level distinction */
         CASE
@@ -1405,13 +1404,16 @@ BEGIN
     INSERT INTO dbo.po_prh
     (
         divcode, prno, prdate, depcode, SECTION, SubCost, ITYPE, REQNAME,
-        refno, PO_GRP, scopecode, saleorderno, Saleorderdt,
+        refno, PO_GRP, scopecode,
+		-- saleorderno,
+		 --Saleorderdt,
         userId, createdby, createddt, Planno, amendno
     )
     VALUES
     (
         @DivCode, @PrNo, @PrDate, @DepCode, @Section, @SubCost, LEFT(@IType, 1), @ReqName,
-        @RefNo, @PoGrp, @ScopeCode, @SaleOrderNo, @SaleOrderDate,
+        @RefNo, @PoGrp, @ScopeCode,
+		 --@SaleOrderNo, @SaleOrderDate,
         @CreatedBy, @CreatedBy, CONVERT(VARCHAR(25), GETDATE(), 120), 0, 0
     );
 END
@@ -1501,8 +1503,8 @@ BEGIN
            refno        = @RefNo,
            PO_GRP       = @PoGrp,
            scopecode    = @ScopeCode,
-           saleorderno  = @SaleOrderNo,
-           Saleorderdt  = @SaleOrderDate,
+           --saleorderno  = @SaleOrderNo,
+           --Saleorderdt  = @SaleOrderDate,
            userId       = @ModifiedBy
     WHERE  divcode = @DivCode
       AND  prno    = @PrNo
@@ -1692,9 +1694,9 @@ BEGIN
         dm.DIVNAME                  AS DivName,
         l.qtyind                    AS QtyIndented,
         dm.DIV_UNITNAME             AS DivUnitName,
-        dm.DIV_PRINTNAME            AS DivPrintName,
-        h.saleorderno               AS SaleOrderNo,
-        h.saletype                  AS SaleType
+        dm.DIV_PRINTNAME            AS DivPrintName
+        --,h.saleorderno               AS SaleOrderNo,
+        --h.saletype                  AS SaleType
     FROM       dbo.PO_PRH  h
     INNER JOIN dbo.PO_PRL  l   ON  h.divcode = l.divcode
                                AND h.prno    = l.prno
@@ -2035,4 +2037,18 @@ BEGIN
         i.ITEMNAME
     OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;
 END;
+GO
+
+-- ============================================================
+-- ksp_GetIndentTypes
+-- ============================================================
+CREATE OR ALTER PROCEDURE ksp_GetIndentTypes
+AS
+SET NOCOUNT ON;
+BEGIN
+    SELECT ITYPE, IDESC
+    FROM   PO_INDENTTYPE
+    WHERE  ACTIVE = 'Y'
+    ORDER BY IDESC;
+END
 GO

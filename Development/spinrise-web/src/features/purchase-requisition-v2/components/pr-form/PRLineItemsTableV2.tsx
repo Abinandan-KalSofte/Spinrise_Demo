@@ -214,7 +214,7 @@ export const PRLineItemsTableV2 = forwardRef<PRLineItemsTableV2Handle, PRLineIte
           onWarning?.(`Pending indent exists for this item — Qty: ${info.pendingIndentQty}`)
         }
         if (preCheckResult?.pendingPRCheckEnabled && info.hasPendingPR) {
-          onWarning?.(`Open PR (${info.pendingPrNo}) dated ${dayjs(info.pendingPrDate).format('DD/MM/YYYY')} already exists for this item`)
+          onWarning?.(`Open PR (${info.pendingPrNo}) dated ${dayjs(info.pendingPrDate).format('DD-MMM-YYYY')} already exists for this item`)
         }
       } catch { /* supplementary — silent fail */ }
     })()
@@ -445,7 +445,7 @@ export const PRLineItemsTableV2 = forwardRef<PRLineItemsTableV2Handle, PRLineIte
       minWidth:   105,
       cellStyle:  CELL,
       valueFormatter: ({ value }) =>
-        value ? dayjs(value as string).format('DD/MM/YY') : '—',
+        value ? dayjs(value as string).format('DD-MMM-YYYY') : '—',
     },
     {
       headerName: '',
@@ -541,7 +541,7 @@ export const PRLineItemsTableV2 = forwardRef<PRLineItemsTableV2Handle, PRLineIte
   const historyColumns = useMemo(() => [
     { title: 'PO No',    dataIndex: 'poNo',         key: 'poNo',         width: 90 },
     { title: 'Date',     dataIndex: 'poDate',       key: 'poDate',       width: 90,
-      render: (v: string) => v ? dayjs(v).format('DD/MM/YY') : '—' },
+      render: (v: string) => v ? dayjs(v).format('DD-MMM-YYYY') : '—' },
     { title: 'Supplier', dataIndex: 'supplierName', key: 'supplierName', ellipsis: true },
     { title: 'Rate (₹)', dataIndex: 'rate',         key: 'rate',         width: 90, align: 'right' as const,
       render: (v: number) => v != null ? `₹ ${Number(v).toFixed(2)}` : '—' },
@@ -964,7 +964,7 @@ export const PRLineItemsTableV2 = forwardRef<PRLineItemsTableV2Handle, PRLineIte
               { label: 'Model',         value: viewRow.model || '—' },
               { label: 'Max Cost',      value: viewRow.maxCost != null ? `₹ ${Number(viewRow.maxCost).toFixed(2)}` : '—' },
               { label: 'Last PO Rate',  value: viewRow.lastPoRate != null ? `₹ ${Number(viewRow.lastPoRate).toFixed(2)}` : '—' },
-              { label: 'Last PO Date',  value: viewRow.lastPoDate ? dayjs(viewRow.lastPoDate).format('DD/MM/YYYY') : '—' },
+              { label: 'Last PO Date',  value: viewRow.lastPoDate ? dayjs(viewRow.lastPoDate).format('DD-MMM-YYYY') : '—' },
               { label: 'Supplier Code', value: viewRow.lastPoSupplierCode || '—' },
               { label: 'Supplier Name', value: viewRow.lastPoSupplierName || '—' },
             ] as { label: string; value: string }[]).map(({ label, value }, idx) => (

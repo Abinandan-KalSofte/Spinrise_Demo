@@ -1,5 +1,12 @@
 import dayjs, { type Dayjs } from 'dayjs'
 
+/** Blueprint standard: DD-MMM-YYYY (e.g. 12-May-2026) */
+export function fmtDate(value: string | null | undefined): string {
+  if (!value) return '—'
+  const d = dayjs(value)
+  return d.isValid() ? d.format('DD-MMM-YYYY') : '—'
+}
+
 export function getFYBounds(refDate?: Dayjs): { yfDate: string; ylDate: string } {
   const ref = refDate ?? dayjs()
   const month = ref.month() // 0=Jan … 3=Apr

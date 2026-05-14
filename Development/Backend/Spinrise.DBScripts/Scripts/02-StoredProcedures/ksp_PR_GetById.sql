@@ -28,8 +28,8 @@ BEGIN
         h.PO_GRP                            AS PoGroupCode,  
         h.scopecode                         AS ScopeCode,  
         NULL                                AS RequisitionType,  
-        h.saleorderno                       AS SaleOrderNo,  
-        h.Saleorderdt                       AS SaleOrderDate,  
+        --h.saleorderno                       AS SaleOrderNo,  
+        --h.Saleorderdt                       AS SaleOrderDate,  
 
         /* STATUS — APP1/APP2/APP3 track each approval level; APPFLG is unreliable for level distinction */
         CASE

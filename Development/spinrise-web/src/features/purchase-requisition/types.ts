@@ -96,6 +96,11 @@ export interface TaxCodeLookup {
   taxPer:  number
 }
 
+export interface IndentTypeLookup {
+  iType: string
+  iDesc: string
+}
+
 // ── PR Line local form state ──────────────────────────────────────────────────
 
 export interface PRLineFormItem {
@@ -330,7 +335,7 @@ export interface PreCheckResult {
 }
 
 export const PR_STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  OPEN:           { label: 'Open',                  color: 'blue'   },
+  OPEN:           { label: 'Requested',              color: 'blue'   },
   L1_APPROVED:    { label: 'First Level Approved',  color: 'orange' },
   L2_APPROVED:    { label: 'Second Level Approved', color: 'purple' },
   FINAL_APPROVED: { label: 'Final Approved',        color: 'green'  },

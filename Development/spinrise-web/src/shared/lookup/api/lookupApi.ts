@@ -17,6 +17,7 @@ import type {
   AgentLookup,
   EmployeeRMILookup,
   TaxCodeLookup,
+  IndentTypeLookup,
 } from '@/features/purchase-requisition/types'
 import type { PagedResult } from '@/features/purchase-requisition/api/purchaseRequisitionApi'
 
@@ -55,6 +56,9 @@ export const lookupApi = {
     apiHelpers.get<EmployeeRMILookup[]>(`${BASE}/employees/search?term=${encodeURIComponent(term)}`),
   getActiveTaxCodes: () =>
     apiHelpers.get<TaxCodeLookup[]>(`${BASE}/tax-codes`),
+
+  getIndentTypes: () =>
+    apiHelpers.get<IndentTypeLookup[]>(`${BASE}/indent-types`),
 
   getItemsPaginated: (params: { search?: string; depCode?: string; page: number; pageSize: number }) => {
     const qs = new URLSearchParams()
