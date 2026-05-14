@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
-import { App, Alert, Dropdown, Modal, Select, Skeleton, Spin, Typography, Space } from 'antd'
-import type { MenuProps } from 'antd'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { App, Alert, Modal, Select, Skeleton, Spin, Typography, Space } from 'antd'
 import {
   CheckOutlined, CloseOutlined, DeleteOutlined, DoubleLeftOutlined, DoubleRightOutlined, EditOutlined,
   LeftOutlined,
-  MoreOutlined, PlusOutlined, PrinterOutlined, RightOutlined, UnorderedListOutlined,
+  PlusOutlined, PrinterOutlined, RightOutlined, UnorderedListOutlined,
 } from '@ant-design/icons'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { usePRFormCore } from '../hooks/usePRFormCore'
@@ -12,6 +11,8 @@ import { PRDocBand, TbBtn, TbSep } from '../components/pr-form/PRToolbar'
 import { PRHeaderV1 } from '../components/pr-form/PRHeaderV1'
 import { PRKPIStrip } from '../components/pr-form/PRKPIStrip'
 import { PRLineItemsTable } from '../components/pr-form/PRLineItemsTable'
+import { purchaseReportService } from '@/features/purchase-reports/services/purchaseReportService'
+import { getFYBounds } from '@/shared/lib/dateUtils'
 
 // Statuses that block editing a loaded PR
 const BLOCKED_STATUSES = new Set([
@@ -86,10 +87,26 @@ export default function RequisitionV1NewPage() {
     }
   }
 
+  const [printing, setPrinting] = useState(false)
+
+  const handlePrint = useCallback(async (prNo: number) => {
+    setPrinting(true)
+    try {
+      const { yfDate, ylDate } = getFYBounds()
+      const { blob } = await purchaseReportService.downloadPurchaseRequisitionQuestPdf(prNo, yfDate, ylDate)
+      const url = URL.createObjectURL(blob)
+      window.open(url, '_blank')
+    } catch {
+      void message.error('Failed to load PDF for printing.')
+    } finally {
+      setPrinting(false)
+    }
+  }, [message])
+
   // ── Keyboard shortcuts ────────────────────────────────────────────────────
   // Ref keeps the handler stable (registered once) while always reading fresh state
-  const shortcutRef = useRef({ guardDirty, initNewMode, navigateRecord, handleCancel, mode, savedPrNo, pageBusy, handleDeleteClick })
-  shortcutRef.current = { guardDirty, initNewMode, navigateRecord, handleCancel, mode, savedPrNo, pageBusy, handleDeleteClick }
+  const shortcutRef = useRef({ guardDirty, initNewMode, navigateRecord, handleCancel, handlePrint, mode, savedPrNo, pageBusy, handleDeleteClick })
+  shortcutRef.current = { guardDirty, initNewMode, navigateRecord, handleCancel, handlePrint, mode, savedPrNo, pageBusy, handleDeleteClick }
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -135,7 +152,7 @@ export default function RequisitionV1NewPage() {
             break
           case 'p':
             e.preventDefault()
-            if (s.savedPrNo && !s.pageBusy) navigate(`/purchase/requisition/v1/print-preview/${s.savedPrNo}`)
+            if (s.savedPrNo && !s.pageBusy) void s.handlePrint(s.savedPrNo)
             break
           case 'f':
             e.preventDefault()
@@ -153,6 +170,8 @@ export default function RequisitionV1NewPage() {
   }, [navigate]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Derived state ─────────────────────────────────────────────────────────
+  const isNewMode   = mode === 'new'
+  const isEditing   = mode === 'new' || mode === 'edit'
   const canModify   = mode === 'view' && savedPrNo !== null && !BLOCKED_STATUSES.has(prStatus ?? '')
   const formDisabled = mode === 'view' || pageBusy
 
@@ -178,97 +197,72 @@ export default function RequisitionV1NewPage() {
         display: 'flex', alignItems: 'center', gap: 4,
         padding: '0 12px', height: 44, flexShrink: 0,
       }}>
-        {/* ── Primary actions ── */}
         <TbBtn
           variant="primary"
           icon={<PlusOutlined style={{ fontSize: 11 }} />}
           label="New" kbd="F3"
-          disabled={pageBusy}
+          disabled={isEditing || pageBusy}
           onClick={() => guardDirty(initNewMode)}
         />
+        <TbBtn
+          icon={<EditOutlined style={{ fontSize: 11 }} />}
+          label="Modify"
+          disabled={isEditing || !canModify}
+          onClick={() => setMode('edit')}
+        />
+        <TbBtn
+          variant="danger"
+          icon={<DeleteOutlined style={{ fontSize: 11 }} />}
+          label="Delete" kbd="Ctrl+D"
+          disabled={isEditing || !savedPrNo}
+          onClick={handleDeleteClick}
+        />
+        <TbBtn
+          icon={<UnorderedListOutlined style={{ fontSize: 11 }} />}
+          label="List" kbd="Ctrl+L"
+          disabled={isEditing}
+          onClick={() => navigate('/purchase/requisition')}
+        />
+        <TbSep />
+        <TbBtn variant="icon" icon={<DoubleLeftOutlined style={{ fontSize: 10 }} />}
+          disabled={isEditing || pageBusy}
+          title="First record (Ctrl+Home)"
+          onClick={() => guardDirty(() => void navigateRecord('FIRST'))}
+        />
+        <TbBtn variant="icon" icon={<LeftOutlined style={{ fontSize: 10 }} />}
+          disabled={isEditing || pageBusy}
+          title="Previous record (Ctrl+←)"
+          onClick={() => guardDirty(() => void navigateRecord('PREV'))}
+        />
+        <TbBtn variant="icon" icon={<RightOutlined style={{ fontSize: 10 }} />}
+          disabled={isEditing || pageBusy}
+          title="Next record (Ctrl+→)"
+          onClick={() => guardDirty(() => void navigateRecord('NEXT'))}
+        />
+        <TbBtn variant="icon" icon={<DoubleRightOutlined style={{ fontSize: 10 }} />}
+          disabled={isEditing || pageBusy}
+          title="Last record (Ctrl+End)"
+          onClick={() => guardDirty(() => void navigateRecord('LAST'))}
+        />
+        <TbSep />
         <TbBtn
           variant="success"
           icon={<CheckOutlined style={{ fontSize: 11 }} />}
           label="Save" kbd="Ctrl+S"
-          disabled={mode === 'view' || pageBusy}
+          disabled={!isEditing || pageBusy}
           onClick={() => void doSave('submit')}
         />
         <TbBtn
           icon={<PrinterOutlined style={{ fontSize: 11 }} />}
           label="Print" kbd="Ctrl+P"
-          disabled={!savedPrNo}
-          onClick={() => navigate(`/purchase/requisition/v1/print-preview/${savedPrNo}`)}
+          disabled={isEditing || !savedPrNo || printing}
+          onClick={() => savedPrNo && void handlePrint(savedPrNo)}
         />
         <TbBtn
-          icon={<UnorderedListOutlined style={{ fontSize: 11 }} />}
-          label="List" kbd="Ctrl+L"
-          onClick={() => navigate('/purchase/requisition')}
-        />
-        <TbSep />
-
-        {/* ── Secondary actions (overflow) ── */}
-        <Dropdown
-          trigger={['click']}
-          disabled={pageBusy}
-          menu={{
-            items: [
-              {
-                key: 'modify',
-                icon: <EditOutlined />,
-                label: 'Modify',
-                disabled: !canModify,
-                onClick: () => setMode('edit'),
-              },
-              {
-                key: 'cancel',
-                icon: <CloseOutlined />,
-                label: 'Cancel  (Alt+X)',
-                onClick: handleCancel,
-              },
-              { type: 'divider' },
-              {
-                key: 'delete',
-                icon: <DeleteOutlined />,
-                label: 'Delete  (Ctrl+D)',
-                danger: true,
-                disabled: mode !== 'view' || !savedPrNo,
-                onClick: handleDeleteClick,
-              },
-            ] satisfies MenuProps['items'],
-          }}
-        >
-          <button
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: 4,
-              padding: '5px 10px', border: '1px solid #d0d0d0', borderRadius: 6,
-              background: '#fff', fontSize: 12, fontWeight: 500, cursor: 'pointer',
-              color: '#1a1a1a', fontFamily: 'inherit',
-            }}
-          >
-            <MoreOutlined style={{ fontSize: 13 }} />
-            <span>More</span>
-          </button>
-        </Dropdown>
-         {/* ── Navigation ── */}
-        <TbBtn variant="icon" icon={<DoubleLeftOutlined  style={{ fontSize: 10 }} />}
-          disabled={pageBusy}
-          title="First record (Ctrl+Home)"
-          onClick={() => guardDirty(() => void navigateRecord('FIRST'))}
-        />
-        <TbBtn variant="icon" icon={<LeftOutlined        style={{ fontSize: 10 }} />}
-          disabled={pageBusy}
-          title="Previous record (Ctrl+←)"
-          onClick={() => guardDirty(() => void navigateRecord('PREV'))}
-        />
-        <TbBtn variant="icon" icon={<RightOutlined       style={{ fontSize: 10 }} />}
-          disabled={pageBusy}
-          title="Next record (Ctrl+→)"
-          onClick={() => guardDirty(() => void navigateRecord('NEXT'))}
-        />
-        <TbBtn variant="icon" icon={<DoubleRightOutlined style={{ fontSize: 10 }} />}
-          disabled={pageBusy}
-          title="Last record (Ctrl+End)"
-          onClick={() => guardDirty(() => void navigateRecord('LAST'))}
+          icon={<CloseOutlined style={{ fontSize: 11 }} />}
+          label="Cancel" kbd="Alt+X"
+          disabled={!isEditing}
+          onClick={handleCancel}
         />
       </div>
 

@@ -90,8 +90,15 @@ export default function LoginPage() {
             {/* Left panel — branding */}
             <div className="login-card__left">
               <div className="login-card__left-deco" aria-hidden="true" />
+              <div className="login-card__left-orbs" aria-hidden="true">
+                <span className="login-card__left-orb login-card__left-orb--1" />
+                <span className="login-card__left-orb login-card__left-orb--2" />
+                <span className="login-card__left-orb login-card__left-orb--3" />
+              </div>
               <div className="login-card__left-content">
-                <img src={kalsofteLogo} alt="Kalpatharu Software Ltd" className="login-card__left-logo" />
+                <div className="login-card__left-logo-wrap">
+                  <img src={kalsofteLogo} alt="Kalpatharu Software Ltd" className="login-card__left-logo" />
+                </div>
                 <div className="login-card__left-divider" />
                 <h2 className="login-card__left-company">Kalpatharu Software Ltd</h2>
                 <p className="login-card__left-tagline">Enterprise Resource Planning</p>
